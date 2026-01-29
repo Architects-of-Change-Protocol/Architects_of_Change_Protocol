@@ -1,0 +1,1 @@
+# Sovereign Wallet — Core Specification
