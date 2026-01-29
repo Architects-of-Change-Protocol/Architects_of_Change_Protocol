@@ -236,6 +236,3 @@ Custodians
 
 Data warehouses
 
-20. Versioning
-
-This document defines Market Makers v0.1.
