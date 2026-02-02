@@ -476,41 +476,49 @@ URI + Token → Object Resolver → Consent Engine → Vault Controller → Decr
 
 ### 5.2 Risk Rating Table
 
+> **P0 Classification Note:** P0 threats represent catastrophic failure modes for a sovereign wallet where compromise results in irreversible loss of user control, privacy, or funds. These include: seed/key exfiltration, consent bypass (forgery, replay, scope escalation), catastrophic cryptographic misuse (nonce reuse, weak entropy), undetectable data substitution, and RPC-based validation spoofing. All P0 threats MUST be mitigated before MVP.
+
 | Threat ID | Module/Flow | Description | L | I | Risk | Mitigation | Priority |
 |-----------|-------------|-------------|---|---|------|------------|----------|
-| KM-01 | KeyManager | Seed phrase extraction via memory dump | 2 | 5 | 10 | Secure enclave, memory encryption | P1 |
+| KM-01 | KeyManager | Seed phrase extraction via memory dump | 4 | 5 | 20 | Secure enclave, memory encryption | P0 |
 | KM-02 | KeyManager | Side-channel timing attack on signing | 2 | 5 | 10 | Constant-time implementation | P1 |
-| KM-03 | KeyManager | Weak PRNG entropy | 2 | 5 | 10 | Hardware RNG, entropy pool | P1 |
-| KM-04 | KeyManager | Unauthorized signing (no user auth) | 3 | 5 | 15 | Biometric/PIN before sign | P1 |
-| KM-06 | KeyManager | Seed brute force (weak passphrase) | 3 | 5 | 15 | Enforce strong passphrase | P1 |
+| KM-03 | KeyManager | Weak PRNG entropy | 4 | 5 | 20 | Hardware RNG, entropy pool | P0 |
+| KM-04 | KeyManager | Unauthorized signing (no user auth) | 4 | 5 | 20 | Biometric/PIN before sign | P0 |
+| KM-06 | KeyManager | Seed brute force (weak passphrase) | 3 | 5 | 15 | Enforce strong passphrase | P0 |
 | KM-08 | KeyManager | Recovery phrase phishing | 4 | 5 | 20 | Security education, trusted UI | P0 |
-| CE-01 | ConsentEngine | Consent token forgery | 2 | 5 | 10 | Strong signature validation | P1 |
-| CE-03 | ConsentEngine | Consent replay after revocation | 3 | 4 | 12 | On-chain revocation check | P1 |
+| KM-10 | KeyManager | Signature malleability exploitation | 3 | 5 | 15 | Canonical signatures (low-s), strict validation | P0 |
+| CE-01 | ConsentEngine | Consent token forgery | 4 | 5 | 20 | Strong signature validation | P0 |
+| CE-02 | ConsentEngine | Consent scope escalation | 3 | 5 | 15 | Strict scope validation, immutable tokens | P0 |
+| CE-03 | ConsentEngine | Consent replay after revocation | 4 | 5 | 20 | On-chain revocation check, nonce binding | P0 |
 | CE-04 | ConsentEngine | Time manipulation extends expiry | 3 | 4 | 12 | Trusted time source, grace period | P1 |
-| CE-06 | ConsentEngine | Revocation bypass | 2 | 5 | 10 | Mandatory revocation check | P1 |
+| CE-06 | ConsentEngine | Revocation bypass | 3 | 5 | 15 | Mandatory revocation check | P0 |
 | CE-07 | ConsentEngine | UI consent confusion | 4 | 4 | 16 | Clear, standardized consent UI | P1 |
 | CE-08 | ConsentEngine | Consent request flooding | 4 | 2 | 8 | Rate limiting, queue | P2 |
-| VC-01 | VaultController | Encryption key leakage | 2 | 5 | 10 | Secure memory, no logging | P1 |
-| VC-03 | VaultController | AES-GCM nonce reuse | 2 | 5 | 10 | Counter-based nonces | P1 |
+| CE-09 | ConsentEngine | Empty scope consent passes validation | 3 | 5 | 15 | Validate scope ≠ ∅ invariant | P0 |
+| VC-01 | VaultController | Encryption key leakage | 4 | 5 | 20 | Secure memory, no logging, zeroization | P0 |
+| VC-03 | VaultController | AES-GCM nonce reuse | 3 | 5 | 15 | Counter-based nonces, atomic persistence | P0 |
 | VC-04 | VaultController | Metadata exposure (field IDs) | 4 | 3 | 12 | Encrypt field identifiers | P1 |
+| VC-05 | VaultController | Unauthorized decryption bypasses consent | 3 | 5 | 15 | Mandatory consent token on getField() | P0 |
 | VC-08 | VaultController | Blob size inference | 4 | 3 | 12 | Fixed-size padding | P1 |
 | SDL-01 | SDLEngine | Parser denial of service | 3 | 2 | 6 | Input limits, timeouts | P2 |
-| SDL-03 | SDLEngine | Namespace injection | 2 | 4 | 8 | Strict namespace validation | P2 |
-| OR-01 | ObjectResolver | URI injection | 2 | 4 | 8 | Strict URI parsing | P2 |
+| SDL-03 | SDLEngine | Namespace injection | 3 | 4 | 12 | Strict namespace validation | P1 |
+| OR-01 | ObjectResolver | URI injection | 3 | 4 | 12 | Strict URI parsing | P1 |
 | OR-02 | ObjectResolver | Reference loop DoS | 3 | 2 | 6 | Depth limit, cycle detection | P2 |
+| OR-03 | ObjectResolver | Pack signature stripping/re-signing | 3 | 5 | 15 | Signature in content hash, verify before use | P0 |
 | SA-01 | StorageAdapter | Storage backend compromise | 3 | 3 | 9 | Zero-knowledge encryption | P2 |
+| SA-03 | StorageAdapter | Blob substitution (undetected tampering) | 3 | 5 | 15 | Content-addressed storage, auth tags | P0 |
 | SA-06 | StorageAdapter | Access pattern analysis | 4 | 3 | 12 | Access obfuscation, dummy reads | P1 |
 | CA-03 | ChainAdapter | Smart wallet upgrade attack | 2 | 5 | 10 | Timelock on upgrades | P1 |
 | CA-05 | ChainAdapter | Chain reorg removes anchor | 2 | 4 | 8 | Wait for finality | P2 |
-| CA-06 | ChainAdapter | Malicious RPC endpoint | 3 | 4 | 12 | Multiple RPC sources | P1 |
-| TA-01 | TransportAdapter | Man-in-the-middle attack | 2 | 4 | 8 | Certificate pinning | P2 |
+| CA-06 | ChainAdapter | Malicious RPC endpoint returns false data | 4 | 5 | 20 | Multiple RPC sources, consensus validation | P0 |
+| TA-01 | TransportAdapter | Man-in-the-middle attack | 3 | 4 | 12 | TLS required, certificate pinning | P1 |
 | TA-09 | TransportAdapter | Traffic analysis | 4 | 3 | 12 | Padding, timing jitter | P1 |
 | IC-01 | IdentityCore | DID hijacking via key compromise | 2 | 5 | 10 | On-chain anchor, rotation | P1 |
 | IC-05 | IdentityCore | DID correlation across contexts | 4 | 3 | 12 | Context-specific DIDs | P1 |
 | SF-01 | StoreObject | Malicious field injection | 3 | 3 | 9 | Input sanitization | P2 |
 | CP-01 | CreatePack | Pack contains extra fields | 2 | 4 | 8 | Scope verification | P2 |
 | RC-01 | RequestConsent | Excessive field request | 4 | 3 | 12 | Request anomaly detection | P1 |
-| GC-01 | GrantConsent | Token to wrong recipient | 2 | 5 | 10 | DID verification | P1 |
+| GC-01 | GrantConsent | Token to wrong recipient | 3 | 5 | 15 | DID verification before transmission | P0 |
 | RO-03 | ResolveObject | Timing side-channel | 3 | 3 | 9 | Constant-time resolution | P2 |
 
 ---
@@ -674,15 +682,19 @@ Inference: User is shopping for health insurance
 | P0-01 | Secure key generation with hardware RNG | KM-03 | KeyManager | Uses `crypto.getRandomValues()` or equivalent; entropy verified |
 | P0-02 | AES-256-GCM encryption with counter nonces | VC-03 | VaultController | Nonce never reused; counter persisted atomically |
 | P0-03 | Consent signature validation | CE-01 | ConsentEngine | All tokens verified against issuer DID; invalid tokens rejected |
-| P0-04 | Consent expiration enforcement | CE-04 | ConsentEngine | Expired tokens rejected; system time validated |
-| P0-05 | Blob padding to size classes | VC-08 | VaultController | All blobs padded to 1KB/4KB/16KB/64KB/256KB |
-| P0-06 | Timestamp quantization | SA-06 | StorageAdapter | Timestamps rounded to 15-minute intervals |
+| P0-04 | Consent replay prevention | CE-03, CE-06 | ConsentEngine | Revocation checked; nonce binding prevents replay |
+| P0-05 | Blob integrity verification | SA-03, VC-03 | StorageAdapter, VaultController | Content-addressed storage; auth tags verified on read |
+| P0-06 | Memory protection for keys/seeds | KM-01, VC-01 | KeyManager, VaultController | Secure memory allocation; zeroization after use |
 | P0-07 | TLS for all network communication | TA-01 | TransportAdapter | No plaintext HTTP; certificate validation enabled |
 | P0-08 | User authentication before signing | KM-04 | KeyManager | Biometric or PIN required for `sign()` |
-| P0-09 | Input validation for SDL parsing | SDL-01, SDL-03 | SDLEngine | Max depth 10, max array 1000, namespace allowlist |
-| P0-10 | URI validation for object resolver | OR-01 | ObjectResolver | Strict `aoc://` format; no path traversal |
-| P0-11 | Consent scope validation | CE-02, CE-09 | ConsentEngine | Non-empty scope; fields must exist; scope matches request |
-| P0-12 | Tamper-evident audit log | I-04 | All | Hash-chained log entries; append-only |
+| P0-09 | Input validation for SDL parsing | SDL-03 | SDLEngine | Max depth 10, max array 1000, namespace allowlist |
+| P0-10 | URI validation for object resolver | OR-01, OR-03 | ObjectResolver | Strict `aoc://` format; signature verified |
+| P0-11 | Consent scope validation | CE-02, CE-09 | ConsentEngine | Non-empty scope; fields must exist; scope immutable |
+| P0-12 | Canonical signature enforcement | KM-10 | KeyManager | Low-S normalization; malleability prevented |
+| P0-13 | Consent-gated decryption | VC-05 | VaultController | `getField()` requires valid consent token |
+| P0-14 | RPC response validation | CA-06 | ChainAdapter | Multiple RPC sources; consensus on critical data |
+| P0-15 | Passphrase strength requirement | KM-06 | KeyManager | Minimum entropy enforced; weak passphrases rejected |
+| P0-16 | Token delivery verification | GC-01 | ConsentEngine | DID verified before token transmission |
 
 ---
 
@@ -690,21 +702,21 @@ Inference: User is shopping for health insurance
 
 | Item ID | Description | Threat IDs | Module(s) | Acceptance Criteria |
 |---------|-------------|------------|-----------|---------------------|
-| P1-01 | On-chain revocation check | CE-03, CE-06 | ConsentEngine, ChainAdapter | Every resolution checks revocation registry |
-| P1-02 | Constant-time signing implementation | KM-02 | KeyManager | Signing time independent of key/message |
-| P1-03 | Secure enclave integration | KM-01 | KeyManager | Private keys stored in hardware enclave |
-| P1-04 | Encrypted field identifiers | VC-04 | VaultController | Field IDs encrypted in storage index |
-| P1-05 | Batched storage operations | SA-06 | StorageAdapter | Minimum 5 operations per batch; random timing |
-| P1-06 | Merkle tree consent anchoring | CA-05 | ChainAdapter | Batch consents into daily Merkle root |
-| P1-07 | Multiple RPC endpoint fallback | CA-06 | ChainAdapter | At least 3 RPC sources; consensus validation |
-| P1-08 | Rate limiting on consent requests | CE-08 | ConsentEngine | Max 10 requests/minute per market |
-| P1-09 | Clear consent UI with field descriptions | CE-07, RC-03 | ConsentEngine | Human-readable labels; risk indicators |
-| P1-10 | Reference depth limit | OR-02 | ObjectResolver | Max depth 5; cycle detection |
-| P1-11 | Request deduplication | TA-02 | TransportAdapter | Nonce-based; 5-minute replay window |
-| P1-12 | Access pattern obfuscation (basic) | SA-06, TA-09 | StorageAdapter | Read decoy blobs with real requests |
-| P1-13 | Smart wallet upgrade timelock | CA-03 | ChainAdapter | 48-hour delay on implementation changes |
-| P1-14 | DID rotation support | IC-01, KM-09 | IdentityCore, KeyManager | Key rotation updates DID document atomically |
-| P1-15 | Passphrase strength enforcement | KM-06 | KeyManager | Minimum 12 chars; zxcvbn score ≥ 3 |
+| P1-01 | Constant-time signing implementation | KM-02 | KeyManager | Signing time independent of key/message |
+| P1-02 | Secure enclave integration (enhanced) | KM-01 | KeyManager | Private keys stored in hardware enclave when available |
+| P1-03 | Encrypted field identifiers | VC-04 | VaultController | Field IDs encrypted in storage index |
+| P1-04 | Batched storage operations | SA-06 | StorageAdapter | Minimum 5 operations per batch; random timing |
+| P1-05 | Merkle tree consent anchoring | CA-05 | ChainAdapter | Batch consents into daily Merkle root |
+| P1-06 | Rate limiting on consent requests | CE-08 | ConsentEngine | Max 10 requests/minute per market |
+| P1-07 | Clear consent UI with field descriptions | CE-07, RC-03 | ConsentEngine | Human-readable labels; risk indicators |
+| P1-08 | Reference depth limit | OR-02 | ObjectResolver | Max depth 5; cycle detection |
+| P1-09 | Request deduplication | TA-02 | TransportAdapter | Nonce-based; 5-minute replay window |
+| P1-10 | Access pattern obfuscation (basic) | SA-06, TA-09 | StorageAdapter | Read decoy blobs with real requests |
+| P1-11 | Smart wallet upgrade timelock | CA-03 | ChainAdapter | 48-hour delay on implementation changes |
+| P1-12 | DID rotation support | IC-01, KM-09 | IdentityCore, KeyManager | Key rotation updates DID document atomically |
+| P1-13 | Consent expiration with trusted time | CE-04 | ConsentEngine | Server time validation; grace period handling |
+| P1-14 | Blob padding to size classes | VC-08 | VaultController | All blobs padded to 1KB/4KB/16KB/64KB/256KB |
+| P1-15 | Timestamp quantization | SA-06 | StorageAdapter | Timestamps rounded to 15-minute intervals |
 
 ---
 
