@@ -37,7 +37,7 @@ FieldManifest := {
   field_id:   FieldName,    -- canonical field name
   data_type:  DataType,     -- data type specification
   semantics:  Semantics,    -- semantic description
-  created_at: Timestamp,    -- creation time (RFC 3339)
+  created_at: Timestamp,    -- creation time (Unix seconds)
   field_hash: Hash          -- canonical payload hash
 }
 ```
@@ -133,7 +133,7 @@ Field Manifests are protocol-level constructs that define field semantics. Appli
 | `field_id` | string | REQUIRED | No | Canonical field name identifier |
 | `data_type` | string | REQUIRED | No | Data type specification |
 | `semantics` | string | REQUIRED | No | Semantic description of the field |
-| `created_at` | string | REQUIRED | No | RFC 3339 timestamp of manifest creation |
+| `created_at` | integer | REQUIRED | No | Unix timestamp of manifest creation |
 | `field_hash` | string | REQUIRED | No | SHA-256 hash of canonical payload |
 
 ### 2.2 Field Definitions
@@ -220,17 +220,13 @@ Field Manifests are protocol-level constructs that define field semantics. Appli
 | Property | Value |
 |----------|-------|
 | **Name** | `created_at` |
-| **Type** | string |
+| **Type** | integer |
 | **Required** | REQUIRED |
-| **Format** | RFC 3339 timestamp with UTC timezone |
-| **Constraints** | MUST be a valid RFC 3339 timestamp; MUST use UTC timezone (Z suffix); MUST NOT be in the future |
-| **Pattern** | `^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$` |
+| **Format** | Unix timestamp (seconds since 1970-01-01T00:00:00Z) |
+| **Constraints** | MUST be > 0; MUST NOT be in the future relative to validation time |
+| **Max Value** | 2^53 - 1 |
 
-**Description:** The timestamp when this Field Manifest was created. This field is set once at creation time and MUST NOT be modified. The timestamp MUST be in UTC and MUST use the 'Z' suffix to indicate UTC timezone.
-
-**Examples:**
-- `2024-01-31T12:00:00Z`
-- `2025-06-15T08:30:45Z`
+**Description:** The timestamp when this Field Manifest was created. This field is set once at creation time and MUST NOT be modified.
 
 #### 2.2.6 field_hash
 
@@ -328,23 +324,19 @@ The `created_at` field records the manifest creation timestamp.
 **Semantic Rules:**
 
 1. Timestamp MUST be set at manifest creation time
-2. Timestamp MUST be in RFC 3339 format with UTC timezone
-3. Timestamp MUST NOT be backdated or forward-dated beyond reasonable clock skew
-4. Implementations SHOULD allow up to 300 seconds clock skew tolerance for validation
-5. Timestamp enables ordering and freshness verification
-6. The same logical field created at different times produces different manifests
+2. Timestamp MUST NOT be backdated or forward-dated beyond reasonable clock skew
+3. Implementations SHOULD allow ±300 seconds clock skew tolerance
+4. Timestamp enables ordering and freshness verification
+5. The same logical field created at different times produces different manifests
 
 **Validation:**
 
 ```
 validate_timestamp(created_at, current_time, skew_tolerance):
-  parsed := parse_rfc3339(created_at)
-  IF parsed = INVALID THEN
-    RETURN (INVALID, "malformed_timestamp")
-  IF NOT ends_with(created_at, "Z") THEN
-    RETURN (INVALID, "non_utc_timestamp")
-  IF parsed > current_time + skew_tolerance THEN
+  IF created_at > current_time + skew_tolerance THEN
     RETURN (INVALID, "future_timestamp")
+  IF created_at <= 0 THEN
+    RETURN (INVALID, "invalid_timestamp")
   RETURN (VALID)
 ```
 
@@ -444,8 +436,8 @@ For the Field Manifest canonical payload, the key order is:
 5. `version`
 
 ```
-CORRECT:   {"created_at":"2024-01-31T12:00:00Z","data_type":"string","field_id":"full_name","semantics":"...","version":1}
-INCORRECT: {"version":1,"field_id":"full_name","data_type":"string","semantics":"...","created_at":"2024-01-31T12:00:00Z"}
+CORRECT:   {"created_at":1706702400,"data_type":"string","field_id":"full_name","semantics":"...","version":1}
+INCORRECT: {"version":1,"field_id":"full_name","data_type":"string","semantics":"...","created_at":1706702400}
 ```
 
 #### 5.2.2 Whitespace
@@ -455,9 +447,9 @@ INCORRECT: {"version":1,"field_id":"full_name","data_type":"string","semantics":
 - No leading whitespace
 
 ```
-CORRECT:   {"created_at":"2024-01-31T12:00:00Z","data_type":"string",...}
-INCORRECT: { "created_at": "2024-01-31T12:00:00Z", "data_type": "string", ... }
-INCORRECT: {"created_at":"2024-01-31T12:00:00Z",...}\n
+CORRECT:   {"created_at":1706702400,"data_type":"string",...}
+INCORRECT: { "created_at": 1706702400, "data_type": "string", ... }
+INCORRECT: {"created_at":1706702400,...}\n
 ```
 
 #### 5.2.3 String Encoding
@@ -750,7 +742,7 @@ Vendor extensions:
 The following shows the canonical payload (fields included in hash computation):
 
 ```json
-{"created_at":"2024-01-31T12:00:00Z","data_type":"string","field_id":"full_name","semantics":"The complete legal name of a person, including all given names and family names, as it appears on official identity documents.","version":1}
+{"created_at":1706702400,"data_type":"string","field_id":"full_name","semantics":"The complete legal name of a person, including all given names and family names, as it appears on official identity documents.","version":1}
 ```
 
 Note: No whitespace, keys sorted alphabetically.
@@ -763,7 +755,7 @@ Note: No whitespace, keys sorted alphabetically.
   "field_id": "full_name",
   "data_type": "string",
   "semantics": "The complete legal name of a person, including all given names and family names, as it appears on official identity documents.",
-  "created_at": "2024-01-31T12:00:00Z",
+  "created_at": 1706702400,
   "field_hash": "7d865e959b2466918c9863afca942d0fb89d7c9ac0c99bafc3749504ded97730"
 }
 ```
@@ -776,7 +768,7 @@ Note: No whitespace, keys sorted alphabetically.
   "field_id": "email-address",
   "data_type": "email",
   "semantics": "A valid email address conforming to RFC 5322, used as the primary contact method for electronic communications.",
-  "created_at": "2024-01-31T12:00:00Z",
+  "created_at": 1706702400,
   "field_hash": "b3a8e0e1f9c2d4b5a6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9"
 }
 ```
@@ -789,7 +781,7 @@ Note: No whitespace, keys sorted alphabetically.
   "field_id": "date_of_birth",
   "data_type": "date",
   "semantics": "The calendar date on which a person was born, expressed in ISO 8601 format (YYYY-MM-DD). This field is used for age verification and identity confirmation.",
-  "created_at": "2024-02-15T08:30:00Z",
+  "created_at": 1708000200,
   "field_hash": "c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5"
 }
 ```
@@ -802,7 +794,7 @@ Note: No whitespace, keys sorted alphabetically.
   "field_id": "medical-record-id",
   "data_type": "string",
   "semantics": "A unique identifier assigned to a patient's medical record within a healthcare system. This identifier is used to link all medical documentation and history for a specific individual.",
-  "created_at": "2024-03-01T14:45:00Z",
+  "created_at": 1709304300,
   "field_hash": "d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6"
 }
 ```
@@ -896,29 +888,25 @@ INV-SEM-03: nfc_normalize(semantics) = semantics
 ### 10.6 Timestamp Invariants
 
 ```
-INV-TS-01: created_at matches ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$
-  "Created timestamp MUST be RFC 3339 format with UTC timezone"
+INV-TS-01: created_at > 0
+  "Created timestamp MUST be positive"
 
-INV-TS-02: ends_with(created_at, "Z")
-  "Created timestamp MUST use UTC timezone (Z suffix)"
-
-INV-TS-03: parse_rfc3339(created_at) ≤ current_time + 300
+INV-TS-02: created_at ≤ current_time + 300
   "Created timestamp MUST NOT be in the future (with 5-minute tolerance)"
 
-INV-TS-04: is_valid_rfc3339(created_at)
-  "Created timestamp MUST be a valid RFC 3339 timestamp"
+INV-TS-03: typeof(created_at) = integer
+  "Created timestamp MUST be an integer type"
 ```
 
 ### 10.7 Structural Invariants
 
 ```
 INV-STRUCT-01: typeof(field_id) = string ∧ typeof(data_type) = string ∧
-               typeof(semantics) = string ∧ typeof(created_at) = string ∧
-               typeof(field_hash) = string
+               typeof(semantics) = string ∧ typeof(field_hash) = string
   "All string fields MUST be string type"
 
-INV-STRUCT-02: typeof(version) = integer
-  "Version MUST be integer type"
+INV-STRUCT-02: typeof(version) = integer ∧ typeof(created_at) = integer
+  "Version and created_at MUST be integer type"
 
 INV-STRUCT-03: field_manifest is immutable after creation
   "Field Manifests MUST be treated as immutable"
@@ -1023,7 +1011,7 @@ When multiple versions are supported:
 
 **Input (Canonical JSON):**
 ```
-{"created_at":"2024-01-31T12:00:00Z","data_type":"string","field_id":"test_field","semantics":"A test field for validation purposes.","version":1}
+{"created_at":1706702400,"data_type":"string","field_id":"test_field","semantics":"A test field for validation purposes.","version":1}
 ```
 
 **Expected SHA-256:**
@@ -1038,7 +1026,7 @@ Given the Field Manifest fields:
 - field_id: `"example"`
 - data_type: `"string"`
 - semantics: `"Example field for testing"`
-- created_at: `"2024-01-01T00:00:00Z"`
+- created_at: `1704067200`
 
 The canonical encoding MUST produce keys in this order:
 `created_at`, `data_type`, `field_id`, `semantics`, `version`
@@ -1085,8 +1073,9 @@ aoc://field/definition/v1/0/0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
       "maxLength": 4096
     },
     "created_at": {
-      "type": "string",
-      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 9007199254740991
     },
     "field_hash": {
       "type": "string",
