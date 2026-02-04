@@ -712,7 +712,7 @@ Vendor-specific fields MUST use the `x-` prefix:
   "field_id": "custom_field",
   "data_type": "string",
   "semantics": "A custom field definition",
-  "created_at": "2024-01-31T12:00:00Z",
+  "created_at": "2024-01-31T12:00:00.000Z",
   "field_hash": "abc123...",
   "x-vendor-field": "custom value"
 }
