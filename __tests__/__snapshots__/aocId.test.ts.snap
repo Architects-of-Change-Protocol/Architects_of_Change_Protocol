@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`content hash and AOC-ID matches the snapshot for a fixed object 1`] = `"aoc://identity/profile/v2/1/0x56a73acb6ce70a0284dcdd503f0b078441a5a90b21e3e789f0b8842585992eed"`;
