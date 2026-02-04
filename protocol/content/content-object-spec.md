@@ -995,8 +995,8 @@ Given the Content Object fields:
 - content_type: `"text/plain"`
 - bytes: `100`
 - storage.backend: `"local"`
-- storage.uri: `"aoc://storage/local/0xabc..."`
-- storage.hash: `"abc..."`
+- storage.uri: `"aoc://storage/local/0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"`
+- storage.hash: `"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"`
 - created_at: `1700000000`
 
 The canonical encoding MUST produce keys in this order:
@@ -1044,7 +1044,9 @@ The canonical encoding MUST produce keys in this order:
         },
         "uri": {
           "type": "string",
-          "pattern": "^aoc://storage/[a-z][a-z0-9]*(-[a-z0-9]+)*/0x[a-f0-9]{64}$"
+          "pattern": "^aoc://storage/[a-z][a-z0-9]*(-[a-z0-9]+)*/0x[a-f0-9]{64}$",
+          "minLength": 1,
+          "maxLength": 2048
         },
         "hash": {
           "type": "string",
