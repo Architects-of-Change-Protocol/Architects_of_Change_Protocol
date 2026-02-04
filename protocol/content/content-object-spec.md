@@ -594,8 +594,8 @@ A **Storage Pointer** is a structured reference that binds a Content Object to a
 | **Name** | `backend` |
 | **Type** | string |
 | **Required** | REQUIRED |
-| **Format** | Lowercase alphanumeric with optional hyphens |
-| **Constraints** | MUST match pattern `^[a-z][a-z0-9-]*$`; MUST NOT exceed 64 characters |
+| **Format** | Lowercase alphanumeric with optional hyphen-separated segments |
+| **Constraints** | MUST match pattern `^[a-z][a-z0-9]*(-[a-z0-9]+)*$`; MUST NOT exceed 64 characters |
 
 **Description:** Identifies the storage backend type. Implementations use this value to select the appropriate retrieval mechanism.
 
@@ -619,20 +619,10 @@ Additional backend types MAY be registered through the AOC Protocol extension pr
 | **Name** | `uri` |
 | **Type** | string |
 | **Required** | REQUIRED |
-| **Format** | Backend-specific URI |
-| **Constraints** | MUST NOT be empty; MUST NOT exceed 2048 characters |
+| **Format** | AOC Storage URI |
+| **Constraints** | MUST match pattern `^aoc://storage/[a-z][a-z0-9]*(-[a-z0-9]+)*/0x[a-f0-9]{64}$` |
 
-**Description:** The backend-specific resource identifier. Format depends on the `backend` type.
-
-**URI Format by Backend:**
-
-| Backend | URI Format | Example |
-|---------|------------|---------|
-| `local` | `file://<absolute-path>` | `file:///data/blobs/abc123` |
-| `s3` | `s3://<bucket>/<key>` | `s3://aoc-data/content/abc123` |
-| `ipfs` | `ipfs://<cid>` | `ipfs://QmYwAPJzv5CZsnA...` |
-| `arweave` | `ar://<transaction-id>` | `ar://aBcDeFgHiJkLmNoP...` |
-| `http` | `https://<host>/<path>` | `https://cdn.example.com/blob/abc123` |
+**Description:** The canonical URI representation of the Storage Pointer. This field MUST be derived deterministically from the `backend` and `hash` fields using the formula: `aoc://storage/{backend}/0x{hash}`. See Storage Pointer Specification for complete URI rules.
 
 #### 7.3.3 hash
 
@@ -773,7 +763,7 @@ Vendor extensions:
 The following shows the canonical payload (fields included in hash computation):
 
 ```json
-{"bytes":2048,"content_type":"application/json","created_at":1706745600,"storage":{"backend":"ipfs","hash":"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08","uri":"ipfs://QmYwAPJzv5CZsnAzt8auVZRn5rNnTB1Y7npFrkg5e7h9KP"},"subject":"did:aoc:7sHxtdZ9bE3F5kNmZM4vbU","version":"1.0"}
+{"bytes":2048,"content_type":"application/json","created_at":1706745600,"storage":{"backend":"ipfs","hash":"9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08","uri":"aoc://storage/ipfs/0x9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"},"subject":"did:aoc:7sHxtdZ9bE3F5kNmZM4vbU","version":"1.0"}
 ```
 
 Note: No whitespace, keys sorted alphabetically, nested `storage` object also sorted.
@@ -788,7 +778,7 @@ Note: No whitespace, keys sorted alphabetically, nested `storage` object also so
   "bytes": 2048,
   "storage": {
     "backend": "ipfs",
-    "uri": "ipfs://QmYwAPJzv5CZsnAzt8auVZRn5rNnTB1Y7npFrkg5e7h9KP",
+    "uri": "aoc://storage/ipfs/0x9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08",
     "hash": "9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08"
   },
   "created_at": 1706745600,
@@ -806,7 +796,7 @@ Note: No whitespace, keys sorted alphabetically, nested `storage` object also so
   "bytes": 65536,
   "storage": {
     "backend": "local",
-    "uri": "file:///var/aoc/blobs/a1b2c3d4e5f6",
+    "uri": "aoc://storage/local/0xba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
     "hash": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
   },
   "created_at": 1706832000,
@@ -824,7 +814,7 @@ Note: No whitespace, keys sorted alphabetically, nested `storage` object also so
   "bytes": 524288,
   "storage": {
     "backend": "s3",
-    "uri": "s3://user-vault-bucket/content/img-20240201-001.enc",
+    "uri": "aoc://storage/s3/0xc0535e4be2b79ffd93291305436bf889314e4a3faec05ecffcbb7df31ad9e51a",
     "hash": "c0535e4be2b79ffd93291305436bf889314e4a3faec05ecffcbb7df31ad9e51a"
   },
   "created_at": 1706918400,
@@ -989,7 +979,7 @@ When multiple versions are supported:
 
 **Input (Canonical JSON):**
 ```
-{"bytes":1024,"content_type":"application/json","created_at":1706745600,"storage":{"backend":"local","hash":"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad","uri":"file:///data/test"},"subject":"did:aoc:test123","version":"1.0"}
+{"bytes":1024,"content_type":"application/json","created_at":1706745600,"storage":{"backend":"local","hash":"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad","uri":"aoc://storage/local/0xba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"},"subject":"did:aoc:test123","version":"1.0"}
 ```
 
 **Expected SHA-256:**
@@ -1005,8 +995,8 @@ Given the Content Object fields:
 - content_type: `"text/plain"`
 - bytes: `100`
 - storage.backend: `"local"`
-- storage.uri: `"file:///test"`
-- storage.hash: `"abc..."`
+- storage.uri: `"aoc://storage/local/0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"`
+- storage.hash: `"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"`
 - created_at: `1700000000`
 
 The canonical encoding MUST produce keys in this order:
@@ -1049,11 +1039,12 @@ The canonical encoding MUST produce keys in this order:
       "properties": {
         "backend": {
           "type": "string",
-          "pattern": "^[a-z][a-z0-9-]*$",
+          "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*$",
           "maxLength": 64
         },
         "uri": {
           "type": "string",
+          "pattern": "^aoc://storage/[a-z][a-z0-9]*(-[a-z0-9]+)*/0x[a-f0-9]{64}$",
           "minLength": 1,
           "maxLength": 2048
         },
