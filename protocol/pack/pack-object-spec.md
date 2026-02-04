@@ -367,7 +367,7 @@ The `fields` array aggregates Content Object references into a deterministic col
 1. The `fields` array MUST contain at least one Field Reference
 2. Field identifiers (`field_id`) MUST be unique within the pack
 3. The order of fields is semantically significant; implementations MUST preserve order
-4. For canonical hash computation, fields are sorted by `field_id` (see Section 6)
+4. For canonical hash computation, fields are sorted by `field_id`, then `content_id`, then `storage.hash` (see Section 6)
 5. Duplicate `content_id` values are permitted (same content, different logical fields)
 6. Maximum field count is 65535 to prevent resource exhaustion
 
@@ -468,7 +468,13 @@ Note: Fields in the canonical payload are ordered alphabetically by key name.
 
 ### 5.4 Canonical Fields Array Structure
 
-The `fields` array within the canonical payload MUST be sorted by `field_id` in ascending Unicode code point order. Each Field Reference within the array is encoded with keys in sorted order.
+The `fields` array within the canonical payload MUST be sorted using a multi-key lexicographic sort in ascending Unicode code point order:
+
+1. Primary: `field_id`
+2. Secondary: `content_id`
+3. Tertiary: `storage.hash`
+
+Each Field Reference within the array is encoded with keys in sorted order.
 
 ```
 CanonicalFieldReference := {
@@ -503,8 +509,8 @@ INV-PB-02: ∀ field F ∈ {version, subject, created_at, fields}:
 INV-PB-03: |CanonicalPayload.fields| = 4
   "Canonical payload contains exactly four top-level fields"
 
-INV-PB-04: sorted(CanonicalPayload.fields, by=field_id)
-  "Fields array MUST be sorted by field_id in canonical form"
+INV-PB-04: sorted(CanonicalPayload.fields, by=[field_id, content_id, storage.hash])
+  "Fields array MUST be sorted by (field_id, content_id, storage.hash) in canonical form"
 ```
 
 ---
@@ -537,7 +543,11 @@ INCORRECT: {"version":"1.0","subject":"did:aoc:...","created_at":1706745600,"fie
 
 #### 6.2.2 Fields Array Sorting
 
-The `fields` array MUST be sorted by `field_id` in ascending Unicode code point order before encoding.
+The `fields` array MUST be sorted using a multi-key lexicographic sort in ascending Unicode code point order before encoding:
+
+1. Primary: `field_id`
+2. Secondary: `content_id`
+3. Tertiary: `storage.hash`
 
 ```
 CORRECT:   "fields":[{"field_id":"email",...},{"field_id":"name",...}]
@@ -604,8 +614,8 @@ INCORRECT: {"bytes":1.024e3}
 
 ```
 function canonical_encode(pack_object):
-  // Step 1: Sort fields by field_id
-  sorted_fields := sort(pack_object.fields, by=field_id, order=ascending)
+  // Step 1: Sort fields by (field_id, content_id, storage.hash)
+  sorted_fields := sort(pack_object.fields, by=[field_id, content_id, storage.hash], order=ascending)
 
   // Step 2: Construct canonical field references
   canonical_fields := []
@@ -663,8 +673,8 @@ The `pack_hash` is a cryptographic digest that uniquely identifies a Pack Object
 
 ```
 function compute_pack_hash(pack_object):
-  // Step 1: Sort fields by field_id
-  sorted_fields := sort(pack_object.fields, by=field_id, order=ascending)
+  // Step 1: Sort fields by (field_id, content_id, storage.hash)
+  sorted_fields := sort(pack_object.fields, by=[field_id, content_id, storage.hash], order=ascending)
 
   // Step 2: Construct canonical payload
   payload := {
@@ -1046,8 +1056,8 @@ INV-DET-01: ∀ Pack Objects P1, P2: (P1.version = P2.version ∧ P1.subject = P
             P1.created_at = P2.created_at ∧ set(P1.fields) = set(P2.fields)) → P1.pack_hash = P2.pack_hash
   "Packs with same content MUST have same hash regardless of field order"
 
-INV-DET-02: sort_by_field_id(fields) produces deterministic ordering
-  "Field sorting MUST be deterministic"
+INV-DET-02: sort_by(fields, [field_id, content_id, storage.hash]) produces deterministic ordering
+  "Field sorting by (field_id, content_id, storage.hash) MUST be deterministic"
 ```
 
 ### 10.8 Immutability Invariants
