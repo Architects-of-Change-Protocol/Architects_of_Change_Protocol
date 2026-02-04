@@ -6,8 +6,8 @@ import { StoragePointer } from '../storage/types';
 export function buildContentManifest(
   subject: string,
   content_type: string,
-  storage: StoragePointer,
   bytes: number,
+  storage: StoragePointer,
   opts: BuildContentOptions = {}
 ): ContentManifestV1 {
   if (typeof subject !== 'string' || subject.trim() === '') {
@@ -16,6 +16,10 @@ export function buildContentManifest(
 
   if (typeof content_type !== 'string' || content_type.trim() === '') {
     throw new Error('Content content_type must be non-empty.');
+  }
+
+  if (!Number.isInteger(bytes) || bytes <= 0) {
+    throw new Error('Content bytes must be a positive integer.');
   }
 
   if (typeof storage.backend !== 'string' || storage.backend.trim() === '') {
@@ -29,10 +33,6 @@ export function buildContentManifest(
   const expectedUri = `aoc://storage/${storage.backend}/0x${storage.hash}`;
   if (storage.uri !== expectedUri) {
     throw new Error('Content storage uri must match backend and hash.');
-  }
-
-  if (!Number.isInteger(bytes) || bytes <= 0) {
-    throw new Error('Content bytes must be a positive integer.');
   }
 
   const trimmedSubject = subject.trim();
