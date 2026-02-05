@@ -67,16 +67,16 @@ describe('storage pointer', () => {
 
   it('rejects invalid hash formats', () => {
     expect(() => buildStoragePointer('local', 'abc')).toThrow(
-      'Storage hash must be 64 lowercase hex characters'
+      'Storage pointer hash must be 64 lowercase hex characters.'
     );
     expect(() => buildStoragePointer('local', 'A'.repeat(64))).toThrow(
-      'Storage hash must be 64 lowercase hex characters'
+      'Storage pointer hash must be 64 lowercase hex characters.'
     );
     expect(() => buildStoragePointer('local', 'g'.repeat(64))).toThrow(
-      'Storage hash must be 64 lowercase hex characters'
+      'Storage pointer hash must be 64 lowercase hex characters.'
     );
     expect(() => buildStoragePointer('local', '')).toThrow(
-      'Storage hash must be 64 lowercase hex characters'
+      'Storage pointer hash must be 64 lowercase hex characters.'
     );
   });
 });

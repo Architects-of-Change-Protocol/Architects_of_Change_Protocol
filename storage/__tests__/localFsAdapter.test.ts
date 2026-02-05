@@ -44,7 +44,7 @@ describe('LocalFilesystemAdapter', () => {
 
   it('rejects invalid hash inputs', () => {
     expect(() => buildStoragePointer('local', 'ABCDEF')).toThrow(
-      'Storage hash must be 64 lowercase hex characters.'
+      'Storage pointer hash must be 64 lowercase hex characters.'
     );
   });
 
