@@ -1,6 +1,6 @@
 # AOC Protocol — Consent Object Specification
 
-**Version:** 0.1.1
+**Version:** 0.1.2
 **Status:** Draft
 **Layer:** Normative Specification
 **Parent Documents:** Field Manifest Specification, Content Object Specification, Pack Object Specification
@@ -754,12 +754,12 @@ INV-DET-01: ∀ Consent Objects C1, C2:
 "Consents with identical fields MUST have identical hashes"
 
 INV-DET-02: ∀ Consent Objects C1, C2:
-  (C1.subject = C2.subject ∧ C1.grantee = C2.grantee ∧
-   C1.issued_at = C2.issued_at ∧
+  (C1.consent_hash ≠ C2.consent_hash ∧
+   C1.subject = C2.subject ∧ C1.grantee = C2.grantee ∧
    ∃ entry: entry ∈ C1.scope ∧ entry ∈ C2.scope)
-  → C1.consent_hash = C2.consent_hash
+  → C1.issued_at ≠ C2.issued_at
 
-"Consent Objects with identical issued_at MUST NOT exist for same (subject, grantee, scope entry)"
+"Distinct Consent Objects for same (subject, grantee, scope entry) MUST have distinct issued_at"
 ```
 
 ### 9.5 Immutability Invariants
