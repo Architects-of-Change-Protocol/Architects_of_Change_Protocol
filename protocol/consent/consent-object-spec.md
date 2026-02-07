@@ -1,6 +1,6 @@
 # AOC Protocol — Consent Object Specification
 
-**Version:** 0.1
+**Version:** 0.1.1
 **Status:** Draft
 **Layer:** Normative Specification
 **Parent Documents:** Field Manifest Specification, Content Object Specification, Pack Object Specification
@@ -185,8 +185,8 @@ ConsentObject := {
 
 **Semantic Rules:**
 
-1. The subject MUST be the data owner or authorized delegate.
-2. The subject DID MUST be resolvable for signature verification.
+1. The subject MUST be the data owner.
+2. The subject DID MUST be resolvable at verification time for signature verification.
 3. A Consent Object is only valid when cryptographically signed by the subject.
 4. The subject and grantee MAY be the same DID (self-consent).
 
@@ -208,8 +208,7 @@ ConsentObject := {
 
 1. The grantee MUST be a valid, well-formed DID.
 2. Authorization applies only to the specified grantee.
-3. The grantee MUST NOT delegate received permissions unless explicitly permitted.
-4. A grantee value of `"did:aoc:public"` indicates public access (no identity restriction).
+3. A grantee value of `"did:aoc:public"` indicates public access (no identity restriction).
 
 #### 3.2.4 action
 
@@ -227,7 +226,7 @@ ConsentObject := {
 
 1. `"grant"` creates or extends authorization for the grantee.
 2. `"revoke"` terminates previously granted authorization.
-3. A `"revoke"` action SHOULD reference the prior consent via `prior_consent`.
+3. A `"revoke"` action MUST reference the prior consent via `prior_consent`.
 4. Actions are idempotent; duplicate grants do not compound permissions.
 
 #### 3.2.5 scope
@@ -267,10 +266,11 @@ See [Section 4: Consent Scope Model](#4-consent-scope-model) for scope entry str
 
 **Semantic Rules:**
 
-1. Permissions MUST be drawn from the defined permission vocabulary.
+1. Permissions SHOULD be drawn from the defined permission vocabulary.
 2. Unknown permissions MUST be ignored by implementations.
 3. Permissions are additive; multiple grants combine permissions.
 4. Permission strings MUST be lowercase alphanumeric with hyphens.
+5. Permissions MUST NOT contain duplicates within a single Consent Object.
 
 **Standard Permissions:**
 
@@ -298,8 +298,8 @@ See [Section 4: Consent Scope Model](#4-consent-scope-model) for scope entry str
 
 1. Timestamps MUST be in UTC (indicated by trailing `Z`).
 2. Timestamps MUST NOT include fractional seconds.
-3. Implementations SHOULD allow clock skew tolerance of ±300 seconds.
-4. The `issued_at` value MUST NOT be in the future relative to verification time.
+3. The `issued_at` value MUST NOT be more than 300 seconds in the future relative to verification time.
+4. Implementations SHOULD allow clock skew tolerance of ±300 seconds for past timestamps.
 
 **Example:** `"2025-01-15T14:30:00Z"`
 
@@ -340,9 +340,9 @@ See [Section 4: Consent Scope Model](#4-consent-scope-model) for scope entry str
 
 **Semantic Rules:**
 
-1. For `"revoke"` actions, `prior_consent` SHOULD reference the consent being revoked.
+1. For `"revoke"` actions, `prior_consent` MUST be non-null and reference the consent being revoked.
 2. For `"grant"` actions, `prior_consent` MAY reference a consent being renewed or modified.
-3. A `null` value indicates this is an original consent with no predecessor.
+3. A `null` value indicates this is an original grant with no predecessor; `null` is invalid for revocations.
 4. The referenced consent MUST have the same subject and grantee.
 
 #### 3.2.10 consent_hash
@@ -454,10 +454,11 @@ Consent revocation is achieved by creating a new Consent Object with `action: "r
 ### 5.2 Revocation Rules
 
 1. A revocation Consent Object MUST have `action` set to `"revoke"`.
-2. Revocation SHOULD reference the original consent via `prior_consent`.
+2. Revocation MUST reference the original consent via `prior_consent`.
 3. The revoking subject MUST match the original consent subject.
 4. The revocation grantee MUST match the original consent grantee.
 5. Revocation scope SHOULD match or be a subset of the original scope.
+6. Consent Objects with identical `issued_at` MUST NOT exist for the same (subject, grantee, scope entry) tuple.
 
 ### 5.3 Revocation Precedence
 
@@ -715,6 +716,12 @@ INV-SEM-04: consent.action = "revoke" → consent.permissions = original_consent
 
 INV-SEM-05: unique(consent.scope, (entry) => (entry.type, entry.ref))
   "Scope entries MUST be unique by (type, ref) pair"
+
+INV-SEM-06: unique(consent.permissions)
+  "Permissions MUST NOT contain duplicates"
+
+INV-SEM-07: consent.action = "revoke" → consent.prior_consent ≠ null
+  "Revocation MUST reference prior consent"
 ```
 
 ### 9.3 Consistency Invariants
@@ -745,6 +752,14 @@ INV-DET-01: ∀ Consent Objects C1, C2:
   → C1.consent_hash = C2.consent_hash
 
 "Consents with identical fields MUST have identical hashes"
+
+INV-DET-02: ∀ Consent Objects C1, C2:
+  (C1.subject = C2.subject ∧ C1.grantee = C2.grantee ∧
+   C1.issued_at = C2.issued_at ∧
+   ∃ entry: entry ∈ C1.scope ∧ entry ∈ C2.scope)
+  → C1.consent_hash = C2.consent_hash
+
+"Consent Objects with identical issued_at MUST NOT exist for same (subject, grantee, scope entry)"
 ```
 
 ### 9.5 Immutability Invariants
@@ -1028,8 +1043,8 @@ minor   := non-negative integer
   "grantee": "did:key:z6MkTest2",
   "action": "grant",
   "scope": [
-    {"type": "content", "ref": "aaaa"},
-    {"type": "content", "ref": "bbbb"}
+    {"type": "content", "ref": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+    {"type": "content", "ref": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"}
   ],
   "permissions": ["store", "read"],
   "issued_at": "2025-01-01T00:00:00Z",
@@ -1043,7 +1058,7 @@ minor   := non-negative integer
 Note: `scope` sorted by (type, ref); `permissions` sorted alphabetically.
 
 ```json
-{"action":"grant","expires_at":null,"grantee":"did:key:z6MkTest2","issued_at":"2025-01-01T00:00:00Z","permissions":["read","store"],"prior_consent":null,"scope":[{"ref":"aaaa","type":"content"},{"ref":"bbbb","type":"content"}],"subject":"did:key:z6MkTest1","version":"1.0"}
+{"action":"grant","expires_at":null,"grantee":"did:key:z6MkTest2","issued_at":"2025-01-01T00:00:00Z","permissions":["read","store"],"prior_consent":null,"scope":[{"ref":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","type":"content"},{"ref":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","type":"content"}],"subject":"did:key:z6MkTest1","version":"1.0"}
 ```
 
 ### A.2 Scope Sorting Test
@@ -1052,10 +1067,10 @@ Note: `scope` sorted by (type, ref); `permissions` sorted alphabetically.
 
 ```json
 [
-  {"type": "pack", "ref": "1111"},
-  {"type": "content", "ref": "3333"},
-  {"type": "content", "ref": "2222"},
-  {"type": "field", "ref": "4444"}
+  {"type": "pack", "ref": "1111111111111111111111111111111111111111111111111111111111111111"},
+  {"type": "content", "ref": "3333333333333333333333333333333333333333333333333333333333333333"},
+  {"type": "content", "ref": "2222222222222222222222222222222222222222222222222222222222222222"},
+  {"type": "field", "ref": "4444444444444444444444444444444444444444444444444444444444444444"}
 ]
 ```
 
@@ -1063,10 +1078,10 @@ Note: `scope` sorted by (type, ref); `permissions` sorted alphabetically.
 
 ```json
 [
-  {"ref": "2222", "type": "content"},
-  {"ref": "3333", "type": "content"},
-  {"ref": "4444", "type": "field"},
-  {"ref": "1111", "type": "pack"}
+  {"ref": "2222222222222222222222222222222222222222222222222222222222222222", "type": "content"},
+  {"ref": "3333333333333333333333333333333333333333333333333333333333333333", "type": "content"},
+  {"ref": "4444444444444444444444444444444444444444444444444444444444444444", "type": "field"},
+  {"ref": "1111111111111111111111111111111111111111111111111111111111111111", "type": "pack"}
 ]
 ```
 
@@ -1135,6 +1150,7 @@ Note: `scope` sorted by (type, ref); `permissions` sorted alphabetically.
       "type": "array",
       "minItems": 1,
       "maxItems": 100,
+      "uniqueItems": true,
       "items": {
         "type": "string",
         "pattern": "^[a-z][a-z0-9-]*$"
@@ -1147,13 +1163,27 @@ Note: `scope` sorted by (type, ref); `permissions` sorted alphabetically.
       "description": "ISO 8601 UTC timestamp of consent issuance"
     },
     "expires_at": {
-      "type": ["string", "null"],
-      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$",
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+        },
+        {
+          "type": "null"
+        }
+      ],
       "description": "ISO 8601 UTC timestamp of consent expiration"
     },
     "prior_consent": {
-      "type": ["string", "null"],
-      "pattern": "^[a-f0-9]{64}$",
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ],
       "description": "Hash of superseded consent"
     },
     "consent_hash": {
