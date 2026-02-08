@@ -1,0 +1,22 @@
+import { ScopeEntry } from '../consent/types';
+
+export type { ScopeEntry } from '../consent/types';
+
+export type CapabilityTokenV1 = {
+  version: string;
+  subject: string;
+  grantee: string;
+  consent_ref: string;
+  scope: ScopeEntry[];
+  permissions: string[];
+  issued_at: string;
+  not_before: string | null;
+  expires_at: string;
+  token_id: string;
+  capability_hash: string;
+};
+
+export type MintCapabilityOptions = {
+  now?: Date;
+  not_before?: string | null;
+};
