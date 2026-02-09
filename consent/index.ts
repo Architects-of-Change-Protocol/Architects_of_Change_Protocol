@@ -1,6 +1,7 @@
 export { buildConsentObject, validateConsentObject } from './consentObject';
 export { buildConsentId } from './consentId';
 export { canonicalizeConsentPayload } from './canonical';
+export type { ConsentPayload } from './canonical';
 export { computeConsentHash } from './hash';
 export type {
   BuildConsentOptions,

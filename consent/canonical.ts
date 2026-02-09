@@ -1,7 +1,7 @@
 import { canonicalizeJSON } from '../canonicalize';
 import { ConsentObjectV1, ScopeEntry } from './types';
 
-type ConsentPayload = Omit<ConsentObjectV1, 'consent_hash'>;
+export type ConsentPayload = Omit<ConsentObjectV1, 'consent_hash'>;
 
 /**
  * Canonicalizes a single ScopeEntry for deterministic encoding.
