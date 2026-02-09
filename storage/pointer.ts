@@ -14,7 +14,7 @@ export function buildStoragePointer(backend: string, hashHex: string): StoragePo
   }
 
   if (!HASH_HEX_PATTERN.test(hashHex)) {
-    throw new Error('Storage hash must be 64 lowercase hex characters.');
+    throw new Error('Storage pointer hash must be 64 lowercase hex characters.');
   }
 
   return {
