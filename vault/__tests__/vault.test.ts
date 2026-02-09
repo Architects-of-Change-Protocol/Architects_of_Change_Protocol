@@ -662,3 +662,211 @@ describe('vault pack not found', () => {
     expect(result.policy.reason_codes).toContain('PACK_NOT_FOUND');
   });
 });
+
+describe('vault hardening: negative paths and invariant shapes', () => {
+  it('denies malformed capability token object with INVALID_CAPABILITY', () => {
+    const { vault, pack_hash, consent_hash } = setupVault();
+
+    const token = vault.mintCapability(
+      consent_hash,
+      makeConsentScope(),
+      ['read'],
+      tokenExpires,
+      { now: tokenNow }
+    );
+
+    const malformedToken = {
+      ...token,
+      version: 1 as any
+    } as any;
+
+    const result = vault.requestAccess(
+      {
+        capability_token: malformedToken,
+        sdl_paths: ['person.name.legal.full'],
+        pack_ref: pack_hash
+      },
+      { now: accessNow }
+    );
+
+    expect(result.policy).toEqual({ decision: 'DENY', reason_codes: ['INVALID_CAPABILITY'] });
+    expect(result.resolved_fields).toEqual([]);
+    expect(result.unresolved_fields).toEqual([]);
+  });
+
+  it('returns ALLOW with INVALID_SDL_PATH unresolved entries for invalid SDL strings', () => {
+    const { vault, pack_hash, consent_hash } = setupVault();
+    const token = vault.mintCapability(
+      consent_hash,
+      makeConsentScope(),
+      ['read'],
+      tokenExpires,
+      { now: tokenNow }
+    );
+
+    const result = vault.requestAccess(
+      {
+        capability_token: token,
+        sdl_paths: ['Person.name', 'person..name', 'person.name.'],
+        pack_ref: pack_hash
+      },
+      { now: accessNow }
+    );
+
+    expect(result.policy).toEqual({ decision: 'ALLOW', reason_codes: [] });
+    expect(result.resolved_fields).toEqual([]);
+    expect(result.unresolved_fields).toHaveLength(3);
+    for (const entry of result.unresolved_fields) {
+      expect(entry.error.code).toBe('INVALID_SDL_PATH');
+      expect(entry.error.message).toContain('Invalid SDL path:');
+      expect(entry.error.path).toBe(entry.sdl_path);
+      expect(entry.error).toEqual(
+        expect.objectContaining({
+          code: 'INVALID_SDL_PATH',
+          message: expect.any(String)
+        })
+      );
+      expect((entry.error as any).details).toBeUndefined();
+    }
+  });
+
+  it('returns deterministic ALLOW with empty resolved/unresolved for empty sdl_paths', () => {
+    const { vault, pack_hash, consent_hash } = setupVault();
+    const token = vault.mintCapability(
+      consent_hash,
+      makeConsentScope(),
+      ['read'],
+      tokenExpires,
+      { now: tokenNow }
+    );
+
+    const result = vault.requestAccess(
+      {
+        capability_token: token,
+        sdl_paths: [],
+        pack_ref: pack_hash
+      },
+      { now: accessNow }
+    );
+
+    expect(result.policy).toEqual({ decision: 'ALLOW', reason_codes: [] });
+    expect(result.resolved_fields).toEqual([]);
+    expect(result.unresolved_fields).toEqual([]);
+  });
+
+  it('preserves duplicated SDL paths deterministically', () => {
+    const { vault, pack_hash, consent_hash } = setupVault();
+    const token = vault.mintCapability(
+      consent_hash,
+      makeConsentScope(),
+      ['read'],
+      tokenExpires,
+      { now: tokenNow }
+    );
+
+    const result = vault.requestAccess(
+      {
+        capability_token: token,
+        sdl_paths: ['person.name.legal.full', 'person.name.legal.full', 'person.missing.path'],
+        pack_ref: pack_hash
+      },
+      { now: accessNow }
+    );
+
+    expect(result.policy).toEqual({ decision: 'ALLOW', reason_codes: [] });
+    expect(result.resolved_fields.map(f => f.sdl_path)).toEqual([
+      'person.name.legal.full',
+      'person.name.legal.full'
+    ]);
+    expect(result.unresolved_fields.map(f => f.sdl_path)).toEqual(['person.missing.path']);
+  });
+
+  it('returns deterministic PACK_NOT_FOUND structure for unknown pack_ref', () => {
+    const { vault, consent_hash } = setupVault();
+    const token = vault.mintCapability(
+      consent_hash,
+      makeConsentScope(),
+      ['read'],
+      tokenExpires,
+      { now: tokenNow }
+    );
+
+    const result = vault.requestAccess(
+      {
+        capability_token: token,
+        sdl_paths: ['person.name.legal.full'],
+        pack_ref: '0'.repeat(64)
+      },
+      { now: accessNow }
+    );
+
+    expect(result).toEqual({
+      policy: { decision: 'DENY', reason_codes: ['PACK_NOT_FOUND'] },
+      resolved_fields: [],
+      unresolved_fields: []
+    });
+  });
+
+  it('throws deterministic CONSENT_NOT_FOUND when minting with unknown consent_ref', () => {
+    const vault = createInMemoryVault();
+
+    try {
+      vault.mintCapability('f'.repeat(64), makeConsentScope(), ['read'], tokenExpires, {
+        now: tokenNow
+      });
+      throw new Error('Expected mintCapability to throw for unknown consent_ref');
+    } catch (error) {
+      const err = error as Error & { code?: string };
+      expect(err.code).toBe('CONSENT_NOT_FOUND');
+      expect(err.message).toContain('Consent not found:');
+    }
+  });
+
+  it('keeps deterministic resolved/unresolved ordering for mixed valid+invalid paths', () => {
+    const { vault, pack_hash, consent_hash } = setupVault();
+    const token = vault.mintCapability(
+      consent_hash,
+      makeConsentScope(),
+      ['read'],
+      tokenExpires,
+      { now: tokenNow }
+    );
+
+    const result = vault.requestAccess(
+      {
+        capability_token: token,
+        sdl_paths: [
+          'person.location.country',
+          'person.email.primary',
+          'person.birth.date',
+          'BAD_PATH'
+        ],
+        pack_ref: pack_hash
+      },
+      { now: accessNow }
+    );
+
+    expect(result.policy).toEqual({ decision: 'ALLOW', reason_codes: [] });
+    expect(result.resolved_fields.map(f => f.sdl_path)).toEqual([
+      'person.birth.date',
+      'person.location.country'
+    ]);
+    expect(result.unresolved_fields.map(f => f.sdl_path)).toEqual(['BAD_PATH', 'person.email.primary']);
+    expect(result.unresolved_fields[0].error).toEqual(
+      expect.objectContaining({
+        code: 'INVALID_SDL_PATH',
+        message: expect.any(String),
+        path: 'BAD_PATH'
+      })
+    );
+    expect((result.unresolved_fields[0].error as any).details).toBeUndefined();
+    expect(result.unresolved_fields[1].error).toEqual(
+      expect.objectContaining({
+        code: 'UNRESOLVED_FIELD',
+        message: expect.any(String),
+        path: 'person.email.primary'
+      })
+    );
+    expect((result.unresolved_fields[1].error as any).details).toBeUndefined();
+  });
+});
