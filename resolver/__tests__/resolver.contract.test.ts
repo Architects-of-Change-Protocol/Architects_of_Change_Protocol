@@ -81,4 +81,31 @@ describe('resolver contract invariants', () => {
 
     expect(resultA.unresolved_fields).toEqual(resultB.unresolved_fields);
   });
+
+  it('mixed resolved and unresolved outputs are stable across input orderings', () => {
+    const index: FieldManifestIndex = new Map([
+      ['person.name', makeManifest('person.name')],
+      ['contact.email', makeManifest('contact.email')],
+    ]);
+
+    const pathsA = [
+      mustParse('missing.alpha'),
+      mustParse('person.name'),
+      mustParse('missing.zeta'),
+      mustParse('contact.email'),
+    ];
+    const pathsB = [
+      mustParse('contact.email'),
+      mustParse('missing.zeta'),
+      mustParse('person.name'),
+      mustParse('missing.alpha'),
+    ];
+
+    const resultA = resolveSDLToFields(pathsA, index);
+    const resultB = resolveSDLToFields(pathsB, index);
+
+    expect(resultA.resolved_fields.map((x) => x.ref.path.raw)).toEqual(['contact.email', 'person.name']);
+    expect(resultA.unresolved_fields.map((x) => x.path.raw)).toEqual(['missing.alpha', 'missing.zeta']);
+    expect(resultA).toEqual(resultB);
+  });
 });

@@ -80,5 +80,12 @@ describe('SDL contract invariants', () => {
       const b = parseAndValidateSDLPath(' person.name.legal.full ');
       expect(a).toEqual(b);
     });
+
+    it('parse canonical form is equivalent for extra surrounding whitespace', () => {
+      const canonical = parseSDLPath('person.name');
+      const padded = parseSDLPath('\n\t  person.name  \t\n');
+
+      expect(padded).toEqual(canonical);
+    });
   });
 });
