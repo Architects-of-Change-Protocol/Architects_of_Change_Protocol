@@ -1,4 +1,4 @@
-import { StoragePointer } from '../storage/types';
+import type { StoragePointer } from '../storage/types';
 
 export type ContentManifestV1 = {
   version: 1;

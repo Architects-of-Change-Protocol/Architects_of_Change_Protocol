@@ -1,6 +1,6 @@
-import { ScopeEntry } from '../consent/types';
+import type { ScopeEntry } from '../consent/types';
 
-export type { ScopeEntry } from '../consent/types';
+export type { ScopeEntry };
 
 export type CapabilityTokenV1 = {
   version: string;
