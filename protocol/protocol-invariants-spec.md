@@ -170,17 +170,15 @@ Implementations MUST enforce invariants at the following points (at minimum):
 
 | Invariant ID | Category | Primary Enforcement Point(s) | Related Spec(s) |
 |---|---|---|---|
-| INV-INT-01 | Integrity | Object acceptance | wallet/architecture, wallet/crypto, pack/content/field/storage specs |
-| INV-INT-10 | Integrity | Pointer resolution, object acceptance | storage-pointer, pack/content |
-| INV-AUTH-01 | Authorization | Authorization boundary | consent-object, capability-token, wallet/architecture |
-| INV-AUTH-02 | Authorization | Token minting, authorization boundary | capability-token, governance-compliance |
-| INV-AUTH-10 | Authorization | Authorization boundary | capability-token, wallet/threat-model |
-| INV-SEC-01 | Security | Wallet module boundary | wallet/architecture, wallet/crypto |
-| INV-OBS-02 | Observability | Deny responses | error-objects-spec |
+| INV-INT-01 | Integrity | Object acceptance | [Wallet Crypto](./wallet/crypto-spec.md#10-security-invariants), [Pack](./pack/pack-object-spec.md#10-security-invariants) |
+| INV-INT-10 | Integrity | Pointer resolution | [Storage Pointer](./storage/storage-pointer-spec.md#10-security-invariants), [Content](./content/content-object-spec.md#10-security-invariants) |
+| INV-AUTH-01 | Authorization | Authorization boundary | [Consent Object](./consent/consent-object-spec.md), [Capability Token](./consent/capability-token-spec.md) |
+| INV-AUTH-02 | Authorization | Token minting | [Capability Token](./consent/capability-token-spec.md#10-structural-and-semantic-invariants), [Governance](./governance/governance-compliance-spec.md) |
+| INV-AUTH-10 | Authorization | Authorization boundary | [Capability Token](./consent/capability-token-spec.md#10-structural-and-semantic-invariants), [Threat Model](./threat-model-spec.md) |
+| INV-SEC-01 | Security | Wallet boundary | [Wallet Architecture](./wallet/architecture.md), [Wallet Crypto](./wallet/crypto-spec.md#10-security-invariants) |
+| INV-OBS-02 | Observability | Deny responses | [Error Objects](./error-objects-spec.md) |
 
-Implementations SHOULD expand this matrix with additional rows as object specs evolve.
-
----
+Implementations SHOULD expand this matrix as object specs evolve.
 
 ## 7. Relationship to Other Specs
 
