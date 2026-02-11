@@ -1,6 +1,6 @@
-import { ConsentObjectV1, ScopeEntry } from '../consent';
-import { CapabilityTokenV1 } from '../capability';
-import { PackManifestV1 } from '../pack';
+import type { ConsentObjectV1, ScopeEntry } from '../consent';
+import type { CapabilityTokenV1 } from '../capability';
+import type { PackManifestV1 } from '../pack';
 
 // --- Error Codes ---
 

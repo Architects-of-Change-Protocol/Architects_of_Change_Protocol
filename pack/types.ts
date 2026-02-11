@@ -1,4 +1,4 @@
-import { StoragePointer } from '../storage/types';
+import type { StoragePointer } from '../storage/types';
 
 export type FieldReference = {
   field_id: string;

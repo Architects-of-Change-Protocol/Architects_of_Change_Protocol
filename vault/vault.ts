@@ -1,14 +1,18 @@
-import { ConsentObjectV1, validateConsentObject } from '../consent';
-import { ScopeEntry } from '../consent/types';
+import type { ConsentObjectV1 } from '../consent';
+import { validateConsentObject } from '../consent';
+import type { ScopeEntry } from '../consent/types';
+
+import type { CapabilityTokenV1 } from '../capability';
 import {
-  CapabilityTokenV1,
   mintCapabilityToken,
   verifyCapabilityToken,
   revokeCapabilityToken as capRevokeToken
 } from '../capability';
-import { PackManifestV1 } from '../pack';
+
+import type { PackManifestV1 } from '../pack';
 import { canonicalizePackManifestPayload, computePackHash } from '../pack';
-import {
+
+import type {
   Vault,
   VaultStore,
   VaultAccessRequest,
