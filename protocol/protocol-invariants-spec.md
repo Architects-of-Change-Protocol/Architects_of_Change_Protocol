@@ -7,13 +7,13 @@
 - [governance/governance-compliance-spec.md](./governance/governance-compliance-spec.md)  
 - [error-objects-spec.md](./error-objects-spec.md)  
 - [wallet/architecture.md](./wallet/architecture.md)  
-- [wallet/crypto-spec.md](./wallet/crypto-spec.md)  
+- [wallet/crypto-spec.md](./wallet/crypto-spec.md#10-security-invariants)  
 - [consent/consent-object-spec.md](./consent/consent-object-spec.md)  
 - [consent/capability-token-spec.md](./consent/capability-token-spec.md)  
-- [pack/pack-object-spec.md](./pack/pack-object-spec.md)  
-- [content/content-object-spec.md](./content/content-object-spec.md)  
-- [field/field-manifest-spec.md](./field/field-manifest-spec.md)  
-- [storage/storage-pointer-spec.md](./storage/storage-pointer-spec.md)  
+- [pack/pack-object-spec.md](./pack/pack-object-spec.md#10-security-invariants)  
+- [content/content-object-spec.md](./content/content-object-spec.md#10-security-invariants)  
+- [field/field-manifest-spec.md](./field/field-manifest-spec.md#10-security-invariants)  
+- [storage/storage-pointer-spec.md](./storage/storage-pointer-spec.md#10-security-invariants)  
 - [threat-model-spec.md](./threat-model-spec.md)  
 
 ---
