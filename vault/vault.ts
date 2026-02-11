@@ -3,11 +3,7 @@ import { validateConsentObject } from '../consent';
 import type { ScopeEntry } from '../consent/types';
 
 import type { CapabilityTokenV1 } from '../capability';
-import {
-  mintCapabilityToken,
-  verifyCapabilityToken,
-  revokeCapabilityToken as capRevokeToken
-} from '../capability';
+import { mintCapabilityToken, revokeCapabilityToken as capRevokeToken } from '../capability';
 
 import type { PackManifestV1 } from '../pack';
 import { canonicalizePackManifestPayload, computePackHash } from '../pack';
@@ -20,8 +16,16 @@ import type {
   VaultErrorCode,
   VaultOptions,
   ResolvedField,
-  UnresolvedField
+  UnresolvedField,
+  VaultPolicyDecision,
 } from './types';
+
+import {
+  enforceConsentPresent,
+  enforceTokenRedemption,
+  enforcePackPresent,
+  enforcePathAccess,
+} from '../enforcement';
 
 // --- SDL path validation (v0.1 scaffold — no separate sdl/ module yet) ---
 
@@ -34,17 +38,11 @@ function validateSdlPath(path: string): string | null {
   return null;
 }
 
-// --- Capability error classification ---
-
-function classifyCapabilityError(error: Error): VaultErrorCode {
-  const msg = error.message;
-  if (msg.includes('expired')) return 'EXPIRED';
-  if (msg.includes('replay')) return 'REPLAY';
-  if (msg.includes('revoked')) return 'REVOKED';
-  if (msg.includes('Scope escalation') || msg.includes('Permission escalation')) {
-    return 'SCOPE_ESCALATION';
-  }
-  return 'INVALID_CAPABILITY';
+function toVaultPolicy(decision: { decision: 'ALLOW' | 'DENY'; reason_codes: string[] }): VaultPolicyDecision {
+  return {
+    decision: decision.decision,
+    reason_codes: decision.reason_codes as VaultErrorCode[],
+  };
 }
 
 // --- Factory ---
@@ -54,7 +52,7 @@ export function createInMemoryVault(_options?: VaultOptions): Vault {
     packs: new Map(),
     consents: new Map(),
     capabilities: new Map(),
-    sdl_mappings: new Map()
+    sdl_mappings: new Map(),
   };
 
   function storePack(pack: PackManifestV1): string {
@@ -63,7 +61,7 @@ export function createInMemoryVault(_options?: VaultOptions): Vault {
       version: pack.version,
       subject: pack.subject,
       created_at: pack.created_at,
-      fields: pack.fields
+      fields: pack.fields,
     });
     const expectedHash = computePackHash(payloadBytes);
     if (pack.pack_hash !== expectedHash) {
@@ -109,146 +107,54 @@ export function createInMemoryVault(_options?: VaultOptions): Vault {
     capRevokeToken(capability_hash);
   }
 
-  function requestAccess(
-    request: VaultAccessRequest,
-    opts?: { now?: Date }
-  ): VaultAccessResult {
+  function requestAccess(request: VaultAccessRequest, opts?: { now?: Date }): VaultAccessResult {
     const { capability_token, sdl_paths, pack_ref } = request;
 
-    // Step 1: Look up parent consent for this capability
+    // Step 1: Look up parent consent for this capability (SEM gate)
     const consent = store.consents.get(capability_token.consent_ref);
-    if (!consent) {
+    const consentDecision = enforceConsentPresent(consent);
+    if (consentDecision.decision.decision === 'DENY') {
       return {
-        policy: { decision: 'DENY', reason_codes: ['INVALID_CAPABILITY'] },
+        policy: toVaultPolicy(consentDecision.decision),
         resolved_fields: [],
-        unresolved_fields: []
+        unresolved_fields: [],
       };
     }
 
-    // Step 2: Verify capability token (expiry, revocation, replay, derivation)
-    try {
-      verifyCapabilityToken(capability_token, consent, opts);
-    } catch (error) {
-      const code = classifyCapabilityError(error as Error);
+    // Step 2: Verify capability token (SEM gate: expiry/revocation/replay/derivation)
+    const tokenDecision = enforceTokenRedemption(capability_token, consent!, opts);
+    if (tokenDecision.decision.decision === 'DENY') {
       return {
-        policy: { decision: 'DENY', reason_codes: [code] },
+        policy: toVaultPolicy(tokenDecision.decision),
         resolved_fields: [],
-        unresolved_fields: []
+        unresolved_fields: [],
       };
     }
 
-    // Step 3: Look up pack
+    // Step 3: Look up pack (SEM gate)
     const pack = store.packs.get(pack_ref);
-    if (!pack) {
+    const packDecision = enforcePackPresent(pack !== undefined, pack_ref);
+    if (packDecision.decision.decision === 'DENY') {
       return {
-        policy: { decision: 'DENY', reason_codes: ['PACK_NOT_FOUND'] },
+        policy: toVaultPolicy(packDecision.decision),
         resolved_fields: [],
-        unresolved_fields: []
+        unresolved_fields: [],
       };
     }
 
     // Build field index from pack
     const fieldByFieldId = new Map<string, { field_id: string; content_id: string }>();
-    for (const field of pack.fields) {
+    for (const field of pack!.fields) {
       fieldByFieldId.set(field.field_id, {
         field_id: field.field_id,
-        content_id: field.content_id
+        content_id: field.content_id,
       });
     }
 
     // Build scope index for containment checks
-    const scopeKeys = new Set(
-      capability_token.scope.map(s => `${s.type}:${s.ref}`)
-    );
+    const scopeKeys = new Set(capability_token.scope.map(s => `${s.type}:${s.ref}`));
 
     // Step 4: Sort SDL paths for deterministic processing
     const sortedPaths = [...sdl_paths].sort();
 
-    const resolved: ResolvedField[] = [];
-    const unresolved: UnresolvedField[] = [];
-    let scopeEscalation = false;
-
-    for (const sdl_path of sortedPaths) {
-      // 4a: Parse + validate SDL path
-      const pathError = validateSdlPath(sdl_path);
-      if (pathError) {
-        unresolved.push({
-          sdl_path,
-          error: { code: 'INVALID_SDL_PATH', message: pathError, path: sdl_path }
-        });
-        continue;
-      }
-
-      // 4b: Resolve SDL path to field_id via registered mapping
-      const field_id = store.sdl_mappings.get(sdl_path);
-      if (!field_id) {
-        unresolved.push({
-          sdl_path,
-          error: {
-            code: 'UNRESOLVED_FIELD',
-            message: `No SDL mapping registered for path: "${sdl_path}"`,
-            path: sdl_path
-          }
-        });
-        continue;
-      }
-
-      // 4c: Look up field in pack
-      const field = fieldByFieldId.get(field_id);
-      if (!field) {
-        unresolved.push({
-          sdl_path,
-          error: {
-            code: 'UNRESOLVED_FIELD',
-            message: `Field "${field_id}" not found in pack ${pack_ref}`,
-            path: sdl_path
-          }
-        });
-        continue;
-      }
-
-      // 4d: Check scope containment
-      //   - pack-level: { type: 'pack', ref: pack_hash } covers entire pack
-      //   - content-level: { type: 'content', ref: content_id } covers this field
-      const packCovered = scopeKeys.has(`pack:${pack_ref}`);
-      const contentCovered = scopeKeys.has(`content:${field.content_id}`);
-
-      if (!packCovered && !contentCovered) {
-        scopeEscalation = true;
-        break;
-      }
-
-      resolved.push({
-        sdl_path,
-        field_id: field.field_id,
-        content_id: field.content_id
-      });
-    }
-
-    // Step 5: Scope escalation → DENY
-    if (scopeEscalation) {
-      return {
-        policy: { decision: 'DENY', reason_codes: ['SCOPE_ESCALATION'] },
-        resolved_fields: [],
-        unresolved_fields: []
-      };
-    }
-
-    // Step 6: ALLOW — capability verified, no scope escalation
-    return {
-      policy: { decision: 'ALLOW', reason_codes: [] },
-      resolved_fields: resolved,
-      unresolved_fields: unresolved
-    };
-  }
-
-  return {
-    storePack,
-    storeConsent,
-    mintCapability,
-    requestAccess,
-    registerSdlMapping,
-    revokeCapability,
-    getStore: () => store
-  };
-}
+    const resolved: R
