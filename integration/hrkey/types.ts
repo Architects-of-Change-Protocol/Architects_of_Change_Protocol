@@ -13,23 +13,33 @@
  *   - Deterministic: same inputs → same outputs, always.
  */
 
+// ─── Import AOC types into local scope (type-only) ──────────────────
+// NOTE: `export type { X } from ...` does NOT put X in local scope.
+// We must `import type` first, then re-export.
+
+import type { ConsentObjectV1 } from '../../consent';
+import type { ScopeEntry } from '../../consent/types';
+
+import type { CapabilityTokenV1 } from '../../capability';
+
+import type { PackManifestV1, FieldReference } from '../../pack/types';
+
+import type {
+  VaultAccessResult,
+  VaultPolicyDecision,
+  VaultErrorCode,
+  ResolvedField,
+  UnresolvedField,
+} from '../../vault/types';
+
 // ─── Re-export AOC types that cross the boundary ────────────────────
 
-// These are type-only re-exports. HRKey code references these types
-// but never constructs AOC internals directly.
-export type {
-  ConsentObjectV1,
-  ScopeEntry,
-} from '../../consent';
+export type { ConsentObjectV1 };
+export type { ScopeEntry };
 
-export type {
-  CapabilityTokenV1,
-} from '../../capability';
+export type { CapabilityTokenV1 };
 
-export type {
-  PackManifestV1,
-  FieldReference,
-} from '../../pack';
+export type { PackManifestV1, FieldReference };
 
 export type {
   VaultAccessResult,
@@ -37,7 +47,7 @@ export type {
   VaultErrorCode,
   ResolvedField,
   UnresolvedField,
-} from '../../vault';
+};
 
 // ─── HRKey Domain Types ─────────────────────────────────────────────
 
