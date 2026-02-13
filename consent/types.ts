@@ -1,3 +1,5 @@
+import type { SignatureEnvelope } from '../identity/types';
+
 export type ScopeEntry = {
   type: 'field' | 'content' | 'pack';
   ref: string;
@@ -14,6 +16,7 @@ export type ConsentObjectV1 = {
   expires_at: string | null;
   prior_consent: string | null;
   consent_hash: string;
+  signature?: SignatureEnvelope;
 };
 
 export type BuildConsentOptions = {

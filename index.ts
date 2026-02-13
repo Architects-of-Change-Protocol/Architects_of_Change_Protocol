@@ -6,3 +6,5 @@ export * from './content';
 export * from './field';
 export * from './pack';
 export * from './storage';
+
+export * from './identity';
