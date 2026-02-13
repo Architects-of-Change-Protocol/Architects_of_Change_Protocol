@@ -28,10 +28,8 @@ import {
 } from '../enforcement';
 
 // --- SDL path validation scaffold (temporary) ---
-// TODO(protocol/sdl): Replace this local scaffold with the canonical sdl/ module
-// parser+validator once vault is wired to protocol/sdl to avoid grammar drift.
-// Must stay aligned with protocol/sdl/README.md:
-// minimum 2 segments, lowercase, digits, and hyphens per segment.
+// TODO(protocol/sdl): Replace this with canonical parser from protocol/sdl module
+// Must align with protocol/sdl/README.md grammar.
 const SDL_PATH_PATTERN = /^[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*)+$/;
 
 function validateSdlPath(path: string): string | null {
@@ -66,17 +64,19 @@ export function createInMemoryVault(_options?: VaultOptions): Vault {
   };
 
   function storePack(pack: PackManifestV1): string {
-    // Verify hash integrity
     const payloadBytes = canonicalizePackManifestPayload({
       version: pack.version,
       subject: pack.subject,
       created_at: pack.created_at,
       fields: pack.fields,
     });
+
     const expectedHash = computePackHash(payloadBytes);
+
     if (pack.pack_hash !== expectedHash) {
       throw new Error('Pack pack_hash does not match canonical payload hash.');
     }
+
     store.packs.set(pack.pack_hash, pack);
     return pack.pack_hash;
   }
@@ -95,22 +95,28 @@ export function createInMemoryVault(_options?: VaultOptions): Vault {
     opts?: { now?: Date; not_before?: string | null }
   ): CapabilityTokenV1 {
     const consent = store.consents.get(consent_hash);
+
     if (!consent) {
       const err = new Error(`Consent not found: ${consent_hash}`);
       (err as any).code = 'CONSENT_NOT_FOUND';
       throw err;
     }
+
     const token = mintCapabilityToken(consent, scope, permissions, expires_at, opts);
+
     store.capabilities.set(token.capability_hash, token);
+
     return token;
   }
 
   function registerSdlMapping(sdl_path: string, field_id: string): void {
     const pathError = validateSdlPath(sdl_path);
+
     if (pathError) {
       throw new Error(pathError);
     }
-    store.sdl_mappings.set(sdl_path.trim(), field_id);
+
+    store.sdl_mappings.set(sdl_path, field_id);
   }
 
   function revokeCapability(capability_hash: string): void {
@@ -120,9 +126,11 @@ export function createInMemoryVault(_options?: VaultOptions): Vault {
   function requestAccess(request: VaultAccessRequest, opts?: { now?: Date }): VaultAccessResult {
     const { capability_token, sdl_paths, pack_ref } = request;
 
-    // Step 1: Look up parent consent for this capability (SEM gate)
+    // Step 1 — Consent enforcement
     const consent = store.consents.get(capability_token.consent_ref);
+
     const consentDecision = enforceConsentPresent(consent);
+
     if (consentDecision.decision.decision === 'DENY') {
       return {
         policy: toVaultPolicy(consentDecision.decision),
@@ -131,8 +139,9 @@ export function createInMemoryVault(_options?: VaultOptions): Vault {
       };
     }
 
-    // Step 2: Verify capability token (SEM gate: expiry/revocation/replay/derivation)
+    // Step 2 — Capability enforcement
     const tokenDecision = enforceTokenRedemption(capability_token, consent!, opts);
+
     if (tokenDecision.decision.decision === 'DENY') {
       return {
         policy: toVaultPolicy(tokenDecision.decision),
@@ -141,9 +150,11 @@ export function createInMemoryVault(_options?: VaultOptions): Vault {
       };
     }
 
-    // Step 3: Look up pack (SEM gate)
+    // Step 3 — Pack enforcement
     const pack = store.packs.get(pack_ref);
+
     const packDecision = enforcePackPresent(pack !== undefined, pack_ref);
+
     if (packDecision.decision.decision === 'DENY') {
       return {
         policy: toVaultPolicy(packDecision.decision),
@@ -152,8 +163,9 @@ export function createInMemoryVault(_options?: VaultOptions): Vault {
       };
     }
 
-    // Build field index from pack
+    // Step 4 — Build field index
     const fieldByFieldId = new Map<string, { field_id: string; content_id: string }>();
+
     for (const field of pack!.fields) {
       fieldByFieldId.set(field.field_id, {
         field_id: field.field_id,
@@ -161,61 +173,71 @@ export function createInMemoryVault(_options?: VaultOptions): Vault {
       });
     }
 
-    // Build scope index for containment checks
-    const scopeKeys = new Set(capability_token.scope.map(s => `${s.type}:${s.ref}`));
+    // Step 5 — Build scope index
+    const scopeKeys = new Set(
+      capability_token.scope.map(s => `${s.type}:${s.ref}`)
+    );
 
-    // Step 4: Sort SDL paths for deterministic processing
+    // Step 6 — Deterministic ordering
     const sortedPaths = [...sdl_paths].sort();
 
     const resolved: ResolvedField[] = [];
     const unresolved: UnresolvedField[] = [];
 
-    for (const rawPath of sortedPaths) {
-      const pathError = validateSdlPath(rawPath);
-      if (pathError) {
+    // Step 7 — Resolve paths deterministically
+    for (const sdl_path of sortedPaths) {
+      const validationError = validateSdlPath(sdl_path);
+
+      if (validationError) {
         unresolved.push({
-          sdl_path: rawPath,
+          sdl_path,
           error: {
             code: 'INVALID_SDL_PATH',
-            message: pathError,
-            path: rawPath,
+            message: validationError,
+            path: sdl_path,
           },
         });
+
         continue;
       }
 
-      const sdl_path = rawPath.trim();
-
       const field_id = store.sdl_mappings.get(sdl_path);
+
       if (!field_id) {
         unresolved.push({
-          sdl_path: rawPath,
+          sdl_path,
           error: {
             code: 'UNRESOLVED_FIELD',
-            message: `No field mapping for SDL path: ${rawPath}`,
-            path: rawPath,
+            message: `No mapping found for SDL path: ${sdl_path}`,
+            path: sdl_path,
           },
         });
+
         continue;
       }
 
       const fieldRef = fieldByFieldId.get(field_id);
+
       if (!fieldRef) {
         unresolved.push({
-          sdl_path: rawPath,
+          sdl_path,
           error: {
             code: 'UNRESOLVED_FIELD',
             message: `Field "${field_id}" not present in pack ${pack_ref}`,
-            path: rawPath,
+            path: sdl_path,
           },
         });
+
         continue;
       }
 
-      // Step 5: Enforce scope containment for resolved field
-      const scopeDecision = enforcePathAccess(scopeKeys, pack_ref, fieldRef.content_id);
+      const scopeDecision = enforcePathAccess(
+        scopeKeys,
+        pack_ref,
+        fieldRef.content_id
+      );
+
       if (scopeDecision.decision.decision === 'DENY') {
-        // Fail-closed: if any requested path attempts scope escalation, deny entire request
         return {
           policy: toVaultPolicy(scopeDecision.decision),
           resolved_fields: [],
@@ -224,14 +246,17 @@ export function createInMemoryVault(_options?: VaultOptions): Vault {
       }
 
       resolved.push({
-        sdl_path: rawPath,
+        sdl_path,
         field_id: fieldRef.field_id,
         content_id: fieldRef.content_id,
       });
     }
 
     return {
-      policy: { decision: 'ALLOW', reason_codes: [] },
+      policy: {
+        decision: 'ALLOW',
+        reason_codes: [],
+      },
       resolved_fields: resolved,
       unresolved_fields: unresolved,
     };
