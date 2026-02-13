@@ -27,14 +27,24 @@ import {
   enforcePathAccess,
 } from '../enforcement';
 
-// --- SDL path validation (v0.1 scaffold — no separate sdl/ module yet) ---
-
-const SDL_PATH_PATTERN = /^[a-z][a-z0-9]*(\.[a-z][a-z0-9]*)+$/;
+// --- SDL path validation scaffold (temporary) ---
+// TODO(protocol/sdl): Replace this local scaffold with the canonical sdl/ module
+// parser+validator once vault is wired to protocol/sdl to avoid grammar drift.
+// Must stay aligned with protocol/sdl/README.md:
+// minimum 2 segments, lowercase, digits, and hyphens per segment.
+const SDL_PATH_PATTERN = /^[a-z][a-z0-9-]*(\.[a-z][a-z0-9-]*)+$/;
 
 function validateSdlPath(path: string): string | null {
-  if (typeof path !== 'string' || !SDL_PATH_PATTERN.test(path)) {
-    return `Invalid SDL path: "${path}". Must be dot-separated lowercase alphanumeric segments (minimum 2 segments).`;
+  if (typeof path !== 'string' || path.trim() === '') {
+    return `Invalid SDL path: "${path}". Must be a non-empty dot-separated path with at least 2 segments.`;
   }
+
+  const normalizedPath = path.trim();
+
+  if (!SDL_PATH_PATTERN.test(normalizedPath)) {
+    return `Invalid SDL path: "${path}". Must be dot-separated lowercase segments allowing digits and hyphens.`;
+  }
+
   return null;
 }
 
@@ -100,7 +110,7 @@ export function createInMemoryVault(_options?: VaultOptions): Vault {
     if (pathError) {
       throw new Error(pathError);
     }
-    store.sdl_mappings.set(sdl_path, field_id);
+    store.sdl_mappings.set(sdl_path.trim(), field_id);
   }
 
   function revokeCapability(capability_hash: string): void {
@@ -157,4 +167,87 @@ export function createInMemoryVault(_options?: VaultOptions): Vault {
     // Step 4: Sort SDL paths for deterministic processing
     const sortedPaths = [...sdl_paths].sort();
 
-    const resolved: R
+    const resolved: ResolvedField[] = [];
+    const unresolved: UnresolvedField[] = [];
+
+    for (const rawPath of sortedPaths) {
+      const pathError = validateSdlPath(rawPath);
+      if (pathError) {
+        unresolved.push({
+          sdl_path: rawPath,
+          error: {
+            code: 'INVALID_SDL_PATH',
+            message: pathError,
+            path: rawPath,
+          },
+        });
+        continue;
+      }
+
+      const sdl_path = rawPath.trim();
+
+      const field_id = store.sdl_mappings.get(sdl_path);
+      if (!field_id) {
+        unresolved.push({
+          sdl_path: rawPath,
+          error: {
+            code: 'UNRESOLVED_FIELD',
+            message: `No field mapping for SDL path: ${rawPath}`,
+            path: rawPath,
+          },
+        });
+        continue;
+      }
+
+      const fieldRef = fieldByFieldId.get(field_id);
+      if (!fieldRef) {
+        unresolved.push({
+          sdl_path: rawPath,
+          error: {
+            code: 'UNRESOLVED_FIELD',
+            message: `Field "${field_id}" not present in pack ${pack_ref}`,
+            path: rawPath,
+          },
+        });
+        continue;
+      }
+
+      // Step 5: Enforce scope containment for resolved field
+      const scopeDecision = enforcePathAccess(scopeKeys, pack_ref, fieldRef.content_id);
+      if (scopeDecision.decision.decision === 'DENY') {
+        // Fail-closed: if any requested path attempts scope escalation, deny entire request
+        return {
+          policy: toVaultPolicy(scopeDecision.decision),
+          resolved_fields: [],
+          unresolved_fields: [],
+        };
+      }
+
+      resolved.push({
+        sdl_path: rawPath,
+        field_id: fieldRef.field_id,
+        content_id: fieldRef.content_id,
+      });
+    }
+
+    return {
+      policy: { decision: 'ALLOW', reason_codes: [] },
+      resolved_fields: resolved,
+      unresolved_fields: unresolved,
+    };
+  }
+
+  function getStore(): Readonly<VaultStore> {
+    return store;
+  }
+
+  return {
+    storePack,
+    storeConsent,
+    mintCapability,
+    requestAccess,
+    registerSdlMapping,
+    revokeCapability,
+    getStore,
+  };
+}
