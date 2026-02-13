@@ -7,3 +7,5 @@ export {
   enforcePathAccess,
   enforceStorageIntegrity
 } from './sem';
+
+export { enforceSignatureValid } from './signature';

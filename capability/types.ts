@@ -1,3 +1,5 @@
+import type { SignatureEnvelope } from '../identity/types';
+
 import type { ScopeEntry } from '../consent/types';
 
 export type { ScopeEntry };
@@ -14,6 +16,7 @@ export type CapabilityTokenV1 = {
   expires_at: string;
   token_id: string;
   capability_hash: string;
+  signature?: SignatureEnvelope;
 };
 
 export type MintCapabilityOptions = {
