@@ -1,9 +1,14 @@
 import crypto from 'crypto';
-import { ConsentObjectV1, ScopeEntry } from '../consent/types';
-import { canonicalizeCapabilityPayload } from './canonical';
+import { ConsentObjectV1, ConsentObjectV2, ScopeEntry } from '../consent/types';
+import { canonicalizeCapabilityPayload, canonicalizeCapabilityV2Payload } from './canonical';
 import { computeCapabilityHash } from './hash';
 import { isRevoked } from './revocation';
-import { CapabilityTokenV1, MintCapabilityOptions } from './types';
+import {
+  CapabilityTokenV1,
+  CapabilityTokenV2,
+  MintCapabilityOptions,
+  MintCapabilityV2Options,
+} from './types';
 
 const VERSION_PATTERN = /^[0-9]+\.[0-9]+$/;
 const DID_PATTERN = /^did:[a-z0-9]+:[a-zA-Z0-9._%-]+$/;
@@ -483,6 +488,322 @@ export function verifyCapabilityToken(
   }
 
   // 11. Replay rejection (nonce/token_id uniqueness)
+  if (seenNonces.has(token.token_id)) {
+    throw new Error(
+      'Capability token_id has already been presented (replay detected).'
+    );
+  }
+  seenNonces.add(token.token_id);
+}
+
+// ---------------------------------------------------------------------------
+// Capability Token V2 — Temporal Consent Control
+// ---------------------------------------------------------------------------
+
+const VERSION_V2 = '2.0';
+
+/**
+ * Mints a CapabilityTokenV2 derived from a ConsentObjectV2.
+ *
+ * V2 adds:
+ *  - bound_consent_hash: explicit temporal-binding reference (= consent_ref)
+ *  - renewal_generation: tracks the renewal lineage
+ *  - issuer_signature:   placeholder for subject's digital signature
+ *
+ * Expired capability tokens (now > token.expires_at) are non-usable even if
+ * their structural signature is valid — this is enforced in verifyCapabilityTokenV2.
+ */
+export function mintCapabilityTokenV2(
+  consent: ConsentObjectV2,
+  scope: ScopeEntry[],
+  permissions: string[],
+  expires_at: string,
+  opts: MintCapabilityV2Options = {}
+): CapabilityTokenV2 {
+  if (consent.action !== 'grant') {
+    throw new Error(
+      'Capability token can only be derived from a consent with action "grant".'
+    );
+  }
+
+  const version = VERSION_V2;
+  const subject = consent.subject;
+  const grantee = consent.grantee;
+  const consent_ref = consent.consent_hash;
+  const bound_consent_hash = consent.consent_hash;
+  const issued_at = (opts.now ?? new Date())
+    .toISOString()
+    .replace(/\.\d{3}Z$/, 'Z');
+  const not_before = opts.not_before ?? null;
+  const renewal_generation = opts.renewal_generation ?? 0;
+  const issuer_signature = opts.issuer_signature ?? null;
+  const token_id = generateTokenId();
+
+  // Structural validation (reuses V1 validators)
+  validateVersion(version);
+  validateDID(subject, 'subject');
+  validateDID(grantee, 'grantee');
+  validateConsentRef(consent_ref);
+  validateScope(scope);
+  validatePermissions(permissions);
+  validateTimestamp(issued_at, 'issued_at');
+  validateTimestamp(expires_at, 'expires_at');
+  validateTokenId(token_id);
+
+  if (not_before !== null) validateTimestamp(not_before, 'not_before');
+
+  if (expires_at <= issued_at) {
+    throw new Error('Capability expires_at must be after issued_at.');
+  }
+  if (not_before !== null) {
+    if (not_before < issued_at) {
+      throw new Error('Capability not_before must be at or after issued_at.');
+    }
+    if (not_before >= expires_at) {
+      throw new Error('Capability not_before must be before expires_at.');
+    }
+  }
+  if (issued_at < consent.issued_at) {
+    throw new Error(
+      'Capability issued_at must be at or after parent consent issued_at.'
+    );
+  }
+
+  // V2: token must not start before the consent access window opens
+  if (issued_at < consent.access_start_timestamp) {
+    throw new Error(
+      'Capability issued_at must be at or after consent access_start_timestamp.'
+    );
+  }
+
+  // Token must expire at or before consent access_expiration_timestamp
+  if (expires_at > consent.access_expiration_timestamp) {
+    throw new Error(
+      'Capability expires_at must not exceed consent access_expiration_timestamp.'
+    );
+  }
+
+  if (!Number.isInteger(renewal_generation) || renewal_generation < 0) {
+    throw new Error('Capability renewal_generation must be a non-negative integer.');
+  }
+
+  // Derivation: scope and permission containment
+  assertScopeContainment(scope, consent.scope);
+  assertPermissionContainment(permissions, consent.permissions);
+
+  // Compute capability_hash over full V2 payload
+  const payloadBytes = canonicalizeCapabilityV2Payload({
+    version,
+    subject,
+    grantee,
+    consent_ref,
+    scope,
+    permissions,
+    issued_at,
+    not_before,
+    expires_at,
+    token_id,
+    bound_consent_hash,
+    renewal_generation,
+    issuer_signature,
+  });
+
+  const capability_hash = computeCapabilityHash(payloadBytes);
+
+  return {
+    version,
+    subject,
+    grantee,
+    consent_ref,
+    scope,
+    permissions,
+    issued_at,
+    not_before,
+    expires_at,
+    token_id,
+    capability_hash,
+    bound_consent_hash,
+    renewal_generation,
+    issuer_signature,
+  };
+}
+
+/**
+ * Validates the structural integrity of a CapabilityTokenV2.
+ */
+export function validateCapabilityTokenV2(token: CapabilityTokenV2): void {
+  validateVersion(token.version);
+  if (token.version !== VERSION_V2) {
+    throw new Error(`CapabilityTokenV2 must have version "${VERSION_V2}".`);
+  }
+
+  validateDID(token.subject, 'subject');
+  validateDID(token.grantee, 'grantee');
+  validateConsentRef(token.consent_ref);
+  validateScope(token.scope);
+  validatePermissions(token.permissions);
+  validateTimestamp(token.issued_at, 'issued_at');
+  validateTimestamp(token.expires_at, 'expires_at');
+  validateTokenId(token.token_id);
+
+  if (token.not_before !== null) {
+    validateTimestamp(token.not_before, 'not_before');
+  }
+
+  if (token.expires_at <= token.issued_at) {
+    throw new Error('Capability expires_at must be after issued_at.');
+  }
+  if (token.not_before !== null) {
+    if (token.not_before < token.issued_at) {
+      throw new Error('Capability not_before must be at or after issued_at.');
+    }
+    if (token.not_before >= token.expires_at) {
+      throw new Error('Capability not_before must be before expires_at.');
+    }
+  }
+
+  if (token.bound_consent_hash !== token.consent_ref) {
+    throw new Error(
+      'Capability bound_consent_hash must equal consent_ref.'
+    );
+  }
+
+  if (!Number.isInteger(token.renewal_generation) || token.renewal_generation < 0) {
+    throw new Error('Capability renewal_generation must be a non-negative integer.');
+  }
+
+  if (
+    typeof token.capability_hash !== 'string' ||
+    !HASH_HEX_PATTERN.test(token.capability_hash)
+  ) {
+    throw new Error(
+      'Capability capability_hash must be 64 lowercase hex characters.'
+    );
+  }
+
+  const payloadBytes = canonicalizeCapabilityV2Payload({
+    version: token.version,
+    subject: token.subject,
+    grantee: token.grantee,
+    consent_ref: token.consent_ref,
+    scope: token.scope,
+    permissions: token.permissions,
+    issued_at: token.issued_at,
+    not_before: token.not_before,
+    expires_at: token.expires_at,
+    token_id: token.token_id,
+    bound_consent_hash: token.bound_consent_hash,
+    renewal_generation: token.renewal_generation,
+    issuer_signature: token.issuer_signature,
+  });
+
+  const expectedHash = computeCapabilityHash(payloadBytes);
+  if (token.capability_hash !== expectedHash) {
+    throw new Error(
+      'Capability capability_hash does not match canonical V2 payload hash.'
+    );
+  }
+}
+
+/**
+ * Verifies a CapabilityTokenV2 against its parent ConsentObjectV2.
+ *
+ * Runtime checks (all must pass):
+ *  1.  Structural integrity
+ *  2.  consent_ref matches parent consent_hash
+ *  3.  Parent consent must be a grant
+ *  4.  Subject and grantee identity binding
+ *  5.  Scope containment
+ *  6.  Permission containment
+ *  7.  Temporal derivation (token window inside consent window)
+ *  8.  Access window: now >= access_start_timestamp
+ *  9.  Expiry check: now <= expires_at
+ *  10. not_before check
+ *  11. Revocation check
+ *  12. Replay rejection
+ *
+ * An expired token (now > expires_at) MUST be rejected even if its
+ * structural hash is cryptographically valid.
+ */
+export function verifyCapabilityTokenV2(
+  token: CapabilityTokenV2,
+  consent: ConsentObjectV2,
+  opts: { now?: Date } = {}
+): void {
+  // 1. Structural integrity
+  validateCapabilityTokenV2(token);
+
+  // 2. Consent ref binding
+  if (token.consent_ref !== consent.consent_hash) {
+    throw new Error(
+      'Capability consent_ref does not match parent consent consent_hash.'
+    );
+  }
+
+  // 3. Parent must be a grant
+  if (consent.action !== 'grant') {
+    throw new Error('Parent consent action must be "grant".');
+  }
+
+  // 4. Identity binding
+  if (token.subject !== consent.subject) {
+    throw new Error('Capability subject does not match parent consent subject.');
+  }
+  if (token.grantee !== consent.grantee) {
+    throw new Error('Capability grantee does not match parent consent grantee.');
+  }
+
+  // 5. Scope containment
+  assertScopeContainment(token.scope, consent.scope);
+
+  // 6. Permission containment
+  assertPermissionContainment(token.permissions, consent.permissions);
+
+  // 7. Temporal derivation bounds
+  if (token.issued_at < consent.issued_at) {
+    throw new Error(
+      'Capability issued_at must be at or after parent consent issued_at.'
+    );
+  }
+  if (token.expires_at > consent.access_expiration_timestamp) {
+    throw new Error(
+      'Capability expires_at must not exceed consent access_expiration_timestamp.'
+    );
+  }
+  if (token.not_before !== null && token.not_before < consent.issued_at) {
+    throw new Error(
+      'Capability not_before must be at or after parent consent issued_at.'
+    );
+  }
+
+  const now = (opts.now ?? new Date())
+    .toISOString()
+    .replace(/\.\d{3}Z$/, 'Z');
+
+  // 8. Access window: must be past access_start_timestamp
+  if (now < consent.access_start_timestamp) {
+    throw new Error(
+      'Access window has not yet opened (before consent access_start_timestamp).'
+    );
+  }
+
+  // 9. Expiry check — MUST reject even if signature is valid
+  if (now > token.expires_at) {
+    throw new Error('Capability token has expired.');
+  }
+
+  // 10. not_before check
+  const effectiveStart = token.not_before ?? token.issued_at;
+  if (now < effectiveStart) {
+    throw new Error('Capability token is not yet valid (before not_before).');
+  }
+
+  // 11. Revocation check
+  if (isRevoked(token.capability_hash)) {
+    throw new Error('Capability token has been revoked.');
+  }
+
+  // 12. Replay rejection
   if (seenNonces.has(token.token_id)) {
     throw new Error(
       'Capability token_id has already been presented (replay detected).'

@@ -1,7 +1,8 @@
 import { canonicalizeJSON } from '../canonicalize';
-import { CapabilityTokenV1, ScopeEntry } from './types';
+import { CapabilityTokenV1, CapabilityTokenV2, ScopeEntry } from './types';
 
 export type CapabilityPayload = Omit<CapabilityTokenV1, 'capability_hash'>;
+export type CapabilityV2Payload = Omit<CapabilityTokenV2, 'capability_hash'>;
 
 /**
  * Canonicalizes a single ScopeEntry for deterministic encoding.
@@ -52,6 +53,50 @@ export function canonicalizeCapabilityPayload(
     subject: payload.subject,
     token_id: payload.token_id,
     version: payload.version
+  };
+
+  const canonical = canonicalizeJSON(canonicalPayload);
+  return new TextEncoder().encode(canonical);
+}
+
+/**
+ * Canonicalizes a CapabilityTokenV2 payload for hashing.
+ *
+ * Per temporal-consent-spec.md (Capability Token section):
+ * - Excludes capability_hash (self-referential)
+ * - Includes all V2 fields
+ * - Top-level keys in strict alphabetical order:
+ *     bound_consent_hash, consent_ref, expires_at, grantee, issued_at,
+ *     issuer_signature, not_before, permissions, renewal_generation,
+ *     scope, subject, token_id, version
+ * - Null values MUST be included literally
+ */
+export function canonicalizeCapabilityV2Payload(
+  payload: CapabilityV2Payload
+): Uint8Array {
+  const sortedScope = [...payload.scope].sort((a, b) => {
+    const typeCmp = a.type.localeCompare(b.type);
+    if (typeCmp !== 0) return typeCmp;
+    return a.ref.localeCompare(b.ref);
+  });
+
+  const sortedPermissions = [...payload.permissions].sort();
+
+  // Keys in strict alphabetical order
+  const canonicalPayload = {
+    bound_consent_hash: payload.bound_consent_hash,
+    consent_ref: payload.consent_ref,
+    expires_at: payload.expires_at,
+    grantee: payload.grantee,
+    issued_at: payload.issued_at,
+    issuer_signature: payload.issuer_signature,
+    not_before: payload.not_before,
+    permissions: sortedPermissions,
+    renewal_generation: payload.renewal_generation,
+    scope: sortedScope.map(canonicalizeScopeEntry),
+    subject: payload.subject,
+    token_id: payload.token_id,
+    version: payload.version,
   };
 
   const canonical = canonicalizeJSON(canonicalPayload);

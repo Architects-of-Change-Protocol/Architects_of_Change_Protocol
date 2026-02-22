@@ -2,19 +2,26 @@ export {
   mintCapabilityToken,
   validateCapabilityToken,
   verifyCapabilityToken,
-  resetNonceRegistry
+  resetNonceRegistry,
+} from './capabilityToken';
+export {
+  mintCapabilityTokenV2,
+  validateCapabilityTokenV2,
+  verifyCapabilityTokenV2,
 } from './capabilityToken';
 export { buildCapabilityId } from './capabilityId';
-export { canonicalizeCapabilityPayload } from './canonical';
-export type { CapabilityPayload } from './canonical';
+export { canonicalizeCapabilityPayload, canonicalizeCapabilityV2Payload } from './canonical';
+export type { CapabilityPayload, CapabilityV2Payload } from './canonical';
 export { computeCapabilityHash } from './hash';
 export {
   revokeCapabilityToken,
   isRevoked,
-  resetRevocationRegistry
+  resetRevocationRegistry,
 } from './revocation';
 export type {
   CapabilityTokenV1,
+  CapabilityTokenV2,
   MintCapabilityOptions,
-  ScopeEntry
+  MintCapabilityV2Options,
+  ScopeEntry,
 } from './types';
