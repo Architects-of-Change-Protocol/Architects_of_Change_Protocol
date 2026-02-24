@@ -4,6 +4,8 @@ import type { ScopeEntry } from '../consent/types';
 
 import type { CapabilityTokenV1 } from '../capability';
 import { mintCapabilityToken, revokeCapabilityToken as capRevokeToken } from '../capability';
+import { InMemoryNonceRegistry } from '../capability/registries/InMemoryNonceRegistry';
+import { InMemoryRevocationRegistry } from '../capability/registries/InMemoryRevocationRegistry';
 
 import type { PackManifestV1 } from '../pack';
 import { canonicalizePackManifestPayload, computePackHash } from '../pack';
@@ -55,13 +57,17 @@ function toVaultPolicy(decision: { decision: 'ALLOW' | 'DENY'; reason_codes: str
 
 // --- Factory ---
 
-export function createInMemoryVault(_options?: VaultOptions): Vault {
+export function createInMemoryVault(options?: VaultOptions): Vault {
   const store: VaultStore = {
     packs: new Map(),
     consents: new Map(),
     capabilities: new Map(),
     sdl_mappings: new Map(),
   };
+
+  const nonceRegistry = options?.nonceRegistry ?? new InMemoryNonceRegistry();
+  const revocationRegistry = options?.revocationRegistry ?? new InMemoryRevocationRegistry();
+
 
   function storePack(pack: PackManifestV1): string {
     const payloadBytes = canonicalizePackManifestPayload({
@@ -120,7 +126,7 @@ export function createInMemoryVault(_options?: VaultOptions): Vault {
   }
 
   function revokeCapability(capability_hash: string): void {
-    capRevokeToken(capability_hash);
+    capRevokeToken(capability_hash, revocationRegistry);
   }
 
   function requestAccess(request: VaultAccessRequest, opts?: { now?: Date }): VaultAccessResult {
@@ -140,7 +146,12 @@ export function createInMemoryVault(_options?: VaultOptions): Vault {
     }
 
     // Step 2 — Capability enforcement
-    const tokenDecision = enforceTokenRedemption(capability_token, consent!, opts);
+    const tokenDecision = enforceTokenRedemption(
+      capability_token,
+      consent!,
+      opts,
+      { nonceRegistry, revocationRegistry }
+    );
 
     if (tokenDecision.decision.decision === 'DENY') {
       return {
