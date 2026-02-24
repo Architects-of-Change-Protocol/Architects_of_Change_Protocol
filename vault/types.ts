@@ -80,6 +80,7 @@ export type VaultOptions = {
 
 export type Vault = {
   storePack(pack: PackManifestV1): string;
+  applyConsent(consent: ConsentObjectV1): string;
   storeConsent(consent: ConsentObjectV1): string;
   mintCapability(
     consent_hash: string,

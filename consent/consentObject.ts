@@ -115,6 +115,19 @@ function validatePermissions(permissions: string[]): void {
   }
 }
 
+
+function validateRevokeTarget(revoke_target: { capability_hash: string } | undefined): void {
+  if (
+    !revoke_target ||
+    typeof revoke_target.capability_hash !== 'string' ||
+    !HASH_HEX_PATTERN.test(revoke_target.capability_hash)
+  ) {
+    throw new Error(
+      'Consent revoke_target.capability_hash must be 64 lowercase hex characters for revoke actions.'
+    );
+  }
+}
+
 function validateIssuedAt(issued_at: string): void {
   if (
     typeof issued_at !== 'string' ||
@@ -148,11 +161,6 @@ function validatePriorConsent(
   prior_consent: string | null,
   action: string
 ): void {
-  if (action === 'revoke' && prior_consent === null) {
-    throw new Error(
-      'Consent prior_consent must be non-null for revoke actions.'
-    );
-  }
   if (prior_consent !== null) {
     if (
       typeof prior_consent !== 'string' ||
@@ -179,15 +187,29 @@ export function buildConsentObject(
     .replace(/\.\d{3}Z$/, 'Z');
   const expires_at = opts.expires_at ?? null;
   const prior_consent = opts.prior_consent ?? null;
+  const revoke_target = opts.revoke_target;
 
   validateVersion(version);
   validateDID(subject, 'subject');
   validateDID(grantee, 'grantee');
   validateAction(action);
-  validateScope(scope);
-  validatePermissions(permissions);
   validateIssuedAt(issued_at);
-  validateExpiresAt(expires_at, issued_at);
+  if (action === 'revoke') {
+    validateRevokeTarget(revoke_target);
+    if (scope.length > 0) {
+      throw new Error('Consent scope must be empty for revoke actions.');
+    }
+    if (permissions.length > 0) {
+      throw new Error('Consent permissions must be empty for revoke actions.');
+    }
+    if (expires_at !== null) {
+      throw new Error('Consent expires_at must be null for revoke actions.');
+    }
+  } else {
+    validateScope(scope);
+    validatePermissions(permissions);
+    validateExpiresAt(expires_at, issued_at);
+  }
   validatePriorConsent(prior_consent, action);
 
   const payloadBytes = canonicalizeConsentPayload({
@@ -199,7 +221,8 @@ export function buildConsentObject(
     permissions,
     issued_at,
     expires_at,
-    prior_consent
+    prior_consent,
+    ...(revoke_target !== undefined ? { revoke_target } : {})
   });
 
   const consent_hash = computeConsentHash(payloadBytes);
@@ -218,6 +241,7 @@ export function buildConsentObject(
     issued_at,
     expires_at,
     prior_consent,
+    ...(revoke_target !== undefined ? { revoke_target } : {}),
     consent_hash
   };
 }
@@ -227,10 +251,23 @@ export function validateConsentObject(consent: ConsentObjectV1): void {
   validateDID(consent.subject, 'subject');
   validateDID(consent.grantee, 'grantee');
   validateAction(consent.action);
-  validateScope(consent.scope);
-  validatePermissions(consent.permissions);
   validateIssuedAt(consent.issued_at);
-  validateExpiresAt(consent.expires_at, consent.issued_at);
+  if (consent.action === 'revoke') {
+    validateRevokeTarget(consent.revoke_target);
+    if (consent.scope !== undefined && consent.scope.length > 0) {
+      throw new Error('Consent scope must be empty for revoke actions.');
+    }
+    if (consent.permissions !== undefined && consent.permissions.length > 0) {
+      throw new Error('Consent permissions must be empty for revoke actions.');
+    }
+    if (consent.expires_at !== null) {
+      throw new Error('Consent expires_at must be null for revoke actions.');
+    }
+  } else {
+    validateScope(consent.scope);
+    validatePermissions(consent.permissions);
+    validateExpiresAt(consent.expires_at, consent.issued_at);
+  }
   validatePriorConsent(consent.prior_consent, consent.action);
 
   if (
@@ -251,7 +288,8 @@ export function validateConsentObject(consent: ConsentObjectV1): void {
     permissions: consent.permissions,
     issued_at: consent.issued_at,
     expires_at: consent.expires_at,
-    prior_consent: consent.prior_consent
+    prior_consent: consent.prior_consent,
+    ...(consent.revoke_target !== undefined ? { revoke_target: consent.revoke_target } : {})
   });
 
   const expectedHash = computeConsentHash(payloadBytes);

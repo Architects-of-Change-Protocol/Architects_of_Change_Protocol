@@ -87,10 +87,31 @@ export function createInMemoryVault(options?: VaultOptions): Vault {
     return pack.pack_hash;
   }
 
-  function storeConsent(consent: ConsentObjectV1): string {
+  function applyConsent(consent: ConsentObjectV1): string {
     validateConsentObject(consent);
+
+    if (consent.action === 'revoke') {
+      const targetCapabilityHash = consent.revoke_target!.capability_hash;
+      const targetCapability = store.capabilities.get(targetCapabilityHash);
+
+      if (!targetCapability) {
+        throw new Error(`Capability not found: ${targetCapabilityHash}`);
+      }
+
+      const originalConsent = store.consents.get(targetCapability.consent_ref);
+      if (!originalConsent || originalConsent.subject !== consent.subject) {
+        throw new Error('Consent subject must match revoked capability subject.');
+      }
+
+      capRevokeToken(targetCapabilityHash, revocationRegistry);
+    }
+
     store.consents.set(consent.consent_hash, consent);
     return consent.consent_hash;
+  }
+
+  function storeConsent(consent: ConsentObjectV1): string {
+    return applyConsent(consent);
   }
 
   function mintCapability(
@@ -279,6 +300,7 @@ export function createInMemoryVault(options?: VaultOptions): Vault {
 
   return {
     storePack,
+    applyConsent,
     storeConsent,
     mintCapability,
     requestAccess,

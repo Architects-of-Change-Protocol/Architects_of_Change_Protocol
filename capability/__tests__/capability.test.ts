@@ -224,8 +224,8 @@ describe('capability token minting — rejection paths', () => {
   it('rejects minting from a revoke consent', () => {
     const grant = buildBaseConsent();
     const revoke = buildConsentObject(
-      SUBJECT, GRANTEE, 'revoke', multiScope, multiPermissions,
-      { now: tokenNow, prior_consent: grant.consent_hash }
+      SUBJECT, GRANTEE, 'revoke', [], [],
+      { now: tokenNow, prior_consent: grant.consent_hash, revoke_target: { capability_hash: REF_A } }
     );
 
     expect(() =>
@@ -532,8 +532,8 @@ describe('capability token verification', () => {
     // Construct a revoke consent that happens to have the same hash
     // (in practice we just pass the wrong consent)
     const revoke = buildConsentObject(
-      SUBJECT, GRANTEE, 'revoke', multiScope, multiPermissions,
-      { now: tokenNow, prior_consent: grant.consent_hash }
+      SUBJECT, GRANTEE, 'revoke', [], [],
+      { now: tokenNow, prior_consent: grant.consent_hash, revoke_target: { capability_hash: REF_A } }
     );
 
     // The consent_ref won't match, but the action check comes after

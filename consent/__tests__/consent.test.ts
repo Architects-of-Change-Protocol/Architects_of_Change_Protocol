@@ -170,8 +170,8 @@ describe('consent object builder', () => {
     );
 
     const revoke = buildConsentObject(
-      SUBJECT, GRANTEE, 'revoke', baseScope, basePermissions,
-      { now: new Date('2025-06-15T10:00:00Z'), prior_consent: grant.consent_hash }
+      SUBJECT, GRANTEE, 'revoke', [], [],
+      { now: new Date('2025-06-15T10:00:00Z'), prior_consent: grant.consent_hash, revoke_target: { capability_hash: REF_A } }
     );
 
     expect(revoke.action).toBe('revoke');
@@ -320,12 +320,25 @@ describe('consent object validation', () => {
     ).toThrow('Consent permissions contain duplicate: "read".');
   });
 
-  it('rejects revoke without prior_consent', () => {
+  it('rejects revoke without revoke_target', () => {
     expect(() =>
-      buildConsentObject(SUBJECT, GRANTEE, 'revoke', baseScope, basePermissions, { now: baseNow })
-    ).toThrow('Consent prior_consent must be non-null for revoke actions.');
+      buildConsentObject(SUBJECT, GRANTEE, 'revoke', [], [], { now: baseNow })
+    ).toThrow('Consent revoke_target.capability_hash must be 64 lowercase hex characters for revoke actions.');
   });
 
+
+  it('rejects revoke with malformed revoke_target capability_hash', () => {
+    expect(() =>
+      buildConsentObject(
+        SUBJECT,
+        GRANTEE,
+        'revoke',
+        [],
+        [],
+        { now: baseNow, revoke_target: { capability_hash: 'INVALID' } }
+      )
+    ).toThrow('Consent revoke_target.capability_hash must be 64 lowercase hex characters for revoke actions.');
+  });
   it('rejects invalid prior_consent format', () => {
     expect(() =>
       buildConsentObject(
@@ -456,7 +469,7 @@ describe('consent object validator', () => {
     (consent as any).action = 'revoke';
 
     expect(() => validateConsentObject(consent)).toThrow(
-      'Consent prior_consent must be non-null for revoke actions.'
+      'Consent revoke_target.capability_hash must be 64 lowercase hex characters for revoke actions.'
     );
   });
 
@@ -531,8 +544,8 @@ describe('consent object validator', () => {
       { now: baseNow }
     );
     const revoke = buildConsentObject(
-      SUBJECT, GRANTEE, 'revoke', baseScope, basePermissions,
-      { now: new Date('2025-06-15T10:00:00Z'), prior_consent: grant.consent_hash }
+      SUBJECT, GRANTEE, 'revoke', [], [],
+      { now: new Date('2025-06-15T10:00:00Z'), prior_consent: grant.consent_hash, revoke_target: { capability_hash: REF_A } }
     );
 
     expect(() => validateConsentObject(revoke)).not.toThrow();
@@ -887,8 +900,8 @@ describe('cross-object consistency', () => {
       { now: baseNow }
     );
     const revoke = buildConsentObject(
-      SUBJECT, GRANTEE, 'revoke', baseScope, basePermissions,
-      { now: new Date('2025-06-15T10:00:00Z'), prior_consent: grant.consent_hash }
+      SUBJECT, GRANTEE, 'revoke', [], [],
+      { now: new Date('2025-06-15T10:00:00Z'), prior_consent: grant.consent_hash, revoke_target: { capability_hash: REF_A } }
     );
 
     const grantId = buildConsentId(grant);
