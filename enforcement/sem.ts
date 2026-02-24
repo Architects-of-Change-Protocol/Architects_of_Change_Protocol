@@ -2,6 +2,8 @@ import type { ConsentObjectV1 } from '../consent';
 import type { CapabilityTokenV1 } from '../capability';
 import type { FieldManifestV1 } from '../field/types';
 import type { StoragePointer } from '../storage/types';
+import type { NonceRegistry } from '../capability/registries/NonceRegistry';
+import type { RevocationRegistry } from '../capability/registries/RevocationRegistry';
 import { verifyCapabilityToken } from '../capability';
 import { sha256Hex } from '../storage/hash';
 
@@ -49,10 +51,11 @@ export function enforceConsentPresent(consent: ConsentObjectV1 | undefined): Sem
 export function enforceTokenRedemption(
   capability_token: CapabilityTokenV1,
   consent: ConsentObjectV1,
-  opts?: { now?: Date }
+  opts?: { now?: Date },
+  registries?: { nonceRegistry?: NonceRegistry; revocationRegistry?: RevocationRegistry }
 ): SemResult {
   try {
-    verifyCapabilityToken(capability_token, consent, opts);
+    verifyCapabilityToken(capability_token, consent, opts, registries);
     return allow();
   } catch (e) {
     const err = e as Error;

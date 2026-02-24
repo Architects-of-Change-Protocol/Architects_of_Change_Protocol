@@ -3,6 +3,9 @@ import { ConsentObjectV1, ScopeEntry } from '../consent/types';
 import { canonicalizeCapabilityPayload } from './canonical';
 import { computeCapabilityHash } from './hash';
 import { isRevoked } from './revocation';
+import type { NonceRegistry } from './registries/NonceRegistry';
+import type { RevocationRegistry } from './registries/RevocationRegistry';
+import { InMemoryNonceRegistry } from './registries/InMemoryNonceRegistry';
 import { CapabilityTokenV1, MintCapabilityOptions } from './types';
 
 const VERSION_PATTERN = /^[0-9]+\.[0-9]+$/;
@@ -20,15 +23,15 @@ const CLOCK_SKEW_SECONDS = 300;
 
 const VALID_SCOPE_TYPES: ReadonlyArray<string> = ['field', 'content', 'pack'];
 
-// --- In-memory nonce registry for replay protection ---
+// --- Default nonce registry for replay protection ---
 
-const seenNonces = new Set<string>();
+const defaultNonceRegistry = new InMemoryNonceRegistry();
 
 /**
  * Resets the nonce registry. Intended for testing only.
  */
 export function resetNonceRegistry(): void {
-  seenNonces.clear();
+  defaultNonceRegistry.reset();
 }
 
 // --- Validation helpers ---
@@ -408,7 +411,8 @@ export function validateCapabilityToken(token: CapabilityTokenV1): void {
 export function verifyCapabilityToken(
   token: CapabilityTokenV1,
   consent: ConsentObjectV1,
-  opts: { now?: Date } = {}
+  opts: { now?: Date } = {},
+  registries?: { nonceRegistry?: NonceRegistry; revocationRegistry?: RevocationRegistry }
 ): void {
   // 1. Structural integrity
   validateCapabilityToken(token);
@@ -478,15 +482,18 @@ export function verifyCapabilityToken(
   }
 
   // 10. Revocation check
-  if (isRevoked(token.capability_hash)) {
+  const revocationRegistry = registries?.revocationRegistry;
+  if (isRevoked(token.capability_hash, revocationRegistry)) {
     throw new Error('Capability token has been revoked.');
   }
 
   // 11. Replay rejection (nonce/token_id uniqueness)
-  if (seenNonces.has(token.token_id)) {
+  const nonceRegistry = registries?.nonceRegistry ?? defaultNonceRegistry;
+  if (nonceRegistry.hasSeen(token.token_id, opts.now ?? new Date())) {
     throw new Error(
       'Capability token_id has already been presented (replay detected).'
     );
   }
-  seenNonces.add(token.token_id);
+  nonceRegistry.markSeen(token.token_id, token.expires_at);
+  nonceRegistry.cleanup?.(opts.now ?? new Date());
 }

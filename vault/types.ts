@@ -1,6 +1,8 @@
 import type { ConsentObjectV1, ScopeEntry } from '../consent';
 import type { CapabilityTokenV1 } from '../capability';
 import type { PackManifestV1 } from '../pack';
+import type { NonceRegistry } from '../capability/registries/NonceRegistry';
+import type { RevocationRegistry } from '../capability/registries/RevocationRegistry';
 
 // --- Error Codes ---
 
@@ -70,6 +72,8 @@ export type VaultStore = {
 
 export type VaultOptions = {
   now?: Date;
+  nonceRegistry?: NonceRegistry;
+  revocationRegistry?: RevocationRegistry;
 };
 
 // --- Vault Interface ---
