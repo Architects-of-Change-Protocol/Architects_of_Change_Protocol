@@ -870,3 +870,81 @@ describe('vault hardening: negative paths and invariant shapes', () => {
     expect((result.unresolved_fields[1].error as any).details).toBeUndefined();
   });
 });
+
+describe('vault consent-based revocation', () => {
+  it('revokes a minted capability via applyConsent and denies access with REVOKED', () => {
+    const { vault, pack_hash, consent_hash } = setupVault();
+
+    const token = vault.mintCapability(
+      consent_hash,
+      makeConsentScope(),
+      ['read'],
+      tokenExpires,
+      { now: tokenNow }
+    );
+
+    const beforeRevoke = vault.requestAccess(
+      {
+        capability_token: token,
+        sdl_paths: ['person.name.legal.full'],
+        pack_ref: pack_hash
+      },
+      { now: accessNow }
+    );
+    expect(beforeRevoke.policy.decision).toBe('ALLOW');
+
+    const revokeConsent = buildConsentObject(
+      SUBJECT,
+      GRANTEE,
+      'revoke',
+      [],
+      [],
+      {
+        now: new Date('2025-09-01T00:00:00Z'),
+        revoke_target: { capability_hash: token.capability_hash }
+      }
+    );
+
+    vault.applyConsent(revokeConsent);
+
+    const afterRevoke = vault.requestAccess(
+      {
+        capability_token: token,
+        sdl_paths: ['person.name.legal.full'],
+        pack_ref: pack_hash
+      },
+      { now: accessNow }
+    );
+
+    expect(afterRevoke.policy.decision).toBe('DENY');
+    expect(afterRevoke.policy.reason_codes).toContain('REVOKED');
+  });
+
+  it('rejects revoke consent when subject differs from original consent subject', () => {
+    const { vault, consent_hash } = setupVault();
+
+    const token = vault.mintCapability(
+      consent_hash,
+      makeConsentScope(),
+      ['read'],
+      tokenExpires,
+      { now: tokenNow }
+    );
+
+    const unauthorizedRevoke = buildConsentObject(
+      'did:key:z6MkhUnauthorizedRevoker1234567890abc',
+      GRANTEE,
+      'revoke',
+      [],
+      [],
+      {
+        now: new Date('2025-09-01T00:00:00Z'),
+        revoke_target: { capability_hash: token.capability_hash }
+      }
+    );
+
+    expect(() => vault.applyConsent(unauthorizedRevoke)).toThrow(
+      'Consent subject must match revoked capability subject.'
+    );
+  });
+});

@@ -10,6 +10,9 @@ export type ConsentObjectV1 = {
   action: 'grant' | 'revoke';
   scope: ScopeEntry[];
   permissions: string[];
+  revoke_target?: {
+    capability_hash: string;
+  };
   issued_at: string;
   expires_at: string | null;
   prior_consent: string | null;
@@ -20,4 +23,7 @@ export type BuildConsentOptions = {
   now?: Date;
   expires_at?: string | null;
   prior_consent?: string | null;
+  revoke_target?: {
+    capability_hash: string;
+  };
 };

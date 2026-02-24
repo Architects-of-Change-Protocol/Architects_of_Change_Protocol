@@ -47,6 +47,13 @@ export function canonicalizeConsentPayload(
     issued_at: payload.issued_at,
     permissions: sortedPermissions,
     prior_consent: payload.prior_consent,
+    ...(payload.revoke_target !== undefined
+      ? {
+        revoke_target: {
+          capability_hash: payload.revoke_target.capability_hash
+        }
+      }
+      : {}),
     scope: sortedScope.map(canonicalizeScopeEntry),
     subject: payload.subject,
     version: payload.version
