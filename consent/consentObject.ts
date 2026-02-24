@@ -115,8 +115,9 @@ function validatePermissions(permissions: string[]): void {
   }
 }
 
-
-function validateRevokeTarget(revoke_target: { capability_hash: string } | undefined): void {
+function validateRevokeTarget(
+  revoke_target: { capability_hash: string } | undefined
+): void {
   if (
     !revoke_target ||
     typeof revoke_target.capability_hash !== 'string' ||
@@ -129,47 +130,28 @@ function validateRevokeTarget(revoke_target: { capability_hash: string } | undef
 }
 
 function validateIssuedAt(issued_at: string): void {
-  if (
-    typeof issued_at !== 'string' ||
-    !ISO8601_UTC_PATTERN.test(issued_at)
-  ) {
+  if (typeof issued_at !== 'string' || !ISO8601_UTC_PATTERN.test(issued_at)) {
     throw new Error(
       'Consent issued_at must be ISO 8601 UTC format (e.g., "2025-01-15T14:30:00Z").'
     );
   }
 }
 
-function validateExpiresAt(
-  expires_at: string | null,
-  issued_at: string
-): void {
+function validateExpiresAt(expires_at: string | null, issued_at: string): void {
   if (expires_at === null) return;
-  if (
-    typeof expires_at !== 'string' ||
-    !ISO8601_UTC_PATTERN.test(expires_at)
-  ) {
-    throw new Error(
-      'Consent expires_at must be ISO 8601 UTC format or null.'
-    );
+  if (typeof expires_at !== 'string' || !ISO8601_UTC_PATTERN.test(expires_at)) {
+    throw new Error('Consent expires_at must be ISO 8601 UTC format or null.');
   }
   if (expires_at <= issued_at) {
     throw new Error('Consent expires_at must be after issued_at.');
   }
 }
 
-function validatePriorConsent(
-  prior_consent: string | null,
-  action: string
-): void {
-  if (prior_consent !== null) {
-    if (
-      typeof prior_consent !== 'string' ||
-      !HASH_HEX_PATTERN.test(prior_consent)
-    ) {
-      throw new Error(
-        'Consent prior_consent must be 64 lowercase hex characters or null.'
-      );
-    }
+function validatePriorConsent(prior_consent: string | null): void {
+  if (prior_consent === null) return;
+
+  if (typeof prior_consent !== 'string' || !HASH_HEX_PATTERN.test(prior_consent)) {
+    throw new Error('Consent prior_consent must be 64 lowercase hex characters or null.');
   }
 }
 
@@ -194,8 +176,10 @@ export function buildConsentObject(
   validateDID(grantee, 'grantee');
   validateAction(action);
   validateIssuedAt(issued_at);
+
   if (action === 'revoke') {
     validateRevokeTarget(revoke_target);
+
     if (scope.length > 0) {
       throw new Error('Consent scope must be empty for revoke actions.');
     }
@@ -210,7 +194,9 @@ export function buildConsentObject(
     validatePermissions(permissions);
     validateExpiresAt(expires_at, issued_at);
   }
-  validatePriorConsent(prior_consent, action);
+
+  // prior_consent is optional for both grant and revoke; validate only if present
+  validatePriorConsent(prior_consent);
 
   const payloadBytes = canonicalizeConsentPayload({
     version,
@@ -252,8 +238,10 @@ export function validateConsentObject(consent: ConsentObjectV1): void {
   validateDID(consent.grantee, 'grantee');
   validateAction(consent.action);
   validateIssuedAt(consent.issued_at);
+
   if (consent.action === 'revoke') {
     validateRevokeTarget(consent.revoke_target);
+
     if (consent.scope !== undefined && consent.scope.length > 0) {
       throw new Error('Consent scope must be empty for revoke actions.');
     }
@@ -268,15 +256,15 @@ export function validateConsentObject(consent: ConsentObjectV1): void {
     validatePermissions(consent.permissions);
     validateExpiresAt(consent.expires_at, consent.issued_at);
   }
-  validatePriorConsent(consent.prior_consent, consent.action);
+
+  // prior_consent is optional for both grant and revoke; validate only if present
+  validatePriorConsent(consent.prior_consent);
 
   if (
     typeof consent.consent_hash !== 'string' ||
     !HASH_HEX_PATTERN.test(consent.consent_hash)
   ) {
-    throw new Error(
-      'Consent consent_hash must be 64 lowercase hex characters.'
-    );
+    throw new Error('Consent consent_hash must be 64 lowercase hex characters.');
   }
 
   const payloadBytes = canonicalizeConsentPayload({
@@ -289,20 +277,17 @@ export function validateConsentObject(consent: ConsentObjectV1): void {
     issued_at: consent.issued_at,
     expires_at: consent.expires_at,
     prior_consent: consent.prior_consent,
-    ...(consent.revoke_target !== undefined ? { revoke_target: consent.revoke_target } : {})
+    ...(consent.revoke_target !== undefined
+      ? { revoke_target: consent.revoke_target }
+      : {})
   });
 
   const expectedHash = computeConsentHash(payloadBytes);
   if (consent.consent_hash !== expectedHash) {
-    throw new Error(
-      'Consent consent_hash does not match canonical payload hash.'
-    );
+    throw new Error('Consent consent_hash does not match canonical payload hash.');
   }
 
-  if (
-    consent.prior_consent !== null &&
-    consent.prior_consent === consent.consent_hash
-  ) {
+  if (consent.prior_consent !== null && consent.prior_consent === consent.consent_hash) {
     throw new Error('Consent must not reference itself via prior_consent.');
   }
 }
