@@ -8,14 +8,24 @@ import type { RevocationRegistry } from '../capability/registries/RevocationRegi
 
 export type VaultErrorCode =
   | 'EXPIRED'
+  | 'NOT_YET_VALID'
   | 'REPLAY'
   | 'REVOKED'
   | 'SCOPE_ESCALATION'
+  | 'SCOPE_MISMATCH'
+  | 'INVALID_SCOPE'
   | 'INVALID_CAPABILITY'
+  | 'MALFORMED_CAPABILITY'
   | 'INVALID_SDL_PATH'
   | 'UNRESOLVED_FIELD'
   | 'PACK_NOT_FOUND'
-  | 'CONSENT_NOT_FOUND';
+  | 'CONSENT_NOT_FOUND'
+  | 'CONSENT_MISMATCH'
+  | 'RESOURCE_RESTRICTION_FAILED'
+  | 'REQUEST_CONTEXT_MISMATCH'
+  | 'RATE_LIMIT_UNSUPPORTED'
+  | 'RATE_LIMIT_EXCEEDED'
+  | 'INTERNAL_DENY';
 
 // --- Vault Error ---
 
