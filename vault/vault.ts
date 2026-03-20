@@ -19,15 +19,13 @@ import type {
   VaultOptions,
   ResolvedField,
   UnresolvedField,
-  VaultPolicyDecision,
 } from './types';
 
 import {
   enforceConsentPresent,
-  enforceTokenRedemption,
   enforcePackPresent,
-  enforcePathAccess,
 } from '../enforcement';
+import { enforceCapability } from '../protocol/capabilities/capabilityEnforcer';
 
 // --- SDL path validation scaffold (temporary) ---
 // TODO(protocol/sdl): Replace this with canonical parser from protocol/sdl module
@@ -48,11 +46,45 @@ function validateSdlPath(path: string): string | null {
   return null;
 }
 
-function toVaultPolicy(decision: { decision: 'ALLOW' | 'DENY'; reason_codes: string[] }): VaultPolicyDecision {
+function mapCapabilityDenyCode(code: string): VaultErrorCode {
+  if (code === 'SCOPE_MISMATCH' || code === 'INVALID_SCOPE') {
+    return 'SCOPE_ESCALATION';
+  }
+
+  if (code === 'MALFORMED_CAPABILITY') {
+    return 'INVALID_CAPABILITY';
+  }
+
+  return code as VaultErrorCode;
+}
+
+function denyAccess(reason_codes: VaultErrorCode[]): VaultAccessResult {
   return {
-    decision: decision.decision,
-    reason_codes: decision.reason_codes as VaultErrorCode[],
+    policy: {
+      decision: 'DENY',
+      reason_codes,
+    },
+    resolved_fields: [],
+    unresolved_fields: [],
   };
+}
+
+function allowAccess(
+  resolved_fields: ResolvedField[],
+  unresolved_fields: UnresolvedField[]
+): VaultAccessResult {
+  return {
+    policy: {
+      decision: 'ALLOW',
+      reason_codes: [],
+    },
+    resolved_fields,
+    unresolved_fields,
+  };
+}
+
+function denyDecision(decision: { decision: 'ALLOW' | 'DENY'; reason_codes: string[] }): VaultAccessResult {
+  return denyAccess(decision.reason_codes as VaultErrorCode[]);
 }
 
 // --- Factory ---
@@ -67,7 +99,6 @@ export function createInMemoryVault(options?: VaultOptions): Vault {
 
   const nonceRegistry = options?.nonceRegistry ?? new InMemoryNonceRegistry();
   const revocationRegistry = options?.revocationRegistry ?? new InMemoryRevocationRegistry();
-
 
   function storePack(pack: PackManifestV1): string {
     const payloadBytes = canonicalizePackManifestPayload({
@@ -155,47 +186,21 @@ export function createInMemoryVault(options?: VaultOptions): Vault {
 
     // Step 1 — Consent enforcement
     const consent = store.consents.get(capability_token.consent_ref);
-
     const consentDecision = enforceConsentPresent(consent);
 
     if (consentDecision.decision.decision === 'DENY') {
-      return {
-        policy: toVaultPolicy(consentDecision.decision),
-        resolved_fields: [],
-        unresolved_fields: [],
-      };
+      return denyDecision(consentDecision.decision);
     }
 
-    // Step 2 — Capability enforcement
-    const tokenDecision = enforceTokenRedemption(
-      capability_token,
-      consent!,
-      opts,
-      { nonceRegistry, revocationRegistry }
-    );
-
-    if (tokenDecision.decision.decision === 'DENY') {
-      return {
-        policy: toVaultPolicy(tokenDecision.decision),
-        resolved_fields: [],
-        unresolved_fields: [],
-      };
-    }
-
-    // Step 3 — Pack enforcement
+    // Step 2 — Pack enforcement
     const pack = store.packs.get(pack_ref);
-
     const packDecision = enforcePackPresent(pack !== undefined, pack_ref);
 
     if (packDecision.decision.decision === 'DENY') {
-      return {
-        policy: toVaultPolicy(packDecision.decision),
-        resolved_fields: [],
-        unresolved_fields: [],
-      };
+      return denyDecision(packDecision.decision);
     }
 
-    // Step 4 — Build field index
+    // Step 3 — Build field index
     const fieldByFieldId = new Map<string, { field_id: string; content_id: string }>();
 
     for (const field of pack!.fields) {
@@ -205,18 +210,15 @@ export function createInMemoryVault(options?: VaultOptions): Vault {
       });
     }
 
-    // Step 5 — Build scope index
-    const scopeKeys = new Set(
-      capability_token.scope.map(s => `${s.type}:${s.ref}`)
-    );
-
-    // Step 6 — Deterministic ordering
+    // Step 4 — Deterministic ordering
     const sortedPaths = [...sdl_paths].sort();
 
     const resolved: ResolvedField[] = [];
     const unresolved: UnresolvedField[] = [];
 
-    // Step 7 — Resolve paths deterministically
+    // Step 5 — Resolve paths deterministically
+    let tokenConsumed = false;
+
     for (const sdl_path of sortedPaths) {
       const validationError = validateSdlPath(sdl_path);
 
@@ -229,7 +231,6 @@ export function createInMemoryVault(options?: VaultOptions): Vault {
             path: sdl_path,
           },
         });
-
         continue;
       }
 
@@ -244,7 +245,6 @@ export function createInMemoryVault(options?: VaultOptions): Vault {
             path: sdl_path,
           },
         });
-
         continue;
       }
 
@@ -259,23 +259,55 @@ export function createInMemoryVault(options?: VaultOptions): Vault {
             path: sdl_path,
           },
         });
-
         continue;
       }
 
-      const scopeDecision = enforcePathAccess(
-        scopeKeys,
-        pack_ref,
-        fieldRef.content_id
-      );
+      const contentDecision = enforceCapability({
+        required_scope: `content:${fieldRef.content_id}`,
+        token: capability_token,
+        consent: consent!,
+        resource_context: {
+          resource_type: 'content',
+          content_ref: fieldRef.content_id,
+          pack_ref,
+        },
+        request_context: {
+          subject: consent!.subject,
+          grantee: capability_token.grantee,
+          endpoint: 'vault.requestAccess',
+        },
+        now: opts?.now,
+        registries: { nonceRegistry, revocationRegistry },
+        consume: !tokenConsumed,
+      });
 
-      if (scopeDecision.decision.decision === 'DENY') {
-        return {
-          policy: toVaultPolicy(scopeDecision.decision),
-          resolved_fields: [],
-          unresolved_fields: [],
-        };
+      const accessDecision = contentDecision.allowed
+        ? contentDecision
+        : contentDecision.code === 'SCOPE_MISMATCH'
+          ? enforceCapability({
+              required_scope: `pack:${pack_ref}`,
+              token: capability_token,
+              consent: consent!,
+              resource_context: {
+                resource_type: 'pack',
+                pack_ref,
+              },
+              request_context: {
+                subject: consent!.subject,
+                grantee: capability_token.grantee,
+                endpoint: 'vault.requestAccess',
+              },
+              now: opts?.now,
+              registries: { nonceRegistry, revocationRegistry },
+              consume: !tokenConsumed,
+            })
+          : contentDecision;
+
+      if (!accessDecision.allowed) {
+        return denyAccess([mapCapabilityDenyCode(accessDecision.code)]);
       }
+
+      tokenConsumed = true;
 
       resolved.push({
         sdl_path,
@@ -284,14 +316,7 @@ export function createInMemoryVault(options?: VaultOptions): Vault {
       });
     }
 
-    return {
-      policy: {
-        decision: 'ALLOW',
-        reason_codes: [],
-      },
-      resolved_fields: resolved,
-      unresolved_fields: unresolved,
-    };
+    return allowAccess(resolved, unresolved);
   }
 
   function getStore(): Readonly<VaultStore> {
