@@ -6,5 +6,6 @@ export { computeConsentHash } from './hash';
 export type {
   BuildConsentOptions,
   ConsentObjectV1,
+  ConsentPricing,
   ScopeEntry
 } from './types';

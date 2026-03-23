@@ -3,6 +3,12 @@ export type ScopeEntry = {
   ref: string;
 };
 
+export type ConsentPricing = {
+  model: 'per_use';
+  amount: number;
+  currency: string;
+};
+
 export type ConsentObjectV1 = {
   version: string;
   subject: string;
@@ -10,6 +16,7 @@ export type ConsentObjectV1 = {
   action: 'grant' | 'revoke';
   scope: ScopeEntry[];
   permissions: string[];
+  pricing?: ConsentPricing;
   marketMakerId?: string;
   revoke_target?: {
     capability_hash: string;
@@ -28,4 +35,5 @@ export type BuildConsentOptions = {
     capability_hash: string;
   };
   marketMakerId?: string;
+  pricing?: ConsentPricing;
 };

@@ -119,12 +119,25 @@ Consumption semantics:
 2. **Revocation at consumption time** — revoked capabilities deny immediately with a machine-readable revoke code before resource delivery.
 3. **Replay handling** — if a nonce registry is supplied and `consume !== false`, replay is checked before authorization; repeated presentation denies. If `consume === false`, the request is treated as a non-marking presentation for replay only, and replay is not checked or marked. If `requireReplayProtection` is `true` but no nonce registry is supplied, the request denies fail-closed.
 4. **Central authorization** — `evaluateCapabilityAccess(...)` remains the source of truth for action/resource/market-maker/policy decisions.
-5. **Per-consent usage metering** — if a consent-usage registry is supplied, usage is recorded by `consent_ref` after the authorization decision is made. `usageCount` increments only on allowed consumption attempts; `lastAccessedAt` and `lastAccessResult` update on both allow and deny. This metering is deterministic protocol state for the grant itself, not analytics, billing, or quota enforcement.
-6. **Post-allow marking** — nonce state is marked only after an allow decision and only when `consume !== false` and a nonce registry is present. Denies never mark replay state.
+5. **Per-consent payment enforcement** — if the parent consent defines `pricing`, authorization still runs first, but consumption denies with `PAYMENT_REQUIRED` unless `paymentContext?.paid === true`. This is only a deterministic gate on use of the grant, not billing, settlement, wallet logic, or payment processing.
+6. **Per-consent usage metering** — if a consent-usage registry is supplied, usage is recorded by `consent_ref` after the authorization decision is made. `usageCount` increments only on allowed consumption attempts; `lastAccessedAt` and `lastAccessResult` update on both allow and deny. This metering is deterministic protocol state for the grant itself, not analytics, billing, or quota enforcement. Payment-required denies are recorded as denied attempts and do not increment `usageCount`.
+7. **Post-allow marking** — nonce state is marked only after an allow decision and only when `consume !== false` and a nonce registry is present. Denies never mark replay state.
 
 When `consume === false`, usage is still recorded if a consent-usage registry is present. `consume` only controls replay marking, not whether an access attempt updates per-consent usage state.
 
 If usage metering fails, the original allow/deny decision is preserved and the response may omit the `usage` block. Metering is strictly a side effect and MUST NOT change authorization behavior.
+
+`CapabilityConsumptionDecision` may include an optional `payment` block whenever the parent consent declares pricing:
+
+```ts
+payment: {
+  required: boolean;
+  amount?: number;
+  currency?: string;
+}
+```
+
+`required` is `true` only when a priced consent was authorized but `paymentContext?.paid` was not `true`. The protocol does not verify how payment happened; it only consumes an external paid/not-paid signal.
 
 `CapabilityConsumptionDecision` may include an optional `usage` block when metering is enabled:
 
@@ -138,7 +151,7 @@ usage: {
 
 Non-goals of the consumption boundary in this card:
 
-- billing or paid grants;
+- billing systems, payment processing, or stored balances;
 - quotas or usage-based denies;
 - AI interpreter execution;
 - transport-specific HTTP/UI shaping.
@@ -149,7 +162,7 @@ The engine intentionally leaves narrow interfaces for future cards:
 
 - **Usage metering / quota** via `hooks.usage` layered after canonical consumption.
 - **Policy interpreters / AI-assisted policy** via `hooks.policy`.
-- **Payment gates / paid grants** by composing hook evaluation before delivery.
+- **Richer payment integrations** above the protocol gate while preserving the same `paid` signal boundary.
 - **Generalized resource matching** by extending the resource-normalization layer without changing the public decision envelope.
 - **Dual expiration / market-maker grant binding** by adding more normalized grant fields while preserving the same decision API.
 

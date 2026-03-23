@@ -19,7 +19,12 @@ const PACK_REF = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
 const NOW = new Date('2025-06-15T10:00:00Z');
 const CONSENT_EXPIRES = '2025-06-15T10:05:00Z';
 
-function buildConsent(marketMakerId?: string, expiresAt: string = CONSENT_EXPIRES, now: Date = NOW) {
+function buildConsent(
+  marketMakerId?: string,
+  expiresAt: string = CONSENT_EXPIRES,
+  now: Date = NOW,
+  pricing?: { model: 'per_use'; amount: number; currency: string }
+) {
   return buildConsentObject(
     SUBJECT,
     GRANTEE,
@@ -32,7 +37,8 @@ function buildConsent(marketMakerId?: string, expiresAt: string = CONSENT_EXPIRE
     {
       now,
       expires_at: expiresAt,
-      ...(marketMakerId !== undefined ? { marketMakerId } : {})
+      ...(marketMakerId !== undefined ? { marketMakerId } : {}),
+      ...(pricing !== undefined ? { pricing } : {})
     }
   );
 }
@@ -50,7 +56,10 @@ class ThrowingConsentUsageRegistry implements ConsentUsageRegistry {
 
 function buildToken(overrides: Record<string, unknown> = {}) {
   const consent = buildConsent(
-    typeof overrides.marketMakerId === 'string' ? overrides.marketMakerId : undefined
+    typeof overrides.marketMakerId === 'string' ? overrides.marketMakerId : undefined,
+    CONSENT_EXPIRES,
+    NOW,
+    overrides.pricing as { model: 'per_use'; amount: number; currency: string } | undefined
   );
 
   return {
@@ -182,6 +191,132 @@ describe('consumeCapabilityAccess', () => {
       lastAccessedAt: '2025-06-15T10:00:00Z',
       lastAccessResult: 'allow'
     });
+  });
+
+  it('keeps unpriced capability consumption behavior unchanged', () => {
+    const usageRegistry = new InMemoryConsentUsageRegistry();
+    const { token, consent } = buildToken();
+
+    const decision = consumeCapabilityAccess({
+      capability: token,
+      consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: NOW,
+      consume: false,
+      registries: {
+        revocationRegistry: new InMemoryRevocationRegistry(),
+        consentUsageRegistry: usageRegistry
+      }
+    });
+
+    expect(decision.allowed).toBe(true);
+    expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.ACCESS_ALLOWED);
+    expect(decision.payment).toBeUndefined();
+    expect(decision.usage?.usageCount).toBe(1);
+  });
+
+  it('denies priced capability consumption when payment has not been satisfied', () => {
+    const usageRegistry = new InMemoryConsentUsageRegistry();
+    const { token, consent } = buildToken({
+      pricing: { model: 'per_use', amount: 25, currency: 'USD' }
+    });
+
+    const decision = consumeCapabilityAccess({
+      capability: token,
+      consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: NOW,
+      consume: false,
+      registries: {
+        revocationRegistry: new InMemoryRevocationRegistry(),
+        consentUsageRegistry: usageRegistry
+      }
+    });
+
+    expect(decision.allowed).toBe(false);
+    expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.PAYMENT_REQUIRED);
+    expect(decision.payment).toEqual({ required: true, amount: 25, currency: 'USD' });
+    expect(decision.usage).toEqual({
+      usageCount: 0,
+      lastAccessedAt: '2025-06-15T10:00:00Z',
+      lastAccessResult: 'deny'
+    });
+    expect(usageRegistry.get(token.consent_ref)).toEqual({
+      consentRef: token.consent_ref,
+      usageCount: 0,
+      lastAccessedAt: '2025-06-15T10:00:00Z',
+      lastAccessResult: 'deny'
+    });
+  });
+
+  it('allows priced capability consumption when paymentContext.paid is true', () => {
+    const usageRegistry = new InMemoryConsentUsageRegistry();
+    const { token, consent } = buildToken({
+      pricing: { model: 'per_use', amount: 25, currency: 'USD' }
+    });
+
+    const decision = consumeCapabilityAccess({
+      capability: token,
+      consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: NOW,
+      consume: false,
+      paymentContext: { paid: true },
+      registries: {
+        revocationRegistry: new InMemoryRevocationRegistry(),
+        consentUsageRegistry: usageRegistry
+      }
+    });
+
+    expect(decision.allowed).toBe(true);
+    expect(decision.payment).toEqual({ required: false, amount: 25, currency: 'USD' });
+    expect(decision.usage?.usageCount).toBe(1);
+    expect(decision.usage?.lastAccessResult).toBe('allow');
+  });
+
+  it('accumulates usage across multiple paid accesses', () => {
+    const usageRegistry = new InMemoryConsentUsageRegistry();
+    const first = buildToken({ pricing: { model: 'per_use', amount: 25, currency: 'USD' } });
+    const second = buildToken({ pricing: { model: 'per_use', amount: 25, currency: 'USD' } });
+
+    const firstDecision = consumeCapabilityAccess({
+      capability: first.token,
+      consent: first.consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: NOW,
+      consume: false,
+      paymentContext: { paid: true },
+      registries: {
+        revocationRegistry: new InMemoryRevocationRegistry(),
+        consentUsageRegistry: usageRegistry
+      }
+    });
+
+    const secondDecision = consumeCapabilityAccess({
+      capability: second.token,
+      consent: second.consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: new Date('2025-06-15T10:00:30Z'),
+      consume: false,
+      paymentContext: { paid: true },
+      registries: {
+        revocationRegistry: new InMemoryRevocationRegistry(),
+        consentUsageRegistry: usageRegistry
+      }
+    });
+
+    expect(firstDecision.usage?.usageCount).toBe(1);
+    expect(secondDecision.usage).toEqual({
+      usageCount: 2,
+      lastAccessedAt: '2025-06-15T10:00:30Z',
+      lastAccessResult: 'allow'
+    });
+    expect(secondDecision.payment).toEqual({ required: false, amount: 25, currency: 'USD' });
   });
 
   it('records denied usage attempts without incrementing usageCount', () => {
