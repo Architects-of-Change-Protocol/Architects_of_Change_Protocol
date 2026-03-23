@@ -1,3 +1,4 @@
+import { canonicalCapabilityActions } from '../../shared/capabilityActions';
 import { MarketMakerRegistry } from '../../shared/marketMakerRegistry';
 import { buildConsentObject } from '../../consent/consentObject';
 import { ScopeEntry } from '../../consent/types';
@@ -189,6 +190,35 @@ describe('capability token minting', () => {
 
     expect(token1.token_id).not.toBe(token2.token_id);
     expect(token1.capability_hash).not.toBe(token2.capability_hash);
+  });
+
+  it('allows the canonical capability action vocabulary', () => {
+    const consent = buildBaseConsent({ permissions: [...canonicalCapabilityActions] });
+    const token = mintCapabilityToken(
+      consent,
+      baseScope,
+      ['aggregate', 'derive', 'read', 'share', 'store'],
+      tokenExpires,
+      { now: tokenNow }
+    );
+
+    expect(token.permissions).toEqual(['aggregate', 'derive', 'read', 'share', 'store']);
+  });
+
+  it('rejects unknown capability permissions during minting', () => {
+    const consent = buildBaseConsent({ permissions: ['read', 'store'] });
+
+    expect(() =>
+      mintCapabilityToken(consent, baseScope, ['read', 'write'], tokenExpires, { now: tokenNow })
+    ).toThrow('Capability permission 1 must be one of: read, store, share, derive, aggregate.');
+  });
+
+  it('rejects malformed capability permission strings during minting', () => {
+    const consent = buildBaseConsent({ permissions: ['read', 'store'] });
+
+    expect(() =>
+      mintCapabilityToken(consent, baseScope, ['read', 'Read'], tokenExpires, { now: tokenNow })
+    ).toThrow('Capability permission 1: must be lowercase alphanumeric with hyphens.');
   });
 
   it('mints with not_before set', () => {
@@ -934,6 +964,19 @@ describe('capability token — scope escalation rejection', () => {
     expect(() =>
       verifyCapabilityToken(tampered as any, consent, { now: new Date('2025-08-01T00:00:00Z') })
     ).toThrow('Scope escalation');
+  });
+
+  it('verifies tokens whose actions are an attenuated subset of parent consent permissions', () => {
+    const consent = buildBaseConsent({ permissions: ['read', 'store', 'share'] });
+    const token = mintCapabilityToken(
+      consent,
+      baseScope,
+      ['read', 'share'],
+      tokenExpires,
+      { now: tokenNow }
+    );
+
+    expect(() => verifyCapabilityToken(token, consent, { now: new Date('2025-08-01T00:00:00Z') })).not.toThrow();
   });
 
   it('rejects verification when token has permissions outside consent permissions', () => {

@@ -293,14 +293,16 @@ See [Section 5: Attenuation Model](#5-attenuation-model) for subset constraints.
 | **Format** | Array of permission strings |
 | **Constraints** | MUST NOT be empty; minimum 1 entry; maximum 100 entries |
 
-**Description:** The operations the grantee is permitted to perform when presenting this token. Permissions MUST be drawn from the vocabulary defined in the Consent Object Specification (Section 3.2.6).
+**Description:** The operations the grantee is permitted to perform when presenting this token. Permissions MUST be drawn from the canonical action vocabulary defined in the Consent Object Specification (Section 3.2.6): `read`, `store`, `share`, `derive`, `aggregate`.
 
 **Semantic Rules:**
 
 1. Every permission in the token MUST appear in the parent Consent Object's permissions.
 2. The token's permissions MUST be a subset of (or equal to) the parent consent's permissions.
-3. Permission strings MUST be lowercase alphanumeric with hyphens.
-4. Permissions MUST NOT contain duplicates within a single token.
+3. Unknown or malformed permission strings MUST cause structural validation to fail closed.
+4. Permission strings MUST be lowercase alphanumeric with hyphens.
+5. Permissions MUST NOT contain duplicates within a single token.
+6. Runtime enforcement MUST use exact string matching only; there is no wildcard, alias, or fuzzy action semantics.
 
 #### 3.2.8 issued_at
 
@@ -490,7 +492,7 @@ A token MAY permit fewer operations than the parent consent.
 | **Full Permissions** | Token permissions equal parent consent permissions (no attenuation) |
 | **Reduced Permissions** | Token permissions are a proper subset of parent consent permissions |
 
-Permission attenuation is expressed by including fewer permission strings in the token than exist in the parent consent. Each retained permission MUST be an exact string match.
+Permission attenuation is expressed by including fewer permission strings in the token than exist in the parent consent. Each retained permission MUST be an exact string match. A requested action that is structurally valid but absent from the token MUST be denied at runtime.
 
 ### 5.4 Temporal Attenuation
 

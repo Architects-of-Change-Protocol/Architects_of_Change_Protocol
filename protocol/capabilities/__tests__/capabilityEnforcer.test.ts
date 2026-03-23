@@ -141,6 +141,22 @@ describe('legacy capability bridge mapping', () => {
     expect(policyDecision.code).toBe('RESOURCE_RESTRICTION_FAILED');
   });
 
+  it('denies non-read actions when the legacy bridge is misused outside its read-only contract', () => {
+    const { token, consent } = buildToken();
+
+    const decision = enforceCapability({
+      token,
+      consent,
+      required_scope: `content:${CONTENT_REF}`,
+      action: 'share' as any,
+      now: NOW
+    });
+
+    expect(decision.code).toBe('INVALID_CAPABILITY');
+    expect(decision.reason).toContain('Capability does not allow action "share".');
+    expect(decision.metadata?.legacyBridgeAction).toBe('share');
+  });
+
   it('defaults the bridge to read access and supports explicit read access', () => {
     const { token, consent } = buildToken();
 

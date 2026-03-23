@@ -1,5 +1,6 @@
 import { validateCapabilityToken } from '../capability';
 import { validateConsentObject } from '../consent';
+import { validateCapabilityAction } from '../shared/capabilityActions';
 import type { ScopeEntry } from '../consent/types';
 import {
   capabilityAccessReasonCodes,
@@ -217,6 +218,15 @@ export function normalizeCapabilityAccessRequest(
     throw new CapabilityAccessInputError(
       capabilityAccessReasonCodes.ACTION_MISSING,
       'Requested action is required for access evaluation.'
+    );
+  }
+
+  try {
+    validateCapabilityAction(input.action.trim(), 'Requested action');
+  } catch (error) {
+    throw new CapabilityAccessInputError(
+      capabilityAccessReasonCodes.CAPABILITY_INVALID,
+      (error as Error).message || 'Requested action could not be validated safely.'
     );
   }
 

@@ -287,13 +287,14 @@ See [Section 4: Consent Scope Model](#4-consent-scope-model) for scope entry str
 
 **Semantic Rules:**
 
-1. Permissions SHOULD be drawn from the defined permission vocabulary.
-2. Unknown permissions MUST be ignored by implementations.
+1. Permissions MUST be drawn from the canonical protocol action vocabulary defined below.
+2. Unknown permissions MUST cause structural validation to fail closed.
 3. Permissions are additive; multiple grants combine permissions.
 4. Permission strings MUST be lowercase alphanumeric with hyphens.
 5. Permissions MUST NOT contain duplicates within a single Consent Object.
+6. This specification defines exact string actions only; there is no wildcard, alias, or pattern matching semantics.
 
-**Standard Permissions:**
+**Canonical Protocol Actions / Permissions:**
 
 | Permission | Description |
 |------------|-------------|
@@ -302,6 +303,8 @@ See [Section 4: Consent Scope Model](#4-consent-scope-model) for scope entry str
 | `share` | Include object in further consent grants |
 | `derive` | Create derivative objects referencing original |
 | `aggregate` | Include object in aggregate computations |
+
+These strings are the canonical action vocabulary used by consent builders, capability minting, structural validation, derivation checks, and runtime enforcement.
 
 #### 3.2.8 issued_at
 

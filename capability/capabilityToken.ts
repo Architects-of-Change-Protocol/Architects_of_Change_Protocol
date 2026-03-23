@@ -4,6 +4,7 @@ import { canonicalizeCapabilityPayload } from './canonical';
 import { computeCapabilityHash } from './hash';
 import { isRevoked } from './revocation';
 import { validateMarketMakerId } from '../shared/marketMakerId';
+import { validateCapabilityActions } from '../shared/capabilityActions';
 import type { MarketMakerRegistry } from '../shared/marketMakerRegistry';
 import type { NonceRegistry } from './registries/NonceRegistry';
 import type { RevocationRegistry } from './registries/RevocationRegistry';
@@ -15,8 +16,6 @@ const DID_PATTERN = /^did:[a-z0-9]+:[a-zA-Z0-9._%-]+$/;
 const HASH_HEX_PATTERN = /^[a-f0-9]{64}$/;
 const ISO8601_UTC_PATTERN =
   /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$/;
-const PERMISSION_PATTERN = /^[a-z][a-z0-9-]*$/;
-
 const MIN_DID_LENGTH = 8;
 const MAX_DID_LENGTH = 2048;
 const MAX_SCOPE_ENTRIES = 10000;
@@ -113,32 +112,12 @@ function validateScope(scope: ScopeEntry[]): void {
 }
 
 function validatePermissions(permissions: string[]): void {
-  if (!Array.isArray(permissions) || permissions.length === 0) {
-    throw new Error('Capability permissions must be a non-empty array.');
-  }
-  if (permissions.length > MAX_PERMISSIONS) {
-    throw new Error(
-      `Capability permissions must not exceed ${MAX_PERMISSIONS} entries.`
-    );
-  }
-
-  const seen = new Set<string>();
-  for (let i = 0; i < permissions.length; i++) {
-    if (
-      typeof permissions[i] !== 'string' ||
-      !PERMISSION_PATTERN.test(permissions[i])
-    ) {
-      throw new Error(
-        `Capability permission ${i}: must be lowercase alphanumeric with hyphens.`
-      );
-    }
-    if (seen.has(permissions[i])) {
-      throw new Error(
-        `Capability permissions contain duplicate: "${permissions[i]}".`
-      );
-    }
-    seen.add(permissions[i]);
-  }
+  validateCapabilityActions(permissions, {
+    containerLabel: 'Capability permissions',
+    itemLabel: 'Capability permission',
+    emptyMessage: 'Capability permissions must be a non-empty array.',
+    maxEntries: MAX_PERMISSIONS
+  });
 }
 
 function validateTimestamp(value: string, fieldName: string): void {

@@ -205,9 +205,10 @@ function buildLegacyAccessRequest(
   };
 }
 
-// Legacy bridge for current vault/resolver flows. It intentionally defaults to
-// read-only enforcement because existing callers redeem capabilities only for
-// protected resource retrieval, not generalized state-changing actions.
+// Legacy bridge for current vault/resolver flows. It remains intentionally
+// read-only: existing callers redeem capabilities only for protected resource
+// retrieval, and non-read protocol actions stay in the canonical enforcement
+// layer until a dedicated legacy bridge expansion is specified.
 export function enforceCapability(
   input: EnforceCapabilityInput
 ): EnforceCapabilityDecision {
