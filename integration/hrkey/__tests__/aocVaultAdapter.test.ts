@@ -32,11 +32,11 @@ const STORAGE_A = '1111111111111111111111111111111111111111111111111111111111111
 const STORAGE_B = '2222222222222222222222222222222222222222222222222222222222222222';
 const STORAGE_C = '3333333333333333333333333333333333333333333333333333333333333333';
 
-const T_CONSENT = new Date('2025-01-15T14:30:00Z');
+const T_CONSENT = new Date('2025-06-15T10:00:00Z');
 const T_MINT    = new Date('2025-06-15T10:00:00Z');
-const T_ACCESS  = new Date('2025-08-01T00:00:00Z');
-const CONSENT_EXPIRES = '2026-01-15T14:30:00Z';
-const TOKEN_EXPIRES   = '2025-12-31T23:59:59Z';
+const T_ACCESS  = new Date('2025-06-15T10:00:00Z');
+const CONSENT_EXPIRES = '2025-06-15T10:05:00Z';
+const TOKEN_EXPIRES   = '2025-06-15T10:05:00Z';
 
 // ─── Helpers ────────────────────────────────────────────────────────
 
@@ -206,7 +206,7 @@ describe('HRKey capability expiry enforcement', () => {
       expires_at: CONSENT_EXPIRES,
     }, { now: T_CONSENT });
 
-    const shortExpiry = '2025-07-01T00:00:00Z';
+    const shortExpiry = '2025-06-15T10:00:01Z';
     const capResult = adapter.mintCapability({
       consent_hash: consentResult.consent_hash,
       scope: FULL_SCOPE,
@@ -219,7 +219,7 @@ describe('HRKey capability expiry enforcement', () => {
       capability: capResult.capability,
       sdl_paths: ['work.reference.score'],
       pack_hash: pack.pack_hash,
-    }, { now: new Date('2025-08-01T00:00:00Z') });
+    }, { now: new Date('2025-06-15T10:00:02Z') });
 
     expect(result.policy.decision).toBe('DENY');
     expect(result.policy.reason_codes).toContain('EXPIRED');
@@ -306,7 +306,7 @@ describe('HRKey replay protection', () => {
       capability: capResult.capability,
       sdl_paths: ['work.reference.score'],
       pack_hash: pack.pack_hash,
-    }, { now: new Date('2025-08-01T00:00:01Z') });
+    }, { now: new Date('2025-06-15T10:00:01Z') });
     expect(r2.policy.decision).toBe('DENY');
     expect(r2.policy.reason_codes).toContain('REPLAY');
   });

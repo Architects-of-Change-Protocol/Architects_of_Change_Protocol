@@ -14,3 +14,14 @@ export type {
   CapabilitySensitivityLevel,
   ProtocolCapabilityDefinition
 } from './types';
+
+export {
+  consumeCapabilityAccess,
+  capabilityConsumptionReasonCodes
+} from './consumeCapabilityAccess';
+export type {
+  CapabilityConsumptionChecks,
+  CapabilityConsumptionDecision,
+  CapabilityConsumptionReasonCode,
+  CapabilityConsumptionRequest
+} from './consumeCapabilityAccess';

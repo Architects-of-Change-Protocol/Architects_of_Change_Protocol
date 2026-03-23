@@ -24,11 +24,11 @@ const STORAGE_HASH_A = '11111111111111111111111111111111111111111111111111111111
 const STORAGE_HASH_B = '2222222222222222222222222222222222222222222222222222222222222222';
 const STORAGE_HASH_C = '3333333333333333333333333333333333333333333333333333333333333333';
 
-const consentNow = new Date('2025-01-15T14:30:00Z');
+const consentNow = new Date('2025-06-15T10:00:00Z');
 const tokenNow = new Date('2025-06-15T10:00:00Z');
-const accessNow = new Date('2025-08-01T00:00:00Z');
+const accessNow = new Date('2025-06-15T10:00:00Z');
 const consentExpires = '2026-01-15T14:30:00Z';
-const tokenExpires = '2025-12-31T23:59:59Z';
+const tokenExpires = '2025-06-15T10:05:00Z';
 
 // --- Helpers ---
 
@@ -235,7 +235,7 @@ describe('vault expiry: capability expired -> DENY(EXPIRED)', () => {
   it('denies access when capability token has expired', () => {
     const { vault, pack_hash, consent_hash } = setupVault();
 
-    const shortExpiry = '2025-07-01T00:00:00Z';
+    const shortExpiry = '2025-06-15T10:00:01Z';
     const token = vault.mintCapability(
       consent_hash,
       makeConsentScope(),
@@ -251,7 +251,7 @@ describe('vault expiry: capability expired -> DENY(EXPIRED)', () => {
         sdl_paths: ['person.name.legal.full'],
         pack_ref: pack_hash
       },
-      { now: new Date('2025-08-01T00:00:00Z') }
+      { now: new Date('2025-06-15T10:00:02Z') }
     );
 
     expect(result.policy.decision).toBe('DENY');
@@ -295,7 +295,7 @@ describe('vault replay: reuse token -> DENY(REPLAY)', () => {
         sdl_paths: ['person.name.legal.full'],
         pack_ref: pack_hash
       },
-      { now: new Date('2025-08-01T00:00:01Z') }
+      { now: new Date('2025-06-15T10:00:01Z') }
     );
     expect(result2.policy.decision).toBe('DENY');
     expect(result2.policy.reason_codes).toContain('REPLAY');
@@ -900,7 +900,7 @@ describe('vault consent-based revocation', () => {
       [],
       [],
       {
-        now: new Date('2025-09-01T00:00:00Z'),
+        now: new Date('2025-06-15T10:00:30Z'),
         revoke_target: { capability_hash: token.capability_hash }
       }
     );
@@ -938,7 +938,7 @@ describe('vault consent-based revocation', () => {
       [],
       [],
       {
-        now: new Date('2025-09-01T00:00:00Z'),
+        now: new Date('2025-06-15T10:00:30Z'),
         revoke_target: { capability_hash: token.capability_hash }
       }
     );
