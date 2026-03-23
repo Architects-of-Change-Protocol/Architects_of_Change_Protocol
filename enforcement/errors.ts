@@ -5,7 +5,8 @@ export type CapabilityAccessInputErrorCode =
   | typeof capabilityAccessReasonCodes.CAPABILITY_INVALID
   | typeof capabilityAccessReasonCodes.ACTION_MISSING
   | typeof capabilityAccessReasonCodes.RESOURCE_MISSING
-  | typeof capabilityAccessReasonCodes.CONSENT_INVALID;
+  | typeof capabilityAccessReasonCodes.CONSENT_INVALID
+  | typeof capabilityAccessReasonCodes.UNKNOWN_MARKET_MAKER;
 
 export class CapabilityAccessInputError extends Error {
   readonly code: CapabilityAccessInputErrorCode;
