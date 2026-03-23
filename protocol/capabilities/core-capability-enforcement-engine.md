@@ -8,10 +8,16 @@
 
 The core capability enforcement engine is the central decision layer for evaluating whether a requested action against a requested resource is authorized by a capability grant. It exists to satisfy the MVP blocker invariants for fail-closed authorization, deterministic decisions, and explainable denies.
 
-Primary entrypoint:
+Primary engine entrypoint:
 
 ```ts
 evaluateCapabilityAccess(input: CapabilityAccessRequest): CapabilityAccessDecision
+```
+
+Canonical runtime consumption entrypoint:
+
+```ts
+consumeCapabilityAccess(input: CapabilityConsumptionRequest): CapabilityConsumptionDecision
 ```
 
 ## API Summary
@@ -103,11 +109,30 @@ Current reason codes:
 
 These codes are intended for deterministic branching, audit logging, and future Decision/Error Object alignment.
 
+## Runtime Consumption Boundary
+
+`consumeCapabilityAccess(...)` is the canonical protocol-level runtime boundary for presenting a capability for use. It wraps the core engine without bypassing it and adds the execution-time checks that the engine intentionally leaves outside its narrow authorization core.
+
+Consumption semantics:
+
+1. **Structural validation** — capability is validated with the canonical token validator; optional consent is validated and, if supplied, matched against the capability.
+2. **Revocation at consumption time** — revoked capabilities deny immediately with a machine-readable revoke code before resource delivery.
+3. **Replay handling** — if a nonce registry is supplied and `consume !== false`, replay is checked before authorization; repeated presentation denies. If `consume === false`, the request is treated as a non-marking presentation and replay is not checked or marked. If `requireReplayProtection` is `true` but no nonce registry is supplied, the request denies fail-closed.
+4. **Central authorization** — `evaluateCapabilityAccess(...)` remains the source of truth for action/resource/market-maker/policy decisions.
+5. **Post-allow marking** — nonce state is marked only after an allow decision and only when `consume !== false` and a nonce registry is present. Denies never mark replay state.
+
+Non-goals of the consumption boundary in this card:
+
+- usage metering / quotas;
+- billing or paid grants;
+- AI interpreter execution;
+- transport-specific HTTP/UI shaping.
+
 ## Extension Points
 
 The engine intentionally leaves narrow interfaces for future cards:
 
-- **Usage metering / quota / consumption** via `hooks.usage`.
+- **Usage metering / quota** via `hooks.usage` layered after canonical consumption.
 - **Policy interpreters / AI-assisted policy** via `hooks.policy`.
 - **Payment gates / paid grants** by composing hook evaluation before delivery.
 - **Generalized resource matching** by extending the resource-normalization layer without changing the public decision envelope.
@@ -118,5 +143,5 @@ The engine intentionally leaves narrow interfaces for future cards:
 - Prefer passing `now` in tests and integration boundaries that require deterministic output.
 - Do not mutate the caller’s capability object; the engine normalizes to an internal immutable view.
 - Input normalization/classification uses structured local input errors rather than message-fragment matching.
-- The legacy `protocol/capabilities/capabilityEnforcer` bridge is intentionally read-scoped and maps newer reason codes onto the closest legacy surface: consent issues → `CONSENT_MISMATCH`, market-maker binding issues → `REQUEST_CONTEXT_MISMATCH`, and usage/policy denies → `RESOURCE_RESTRICTION_FAILED`.
+- The legacy `protocol/capabilities/capabilityEnforcer` bridge remains intentionally read-scoped for existing vault/resolver consumers. It now delegates its runtime decision to `consumeCapabilityAccess(...)` and maps newer decision codes onto the closest legacy surface: consent issues → `CONSENT_MISMATCH`, market-maker binding issues → `REQUEST_CONTEXT_MISMATCH`, usage/policy denies → `RESOURCE_RESTRICTION_FAILED`, while preserving legacy `REVOKED` / `REPLAY` compatibility.
 - Treat the returned `reasonCode` as the source of truth for programmatic behavior; `reason` is for operators and audit trails.

@@ -6,8 +6,8 @@ import { enforceCapability } from '../capabilityEnforcer';
 const SUBJECT = 'did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK';
 const GRANTEE = 'did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH';
 const CONTENT_REF = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
-const CONSENT_EXPIRES = '2026-01-15T14:30:00Z';
-const NOW = new Date('2025-08-01T00:00:00Z');
+const CONSENT_EXPIRES = '2025-06-15T10:05:00Z';
+const NOW = new Date('2025-06-15T10:00:00Z');
 
 function buildConsent(marketMakerId?: string) {
   return buildConsentObject(
@@ -17,7 +17,7 @@ function buildConsent(marketMakerId?: string) {
     [{ type: 'content', ref: CONTENT_REF }],
     ['read'],
     {
-      now: new Date('2025-01-15T14:30:00Z'),
+      now: new Date('2025-06-15T10:00:00Z'),
       expires_at: CONSENT_EXPIRES,
       ...(marketMakerId !== undefined ? { marketMakerId } : {})
     }
@@ -36,7 +36,7 @@ function buildToken(overrides: Record<string, unknown> = {}) {
         consent,
         [{ type: 'content', ref: CONTENT_REF }],
         ['read'],
-        '2025-12-31T23:59:59Z',
+        '2025-06-15T10:05:00Z',
         { now: new Date('2025-06-15T10:00:00Z') }
       ),
       ...overrides
