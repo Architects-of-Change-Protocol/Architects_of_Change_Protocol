@@ -17,11 +17,15 @@ export type {
 
 export {
   consumeCapabilityAccess,
-  capabilityConsumptionReasonCodes
+  capabilityConsumptionReasonCodes,
+  InMemoryConsentUsageRegistry
 } from './consumeCapabilityAccess';
 export type {
   CapabilityConsumptionChecks,
   CapabilityConsumptionDecision,
   CapabilityConsumptionReasonCode,
-  CapabilityConsumptionRequest
+  CapabilityConsumptionRequest,
+  ConsentUsageRegistry,
+  ConsentUsageResult,
+  ConsentUsageState
 } from './consumeCapabilityAccess';

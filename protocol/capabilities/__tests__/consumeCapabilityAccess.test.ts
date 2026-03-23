@@ -6,7 +6,9 @@ import { MarketMakerRegistry } from '../../../shared/marketMakerRegistry';
 import { capabilityAccessReasonCodes } from '../../../enforcement';
 import {
   capabilityConsumptionReasonCodes,
-  consumeCapabilityAccess
+  consumeCapabilityAccess,
+  InMemoryConsentUsageRegistry,
+  type ConsentUsageRegistry
 } from '../consumeCapabilityAccess';
 import { enforceCapability } from '../capabilityEnforcer';
 
@@ -33,6 +35,17 @@ function buildConsent(marketMakerId?: string, expiresAt: string = CONSENT_EXPIRE
       ...(marketMakerId !== undefined ? { marketMakerId } : {})
     }
   );
+}
+
+
+class ThrowingConsentUsageRegistry implements ConsentUsageRegistry {
+  get(): undefined {
+    return undefined;
+  }
+
+  record(): never {
+    throw new Error('usage metering unavailable');
+  }
 }
 
 function buildToken(overrides: Record<string, unknown> = {}) {
@@ -140,6 +153,108 @@ describe('consumeCapabilityAccess', () => {
     expect(decision.consumed).toBe(false);
   });
 
+  it('records first-time successful usage per consent and returns usage state', () => {
+    const usageRegistry = new InMemoryConsentUsageRegistry();
+    const { token, consent } = buildToken();
+
+    const decision = consumeCapabilityAccess({
+      capability: token,
+      consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: NOW,
+      registries: {
+        nonceRegistry: new InMemoryNonceRegistry(),
+        revocationRegistry: new InMemoryRevocationRegistry(),
+        consentUsageRegistry: usageRegistry
+      }
+    });
+
+    expect(decision.allowed).toBe(true);
+    expect(decision.usage).toEqual({
+      usageCount: 1,
+      lastAccessedAt: '2025-06-15T10:00:00Z',
+      lastAccessResult: 'allow'
+    });
+    expect(usageRegistry.get(token.consent_ref)).toEqual({
+      consentRef: token.consent_ref,
+      usageCount: 1,
+      lastAccessedAt: '2025-06-15T10:00:00Z',
+      lastAccessResult: 'allow'
+    });
+  });
+
+  it('records denied usage attempts without incrementing usageCount', () => {
+    const usageRegistry = new InMemoryConsentUsageRegistry();
+    const { token, consent } = buildToken();
+
+    const decision = consumeCapabilityAccess({
+      capability: token,
+      consent,
+      action: 'share',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: NOW,
+      registries: {
+        nonceRegistry: new InMemoryNonceRegistry(),
+        revocationRegistry: new InMemoryRevocationRegistry(),
+        consentUsageRegistry: usageRegistry
+      }
+    });
+
+    expect(decision.allowed).toBe(false);
+    expect(decision.usage).toEqual({
+      usageCount: 0,
+      lastAccessedAt: '2025-06-15T10:00:00Z',
+      lastAccessResult: 'deny'
+    });
+    expect(usageRegistry.get(token.consent_ref)).toEqual({
+      consentRef: token.consent_ref,
+      usageCount: 0,
+      lastAccessedAt: '2025-06-15T10:00:00Z',
+      lastAccessResult: 'deny'
+    });
+  });
+
+  it('accumulates usageCount across multiple allowed calls for the same consent', () => {
+    const usageRegistry = new InMemoryConsentUsageRegistry();
+    const first = buildToken();
+    const second = buildToken();
+
+    const firstDecision = consumeCapabilityAccess({
+      capability: first.token,
+      consent: first.consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: NOW,
+      consume: false,
+      registries: {
+        revocationRegistry: new InMemoryRevocationRegistry(),
+        consentUsageRegistry: usageRegistry
+      }
+    });
+
+    const secondDecision = consumeCapabilityAccess({
+      capability: second.token,
+      consent: second.consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: new Date('2025-06-15T10:00:30Z'),
+      consume: false,
+      registries: {
+        revocationRegistry: new InMemoryRevocationRegistry(),
+        consentUsageRegistry: usageRegistry
+      }
+    });
+
+    expect(firstDecision.usage?.usageCount).toBe(1);
+    expect(secondDecision.usage).toEqual({
+      usageCount: 2,
+      lastAccessedAt: '2025-06-15T10:00:30Z',
+      lastAccessResult: 'allow'
+    });
+    expect(usageRegistry.get(first.token.consent_ref)?.usageCount).toBe(2);
+  });
+
   it('treats consume=false as a non-marking presentation even when allowed', () => {
     const nonceRegistry = new InMemoryNonceRegistry();
     const { token, consent } = buildToken();
@@ -157,6 +272,75 @@ describe('consumeCapabilityAccess', () => {
     expect(decision.allowed).toBe(true);
     expect(decision.consumed).toBe(false);
     expect(nonceRegistry.hasSeen(token.token_id, NOW)).toBe(false);
+  });
+
+  it('records usage even when consume=false', () => {
+    const usageRegistry = new InMemoryConsentUsageRegistry();
+    const nonceRegistry = new InMemoryNonceRegistry();
+    const { token, consent } = buildToken();
+
+    const decision = consumeCapabilityAccess({
+      capability: token,
+      consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: NOW,
+      consume: false,
+      registries: {
+        nonceRegistry,
+        revocationRegistry: new InMemoryRevocationRegistry(),
+        consentUsageRegistry: usageRegistry
+      }
+    });
+
+    expect(decision.allowed).toBe(true);
+    expect(decision.consumed).toBe(false);
+    expect(decision.usage).toEqual({
+      usageCount: 1,
+      lastAccessedAt: '2025-06-15T10:00:00Z',
+      lastAccessResult: 'allow'
+    });
+    expect(nonceRegistry.hasSeen(token.token_id, NOW)).toBe(false);
+  });
+
+  it('ignores usage metering failures and preserves the original decision', () => {
+    const { token, consent } = buildToken();
+
+    const decision = consumeCapabilityAccess({
+      capability: token,
+      consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: NOW,
+      registries: {
+        nonceRegistry: new InMemoryNonceRegistry(),
+        revocationRegistry: new InMemoryRevocationRegistry(),
+        consentUsageRegistry: new ThrowingConsentUsageRegistry()
+      }
+    });
+
+    expect(decision.allowed).toBe(true);
+    expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.ACCESS_ALLOWED);
+    expect(decision.usage).toBeUndefined();
+  });
+
+  it('keeps the decision shape backward-compatible when no usage registry is provided', () => {
+    const { token, consent } = buildToken();
+
+    const decision = consumeCapabilityAccess({
+      capability: token,
+      consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: NOW,
+      registries: {
+        nonceRegistry: new InMemoryNonceRegistry(),
+        revocationRegistry: new InMemoryRevocationRegistry()
+      }
+    });
+
+    expect(decision.allowed).toBe(true);
+    expect('usage' in decision).toBe(false);
   });
 
   it('does not mark replay state on deny', () => {

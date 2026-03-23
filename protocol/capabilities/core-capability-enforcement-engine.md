@@ -117,14 +117,29 @@ Consumption semantics:
 
 1. **Structural validation** — capability is validated with the canonical token validator; optional consent is validated and, if supplied, matched against the capability.
 2. **Revocation at consumption time** — revoked capabilities deny immediately with a machine-readable revoke code before resource delivery.
-3. **Replay handling** — if a nonce registry is supplied and `consume !== false`, replay is checked before authorization; repeated presentation denies. If `consume === false`, the request is treated as a non-marking presentation and replay is not checked or marked. If `requireReplayProtection` is `true` but no nonce registry is supplied, the request denies fail-closed.
+3. **Replay handling** — if a nonce registry is supplied and `consume !== false`, replay is checked before authorization; repeated presentation denies. If `consume === false`, the request is treated as a non-marking presentation for replay only, and replay is not checked or marked. If `requireReplayProtection` is `true` but no nonce registry is supplied, the request denies fail-closed.
 4. **Central authorization** — `evaluateCapabilityAccess(...)` remains the source of truth for action/resource/market-maker/policy decisions.
-5. **Post-allow marking** — nonce state is marked only after an allow decision and only when `consume !== false` and a nonce registry is present. Denies never mark replay state.
+5. **Per-consent usage metering** — if a consent-usage registry is supplied, usage is recorded by `consent_ref` after the authorization decision is made. `usageCount` increments only on allowed consumption attempts; `lastAccessedAt` and `lastAccessResult` update on both allow and deny. This metering is deterministic protocol state for the grant itself, not analytics, billing, or quota enforcement.
+6. **Post-allow marking** — nonce state is marked only after an allow decision and only when `consume !== false` and a nonce registry is present. Denies never mark replay state.
+
+When `consume === false`, usage is still recorded if a consent-usage registry is present. `consume` only controls replay marking, not whether an access attempt updates per-consent usage state.
+
+If usage metering fails, the original allow/deny decision is preserved and the response may omit the `usage` block. Metering is strictly a side effect and MUST NOT change authorization behavior.
+
+`CapabilityConsumptionDecision` may include an optional `usage` block when metering is enabled:
+
+```ts
+usage: {
+  usageCount: number;
+  lastAccessedAt: string;
+  lastAccessResult: 'allow' | 'deny';
+}
+```
 
 Non-goals of the consumption boundary in this card:
 
-- usage metering / quotas;
 - billing or paid grants;
+- quotas or usage-based denies;
 - AI interpreter execution;
 - transport-specific HTTP/UI shaping.
 
