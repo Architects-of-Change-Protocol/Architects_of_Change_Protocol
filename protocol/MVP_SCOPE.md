@@ -43,6 +43,9 @@ Each blocker invariant is done only when all criteria below are met.
 | `INV-SEC-02` | Dataflow tests confirm adapter-facing interfaces expose only allowed ciphertext/metadata in protected flows. | Adapter integration test attempts plaintext retrieval and receives denial/sanitized output. |
 | `INV-OBS-02` | Deny responses include stable code + machine-readable reason in Decision/Error Objects. | Trigger each deny class above and assert stable error code family is present. |
 
+## Capability Enforcement Engine Note
+A centralized capability access decision layer now exists as the recommended enforcement point for protocol-critical authorization checks. Implementations SHOULD route market-maker and adapter authorization requests through `evaluateCapabilityAccess(...)` before any protected resource is returned, so fail-closed behavior, stable reason codes, and audit-friendly decisions remain consistent across integrations.
+
 ## Explicit Non-Goals (Not in MVP)
 - New cryptographic primitives, new object schemas, or changes to core AOC primitives.
 - Economic optimization features (pricing strategy, fee experiments, revenue analytics).
