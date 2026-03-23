@@ -27,7 +27,7 @@ function buildConsent(marketMakerId?: string) {
       { type: 'content', ref: CONTENT_REF },
       { type: 'pack', ref: PACK_REF }
     ],
-    ['read', 'store'],
+    ['read', 'store', 'share'],
     {
       now: CONSENT_NOW,
       expires_at: CONSENT_EXPIRES,
@@ -156,7 +156,7 @@ describe('evaluateCapabilityAccess', () => {
     expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.CAPABILITY_EXPIRED);
   });
 
-  it('denies action mismatch', () => {
+  it('denies invalid requested actions as structurally invalid input', () => {
     const { capability } = buildCapability();
     const decision = evaluateCapabilityAccess({
       capability,
@@ -165,7 +165,70 @@ describe('evaluateCapabilityAccess', () => {
       now: '2025-08-01T00:00:00Z'
     });
 
+    expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.CAPABILITY_INVALID);
+  });
+
+  it('denies exact non-granted but valid requested actions with ACTION_NOT_ALLOWED', () => {
+    const { capability } = buildCapability();
+    const decision = evaluateCapabilityAccess({
+      capability,
+      action: 'share',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: '2025-08-01T00:00:00Z'
+    });
+
     expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.ACTION_NOT_ALLOWED);
+  });
+
+  it('allows exact granted non-read actions', () => {
+    const { consent } = buildCapability();
+    const capability = mintCapabilityToken(
+      consent,
+      [
+        { type: 'content', ref: CONTENT_REF },
+        { type: 'pack', ref: PACK_REF }
+      ],
+      ['read', 'share'],
+      TOKEN_EXPIRES,
+      { now: TOKEN_NOW }
+    );
+
+    const decision = evaluateCapabilityAccess({
+      capability,
+      consent,
+      action: 'share',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: '2025-08-01T00:00:00Z'
+    });
+
+    expect(decision.allowed).toBe(true);
+    expect(decision.checks.action).toBe('pass');
+  });
+
+  it('allows bound market maker checks to pass for granted non-read actions', () => {
+    const consent = buildConsent('hrkey-v1');
+    const capability = mintCapabilityToken(
+      consent,
+      [
+        { type: 'content', ref: CONTENT_REF },
+        { type: 'pack', ref: PACK_REF }
+      ],
+      ['share'],
+      TOKEN_EXPIRES,
+      { now: TOKEN_NOW, marketMakerId: 'hrkey-v1' }
+    );
+
+    const decision = evaluateCapabilityAccess({
+      capability,
+      consent,
+      action: 'share',
+      resource: { type: 'content', ref: CONTENT_REF },
+      marketMakerId: 'hrkey-v1',
+      now: '2025-08-01T00:00:00Z'
+    });
+
+    expect(decision.allowed).toBe(true);
+    expect(decision.checks.marketMaker).toBe('pass');
   });
 
   it('denies resource mismatch', () => {

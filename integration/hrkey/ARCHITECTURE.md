@@ -64,6 +64,7 @@
 - **Pack construction**: building PackManifestV1 objects from candidate data (using AOC builders)
 - **SDL domain modeling**: deciding which SDL paths map to which field_ids
 - **Business logic**: scoring, ranking, matching, pricing — all outside this adapter
+- **Action model boundary**: this adapter currently exercises the legacy read-only `requestAccess()` flow. Broader canonical actions (`store`, `share`, `derive`, `aggregate`) exist at the protocol consent/capability layer but are not exposed as generalized HRKey adapter operations yet.
 - **UX flows**: onboarding, consent collection UI, access request UI
 - **Temporal decisions**: choosing when consents/capabilities expire
 - **Scope decisions**: choosing which fields to include in consents and capabilities

@@ -2,14 +2,13 @@ import { canonicalizeConsentPayload } from './canonical';
 import { computeConsentHash } from './hash';
 import { BuildConsentOptions, ConsentObjectV1, ScopeEntry } from './types';
 import { validateMarketMakerId } from '../shared/marketMakerId';
+import { validateCapabilityActions } from '../shared/capabilityActions';
 
 const VERSION_PATTERN = /^[0-9]+\.[0-9]+$/;
 const DID_PATTERN = /^did:[a-z0-9]+:[a-zA-Z0-9._%-]+$/;
 const HASH_HEX_PATTERN = /^[a-f0-9]{64}$/;
 const ISO8601_UTC_PATTERN =
   /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$/;
-const PERMISSION_PATTERN = /^[a-z][a-z0-9-]*$/;
-
 const VALID_ACTIONS: ReadonlyArray<string> = ['grant', 'revoke'];
 const VALID_SCOPE_TYPES: ReadonlyArray<string> = ['field', 'content', 'pack'];
 
@@ -88,32 +87,12 @@ function validateScope(scope: ScopeEntry[]): void {
 }
 
 function validatePermissions(permissions: string[]): void {
-  if (!Array.isArray(permissions) || permissions.length === 0) {
-    throw new Error('Consent permissions must be a non-empty array.');
-  }
-  if (permissions.length > MAX_PERMISSIONS) {
-    throw new Error(
-      `Consent permissions must not exceed ${MAX_PERMISSIONS} entries.`
-    );
-  }
-
-  const seen = new Set<string>();
-  for (let i = 0; i < permissions.length; i++) {
-    if (
-      typeof permissions[i] !== 'string' ||
-      !PERMISSION_PATTERN.test(permissions[i])
-    ) {
-      throw new Error(
-        `Consent permission ${i}: must be lowercase alphanumeric with hyphens.`
-      );
-    }
-    if (seen.has(permissions[i])) {
-      throw new Error(
-        `Consent permissions contain duplicate: "${permissions[i]}".`
-      );
-    }
-    seen.add(permissions[i]);
-  }
+  validateCapabilityActions(permissions, {
+    containerLabel: 'Consent permissions',
+    itemLabel: 'Consent permission',
+    emptyMessage: 'Consent permissions must be a non-empty array.',
+    maxEntries: MAX_PERMISSIONS
+  });
 }
 
 function validateRevokeTarget(

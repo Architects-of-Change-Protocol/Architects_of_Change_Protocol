@@ -1,3 +1,4 @@
+import { canonicalCapabilityActions } from '../../shared/capabilityActions';
 import { buildConsentObject, validateConsentObject } from '../consentObject';
 import { buildConsentId } from '../consentId';
 import { canonicalizeConsentPayload } from '../canonical';
@@ -152,6 +153,45 @@ describe('consent object builder', () => {
     );
 
     expect(consent.prior_consent).toBeNull();
+  });
+
+  it('accepts the canonical capability action vocabulary in grant permissions', () => {
+    const consent = buildConsentObject(
+      SUBJECT,
+      GRANTEE,
+      'grant',
+      baseScope,
+      [...canonicalCapabilityActions],
+      { now: baseNow }
+    );
+
+    expect(consent.permissions).toEqual([...canonicalCapabilityActions]);
+  });
+
+  it('rejects unknown permissions in grant consents', () => {
+    expect(() =>
+      buildConsentObject(
+        SUBJECT,
+        GRANTEE,
+        'grant',
+        baseScope,
+        ['read', 'write'],
+        { now: baseNow }
+      )
+    ).toThrow('Consent permission 1 must be one of: read, store, share, derive, aggregate.');
+  });
+
+  it('rejects malformed permission strings in grant consents', () => {
+    expect(() =>
+      buildConsentObject(
+        SUBJECT,
+        GRANTEE,
+        'grant',
+        baseScope,
+        ['Read'],
+        { now: baseNow }
+      )
+    ).toThrow('Consent permission 0: must be lowercase alphanumeric with hyphens.');
   });
 
   it('accepts valid expires_at', () => {
