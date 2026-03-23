@@ -594,6 +594,7 @@ The **hashing boundary** defines which fields participate in the canonical paylo
 | `issued_at` | YES | Temporal binding |
 | `expires_at` | YES | Expiration affects validity |
 | `prior_consent` | YES | Chain of custody reference |
+| `pricing` | YES, if present | Deterministic paid-use gate for grant consumption |
 | `consent_hash` | NO | Cannot include self-reference |
 
 ### 7.3 Canonical Payload Structure
@@ -605,6 +606,7 @@ canonical_payload := {
   "grantee": grantee,
   "issued_at": issued_at,
   "permissions": sorted(permissions),
+  "pricing": pricing,   // include only when present
   "prior_consent": prior_consent,
   "scope": sorted(scope),
   "subject": subject,
@@ -625,6 +627,7 @@ function compute_consent_hash(consent):
     "grantee": consent.grantee,
     "issued_at": consent.issued_at,
     "permissions": sort_ascending(consent.permissions),
+    "pricing": consent.pricing,  // include only when present
     "prior_consent": consent.prior_consent,
     "scope": sort_scope_entries(consent.scope),
     "subject": consent.subject,
@@ -642,6 +645,29 @@ function compute_consent_hash(consent):
 
   RETURN hash_string  // 64 character string
 ```
+
+### 7.4.1 Optional Grant Pricing
+
+Grant consents MAY include an optional `pricing` object to express a deterministic protocol-level payment requirement for consuming capability access derived from that grant.
+
+```json
+{
+  "pricing": {
+    "model": "per_use",
+    "amount": 25,
+    "currency": "USD"
+  }
+}
+```
+
+Rules:
+
+1. `pricing` MUST be omitted for `"revoke"` actions.
+2. `model` currently only supports `"per_use"`.
+3. `amount` MUST be a positive number.
+4. `currency` MUST be a non-empty string.
+5. If present, `pricing` MUST participate in canonical encoding and hash computation.
+6. `pricing` defines a payment gate only; it is NOT billing, settlement, subscription logic, or payment processing.
 
 ### 7.5 Payload Boundary Invariants
 

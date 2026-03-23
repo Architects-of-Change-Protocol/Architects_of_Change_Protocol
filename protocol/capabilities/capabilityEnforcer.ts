@@ -80,6 +80,7 @@ function mapReasonCode(reasonCode: string): EnforceCapabilityDecision['code'] {
       return 'REQUEST_CONTEXT_MISMATCH';
     case capabilityAccessReasonCodes.POLICY_DENIED:
     case capabilityAccessReasonCodes.USAGE_DENIED:
+    case capabilityAccessReasonCodes.PAYMENT_REQUIRED:
       return 'RESOURCE_RESTRICTION_FAILED';
     default:
       return 'INTERNAL_DENY';

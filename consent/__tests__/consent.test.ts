@@ -212,6 +212,36 @@ describe('consent object builder', () => {
     expect(consent.marketMakerId).toBe('hrkey-v1');
   });
 
+  it('accepts per-use pricing on grant consents and includes it in the hash', () => {
+    const consent = buildConsentObject(
+      SUBJECT,
+      GRANTEE,
+      'grant',
+      baseScope,
+      basePermissions,
+      {
+        now: baseNow,
+        pricing: { model: 'per_use', amount: 25, currency: 'USD' }
+      }
+    );
+
+    expect(consent.pricing).toEqual({ model: 'per_use', amount: 25, currency: 'USD' });
+
+    const repriced = buildConsentObject(
+      SUBJECT,
+      GRANTEE,
+      'grant',
+      baseScope,
+      basePermissions,
+      {
+        now: baseNow,
+        pricing: { model: 'per_use', amount: 30, currency: 'USD' }
+      }
+    );
+
+    expect(consent.consent_hash).not.toBe(repriced.consent_hash);
+  });
+
   it('builds a valid revocation (prior_consent optional)', () => {
     const grant = buildConsentObject(
       SUBJECT, GRANTEE, 'grant', baseScope, basePermissions,
@@ -327,6 +357,71 @@ describe('consent object validation', () => {
         }
       )
     ).toThrow('Consent revoke actions must not include marketMakerId.');
+  });
+
+  it('rejects pricing on revoke consents', () => {
+    expect(() =>
+      buildConsentObject(
+        SUBJECT,
+        GRANTEE,
+        'revoke',
+        [],
+        [],
+        {
+          now: baseNow,
+          revoke_target: { capability_hash: REF_A },
+          pricing: { model: 'per_use', amount: 25, currency: 'USD' }
+        }
+      )
+    ).toThrow('Consent pricing is only allowed for grant actions.');
+  });
+
+  it('rejects non-positive pricing amounts', () => {
+    expect(() =>
+      buildConsentObject(
+        SUBJECT,
+        GRANTEE,
+        'grant',
+        baseScope,
+        basePermissions,
+        {
+          now: baseNow,
+          pricing: { model: 'per_use', amount: 0, currency: 'USD' }
+        }
+      )
+    ).toThrow('Consent pricing.amount must be a positive number.');
+  });
+
+  it('rejects empty pricing currency strings', () => {
+    expect(() =>
+      buildConsentObject(
+        SUBJECT,
+        GRANTEE,
+        'grant',
+        baseScope,
+        basePermissions,
+        {
+          now: baseNow,
+          pricing: { model: 'per_use', amount: 25, currency: '   ' }
+        }
+      )
+    ).toThrow('Consent pricing.currency must be a non-empty string.');
+  });
+
+  it('rejects unsupported pricing models', () => {
+    expect(() =>
+      buildConsentObject(
+        SUBJECT,
+        GRANTEE,
+        'grant',
+        baseScope,
+        basePermissions,
+        {
+          now: baseNow,
+          pricing: { model: 'subscription' as any, amount: 25, currency: 'USD' }
+        }
+      )
+    ).toThrow('Consent pricing.model must be "per_use".');
   });
 
   it('rejects invalid subject DID', () => {
@@ -715,6 +810,31 @@ describe('canonical encoding', () => {
     expect(priorPos).toBeLessThan(scopePos);
     expect(scopePos).toBeLessThan(subjectPos);
     expect(subjectPos).toBeLessThan(versionPos);
+  });
+
+
+  it('places pricing in canonical order when present', () => {
+    const bytes = canonicalizeConsentPayload({
+      version: '1.0',
+      subject: SUBJECT,
+      grantee: GRANTEE,
+      action: 'grant',
+      scope: baseScope,
+      permissions: basePermissions,
+      pricing: { model: 'per_use', amount: 25, currency: 'USD' },
+      issued_at: '2025-01-15T14:30:00Z',
+      expires_at: null,
+      prior_consent: null
+    });
+    const json = Buffer.from(bytes).toString();
+
+    const permissionsPos = json.indexOf('"permissions"');
+    const pricingPos = json.indexOf('"pricing"');
+    const priorPos = json.indexOf('"prior_consent"');
+
+    expect(permissionsPos).toBeLessThan(pricingPos);
+    expect(pricingPos).toBeLessThan(priorPos);
+    expect(json).toContain('"pricing":{"amount":25,"currency":"USD","model":"per_use"}');
   });
 
   it('excludes consent_hash from canonical payload', () => {

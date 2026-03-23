@@ -101,6 +101,9 @@ export type CapabilityConsumptionRequest = {
   marketMakerId?: string;
   now?: string | number | Date;
   usageContext?: Record<string, unknown>;
+  paymentContext?: {
+    paid: boolean;
+  };
   policyContext?: Record<string, unknown>;
   metadata?: Record<string, unknown>;
   marketMakerRegistry?: Pick<MarketMakerRegistry, 'exists'>;
@@ -126,6 +129,11 @@ export type CapabilityConsumptionDecision = {
   replayChecked: boolean;
   revocationChecked: boolean;
   usage?: Pick<ConsentUsageState, 'usageCount' | 'lastAccessedAt' | 'lastAccessResult'>;
+  payment?: {
+    required: boolean;
+    amount?: number;
+    currency?: string;
+  };
 };
 
 function normalizeNow(now?: string | number | Date): Date {
@@ -329,7 +337,8 @@ function deny(
   metadata: Record<string, unknown>,
   replayChecked: boolean,
   revocationChecked: boolean,
-  usage?: Pick<ConsentUsageState, 'usageCount' | 'lastAccessedAt' | 'lastAccessResult'>
+  usage?: Pick<ConsentUsageState, 'usageCount' | 'lastAccessedAt' | 'lastAccessResult'>,
+  payment?: CapabilityConsumptionDecision['payment']
 ): CapabilityConsumptionDecision {
   return {
     allowed: false,
@@ -342,7 +351,20 @@ function deny(
     consumed: false,
     replayChecked,
     revocationChecked,
-    ...(usage ? { usage } : {})
+    ...(usage ? { usage } : {}),
+    ...(payment ? { payment } : {})
+  };
+}
+
+function buildPaymentDecision(consent: ConsentObjectV1 | null | undefined, paid: boolean): CapabilityConsumptionDecision['payment'] | undefined {
+  if (!consent?.pricing) {
+    return undefined;
+  }
+
+  return {
+    required: paid !== true,
+    amount: consent.pricing.amount,
+    currency: consent.pricing.currency
   };
 }
 
@@ -498,7 +520,25 @@ export function consumeCapabilityAccess(
         }),
         shouldCheckReplay,
         true,
-        recordUsage(request, capability, 'deny', evaluatedAt)
+        recordUsage(request, capability, 'deny', evaluatedAt),
+        buildPaymentDecision(normalizedConsent, false)
+      );
+    }
+
+    const paid = request.paymentContext?.paid === true;
+    const payment = buildPaymentDecision(normalizedConsent, paid);
+
+    if (normalizedConsent?.pricing && !paid) {
+      return deny(
+        evaluatedAt,
+        capabilityAccessReasonCodes.PAYMENT_REQUIRED,
+        'Payment is required before this capability can be consumed.',
+        checks,
+        sanitizeMetadata({ ...metadata, failureStage: 'payment' }),
+        shouldCheckReplay,
+        true,
+        recordUsage(request, capability, 'deny', evaluatedAt),
+        payment
       );
     }
 
@@ -522,7 +562,8 @@ export function consumeCapabilityAccess(
       consumed,
       replayChecked: shouldCheckReplay,
       revocationChecked: true,
-      ...(usage ? { usage } : {})
+      ...(usage ? { usage } : {}),
+      ...(payment ? { payment } : {})
     };
   } catch (error) {
     if (checks.consent === 'not_applicable' && request.consent) {

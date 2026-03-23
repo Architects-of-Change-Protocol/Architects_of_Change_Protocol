@@ -1,6 +1,6 @@
 import { canonicalizeConsentPayload } from './canonical';
 import { computeConsentHash } from './hash';
-import { BuildConsentOptions, ConsentObjectV1, ScopeEntry } from './types';
+import { BuildConsentOptions, ConsentObjectV1, ConsentPricing, ScopeEntry } from './types';
 import { validateMarketMakerId } from '../shared/marketMakerId';
 import { validateCapabilityActions } from '../shared/capabilityActions';
 
@@ -95,6 +95,28 @@ function validatePermissions(permissions: string[]): void {
   });
 }
 
+function validatePricing(pricing: ConsentPricing | undefined, action: ConsentObjectV1['action']): void {
+  if (pricing === undefined) {
+    return;
+  }
+
+  if (action !== 'grant') {
+    throw new Error('Consent pricing is only allowed for grant actions.');
+  }
+
+  if (pricing.model !== 'per_use') {
+    throw new Error('Consent pricing.model must be "per_use".');
+  }
+
+  if (typeof pricing.amount !== 'number' || !Number.isFinite(pricing.amount) || pricing.amount <= 0) {
+    throw new Error('Consent pricing.amount must be a positive number.');
+  }
+
+  if (typeof pricing.currency !== 'string' || pricing.currency.trim() === '') {
+    throw new Error('Consent pricing.currency must be a non-empty string.');
+  }
+}
+
 function validateRevokeTarget(
   revoke_target: { capability_hash: string } | undefined
 ): void {
@@ -151,6 +173,7 @@ export function buildConsentObject(
   const prior_consent = opts.prior_consent ?? null;
   const revoke_target = opts.revoke_target;
   const marketMakerId = opts.marketMakerId;
+  const pricing = opts.pricing;
 
   validateVersion(version);
   validateDID(subject, 'subject');
@@ -158,6 +181,7 @@ export function buildConsentObject(
   validateAction(action);
   validateIssuedAt(issued_at);
   validateMarketMakerId(marketMakerId, 'Consent marketMakerId');
+  validatePricing(pricing, action);
 
   if (action === 'revoke') {
     if (marketMakerId !== undefined) {
@@ -191,6 +215,7 @@ export function buildConsentObject(
     scope,
     permissions,
     ...(marketMakerId !== undefined ? { marketMakerId } : {}),
+    ...(pricing !== undefined ? { pricing } : {}),
     issued_at,
     expires_at,
     prior_consent,
@@ -211,6 +236,7 @@ export function buildConsentObject(
     scope,
     permissions,
     ...(marketMakerId !== undefined ? { marketMakerId } : {}),
+    ...(pricing !== undefined ? { pricing } : {}),
     issued_at,
     expires_at,
     prior_consent,
@@ -226,6 +252,7 @@ export function validateConsentObject(consent: ConsentObjectV1): void {
   validateAction(consent.action);
   validateIssuedAt(consent.issued_at);
   validateMarketMakerId(consent.marketMakerId, 'Consent marketMakerId');
+  validatePricing(consent.pricing, consent.action);
 
   if (consent.action === 'revoke') {
     if (consent.marketMakerId !== undefined) {
@@ -267,6 +294,9 @@ export function validateConsentObject(consent: ConsentObjectV1): void {
     permissions: consent.permissions,
     ...(consent.marketMakerId !== undefined
       ? { marketMakerId: consent.marketMakerId }
+      : {}),
+    ...(consent.pricing !== undefined
+      ? { pricing: consent.pricing }
       : {}),
     issued_at: consent.issued_at,
     expires_at: consent.expires_at,
