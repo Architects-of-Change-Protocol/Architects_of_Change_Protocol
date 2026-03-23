@@ -7,3 +7,5 @@ export * from './field';
 export * from './pack';
 export * from './storage';
 export * from './protocol/capabilities';
+
+export * from './enforcement';
