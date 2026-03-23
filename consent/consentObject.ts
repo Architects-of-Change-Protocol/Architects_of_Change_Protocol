@@ -1,6 +1,7 @@
 import { canonicalizeConsentPayload } from './canonical';
 import { computeConsentHash } from './hash';
 import { BuildConsentOptions, ConsentObjectV1, ScopeEntry } from './types';
+import { validateMarketMakerId } from '../shared/marketMakerId';
 
 const VERSION_PATTERN = /^[0-9]+\.[0-9]+$/;
 const DID_PATTERN = /^did:[a-z0-9]+:[a-zA-Z0-9._%-]+$/;
@@ -170,14 +171,19 @@ export function buildConsentObject(
   const expires_at = opts.expires_at ?? null;
   const prior_consent = opts.prior_consent ?? null;
   const revoke_target = opts.revoke_target;
+  const marketMakerId = opts.marketMakerId;
 
   validateVersion(version);
   validateDID(subject, 'subject');
   validateDID(grantee, 'grantee');
   validateAction(action);
   validateIssuedAt(issued_at);
+  validateMarketMakerId(marketMakerId, 'Consent marketMakerId');
 
   if (action === 'revoke') {
+    if (marketMakerId !== undefined) {
+      throw new Error('Consent revoke actions must not include marketMakerId.');
+    }
     validateRevokeTarget(revoke_target);
 
     if (scope.length > 0) {
@@ -205,6 +211,7 @@ export function buildConsentObject(
     action,
     scope,
     permissions,
+    ...(marketMakerId !== undefined ? { marketMakerId } : {}),
     issued_at,
     expires_at,
     prior_consent,
@@ -224,6 +231,7 @@ export function buildConsentObject(
     action,
     scope,
     permissions,
+    ...(marketMakerId !== undefined ? { marketMakerId } : {}),
     issued_at,
     expires_at,
     prior_consent,
@@ -238,8 +246,12 @@ export function validateConsentObject(consent: ConsentObjectV1): void {
   validateDID(consent.grantee, 'grantee');
   validateAction(consent.action);
   validateIssuedAt(consent.issued_at);
+  validateMarketMakerId(consent.marketMakerId, 'Consent marketMakerId');
 
   if (consent.action === 'revoke') {
+    if (consent.marketMakerId !== undefined) {
+      throw new Error('Consent revoke actions must not include marketMakerId.');
+    }
     validateRevokeTarget(consent.revoke_target);
 
     if (consent.scope !== undefined && consent.scope.length > 0) {
@@ -274,6 +286,9 @@ export function validateConsentObject(consent: ConsentObjectV1): void {
     action: consent.action,
     scope: consent.scope,
     permissions: consent.permissions,
+    ...(consent.marketMakerId !== undefined
+      ? { marketMakerId: consent.marketMakerId }
+      : {}),
     issued_at: consent.issued_at,
     expires_at: consent.expires_at,
     prior_consent: consent.prior_consent,

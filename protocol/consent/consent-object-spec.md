@@ -42,6 +42,7 @@ ConsentObject := {
   action,         // "grant" or "revoke"
   scope,          // Array of scope entries
   permissions,    // Array of permitted operations
+  marketMakerId,  // Optional market-maker binding for derived capabilities
   issued_at,      // Timestamp of consent issuance
   expires_at,     // Expiration timestamp (optional)
   prior_consent,  // Reference to superseded consent (optional)
@@ -142,6 +143,7 @@ ConsentObject := {
 | `action` | string | REQUIRED | Authorization action type |
 | `scope` | array | REQUIRED | Objects covered by this consent |
 | `permissions` | array | REQUIRED | Permitted operations |
+| `marketMakerId` | string | OPTIONAL | Canonical market-maker binding inherited by derived capabilities |
 | `issued_at` | string | REQUIRED | ISO 8601 UTC timestamp |
 | `expires_at` | string | OPTIONAL | ISO 8601 UTC timestamp or null |
 | `prior_consent` | string | OPTIONAL | Hash of superseded consent or null |
@@ -251,6 +253,25 @@ ConsentObject := {
 
 See [Section 4: Consent Scope Model](#4-consent-scope-model) for scope entry structure.
 
+#### 3.2.7 marketMakerId
+
+| Property | Value |
+|----------|-------|
+| **Name** | `marketMakerId` |
+| **Type** | string |
+| **Required** | OPTIONAL |
+| **Format** | lowercase identifier |
+| **Constraints** | Pattern: `^[a-z0-9][a-z0-9._-]{0,127}$` |
+
+**Description:** Optional binding to a specific market maker. This field lives on grant consents and, when present, becomes part of the derivation boundary for every child Capability Token.
+
+**Semantic Rules:**
+
+1. `marketMakerId` is the canonical consent/grant field name for market-maker binding.
+2. Grant consents MAY omit `marketMakerId`; omitted means unbound and remains backward-compatible.
+3. If present on a grant consent, every derived Capability Token MUST preserve the exact same value.
+4. Revoke consents MUST NOT include `marketMakerId`.
+
 #### 3.2.6 permissions
 
 | Property | Value |
@@ -282,7 +303,7 @@ See [Section 4: Consent Scope Model](#4-consent-scope-model) for scope entry str
 | `derive` | Create derivative objects referencing original |
 | `aggregate` | Include object in aggregate computations |
 
-#### 3.2.7 issued_at
+#### 3.2.8 issued_at
 
 | Property | Value |
 |----------|-------|
@@ -303,7 +324,7 @@ See [Section 4: Consent Scope Model](#4-consent-scope-model) for scope entry str
 
 **Example:** `"2025-01-15T14:30:00Z"`
 
-#### 3.2.8 expires_at
+#### 3.2.9 expires_at
 
 | Property | Value |
 |----------|-------|
@@ -325,7 +346,7 @@ See [Section 4: Consent Scope Model](#4-consent-scope-model) for scope entry str
 
 **Example:** `"2026-01-15T14:30:00Z"`
 
-#### 3.2.9 prior_consent
+#### 3.2.10 prior_consent
 
 | Property | Value |
 |----------|-------|
@@ -345,7 +366,7 @@ See [Section 4: Consent Scope Model](#4-consent-scope-model) for scope entry str
 3. A `null` value indicates this is an original grant with no predecessor; `null` is invalid for revocations.
 4. The referenced consent MUST have the same subject and grantee.
 
-#### 3.2.10 consent_hash
+#### 3.2.11 consent_hash
 
 | Property | Value |
 |----------|-------|

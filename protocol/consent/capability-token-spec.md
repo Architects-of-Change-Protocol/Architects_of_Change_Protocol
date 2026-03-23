@@ -39,6 +39,7 @@ CapabilityToken := {
   consent_ref,      // Hash of the parent Consent Object
   scope,            // Array of scope entries (subset of consent scope)
   permissions,      // Array of permitted operations (subset of consent permissions)
+  marketMakerId,    // Optional market-maker binding copied from parent consent
   issued_at,        // Timestamp of token issuance
   not_before,       // Earliest validity time (optional)
   expires_at,       // Expiration timestamp (required, non-null)
@@ -155,6 +156,7 @@ CapabilityToken := {
 | `consent_ref` | string | REQUIRED | Hash of the parent Consent Object |
 | `scope` | array | REQUIRED | Scope entries authorized by this token |
 | `permissions` | array | REQUIRED | Operations permitted by this token |
+| `marketMakerId` | string | OPTIONAL | Canonical market-maker binding copied from parent consent |
 | `issued_at` | string | REQUIRED | ISO 8601 UTC timestamp of token issuance |
 | `not_before` | string or null | OPTIONAL | ISO 8601 UTC timestamp of earliest validity |
 | `expires_at` | string | REQUIRED | ISO 8601 UTC timestamp of token expiration |
@@ -263,6 +265,24 @@ CapabilityToken := {
 
 See [Section 5: Attenuation Model](#5-attenuation-model) for subset constraints.
 
+#### 3.2.7 marketMakerId
+
+| Property | Value |
+|----------|-------|
+| **Name** | `marketMakerId` |
+| **Type** | string |
+| **Required** | OPTIONAL |
+| **Format** | lowercase identifier |
+| **Constraints** | Pattern: `^[a-z0-9][a-z0-9._-]{0,127}$` |
+
+**Description:** Optional binding to a specific market maker. `marketMakerId` is the canonical capability field name; compatibility aliases such as `market_maker_id` MAY be normalized by enforcement code but MUST NOT be emitted as the canonical protocol representation.
+
+**Semantic Rules:**
+
+1. If the parent Consent Object includes `marketMakerId`, the Capability Token MUST include the same value.
+2. If the parent Consent Object omits `marketMakerId`, the Capability Token MUST also omit it.
+3. Derivation MUST fail closed on any parent/child mismatch.
+
 #### 3.2.6 permissions
 
 | Property | Value |
@@ -282,7 +302,7 @@ See [Section 5: Attenuation Model](#5-attenuation-model) for subset constraints.
 3. Permission strings MUST be lowercase alphanumeric with hyphens.
 4. Permissions MUST NOT contain duplicates within a single token.
 
-#### 3.2.7 issued_at
+#### 3.2.8 issued_at
 
 | Property | Value |
 |----------|-------|
@@ -303,7 +323,7 @@ See [Section 5: Attenuation Model](#5-attenuation-model) for subset constraints.
 
 **Example:** `"2025-06-15T10:00:00Z"`
 
-#### 3.2.8 not_before
+#### 3.2.9 not_before
 
 | Property | Value |
 |----------|-------|
@@ -325,7 +345,7 @@ See [Section 5: Attenuation Model](#5-attenuation-model) for subset constraints.
 
 **Example:** `"2025-07-01T00:00:00Z"`
 
-#### 3.2.9 expires_at
+#### 3.2.10 expires_at
 
 | Property | Value |
 |----------|-------|
@@ -348,7 +368,7 @@ See [Section 5: Attenuation Model](#5-attenuation-model) for subset constraints.
 
 **Example:** `"2025-07-15T10:00:00Z"`
 
-#### 3.2.10 token_id
+#### 3.2.11 token_id
 
 | Property | Value |
 |----------|-------|
@@ -367,7 +387,7 @@ See [Section 5: Attenuation Model](#5-attenuation-model) for subset constraints.
 3. The `token_id` MUST NOT be derived from the `capability_hash` or any other field of the token.
 4. Implementations SHOULD generate `token_id` values with sufficient entropy to make collision computationally infeasible.
 
-#### 3.2.11 capability_hash
+#### 3.2.12 capability_hash
 
 | Property | Value |
 |----------|-------|
@@ -407,8 +427,9 @@ A Capability Token MUST be derived from exactly one Consent Object. The `consent
 |-------|------------|
 | `subject` | MUST be identical to the parent Consent Object's `subject` |
 | `grantee` | MUST be identical to the parent Consent Object's `grantee` |
+| `marketMakerId` | MUST be identical to the parent Consent Object's `marketMakerId` when present; otherwise omitted |
 
-Identity fields MUST NOT be altered during derivation. A Capability Token cannot redirect authorization to a different subject or grantee.
+Identity and market-maker binding fields MUST NOT be altered during derivation. A Capability Token cannot redirect authorization to a different subject, grantee, or market maker.
 
 ### 4.3 Scope Binding
 
@@ -447,7 +468,7 @@ The token's validity window MUST be contained within the parent consent's tempor
 
 ### 5.1 Attenuation Principle
 
-A Capability Token represents an **equal or narrower** grant of authorization compared to its parent Consent Object. Attenuation MAY occur along three independent dimensions: scope, permissions, and time. Attenuation along one dimension does not require attenuation along others.
+A Capability Token represents an **equal or narrower** grant of authorization compared to its parent Consent Object. Attenuation MAY occur along three independent dimensions: scope, permissions, and time. `marketMakerId` is not an attenuation axis: it is a provenance binding that MUST be copied exactly when present and omitted when absent. Attenuation along one dimension does not require attenuation along others.
 
 ### 5.2 Scope Attenuation
 

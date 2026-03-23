@@ -22,8 +22,8 @@ function canonicalizeScopeEntry(entry: ScopeEntry): object {
  * - Sorts scope array by (type, ref) in ascending lexicographic order
  * - Sorts permissions array in ascending lexicographic order
  * - Top-level keys in alphabetical order:
- *   consent_ref, expires_at, grantee, issued_at, not_before,
- *   permissions, scope, subject, token_id, version
+ *   consent_ref, expires_at, grantee, issued_at, marketMakerId,
+ *   not_before, permissions, scope, subject, token_id, version
  * - Scope entry keys in alphabetical order: ref, type
  * - Null values are included in the canonical payload
  */
@@ -46,6 +46,11 @@ export function canonicalizeCapabilityPayload(
     expires_at: payload.expires_at,
     grantee: payload.grantee,
     issued_at: payload.issued_at,
+    ...(payload.marketMakerId !== undefined
+      ? {
+        marketMakerId: payload.marketMakerId
+      }
+      : {}),
     not_before: payload.not_before,
     permissions: sortedPermissions,
     scope: sortedScope.map(canonicalizeScopeEntry),
