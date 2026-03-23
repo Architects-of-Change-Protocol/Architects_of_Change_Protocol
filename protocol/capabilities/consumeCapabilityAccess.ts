@@ -49,6 +49,50 @@ export type CapabilityConsumptionChecks = CapabilityAccessChecks & {
   replay: CapabilityConsumptionCheckState;
 };
 
+export type ConsentUsageResult = 'allow' | 'deny';
+
+export type ConsentUsageState = {
+  consentRef: string;
+  usageCount: number;
+  lastAccessedAt: string;
+  lastAccessResult: ConsentUsageResult;
+};
+
+export interface ConsentUsageRegistry {
+  get(consentRef: string): ConsentUsageState | undefined;
+  record(
+    consentRef: string,
+    result: ConsentUsageResult,
+    timestamp: string
+  ): ConsentUsageState;
+}
+
+export class InMemoryConsentUsageRegistry implements ConsentUsageRegistry {
+  private readonly states = new Map<string, ConsentUsageState>();
+
+  get(consentRef: string): ConsentUsageState | undefined {
+    const state = this.states.get(consentRef);
+    return state ? { ...state } : undefined;
+  }
+
+  record(
+    consentRef: string,
+    result: ConsentUsageResult,
+    timestamp: string
+  ): ConsentUsageState {
+    const current = this.states.get(consentRef);
+    const next: ConsentUsageState = {
+      consentRef,
+      usageCount: (current?.usageCount ?? 0) + (result === 'allow' ? 1 : 0),
+      lastAccessedAt: timestamp,
+      lastAccessResult: result
+    };
+
+    this.states.set(consentRef, next);
+    return { ...next };
+  }
+}
+
 export type CapabilityConsumptionRequest = {
   capability: CapabilityAccessRequest['capability'];
   consent?: ConsentObjectV1 | null;
@@ -64,6 +108,7 @@ export type CapabilityConsumptionRequest = {
   registries?: {
     nonceRegistry?: NonceRegistry;
     revocationRegistry?: RevocationRegistry;
+    consentUsageRegistry?: ConsentUsageRegistry;
   };
   consume?: boolean;
   requireReplayProtection?: boolean;
@@ -80,6 +125,7 @@ export type CapabilityConsumptionDecision = {
   consumed: boolean;
   replayChecked: boolean;
   revocationChecked: boolean;
+  usage?: Pick<ConsentUsageState, 'usageCount' | 'lastAccessedAt' | 'lastAccessResult'>;
 };
 
 function normalizeNow(now?: string | number | Date): Date {
@@ -245,6 +291,36 @@ function sanitizeMetadata(base: {
   };
 }
 
+function toUsageOutput(
+  state: ConsentUsageState
+): Pick<ConsentUsageState, 'usageCount' | 'lastAccessedAt' | 'lastAccessResult'> {
+  return {
+    usageCount: state.usageCount,
+    lastAccessedAt: state.lastAccessedAt,
+    lastAccessResult: state.lastAccessResult
+  };
+}
+
+function recordUsage(
+  request: CapabilityConsumptionRequest,
+  capability: CapabilityTokenV1 | null | undefined,
+  result: ConsentUsageResult,
+  evaluatedAt: string
+): Pick<ConsentUsageState, 'usageCount' | 'lastAccessedAt' | 'lastAccessResult'> | undefined {
+  const registry = request.registries?.consentUsageRegistry;
+  const consentRef = capability?.consent_ref;
+
+  if (!registry || typeof consentRef !== 'string' || consentRef.length === 0) {
+    return undefined;
+  }
+
+  try {
+    return toUsageOutput(registry.record(consentRef, result, evaluatedAt));
+  } catch {
+    return undefined;
+  }
+}
+
 function deny(
   evaluatedAt: string,
   reasonCode: CapabilityConsumptionReasonCode,
@@ -252,7 +328,8 @@ function deny(
   checks: CapabilityConsumptionChecks,
   metadata: Record<string, unknown>,
   replayChecked: boolean,
-  revocationChecked: boolean
+  revocationChecked: boolean,
+  usage?: Pick<ConsentUsageState, 'usageCount' | 'lastAccessedAt' | 'lastAccessResult'>
 ): CapabilityConsumptionDecision {
   return {
     allowed: false,
@@ -264,7 +341,8 @@ function deny(
     metadata,
     consumed: false,
     replayChecked,
-    revocationChecked
+    revocationChecked,
+    ...(usage ? { usage } : {})
   };
 }
 
@@ -297,6 +375,7 @@ export function consumeCapabilityAccess(
   const now = normalizeNow(request.now);
   const evaluatedAt = normalizeEvaluatedAt(now);
   const checks = makeChecks();
+  let capabilityForUsage: CapabilityTokenV1 | undefined;
 
   try {
     const normalizedCapability = cloneCapability(request.capability);
@@ -310,6 +389,7 @@ export function consumeCapabilityAccess(
     checks.resource = 'pass';
 
     const capability = normalizedCapability as CapabilityTokenV1;
+    capabilityForUsage = capability;
     const metadata = sanitizeMetadata({
       capabilityHash: capability.capability_hash,
       tokenId: capability.token_id
@@ -333,7 +413,8 @@ export function consumeCapabilityAccess(
         checks,
         sanitizeMetadata({ ...metadata, failureStage: 'temporal' }),
         false,
-        false
+        false,
+        recordUsage(request, capability, 'deny', evaluatedAt)
       );
     }
 
@@ -347,7 +428,8 @@ export function consumeCapabilityAccess(
         checks,
         sanitizeMetadata({ ...metadata, failureStage: 'revocation' }),
         false,
-        true
+        true,
+        recordUsage(request, capability, 'deny', evaluatedAt)
       );
     }
 
@@ -366,7 +448,8 @@ export function consumeCapabilityAccess(
           checks,
           sanitizeMetadata({ ...metadata, failureStage: 'replay' }),
           true,
-          true
+          true,
+          recordUsage(request, capability, 'deny', evaluatedAt)
         );
       }
     } else if (request.requireReplayProtection) {
@@ -378,7 +461,8 @@ export function consumeCapabilityAccess(
         checks,
         sanitizeMetadata({ ...metadata, failureStage: 'replay' }),
         false,
-        true
+        true,
+        recordUsage(request, capability, 'deny', evaluatedAt)
       );
     }
 
@@ -413,7 +497,8 @@ export function consumeCapabilityAccess(
               : 'integrity'
         }),
         shouldCheckReplay,
-        true
+        true,
+        recordUsage(request, capability, 'deny', evaluatedAt)
       );
     }
 
@@ -423,6 +508,8 @@ export function consumeCapabilityAccess(
       nonceRegistry.cleanup?.(now);
       consumed = true;
     }
+
+    const usage = recordUsage(request, capability, 'allow', evaluatedAt);
 
     return {
       allowed: true,
@@ -434,7 +521,8 @@ export function consumeCapabilityAccess(
       metadata: sanitizeMetadata({ ...metadata, failureStage: 'completed' }),
       consumed,
       replayChecked: shouldCheckReplay,
-      revocationChecked: true
+      revocationChecked: true,
+      ...(usage ? { usage } : {})
     };
   } catch (error) {
     if (checks.consent === 'not_applicable' && request.consent) {
@@ -448,7 +536,8 @@ export function consumeCapabilityAccess(
       checks,
       sanitizeMetadata({ failureStage: 'integrity' }),
       false,
-      checks.revocation !== 'not_applicable'
+      checks.revocation !== 'not_applicable',
+      recordUsage(request, capabilityForUsage, 'deny', evaluatedAt)
     );
   }
 }
