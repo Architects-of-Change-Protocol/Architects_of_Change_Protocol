@@ -8,6 +8,7 @@ import {
   capabilityAccessReasonCodes,
   evaluateCapabilityAccess
 } from '..';
+import { MarketMakerRegistry } from '../../shared/marketMakerRegistry';
 
 const SUBJECT = 'did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK';
 const GRANTEE = 'did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH';
@@ -279,6 +280,51 @@ describe('evaluateCapabilityAccess', () => {
     });
 
     expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.MARKET_MAKER_REQUIRED);
+  });
+
+
+
+  it('denies capabilities with an unknown but structurally valid market maker when a registry is enforced', () => {
+    const registry = new MarketMakerRegistry();
+    const { capability } = buildCapability({ marketMakerId: 'hrkey-v1' });
+
+    const decision = evaluateCapabilityAccess({
+      capability,
+      action: 'read',
+      resource: `content:${CONTENT_REF}`,
+      marketMakerId: 'hrkey-v1',
+      marketMakerRegistry: registry,
+      now: '2025-08-01T00:00:00Z'
+    });
+
+    expect(decision.allowed).toBe(false);
+    expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.UNKNOWN_MARKET_MAKER);
+    expect(decision.metadata.failureStage).toBe('marketMaker');
+  });
+
+  it('accepts capabilities with a registered market maker when a registry is enforced', () => {
+    const registry = new MarketMakerRegistry();
+    registry.register({
+      id: 'hrkey-v1',
+      name: 'HRKey',
+      version: '1.0.0',
+      capabilities: ['employment'],
+      status: 'active',
+      created_at: '2025-01-15T00:00:00Z'
+    });
+    const { capability } = buildCapability({ marketMakerId: 'hrkey-v1' });
+
+    const decision = evaluateCapabilityAccess({
+      capability,
+      action: 'read',
+      resource: `content:${CONTENT_REF}`,
+      marketMakerId: 'hrkey-v1',
+      marketMakerRegistry: registry,
+      now: '2025-08-01T00:00:00Z'
+    });
+
+    expect(decision.allowed).toBe(true);
+    expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.ACCESS_ALLOWED);
   });
 
   it('denies when a bound market maker mismatches', () => {

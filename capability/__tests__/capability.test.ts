@@ -1,4 +1,5 @@
 import { canonicalCapabilityActions } from '../../shared/capabilityActions';
+import { MarketMakerRegistry } from '../../shared/marketMakerRegistry';
 import { buildConsentObject } from '../../consent/consentObject';
 import { ScopeEntry } from '../../consent/types';
 import {
@@ -671,6 +672,34 @@ describe('capability token validation (structural)', () => {
 
     expect(() => validateCapabilityToken(token as any)).toThrow(
       'Capability marketMakerId must contain only lowercase letters, numbers, dots, underscores, or hyphens and be at most 128 characters.'
+    );
+  });
+
+
+  it('rejects unknown marketMakerId values when a registry is enforced', () => {
+    const consent = buildConsentObject(
+      SUBJECT,
+      GRANTEE,
+      'grant',
+      multiScope,
+      multiPermissions,
+      {
+        now: consentNow,
+        expires_at: consentExpires,
+        marketMakerId: 'hrkey-v1'
+      }
+    );
+
+    const token = mintCapabilityToken(
+      consent,
+      baseScope,
+      basePermissions,
+      tokenExpires,
+      { now: tokenNow }
+    );
+
+    expect(() => validateCapabilityToken(token, new MarketMakerRegistry())).toThrow(
+      'Capability marketMakerId hrkey-v1 is not registered.'
     );
   });
 

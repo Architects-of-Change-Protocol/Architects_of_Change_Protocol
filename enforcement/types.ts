@@ -1,3 +1,4 @@
+import type { MarketMakerRegistry } from '../shared/marketMakerRegistry';
 import type { CapabilityTokenV1 } from '../capability';
 import type { ConsentObjectV1, ScopeEntry } from '../consent/types';
 import type { CapabilityAccessReasonCode } from './reasonCodes';
@@ -73,6 +74,7 @@ export type CapabilityAccessRequest = {
   usageContext?: Record<string, unknown>;
   policyContext?: Record<string, unknown>;
   metadata?: Record<string, unknown>;
+  marketMakerRegistry?: Pick<MarketMakerRegistry, 'exists'>;
   hooks?: {
     usage?: CapabilityUsageHook;
     policy?: CapabilityPolicyHook;

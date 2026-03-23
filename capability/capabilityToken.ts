@@ -5,6 +5,7 @@ import { computeCapabilityHash } from './hash';
 import { isRevoked } from './revocation';
 import { validateMarketMakerId } from '../shared/marketMakerId';
 import { validateCapabilityActions } from '../shared/capabilityActions';
+import type { MarketMakerRegistry } from '../shared/marketMakerRegistry';
 import type { NonceRegistry } from './registries/NonceRegistry';
 import type { RevocationRegistry } from './registries/RevocationRegistry';
 import { InMemoryNonceRegistry } from './registries/InMemoryNonceRegistry';
@@ -332,7 +333,10 @@ export function mintCapabilityToken(
  * capability_hash to detect tampering. Does NOT check derivation
  * invariants against the parent consent (use verifyCapabilityToken for that).
  */
-export function validateCapabilityToken(token: CapabilityTokenV1): void {
+export function validateCapabilityToken(
+  token: CapabilityTokenV1,
+  marketMakerRegistry?: Pick<MarketMakerRegistry, 'exists'>
+): void {
   validateVersion(token.version);
   validateDID(token.subject, 'subject');
   validateDID(token.grantee, 'grantee');
@@ -343,6 +347,10 @@ export function validateCapabilityToken(token: CapabilityTokenV1): void {
   validateTimestamp(token.expires_at, 'expires_at');
   validateTokenId(token.token_id);
   validateMarketMakerId(token.marketMakerId, 'Capability marketMakerId');
+
+  if (token.marketMakerId !== undefined && marketMakerRegistry && !marketMakerRegistry.exists(token.marketMakerId)) {
+    throw new Error(`Capability marketMakerId ${token.marketMakerId} is not registered.`);
+  }
 
   if (token.not_before !== null) {
     validateTimestamp(token.not_before, 'not_before');

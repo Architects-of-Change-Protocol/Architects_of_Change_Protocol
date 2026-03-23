@@ -277,6 +277,27 @@ export function evaluateCapabilityAccess(
       }
       checks.resource = 'pass';
 
+      if (
+        normalized.capability.marketMakerId !== null &&
+        input.marketMakerRegistry &&
+        !input.marketMakerRegistry.exists(normalized.capability.marketMakerId)
+      ) {
+        checks.marketMaker = 'fail';
+        return denyDecision(
+          evaluatedAt,
+          capabilityAccessReasonCodes.UNKNOWN_MARKET_MAKER,
+          'Capability marketMakerId is structurally valid but not registered.',
+          checks,
+          {
+            failureStage: 'marketMaker',
+            capabilityHash: normalized.capability.capabilityHash,
+            tokenId: normalized.capability.tokenId,
+            consentRef: normalized.capability.consentRef,
+            boundMarketMakerId: normalized.capability.marketMakerId ?? undefined
+          }
+        );
+      }
+
       if (normalized.capability.marketMakerId !== null) {
         if (!normalized.marketMakerId) {
           checks.marketMaker = 'fail';

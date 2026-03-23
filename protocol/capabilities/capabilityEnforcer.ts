@@ -90,6 +90,7 @@ function mapReasonCode(reasonCode: string): EnforceCapabilityDecision['code'] {
       return 'CONSENT_MISMATCH';
     case capabilityAccessReasonCodes.MARKET_MAKER_REQUIRED:
     case capabilityAccessReasonCodes.MARKET_MAKER_MISMATCH:
+    case capabilityAccessReasonCodes.UNKNOWN_MARKET_MAKER:
       return 'REQUEST_CONTEXT_MISMATCH';
     case capabilityAccessReasonCodes.POLICY_DENIED:
     case capabilityAccessReasonCodes.USAGE_DENIED:

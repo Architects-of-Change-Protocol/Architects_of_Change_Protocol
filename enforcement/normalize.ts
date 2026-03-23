@@ -126,7 +126,9 @@ function normalizeResource(resource: CapabilityAccessRequest['resource']): Scope
   return { type: resource.type as ScopeEntry['type'], ref: resource.ref };
 }
 
-function normalizeCapability(capability: CapabilityAccessRequest['capability']): NormalizedCapability {
+function normalizeCapability(
+  capability: CapabilityAccessRequest['capability']
+): NormalizedCapability {
   if (!capability) {
     throw new CapabilityAccessInputError(
       capabilityAccessReasonCodes.CAPABILITY_MISSING,
@@ -137,9 +139,10 @@ function normalizeCapability(capability: CapabilityAccessRequest['capability']):
   try {
     validateCapabilityToken(capability as any);
   } catch (error) {
+    const message = (error as Error).message || 'Capability could not be validated safely.';
     throw new CapabilityAccessInputError(
       capabilityAccessReasonCodes.CAPABILITY_INVALID,
-      (error as Error).message || 'Capability could not be validated safely.'
+      message
     );
   }
 

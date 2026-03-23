@@ -1242,3 +1242,9 @@ Note: `scope` sorted by (type, ref); `permissions` sorted alphabetically.
 ---
 
 **End of Specification**
+
+### Market Maker Registry Semantics
+
+- `marketMakerId` MAY be validated against a registry.
+- Implementations SHOULD fail closed if registry enforcement is enabled at runtime.
+- Registry validation is orthogonal to structural validation and does not change the consent or capability schema.
