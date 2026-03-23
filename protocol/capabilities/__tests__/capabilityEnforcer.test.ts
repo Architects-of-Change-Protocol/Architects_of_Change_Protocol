@@ -9,19 +9,25 @@ const CONTENT_REF = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 const CONSENT_EXPIRES = '2026-01-15T14:30:00Z';
 const NOW = new Date('2025-08-01T00:00:00Z');
 
-function buildConsent() {
+function buildConsent(marketMakerId?: string) {
   return buildConsentObject(
     SUBJECT,
     GRANTEE,
     'grant',
     [{ type: 'content', ref: CONTENT_REF }],
     ['read'],
-    { now: new Date('2025-01-15T14:30:00Z'), expires_at: CONSENT_EXPIRES }
+    {
+      now: new Date('2025-01-15T14:30:00Z'),
+      expires_at: CONSENT_EXPIRES,
+      ...(marketMakerId !== undefined ? { marketMakerId } : {})
+    }
   );
 }
 
 function buildToken(overrides: Record<string, unknown> = {}) {
-  const consent = buildConsent();
+  const consent = buildConsent(
+    typeof overrides.marketMakerId === 'string' ? overrides.marketMakerId : undefined
+  );
 
   return {
     consent,

@@ -63,6 +63,52 @@ function evaluateConsentBinding(
     );
   }
 
+  const rawCapability = input.capability.raw as Record<string, unknown>;
+
+  if (rawCapability.subject !== input.consent.subject) {
+    return denyDecision(
+      input.evaluatedAt,
+      capabilityAccessReasonCodes.CONSENT_MISMATCH,
+      'Capability subject does not match the supplied parent consent.',
+      makeChecks(),
+      {
+        failureStage: 'integrity',
+        capabilityHash: input.capability.capabilityHash,
+        consentRef: input.capability.consentRef
+      }
+    );
+  }
+
+  if (rawCapability.grantee !== input.consent.grantee) {
+    return denyDecision(
+      input.evaluatedAt,
+      capabilityAccessReasonCodes.CONSENT_MISMATCH,
+      'Capability grantee does not match the supplied parent consent.',
+      makeChecks(),
+      {
+        failureStage: 'integrity',
+        capabilityHash: input.capability.capabilityHash,
+        consentRef: input.capability.consentRef
+      }
+    );
+  }
+
+  if (input.capability.marketMakerId !== (input.consent.marketMakerId ?? null)) {
+    return denyDecision(
+      input.evaluatedAt,
+      capabilityAccessReasonCodes.CONSENT_MISMATCH,
+      'Capability marketMakerId does not match the supplied parent consent.',
+      makeChecks(),
+      {
+        failureStage: 'integrity',
+        capabilityHash: input.capability.capabilityHash,
+        consentRef: input.capability.consentRef,
+        boundMarketMakerId: input.capability.marketMakerId ?? undefined,
+        consentMarketMakerId: input.consent.marketMakerId
+      }
+    );
+  }
+
   return null;
 }
 

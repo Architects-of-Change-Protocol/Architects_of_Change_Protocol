@@ -128,6 +128,13 @@ function verifyAgainstConsent(
     );
   }
 
+  if (token.marketMakerId !== consent.marketMakerId) {
+    throw new LegacyBridgeValidationError(
+      'CONSENT_MISMATCH',
+      'Capability marketMakerId does not match parent consent marketMakerId.'
+    );
+  }
+
   const consentScope = new Set(
     consent.scope.map((entry) => `${entry.type}:${entry.ref}`)
   );

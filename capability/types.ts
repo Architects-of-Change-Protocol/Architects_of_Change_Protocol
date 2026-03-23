@@ -9,6 +9,7 @@ export type CapabilityTokenV1 = {
   consent_ref: string;
   scope: ScopeEntry[];
   permissions: string[];
+  marketMakerId?: string;
   issued_at: string;
   not_before: string | null;
   expires_at: string;
@@ -19,4 +20,5 @@ export type CapabilityTokenV1 = {
 export type MintCapabilityOptions = {
   now?: Date;
   not_before?: string | null;
+  marketMakerId?: string;
 };

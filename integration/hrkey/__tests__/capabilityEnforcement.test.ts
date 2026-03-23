@@ -13,19 +13,20 @@ function buildHrKeyCapability() {
     'grant',
     [{ type: 'content', ref: CONTENT_REF }],
     ['read'],
-    { now: new Date('2025-01-15T14:30:00Z'), expires_at: '2026-01-15T14:30:00Z' }
+    {
+      now: new Date('2025-01-15T14:30:00Z'),
+      expires_at: '2026-01-15T14:30:00Z',
+      marketMakerId: 'hrkey-v1'
+    }
   );
 
-  const capability = {
-    ...mintCapabilityToken(
-      consent,
-      [{ type: 'content', ref: CONTENT_REF }],
-      ['read'],
-      '2025-12-31T23:59:59Z',
-      { now: new Date('2025-06-15T10:00:00Z') }
-    ),
-    marketMakerId: 'hrkey-v1'
-  };
+  const capability = mintCapabilityToken(
+    consent,
+    [{ type: 'content', ref: CONTENT_REF }],
+    ['read'],
+    '2025-12-31T23:59:59Z',
+    { now: new Date('2025-06-15T10:00:00Z') }
+  );
 
   return { consent, capability };
 }

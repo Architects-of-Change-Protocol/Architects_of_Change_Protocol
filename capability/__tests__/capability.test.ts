@@ -60,6 +60,19 @@ beforeEach(() => {
 });
 
 describe('capability token minting', () => {
+  it('allows unbound parent consent to mint an unbound capability', () => {
+    const consent = buildBaseConsent({ expires_at: consentExpires });
+    const token = mintCapabilityToken(
+      consent,
+      baseScope,
+      basePermissions,
+      tokenExpires,
+      { now: tokenNow }
+    );
+
+    expect(token.marketMakerId).toBeUndefined();
+  });
+
   it('mints a valid capability token from a grant consent', () => {
     const consent = buildBaseConsent();
     const token = mintCapabilityToken(
@@ -79,6 +92,7 @@ describe('capability token minting', () => {
     expect(token.issued_at).toBe('2025-06-15T10:00:00Z');
     expect(token.not_before).toBeNull();
     expect(token.expires_at).toBe(tokenExpires);
+    expect(token.marketMakerId).toBeUndefined();
     expect(token.token_id).toMatch(/^[a-f0-9]{64}$/);
     expect(token.capability_hash).toMatch(/^[a-f0-9]{64}$/);
   });
@@ -109,6 +123,58 @@ describe('capability token minting', () => {
     const expectedHash = computeCapabilityHash(payloadBytes);
 
     expect(token.capability_hash).toBe(expectedHash);
+  });
+
+  it('changes the capability hash when marketMakerId is added to the same payload', () => {
+    const commonPayload = {
+      version: '1.0',
+      subject: SUBJECT,
+      grantee: GRANTEE,
+      consent_ref: 'd'.repeat(64),
+      scope: baseScope,
+      permissions: basePermissions,
+      issued_at: '2025-06-15T10:00:00Z',
+      not_before: null,
+      expires_at: tokenExpires,
+      token_id: 'e'.repeat(64)
+    } as const;
+
+    const unboundHash = computeCapabilityHash(
+      canonicalizeCapabilityPayload(commonPayload)
+    );
+    const boundHash = computeCapabilityHash(
+      canonicalizeCapabilityPayload({
+        ...commonPayload,
+        marketMakerId: 'hrkey-v1'
+      })
+    );
+
+    expect(boundHash).not.toBe(unboundHash);
+  });
+
+  it('produces the same capability hash for identical payloads with the same marketMakerId', () => {
+    const boundPayload = {
+      version: '1.0',
+      subject: SUBJECT,
+      grantee: GRANTEE,
+      consent_ref: 'd'.repeat(64),
+      scope: baseScope,
+      permissions: basePermissions,
+      marketMakerId: 'hrkey-v1',
+      issued_at: '2025-06-15T10:00:00Z',
+      not_before: null,
+      expires_at: tokenExpires,
+      token_id: 'e'.repeat(64)
+    } as const;
+
+    const hashA = computeCapabilityHash(
+      canonicalizeCapabilityPayload(boundPayload)
+    );
+    const hashB = computeCapabilityHash(
+      canonicalizeCapabilityPayload(boundPayload)
+    );
+
+    expect(hashA).toBe(hashB);
   });
 
   it('produces unique token_ids across mints', () => {
@@ -201,6 +267,31 @@ describe('capability token minting', () => {
     );
 
     expect(token.expires_at).toBe('2099-12-31T23:59:59Z');
+  });
+
+  it('preserves parent consent marketMakerId when minting a capability', () => {
+    const consent = buildConsentObject(
+      SUBJECT,
+      GRANTEE,
+      'grant',
+      multiScope,
+      multiPermissions,
+      {
+        now: consentNow,
+        expires_at: consentExpires,
+        marketMakerId: 'hrkey-v1'
+      }
+    );
+
+    const token = mintCapabilityToken(
+      consent,
+      baseScope,
+      basePermissions,
+      tokenExpires,
+      { now: tokenNow, marketMakerId: 'hrkey-v1' }
+    );
+
+    expect(token.marketMakerId).toBe('hrkey-v1');
   });
 
   it('accepts did:aoc:public as grantee', () => {
@@ -322,6 +413,70 @@ describe('capability token minting — rejection paths', () => {
     ).toThrow('Capability not_before must be before expires_at.');
   });
 
+  it('rejects overriding a parent consent marketMakerId', () => {
+    const consent = buildConsentObject(
+      SUBJECT,
+      GRANTEE,
+      'grant',
+      multiScope,
+      multiPermissions,
+      {
+        now: consentNow,
+        expires_at: consentExpires,
+        marketMakerId: 'hrkey-v1'
+      }
+    );
+
+    expect(() =>
+      mintCapabilityToken(
+        consent,
+        baseScope,
+        basePermissions,
+        tokenExpires,
+        { now: tokenNow, marketMakerId: 'other-maker' }
+      )
+    ).toThrow('Capability marketMakerId must match parent consent marketMakerId.');
+  });
+
+  it('rejects introducing a marketMakerId when parent consent is unbound', () => {
+    const consent = buildBaseConsent();
+
+    expect(() =>
+      mintCapabilityToken(
+        consent,
+        baseScope,
+        basePermissions,
+        tokenExpires,
+        { now: tokenNow, marketMakerId: 'hrkey-v1' }
+      )
+    ).toThrow('Capability marketMakerId cannot be introduced when parent consent is unbound.');
+  });
+
+  it('rejects malformed marketMakerId values during minting', () => {
+    const consent = buildConsentObject(
+      SUBJECT,
+      GRANTEE,
+      'grant',
+      multiScope,
+      multiPermissions,
+      {
+        now: consentNow,
+        expires_at: consentExpires,
+        marketMakerId: 'hrkey-v1'
+      }
+    );
+
+    expect(() =>
+      mintCapabilityToken(
+        consent,
+        baseScope,
+        basePermissions,
+        tokenExpires,
+        { now: tokenNow, marketMakerId: 'Bad Value' as any }
+      )
+    ).toThrow('Capability marketMakerId must contain only lowercase letters, numbers, dots, underscores, or hyphens and be at most 128 characters.');
+  });
+
   it('rejects not_before before consent issued_at', () => {
     const consent = buildBaseConsent();
 
@@ -438,6 +593,57 @@ describe('capability token minting — rejection paths', () => {
 });
 
 describe('capability token validation (structural)', () => {
+  it('accepts a structurally valid capability with marketMakerId', () => {
+    const consent = buildConsentObject(
+      SUBJECT,
+      GRANTEE,
+      'grant',
+      multiScope,
+      multiPermissions,
+      {
+        now: consentNow,
+        expires_at: consentExpires,
+        marketMakerId: 'hrkey-v1'
+      }
+    );
+
+    const token = mintCapabilityToken(
+      consent,
+      baseScope,
+      basePermissions,
+      tokenExpires,
+      { now: tokenNow }
+    );
+
+    expect(() => validateCapabilityToken(token)).not.toThrow();
+  });
+
+  it('rejects malformed capability marketMakerId values', () => {
+    const consent = buildConsentObject(
+      SUBJECT,
+      GRANTEE,
+      'grant',
+      multiScope,
+      multiPermissions,
+      {
+        now: consentNow,
+        expires_at: consentExpires,
+        marketMakerId: 'hrkey-v1'
+      }
+    );
+
+    const token = {
+      ...mintCapabilityToken(consent, baseScope, basePermissions, tokenExpires, {
+        now: tokenNow
+      }),
+      marketMakerId: 'Bad Value'
+    };
+
+    expect(() => validateCapabilityToken(token as any)).toThrow(
+      'Capability marketMakerId must contain only lowercase letters, numbers, dots, underscores, or hyphens and be at most 128 characters.'
+    );
+  });
+
   it('validates a correctly minted token', () => {
     const consent = buildBaseConsent();
     const token = mintCapabilityToken(
@@ -497,6 +703,48 @@ describe('capability token validation (structural)', () => {
 });
 
 describe('capability token verification', () => {
+  it('rejects parent/child marketMakerId mismatches', () => {
+    const consent = buildConsentObject(
+      SUBJECT,
+      GRANTEE,
+      'grant',
+      multiScope,
+      multiPermissions,
+      {
+        now: consentNow,
+        expires_at: consentExpires,
+        marketMakerId: 'hrkey-v1'
+      }
+    );
+
+    const mintedToken = mintCapabilityToken(consent, baseScope, basePermissions, tokenExpires, {
+      now: tokenNow
+    });
+    const token = {
+      ...mintedToken,
+      marketMakerId: 'other-maker'
+    };
+    token.capability_hash = computeCapabilityHash(
+      canonicalizeCapabilityPayload({
+        version: token.version,
+        subject: token.subject,
+        grantee: token.grantee,
+        consent_ref: token.consent_ref,
+        scope: token.scope,
+        permissions: token.permissions,
+        marketMakerId: token.marketMakerId,
+        issued_at: token.issued_at,
+        not_before: token.not_before,
+        expires_at: token.expires_at,
+        token_id: token.token_id
+      })
+    );
+
+    expect(() => verifyCapabilityToken(token as any, consent, { now: tokenNow })).toThrow(
+      'Capability marketMakerId does not match parent consent marketMakerId.'
+    );
+  });
+
   it('verifies a valid token against its parent consent', () => {
     const consent = buildBaseConsent();
     const token = mintCapabilityToken(

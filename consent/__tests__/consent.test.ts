@@ -163,6 +163,15 @@ describe('consent object builder', () => {
     expect(consent.expires_at).toBe('2026-01-15T14:30:00Z');
   });
 
+  it('accepts a valid marketMakerId on a grant consent', () => {
+    const consent = buildConsentObject(
+      SUBJECT, GRANTEE, 'grant', baseScope, basePermissions,
+      { now: baseNow, marketMakerId: 'hrkey-v1' }
+    );
+
+    expect(consent.marketMakerId).toBe('hrkey-v1');
+  });
+
   it('builds a valid revocation (prior_consent optional)', () => {
     const grant = buildConsentObject(
       SUBJECT, GRANTEE, 'grant', baseScope, basePermissions,
@@ -246,6 +255,38 @@ describe('consent object validation', () => {
     expect(() =>
       buildConsentObject('', GRANTEE, 'grant', baseScope, basePermissions, { now: baseNow })
     ).toThrow('Consent subject must be non-empty.');
+  });
+
+  it('rejects malformed marketMakerId values', () => {
+    expect(() =>
+      buildConsentObject(
+        SUBJECT,
+        GRANTEE,
+        'grant',
+        baseScope,
+        basePermissions,
+        { now: baseNow, marketMakerId: 'Bad Value' as any }
+      )
+    ).toThrow(
+      'Consent marketMakerId must contain only lowercase letters, numbers, dots, underscores, or hyphens and be at most 128 characters.'
+    );
+  });
+
+  it('rejects revoke consent with marketMakerId', () => {
+    expect(() =>
+      buildConsentObject(
+        SUBJECT,
+        GRANTEE,
+        'revoke',
+        [],
+        [],
+        {
+          now: baseNow,
+          revoke_target: { capability_hash: REF_A },
+          marketMakerId: 'hrkey-v1'
+        }
+      )
+    ).toThrow('Consent revoke actions must not include marketMakerId.');
   });
 
   it('rejects invalid subject DID', () => {

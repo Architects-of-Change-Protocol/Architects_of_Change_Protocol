@@ -10,6 +10,7 @@ export type ConsentObjectV1 = {
   action: 'grant' | 'revoke';
   scope: ScopeEntry[];
   permissions: string[];
+  marketMakerId?: string;
   revoke_target?: {
     capability_hash: string;
   };
@@ -26,4 +27,5 @@ export type BuildConsentOptions = {
   revoke_target?: {
     capability_hash: string;
   };
+  marketMakerId?: string;
 };

@@ -3,6 +3,7 @@ import { ConsentObjectV1, ScopeEntry } from '../consent/types';
 import { canonicalizeCapabilityPayload } from './canonical';
 import { computeCapabilityHash } from './hash';
 import { isRevoked } from './revocation';
+import { validateMarketMakerId } from '../shared/marketMakerId';
 import type { NonceRegistry } from './registries/NonceRegistry';
 import type { RevocationRegistry } from './registries/RevocationRegistry';
 import { InMemoryNonceRegistry } from './registries/InMemoryNonceRegistry';
@@ -230,6 +231,8 @@ export function mintCapabilityToken(
     .toISOString()
     .replace(/\.\d{3}Z$/, 'Z');
   const not_before = opts.not_before ?? null;
+  const requestedMarketMakerId = opts.marketMakerId;
+  const parentMarketMakerId = consent.marketMakerId;
   const token_id = generateTokenId();
 
   // Structural validation
@@ -242,9 +245,28 @@ export function mintCapabilityToken(
   validateTimestamp(issued_at, 'issued_at');
   validateTimestamp(expires_at, 'expires_at');
   validateTokenId(token_id);
+  validateMarketMakerId(requestedMarketMakerId, 'Capability marketMakerId');
+  validateMarketMakerId(parentMarketMakerId, 'Parent consent marketMakerId');
 
   if (not_before !== null) {
     validateTimestamp(not_before, 'not_before');
+  }
+
+  let marketMakerId: string | undefined;
+  if (parentMarketMakerId !== undefined) {
+    if (
+      requestedMarketMakerId !== undefined &&
+      requestedMarketMakerId !== parentMarketMakerId
+    ) {
+      throw new Error(
+        'Capability marketMakerId must match parent consent marketMakerId.'
+      );
+    }
+    marketMakerId = parentMarketMakerId;
+  } else if (requestedMarketMakerId !== undefined) {
+    throw new Error(
+      'Capability marketMakerId cannot be introduced when parent consent is unbound.'
+    );
   }
 
   // Semantic: expires_at must be after issued_at
@@ -299,6 +321,7 @@ export function mintCapabilityToken(
     consent_ref,
     scope,
     permissions,
+    ...(marketMakerId !== undefined ? { marketMakerId } : {}),
     issued_at,
     not_before,
     expires_at,
@@ -314,6 +337,7 @@ export function mintCapabilityToken(
     consent_ref,
     scope,
     permissions,
+    ...(marketMakerId !== undefined ? { marketMakerId } : {}),
     issued_at,
     not_before,
     expires_at,
@@ -339,6 +363,7 @@ export function validateCapabilityToken(token: CapabilityTokenV1): void {
   validateTimestamp(token.issued_at, 'issued_at');
   validateTimestamp(token.expires_at, 'expires_at');
   validateTokenId(token.token_id);
+  validateMarketMakerId(token.marketMakerId, 'Capability marketMakerId');
 
   if (token.not_before !== null) {
     validateTimestamp(token.not_before, 'not_before');
@@ -378,6 +403,9 @@ export function validateCapabilityToken(token: CapabilityTokenV1): void {
     consent_ref: token.consent_ref,
     scope: token.scope,
     permissions: token.permissions,
+    ...(token.marketMakerId !== undefined
+      ? { marketMakerId: token.marketMakerId }
+      : {}),
     issued_at: token.issued_at,
     not_before: token.not_before,
     expires_at: token.expires_at,
@@ -440,6 +468,13 @@ export function verifyCapabilityToken(
   if (token.grantee !== consent.grantee) {
     throw new Error(
       'Capability grantee does not match parent consent grantee.'
+    );
+  }
+
+  validateMarketMakerId(consent.marketMakerId, 'Parent consent marketMakerId');
+  if (consent.marketMakerId !== token.marketMakerId) {
+    throw new Error(
+      'Capability marketMakerId does not match parent consent marketMakerId.'
     );
   }
 
