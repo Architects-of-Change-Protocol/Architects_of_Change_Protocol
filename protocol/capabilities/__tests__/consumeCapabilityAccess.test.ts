@@ -102,6 +102,9 @@ describe('consumeCapabilityAccess', () => {
     expect(decision.allowed).toBe(true);
     expect(decision.decision).toBe('allow');
     expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.ACCESS_ALLOWED);
+    expect(decision.reason).toBe(
+      'Capability consumption is authorized and all runtime enforcement checks passed.'
+    );
     expect(decision.replayChecked).toBe(true);
     expect(decision.revocationChecked).toBe(true);
     expect(decision.consumed).toBe(true);
@@ -308,11 +311,8 @@ describe('consumeCapabilityAccess', () => {
     expect(limitedDecision.reasonCode).toBe(capabilityConsumptionReasonCodes.RATE_LIMITED);
     expect(limitedDecision.metadata.failureStage).toBe('rate_limit');
     expect(limitedDecision.metadata.rateLimitKey).toBe(first.token.consent_ref);
-    expect(limitedDecision.usage).toEqual({
-      usageCount: 1,
-      lastAccessedAt: '2025-06-15T10:00:10Z',
-      lastAccessResult: 'deny'
-    });
+    expect(limitedDecision.usage).toBeUndefined();
+    expect(usageRegistry.get(first.token.consent_ref)?.usageCount).toBe(1);
     expect(nonceRegistry.hasSeen(second.token.token_id, NOW)).toBe(false);
   });
 
@@ -378,17 +378,8 @@ describe('consumeCapabilityAccess', () => {
     expect(decision.allowed).toBe(false);
     expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.PAYMENT_REQUIRED);
     expect(decision.payment).toEqual({ required: true, amount: 25, currency: 'USD' });
-    expect(decision.usage).toEqual({
-      usageCount: 0,
-      lastAccessedAt: '2025-06-15T10:00:00Z',
-      lastAccessResult: 'deny'
-    });
-    expect(usageRegistry.get(token.consent_ref)).toEqual({
-      consentRef: token.consent_ref,
-      usageCount: 0,
-      lastAccessedAt: '2025-06-15T10:00:00Z',
-      lastAccessResult: 'deny'
-    });
+    expect(decision.usage).toBeUndefined();
+    expect(usageRegistry.get(token.consent_ref)).toBeUndefined();
   });
 
   it('allows priced capability consumption when paymentContext.paid is true', () => {
@@ -459,7 +450,7 @@ describe('consumeCapabilityAccess', () => {
     expect(secondDecision.payment).toEqual({ required: false, amount: 25, currency: 'USD' });
   });
 
-  it('records denied usage attempts without incrementing usageCount', () => {
+  it('does not record denied usage attempts', () => {
     const usageRegistry = new InMemoryConsentUsageRegistry();
     const { token, consent } = buildToken();
 
@@ -477,17 +468,8 @@ describe('consumeCapabilityAccess', () => {
     });
 
     expect(decision.allowed).toBe(false);
-    expect(decision.usage).toEqual({
-      usageCount: 0,
-      lastAccessedAt: '2025-06-15T10:00:00Z',
-      lastAccessResult: 'deny'
-    });
-    expect(usageRegistry.get(token.consent_ref)).toEqual({
-      consentRef: token.consent_ref,
-      usageCount: 0,
-      lastAccessedAt: '2025-06-15T10:00:00Z',
-      lastAccessResult: 'deny'
-    });
+    expect(decision.usage).toBeUndefined();
+    expect(usageRegistry.get(token.consent_ref)).toBeUndefined();
   });
 
   it('accumulates usageCount across multiple allowed calls for the same consent', () => {
@@ -660,6 +642,64 @@ describe('consumeCapabilityAccess', () => {
     expect(rateLimitRegistry.get(token.consent_ref)).toBeUndefined();
   });
 
+  it('keeps trust deny precedence over rate limiting', () => {
+    const rateLimitRegistry = new InMemoryRateLimitRegistry();
+    const marketMakerRegistry = new MarketMakerRegistry();
+    marketMakerRegistry.register({
+      id: 'hrkey-v1',
+      name: 'HRKey',
+      version: '1.0.0',
+      capabilities: ['read'],
+      status: 'revoked',
+      created_at: '2025-01-01T00:00:00Z'
+    });
+    const { token, consent } = buildToken({ marketMakerId: 'hrkey-v1' });
+
+    const decision = consumeCapabilityAccess({
+      capability: token,
+      consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      marketMakerId: 'hrkey-v1',
+      marketMakerRegistry,
+      now: NOW,
+      rateLimit: {
+        registry: rateLimitRegistry,
+        maxAttempts: 1,
+        windowMs: 60_000
+      },
+      registries: { revocationRegistry: new InMemoryRevocationRegistry() }
+    });
+
+    expect(decision.allowed).toBe(false);
+    expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.MARKET_MAKER_REVOKED);
+    expect(rateLimitRegistry.get(token.consent_ref)).toBeUndefined();
+  });
+
+  it('keeps replay deny precedence over pricing', () => {
+    const nonceRegistry = new InMemoryNonceRegistry();
+    const { token, consent } = buildToken({
+      pricing: { model: 'per_use', amount: 25, currency: 'USD' }
+    });
+    nonceRegistry.markSeen(token.token_id, token.expires_at);
+
+    const decision = consumeCapabilityAccess({
+      capability: token,
+      consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: NOW,
+      registries: {
+        nonceRegistry,
+        revocationRegistry: new InMemoryRevocationRegistry()
+      }
+    });
+
+    expect(decision.allowed).toBe(false);
+    expect(decision.reasonCode).toBe(capabilityConsumptionReasonCodes.CAPABILITY_REPLAYED);
+    expect(decision.payment).toBeUndefined();
+  });
+
   it('denies malformed resources and invalid inputs deterministically', () => {
     const { token, consent } = buildToken();
 
@@ -824,8 +864,8 @@ describe('consumeCapabilityAccess', () => {
     });
     expect(revokedDecision.allowed).toBe(false);
     expect(revokedDecision.reasonCode).toBe(capabilityAccessReasonCodes.MARKET_MAKER_REVOKED);
-    expect(revokedDecision.usage?.usageCount).toBe(0);
-    expect(usageRegistry.get(pricedToken.consent_ref)?.usageCount).toBe(0);
+    expect(revokedDecision.usage).toBeUndefined();
+    expect(usageRegistry.get(pricedToken.consent_ref)).toBeUndefined();
   });
 
   it('normalizes action casing and surrounding whitespace before evaluation', () => {
@@ -1076,8 +1116,8 @@ describe('consumeCapabilityAccess', () => {
     expect(decision.allowed).toBe(false);
     expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.CONSENT_EXPIRED);
     expect(decision.payment).toEqual({ required: false, amount: 25, currency: 'USD' });
-    expect(decision.usage?.usageCount).toBe(0);
-    expect(usageRegistry.get(token.consent_ref)?.usageCount).toBe(0);
+    expect(decision.usage).toBeUndefined();
+    expect(usageRegistry.get(token.consent_ref)).toBeUndefined();
   });
 
   it('denies expiration mismatch when capability exceeds consent window', () => {

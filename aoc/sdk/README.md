@@ -115,7 +115,13 @@ Existence and trust are distinct: a market maker can be registered and still den
 ## Simplified Flow Wrapper
 
 For the most common SDK usage, call `executeCapabilityFlow(...)`.
-It orchestrates evaluation, consumption, and optional interpreter execution in one call while preserving the same enforcement behavior.
+It is a pure orchestrator that runs canonical stages in fixed order:
+
+1. `evaluateCapabilityAccess(...)`
+2. `consumeCapabilityAccess(...)`
+3. optional `interpretWithCapability(...)`
+
+It does not add enforcement rules of its own.
 
 ```ts
 import {
@@ -173,9 +179,15 @@ const result = executeCapabilityFlow({
 
 When `executeCapabilityFlow(...)` returns `allowed: false`, inspect these fields first:
 
-- `result.stage` — where denial happened (`evaluation` or `consumption`).
+- `result.stage` — where denial happened (`evaluation`, `consumption`, or `interpretation`).
 - `result.reasonCode` — stable machine-readable code from the underlying decision.
 - `result.reason` — human-readable explanation.
+
+When `executeCapabilityFlow(...)` returns `allowed: true`, wrapper success is canonical:
+
+- `result.reasonCode` is always `ACCESS_ALLOWED`
+- `result.reason` is always the global wrapper success reason
+- success semantics are global and do not inherit stage-local text
 
 ```ts
 const result = executeCapabilityFlow(/* ... */);
@@ -190,5 +202,5 @@ if (!result.allowed) {
 ## Runtime throttling note
 
 `RATE_LIMITED` is a deterministic **consumption-stage** deny reason from `consumeCapabilityAccess(...)`.
-It is not an authorization failure: evaluation still runs first, then rate limiting, then (if allowed) payment/usage/interpreter side effects.
+It is not an authorization failure: evaluation runs first, then consumption runtime checks, and only then interpretation.
 The current MVP strategy is a fixed-window counter keyed by `consent_ref`, and if `rateLimit` is omitted there is no throttling.

@@ -132,7 +132,8 @@ describe('executeCapabilityFlow', () => {
     expect(result.evaluation.allowed).toBe(true);
     expect(result.consumption?.allowed).toBe(true);
     expect(result.interpretation).toBeUndefined();
-    expect(result.reasonCode).toBe(result.consumption?.reasonCode);
+    expect(result.reasonCode).toBe('ACCESS_ALLOWED');
+    expect(result.reason).toBe('Capability flow succeeded after evaluation and runtime consumption.');
   });
 
   it('runs interpretation only after successful consumption', () => {
@@ -162,6 +163,8 @@ describe('executeCapabilityFlow', () => {
     expect(result.consumption?.allowed).toBe(true);
     expect(result.interpretation?.allowed).toBe(true);
     expect(result.allowed).toBe(true);
+    expect(result.reasonCode).toBe('ACCESS_ALLOWED');
+    expect(result.reason).toBe('Capability flow succeeded after evaluation and runtime consumption.');
   });
 
   it('returns consumption-stage RATE_LIMITED and does not invoke interpreter when rate limit is hit', () => {
@@ -279,5 +282,28 @@ describe('executeCapabilityFlow', () => {
     expect(revokedResult.interpretation).toBeUndefined();
     expect(revokedResult.reasonCode).toBe('MARKET_MAKER_REVOKED');
     expect(revokedResult.reasonCode).toBe(revokedResult.evaluation.reasonCode);
+  });
+
+  it('returns interpretation failure code without mutating deny propagation', () => {
+    const { consent, capability } = createCapability({ marketMakerBound: false });
+
+    const result = executeCapabilityFlow({
+      capability,
+      consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: NOW,
+      interpreter: {
+        enabled: true,
+        query: 'This should fail due to missing resource context.'
+      }
+    });
+
+    expect(result.allowed).toBe(false);
+    expect(result.stage).toBe('interpretation');
+    expect(result.evaluation.allowed).toBe(true);
+    expect(result.consumption?.allowed).toBe(true);
+    expect(result.reasonCode).toBe('INTERPRETER_EXECUTION_FAILED');
+    expect(result.reason).toContain('No capability-resolved data found');
   });
 });

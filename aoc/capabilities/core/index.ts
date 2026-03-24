@@ -1,5 +1,5 @@
 export { evaluateCapabilityAccess } from './evaluateCapabilityAccess';
-export { capabilityAccessReasonCodes } from './reasonCodes';
+export { capabilityAccessReasonCodes, capabilityReasonCodeTaxonomy } from './reasonCodes';
 export type { CapabilityAccessReasonCode } from './reasonCodes';
 export type {
   CapabilityAccessDecision,

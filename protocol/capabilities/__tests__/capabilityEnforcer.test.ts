@@ -66,6 +66,7 @@ describe('legacy capability bridge mapping', () => {
     });
 
     expect(decision).toMatchObject({ code: 'CONSENT_MISMATCH' });
+    expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.CONSENT_MISMATCH);
   });
 
   it('maps consent-invalid bridge pre-checks to CONSENT_MISMATCH', () => {

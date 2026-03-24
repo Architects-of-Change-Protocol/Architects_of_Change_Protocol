@@ -31,6 +31,7 @@ export type EnforceCapabilityInput = {
 
 export type EnforceCapabilityDecision = {
   allowed: boolean;
+  reasonCode: string;
   code:
     | 'OK'
     | 'EXPIRED'
@@ -54,7 +55,7 @@ function deny(
   code: EnforceCapabilityDecision['code'],
   reason: string
 ): EnforceCapabilityDecision {
-  return { allowed: false, code, reason };
+  return { allowed: false, reasonCode: capabilityAccessReasonCodes.CAPABILITY_INVALID, code, reason };
 }
 
 function mapReasonCode(reasonCode: string): EnforceCapabilityDecision['code'] {
@@ -151,24 +152,11 @@ export function enforceCapability(
       ? 'REVOKED'
       : decision.reasonCode === capabilityConsumptionReasonCodes.CAPABILITY_REPLAYED
         ? 'REPLAY'
-        : decision.reasonCode === capabilityAccessReasonCodes.CAPABILITY_INVALID &&
-            decision.reason === 'Capability has expired.'
-          ? 'EXPIRED'
-          : decision.reasonCode === capabilityAccessReasonCodes.CAPABILITY_INVALID &&
-              decision.reason === 'Capability not yet valid.'
-            ? 'NOT_YET_VALID'
-            : !decision.allowed &&
-                decision.reasonCode === capabilityAccessReasonCodes.CAPABILITY_INVALID &&
-                input.consent &&
-                (/Consent |Parent consent|Capability consent_ref|Capability subject|Capability grantee|Capability marketMakerId/.test(
-                  decision.reason
-                ) ||
-                  decision.reason === 'Capability expires_at must not exceed parent consent expires_at.')
-              ? 'CONSENT_MISMATCH'
-              : mapReasonCode(decision.reasonCode);
+      : mapReasonCode(decision.reasonCode);
 
   return {
     allowed: decision.allowed,
+    reasonCode: decision.reasonCode,
     code: mappedCode,
     reason: decision.reason,
     metadata: {
