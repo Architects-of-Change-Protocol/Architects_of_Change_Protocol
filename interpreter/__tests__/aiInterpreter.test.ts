@@ -2,6 +2,7 @@ import { mintCapabilityToken } from '../../capability';
 import { buildConsentObject } from '../../consent';
 import { capabilityAccessReasonCodes } from '../../enforcement';
 import { InMemoryConsentUsageRegistry } from '../../protocol/capabilities';
+import { MarketMakerRegistry } from '../../shared/marketMakerRegistry';
 import { interpretWithCapability, runInterpreter } from '../aiInterpreter';
 
 const NOW = '2025-06-15T10:00:00Z';
@@ -170,6 +171,66 @@ describe('interpretWithCapability', () => {
 
     expect(response.allowed).toBe(false);
     expect(usageRegistry.get(request.capability.consent_ref)).toBeUndefined();
+  });
+
+  it('denies before interpreter execution for deprecated or revoked market makers', () => {
+    const deprecatedRegistry = new MarketMakerRegistry();
+    deprecatedRegistry.register({
+      id: 'hrkey-v1',
+      name: 'HRKey',
+      version: '1.0.0',
+      capabilities: ['read'],
+      status: 'deprecated',
+      created_at: '2025-01-01T00:00:00Z'
+    });
+    const revokedRegistry = new MarketMakerRegistry();
+    revokedRegistry.register({
+      id: 'hrkey-v1',
+      name: 'HRKey',
+      version: '1.0.0',
+      capabilities: ['read'],
+      status: 'revoked',
+      created_at: '2025-01-01T00:00:00Z'
+    });
+
+    const usageRegistry = new InMemoryConsentUsageRegistry();
+    const interpreterSpy = jest.spyOn(require('../aiInterpreter'), 'runInterpreter');
+    const request = buildRequest({
+      consent: buildRequest().consent,
+      capability: buildRequest().capability
+    });
+    request.consent = buildConsentObject(
+      'did:aoc:subject123',
+      'did:aoc:grantee456',
+      'grant',
+      [{ type: 'content', ref: CONTENT_REF }],
+      ['read'],
+      { now: new Date(NOW), expires_at: EXPIRES_AT, marketMakerId: 'hrkey-v1' }
+    );
+    request.capability = mintCapabilityToken(
+      request.consent,
+      [{ type: 'content', ref: CONTENT_REF }],
+      ['read'],
+      EXPIRES_AT,
+      { now: new Date(NOW) }
+    );
+
+    const deprecatedResponse = interpretWithCapability(request, {
+      marketMakerRegistry: deprecatedRegistry,
+      registries: { consentUsageRegistry: usageRegistry }
+    });
+    expect(deprecatedResponse.allowed).toBe(false);
+    expect(deprecatedResponse.error?.code).toBe(capabilityAccessReasonCodes.MARKET_MAKER_DEPRECATED);
+
+    const revokedResponse = interpretWithCapability(request, {
+      marketMakerRegistry: revokedRegistry,
+      registries: { consentUsageRegistry: usageRegistry }
+    });
+    expect(revokedResponse.allowed).toBe(false);
+    expect(revokedResponse.error?.code).toBe(capabilityAccessReasonCodes.MARKET_MAKER_REVOKED);
+    expect(interpreterSpy).not.toHaveBeenCalled();
+    expect(usageRegistry.get(request.capability.consent_ref)).toBeUndefined();
+    interpreterSpy.mockRestore();
   });
 
   it('increments usage on successful interpretation', () => {

@@ -2,6 +2,7 @@ import { buildConsentObject } from '../../../consent';
 import { mintCapabilityToken } from '../../../capability';
 import { capabilityAccessReasonCodes } from '../../../enforcement';
 import { enforceCapability } from '../capabilityEnforcer';
+import { MarketMakerRegistry } from '../../../shared/marketMakerRegistry';
 
 const SUBJECT = 'did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK';
 const GRANTEE = 'did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH';
@@ -105,6 +106,49 @@ describe('legacy capability bridge mapping', () => {
       now: NOW
     });
     expect(mismatchDecision.code).toBe('REQUEST_CONTEXT_MISMATCH');
+  });
+
+  it('maps market-maker trust denies to REQUEST_CONTEXT_MISMATCH', () => {
+    const deprecatedRegistry = new MarketMakerRegistry();
+    deprecatedRegistry.register({
+      id: 'hrkey-v1',
+      name: 'HRKey',
+      version: '1.0.0',
+      capabilities: ['read'],
+      status: 'deprecated',
+      created_at: '2025-01-01T00:00:00Z'
+    });
+    const revokedRegistry = new MarketMakerRegistry();
+    revokedRegistry.register({
+      id: 'hrkey-v1',
+      name: 'HRKey',
+      version: '1.0.0',
+      capabilities: ['read'],
+      status: 'revoked',
+      created_at: '2025-01-01T00:00:00Z'
+    });
+
+    const { token, consent } = buildToken({ marketMakerId: 'hrkey-v1' });
+
+    const deprecatedDecision = enforceCapability({
+      token,
+      consent,
+      required_scope: `content:${CONTENT_REF}`,
+      request_context: { marketMakerId: 'hrkey-v1' },
+      marketMakerRegistry: deprecatedRegistry,
+      now: NOW
+    });
+    expect(deprecatedDecision.code).toBe('REQUEST_CONTEXT_MISMATCH');
+
+    const revokedDecision = enforceCapability({
+      token,
+      consent,
+      required_scope: `content:${CONTENT_REF}`,
+      request_context: { marketMakerId: 'hrkey-v1' },
+      marketMakerRegistry: revokedRegistry,
+      now: NOW
+    });
+    expect(revokedDecision.code).toBe('REQUEST_CONTEXT_MISMATCH');
   });
 
   it('maps usage and policy denies to RESOURCE_RESTRICTION_FAILED', () => {

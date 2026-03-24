@@ -583,6 +583,88 @@ describe('consumeCapabilityAccess', () => {
 
 
 
+  it('denies deprecated and revoked market makers before payment can override trust', () => {
+    const deprecatedRegistry = new MarketMakerRegistry();
+    deprecatedRegistry.register({
+      id: 'hrkey-v1',
+      name: 'HRKey',
+      version: '1.0.0',
+      capabilities: ['read'],
+      status: 'deprecated',
+      created_at: '2025-01-01T00:00:00Z'
+    });
+    const revokedRegistry = new MarketMakerRegistry();
+    revokedRegistry.register({
+      id: 'hrkey-v1',
+      name: 'HRKey',
+      version: '1.0.0',
+      capabilities: ['read'],
+      status: 'revoked',
+      created_at: '2025-01-01T00:00:00Z'
+    });
+
+    const pricedConsent = buildConsentObject(
+      SUBJECT,
+      GRANTEE,
+      'grant',
+      [{ type: 'content', ref: CONTENT_REF }],
+      ['read'],
+      {
+        now: new Date(NOW),
+        expires_at: CONSENT_EXPIRES,
+        marketMakerId: 'hrkey-v1',
+        pricing: { model: 'per_use', amount: 25, currency: 'USD' }
+      }
+    );
+    const pricedToken = mintCapabilityToken(
+      pricedConsent,
+      [{ type: 'content', ref: CONTENT_REF }],
+      ['read'],
+      CONSENT_EXPIRES,
+      { now: new Date(NOW) }
+    );
+
+    const deprecatedDecision = consumeCapabilityAccess({
+      capability: pricedToken,
+      consent: pricedConsent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      marketMakerId: 'hrkey-v1',
+      marketMakerRegistry: deprecatedRegistry,
+      paymentContext: { paid: true },
+      now: NOW,
+      registries: {
+        nonceRegistry: new InMemoryNonceRegistry(),
+        revocationRegistry: new InMemoryRevocationRegistry(),
+        consentUsageRegistry: new InMemoryConsentUsageRegistry()
+      }
+    });
+    expect(deprecatedDecision.allowed).toBe(false);
+    expect(deprecatedDecision.reasonCode).toBe(capabilityAccessReasonCodes.MARKET_MAKER_DEPRECATED);
+    expect(deprecatedDecision.payment).toEqual({ required: false, amount: 25, currency: 'USD' });
+
+    const usageRegistry = new InMemoryConsentUsageRegistry();
+    const revokedDecision = consumeCapabilityAccess({
+      capability: pricedToken,
+      consent: pricedConsent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      marketMakerId: 'hrkey-v1',
+      marketMakerRegistry: revokedRegistry,
+      paymentContext: { paid: true },
+      now: NOW,
+      registries: {
+        nonceRegistry: new InMemoryNonceRegistry(),
+        revocationRegistry: new InMemoryRevocationRegistry(),
+        consentUsageRegistry: usageRegistry
+      }
+    });
+    expect(revokedDecision.allowed).toBe(false);
+    expect(revokedDecision.reasonCode).toBe(capabilityAccessReasonCodes.MARKET_MAKER_REVOKED);
+    expect(revokedDecision.usage?.usageCount).toBe(0);
+    expect(usageRegistry.get(pricedToken.consent_ref)?.usageCount).toBe(0);
+  });
+
   it('normalizes action casing and surrounding whitespace before evaluation', () => {
     const nonceRegistry = new InMemoryNonceRegistry();
     const { token, consent } = buildToken();

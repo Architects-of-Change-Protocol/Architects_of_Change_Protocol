@@ -52,6 +52,6 @@ export type InterpreterDependencies = {
     revocationRegistry?: RevocationRegistry;
     consentUsageRegistry?: ConsentUsageRegistry;
   };
-  marketMakerRegistry?: Pick<MarketMakerRegistry, 'exists'>;
+  marketMakerRegistry?: Pick<MarketMakerRegistry, 'exists' | 'getStatus'>;
   hooks?: CapabilityAccessRequest['hooks'];
 };

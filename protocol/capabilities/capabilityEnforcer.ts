@@ -2,6 +2,7 @@ import { type CapabilityTokenV1 } from '../../capability';
 import type { NonceRegistry } from '../../capability/registries/NonceRegistry';
 import type { RevocationRegistry } from '../../capability/registries/RevocationRegistry';
 import type { ConsentObjectV1 } from '../../consent';
+import type { MarketMakerRegistry } from '../../shared/marketMakerRegistry';
 import {
   capabilityAccessReasonCodes,
   type CapabilityAccessRequest
@@ -22,6 +23,7 @@ export type EnforceCapabilityInput = {
   consume?: boolean;
   action?: 'read';
   hooks?: CapabilityAccessRequest['hooks'];
+  marketMakerRegistry?: Pick<MarketMakerRegistry, 'exists' | 'getStatus'>;
 };
 
 export type EnforceCapabilityDecision = {
@@ -77,6 +79,8 @@ function mapReasonCode(reasonCode: string): EnforceCapabilityDecision['code'] {
     case capabilityAccessReasonCodes.MARKET_MAKER_REQUIRED:
     case capabilityAccessReasonCodes.MARKET_MAKER_MISMATCH:
     case capabilityAccessReasonCodes.UNKNOWN_MARKET_MAKER:
+    case capabilityAccessReasonCodes.MARKET_MAKER_DEPRECATED:
+    case capabilityAccessReasonCodes.MARKET_MAKER_REVOKED:
       return 'REQUEST_CONTEXT_MISMATCH';
     case capabilityAccessReasonCodes.POLICY_DENIED:
     case capabilityAccessReasonCodes.USAGE_DENIED:
@@ -105,6 +109,7 @@ function buildLegacyAccessRequest(
         : undefined,
     now: input.now,
     hooks: input.hooks,
+    marketMakerRegistry: input.marketMakerRegistry,
     metadata: {
       resource_context: input.resource_context,
       request_context: input.request_context,
