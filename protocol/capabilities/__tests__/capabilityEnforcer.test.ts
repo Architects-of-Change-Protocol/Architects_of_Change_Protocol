@@ -178,6 +178,23 @@ describe('legacy capability bridge mapping', () => {
     expect(revokedDecision.code).toBe('REQUEST_CONTEXT_MISMATCH');
   });
 
+  it('maps unknown market-makers to REQUEST_CONTEXT_MISMATCH when registry enforcement is enabled', () => {
+    const registry = new MarketMakerRegistry();
+    const { token, consent } = buildToken({ marketMakerId: 'hrkey-v1' });
+
+    const decision = enforceCapability({
+      token,
+      consent,
+      required_scope: `content:${CONTENT_REF}`,
+      request_context: { marketMakerId: 'hrkey-v1' },
+      marketMakerRegistry: registry,
+      now: NOW
+    });
+
+    expect(decision.code).toBe('REQUEST_CONTEXT_MISMATCH');
+    expect(decision.reason).toContain('not registered');
+  });
+
   it('maps usage and policy denies to RESOURCE_RESTRICTION_FAILED', () => {
     const { token, consent } = buildToken();
 

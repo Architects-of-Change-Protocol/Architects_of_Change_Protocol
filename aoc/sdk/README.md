@@ -95,6 +95,17 @@ const consumption = consumeCapabilityAccess({
 - **Market Maker**: integration boundary that can be bound to consent/capability for trust enforcement.
 - **Enforcement**: deterministic allow/deny decisions across evaluation and consumption boundaries.
 
+### Market maker trust enforcement (MVP policy)
+
+Market-maker enforcement is lifecycle-aware and deterministic:
+
+- `active` → allowed (when other checks pass)
+- `deprecated` → denied fail-closed
+- `revoked` → denied fail-closed
+
+This is an intentional MVP-safe runtime trust gate, not reputation scoring, governance, or pricing logic.
+Existence and trust are distinct: a market maker can be registered and still denied due to status.
+
 ## Simplified Flow Wrapper
 
 For the most common SDK usage, call `executeCapabilityFlow(...)`.
