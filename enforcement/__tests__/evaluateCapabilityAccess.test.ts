@@ -302,6 +302,58 @@ describe('evaluateCapabilityAccess', () => {
     expect(decision.metadata.failureStage).toBe('marketMaker');
   });
 
+  it('denies capabilities bound to deprecated market makers when a registry is enforced', () => {
+    const registry = new MarketMakerRegistry();
+    registry.register({
+      id: 'hrkey-v1',
+      name: 'HRKey',
+      version: '1.0.0',
+      capabilities: ['employment'],
+      status: 'deprecated',
+      created_at: '2025-01-15T00:00:00Z'
+    });
+    const { capability } = buildCapability({ marketMakerId: 'hrkey-v1' });
+
+    const decision = evaluateCapabilityAccess({
+      capability,
+      action: 'read',
+      resource: `content:${CONTENT_REF}`,
+      marketMakerId: 'hrkey-v1',
+      marketMakerRegistry: registry,
+      now: '2025-08-01T00:00:00Z'
+    });
+
+    expect(decision.allowed).toBe(false);
+    expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.MARKET_MAKER_DEPRECATED);
+    expect(decision.metadata.marketMakerStatus).toBe('deprecated');
+  });
+
+  it('denies capabilities bound to revoked market makers when a registry is enforced', () => {
+    const registry = new MarketMakerRegistry();
+    registry.register({
+      id: 'hrkey-v1',
+      name: 'HRKey',
+      version: '1.0.0',
+      capabilities: ['employment'],
+      status: 'revoked',
+      created_at: '2025-01-15T00:00:00Z'
+    });
+    const { capability } = buildCapability({ marketMakerId: 'hrkey-v1' });
+
+    const decision = evaluateCapabilityAccess({
+      capability,
+      action: 'read',
+      resource: `content:${CONTENT_REF}`,
+      marketMakerId: 'hrkey-v1',
+      marketMakerRegistry: registry,
+      now: '2025-08-01T00:00:00Z'
+    });
+
+    expect(decision.allowed).toBe(false);
+    expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.MARKET_MAKER_REVOKED);
+    expect(decision.metadata.marketMakerStatus).toBe('revoked');
+  });
+
   it('accepts capabilities with a registered market maker when a registry is enforced', () => {
     const registry = new MarketMakerRegistry();
     registry.register({

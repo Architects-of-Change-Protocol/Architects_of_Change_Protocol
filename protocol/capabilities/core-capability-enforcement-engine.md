@@ -101,6 +101,9 @@ Current reason codes:
 - `RESOURCE_NOT_ALLOWED`
 - `MARKET_MAKER_REQUIRED`
 - `MARKET_MAKER_MISMATCH`
+- `UNKNOWN_MARKET_MAKER`
+- `MARKET_MAKER_DEPRECATED`
+- `MARKET_MAKER_REVOKED`
 - `USAGE_DENIED`
 - `POLICY_DENIED`
 - `CONSENT_INVALID`
@@ -118,8 +121,8 @@ Consumption semantics:
 1. **Structural validation** — capability is validated with the canonical token validator; optional consent is validated and, if supplied, matched against the capability.
 2. **Revocation at consumption time** — revoked capabilities deny immediately with a machine-readable revoke code before resource delivery.
 3. **Replay handling** — if a nonce registry is supplied and `consume !== false`, replay is checked before authorization; repeated presentation denies. If `consume === false`, the request is treated as a non-marking presentation for replay only, and replay is not checked or marked. If `requireReplayProtection` is `true` but no nonce registry is supplied, the request denies fail-closed.
-4. **Central authorization** — `evaluateCapabilityAccess(...)` remains the source of truth for action/resource/market-maker/policy decisions.
-5. **Per-consent payment enforcement** — if the parent consent defines `pricing`, authorization still runs first, but consumption denies with `PAYMENT_REQUIRED` unless `paymentContext?.paid === true`. This is only a deterministic gate on use of the grant, not billing, settlement, wallet logic, or payment processing.
+4. **Central authorization** — `evaluateCapabilityAccess(...)` remains the source of truth for action/resource/market-maker/policy decisions. Market-maker enforcement is lifecycle-aware: a bound `marketMakerId` must both exist in the supplied registry and be operationally trusted. `active` market makers pass, while `deprecated` and `revoked` both deny fail-closed with distinct reason codes. This is a deterministic runtime trust gate, not reputation scoring, governance, or persistence.
+5. **Per-consent payment enforcement** — if the parent consent defines `pricing`, authorization still runs first, but consumption denies with `PAYMENT_REQUIRED` unless `paymentContext?.paid === true`. Pricing never overrides a market-maker trust deny. This is only a deterministic gate on use of the grant, not billing, settlement, wallet logic, or payment processing.
 6. **Per-consent usage metering** — if a consent-usage registry is supplied, usage is recorded by `consent_ref` after the authorization decision is made. `usageCount` increments only on allowed consumption attempts; `lastAccessedAt` and `lastAccessResult` update on both allow and deny. This metering is deterministic protocol state for the grant itself, not analytics, billing, or quota enforcement. Payment-required denies are recorded as denied attempts and do not increment `usageCount`.
 7. **Post-allow marking** — nonce state is marked only after an allow decision and only when `consume !== false` and a nonce registry is present. Denies never mark replay state.
 
@@ -171,5 +174,5 @@ The engine intentionally leaves narrow interfaces for future cards:
 - Prefer passing `now` in tests and integration boundaries that require deterministic output.
 - Do not mutate the caller’s capability object; the engine normalizes to an internal immutable view.
 - Input normalization/classification uses structured local input errors rather than message-fragment matching.
-- The legacy `protocol/capabilities/capabilityEnforcer` bridge remains intentionally read-scoped for existing vault/resolver consumers. It now delegates its runtime decision to `consumeCapabilityAccess(...)` and maps newer decision codes onto the closest legacy surface: consent issues → `CONSENT_MISMATCH`, market-maker binding issues → `REQUEST_CONTEXT_MISMATCH`, usage/policy denies → `RESOURCE_RESTRICTION_FAILED`, while preserving legacy `REVOKED` / `REPLAY` compatibility.
+- The legacy `protocol/capabilities/capabilityEnforcer` bridge remains intentionally read-scoped for existing vault/resolver consumers. It now delegates its runtime decision to `consumeCapabilityAccess(...)` and maps newer decision codes onto the closest legacy surface: consent issues → `CONSENT_MISMATCH`, market-maker binding and trust issues (required, mismatch, unknown, deprecated, revoked) → `REQUEST_CONTEXT_MISMATCH`, usage/policy/payment denies → `RESOURCE_RESTRICTION_FAILED`, while preserving legacy `REVOKED` / `REPLAY` compatibility for token revocation and replay.
 - Treat the returned `reasonCode` as the source of truth for programmatic behavior; `reason` is for operators and audit trails.

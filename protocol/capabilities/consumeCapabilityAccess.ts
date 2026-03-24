@@ -106,7 +106,7 @@ export type CapabilityConsumptionRequest = {
   };
   policyContext?: Record<string, unknown>;
   metadata?: Record<string, unknown>;
-  marketMakerRegistry?: Pick<MarketMakerRegistry, 'exists'>;
+  marketMakerRegistry?: Pick<MarketMakerRegistry, 'exists' | 'getStatus'>;
   hooks?: CapabilityAccessRequest['hooks'];
   registries?: {
     nonceRegistry?: NonceRegistry;
@@ -521,7 +521,7 @@ export function consumeCapabilityAccess(
         shouldCheckReplay,
         true,
         recordUsage(request, capability, 'deny', evaluatedAt),
-        buildPaymentDecision(normalizedConsent, false)
+        buildPaymentDecision(normalizedConsent, request.paymentContext?.paid === true)
       );
     }
 

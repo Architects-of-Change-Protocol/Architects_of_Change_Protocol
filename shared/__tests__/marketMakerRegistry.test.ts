@@ -40,4 +40,28 @@ describe('MarketMakerRegistry', () => {
     expect(registry.get('hrkey-v1')).toEqual(buildMarketMaker());
     expect(registry.list()).toEqual([buildMarketMaker()]);
   });
+
+  it('treats active market makers as trusted', () => {
+    const registry = new MarketMakerRegistry();
+    registry.register(buildMarketMaker({ status: 'active' }));
+
+    expect(registry.getStatus('hrkey-v1')).toBe('active');
+    expect(registry.isTrusted('hrkey-v1')).toBe(true);
+  });
+
+  it('treats deprecated market makers as untrusted', () => {
+    const registry = new MarketMakerRegistry();
+    registry.register(buildMarketMaker({ status: 'deprecated' }));
+
+    expect(registry.getStatus('hrkey-v1')).toBe('deprecated');
+    expect(registry.isTrusted('hrkey-v1')).toBe(false);
+  });
+
+  it('treats revoked market makers as untrusted', () => {
+    const registry = new MarketMakerRegistry();
+    registry.register(buildMarketMaker({ status: 'revoked' }));
+
+    expect(registry.getStatus('hrkey-v1')).toBe('revoked');
+    expect(registry.isTrusted('hrkey-v1')).toBe(false);
+  });
 });

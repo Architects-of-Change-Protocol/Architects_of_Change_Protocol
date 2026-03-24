@@ -1,5 +1,7 @@
 import { validateMarketMakerId } from './marketMakerId';
 
+export type MarketMakerStatus = 'active' | 'deprecated' | 'revoked';
+
 export type MarketMaker = {
   id: string;
   name: string;
@@ -7,7 +9,7 @@ export type MarketMaker = {
   capabilities: string[];
   endpoint?: string;
   publicKey?: string;
-  status: 'active' | 'deprecated' | 'revoked';
+  status: MarketMakerStatus;
   created_at: string;
 };
 
@@ -24,6 +26,8 @@ function cloneMarketMaker(marketMaker: MarketMaker): MarketMaker {
   Object.freeze(capabilities);
   return Object.freeze(clone);
 }
+
+const TRUSTED_MARKET_MAKER_STATUSES = new Set<MarketMakerStatus>(['active']);
 
 function validateMarketMaker(marketMaker: MarketMaker): void {
   if (!marketMaker || typeof marketMaker !== 'object') {
@@ -93,6 +97,15 @@ export class MarketMakerRegistry {
 
   exists(id: string): boolean {
     return this.records.has(id);
+  }
+
+  getStatus(id: string): MarketMakerStatus | null {
+    return this.records.get(id)?.status ?? null;
+  }
+
+  isTrusted(id: string): boolean {
+    const status = this.getStatus(id);
+    return status !== null && TRUSTED_MARKET_MAKER_STATUSES.has(status);
   }
 
   list(): MarketMaker[] {

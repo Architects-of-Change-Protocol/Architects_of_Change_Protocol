@@ -137,6 +137,70 @@ function evaluateHookResult(
   );
 }
 
+function evaluateMarketMakerTrust(
+  marketMakerId: string,
+  request: CapabilityAccessRequest,
+  evaluatedAt: string,
+  checks: CapabilityAccessChecks,
+  metadata: { capabilityHash?: string; tokenId?: string; consentRef?: string }
+): CapabilityAccessDecision | null {
+  const registry = request.marketMakerRegistry;
+
+  if (!registry) {
+    return null;
+  }
+
+  if (!registry.exists(marketMakerId)) {
+    checks.marketMaker = 'fail';
+    return denyDecision(
+      evaluatedAt,
+      capabilityAccessReasonCodes.UNKNOWN_MARKET_MAKER,
+      'Capability marketMakerId is structurally valid but not registered.',
+      checks,
+      {
+        failureStage: 'marketMaker',
+        ...metadata,
+        boundMarketMakerId: marketMakerId
+      }
+    );
+  }
+
+  const status = registry.getStatus(marketMakerId);
+  if (status === 'deprecated') {
+    checks.marketMaker = 'fail';
+    return denyDecision(
+      evaluatedAt,
+      capabilityAccessReasonCodes.MARKET_MAKER_DEPRECATED,
+      'Capability marketMakerId is registered but deprecated and not trusted for runtime access.',
+      checks,
+      {
+        failureStage: 'marketMaker',
+        ...metadata,
+        boundMarketMakerId: marketMakerId,
+        marketMakerStatus: status
+      }
+    );
+  }
+
+  if (status === 'revoked') {
+    checks.marketMaker = 'fail';
+    return denyDecision(
+      evaluatedAt,
+      capabilityAccessReasonCodes.MARKET_MAKER_REVOKED,
+      'Capability marketMakerId is registered but revoked and cannot operate.',
+      checks,
+      {
+        failureStage: 'marketMaker',
+        ...metadata,
+        boundMarketMakerId: marketMakerId,
+        marketMakerStatus: status
+      }
+    );
+  }
+
+  return null;
+}
+
 function invokeOptionalHook(
   hook: CapabilityUsageHook | CapabilityPolicyHook | undefined,
   normalized: NormalizedCapabilityAccessRequest,
@@ -277,28 +341,23 @@ export function evaluateCapabilityAccess(
       }
       checks.resource = 'pass';
 
-      if (
-        normalized.capability.marketMakerId !== null &&
-        input.marketMakerRegistry &&
-        !input.marketMakerRegistry.exists(normalized.capability.marketMakerId)
-      ) {
-        checks.marketMaker = 'fail';
-        return denyDecision(
+      if (normalized.capability.marketMakerId !== null) {
+        const marketMakerTrustDecision = evaluateMarketMakerTrust(
+          normalized.capability.marketMakerId,
+          input,
           evaluatedAt,
-          capabilityAccessReasonCodes.UNKNOWN_MARKET_MAKER,
-          'Capability marketMakerId is structurally valid but not registered.',
           checks,
           {
-            failureStage: 'marketMaker',
             capabilityHash: normalized.capability.capabilityHash,
             tokenId: normalized.capability.tokenId,
-            consentRef: normalized.capability.consentRef,
-            boundMarketMakerId: normalized.capability.marketMakerId ?? undefined
+            consentRef: normalized.capability.consentRef
           }
         );
-      }
 
-      if (normalized.capability.marketMakerId !== null) {
+        if (marketMakerTrustDecision) {
+          return marketMakerTrustDecision;
+        }
+
         if (!normalized.marketMakerId) {
           checks.marketMaker = 'fail';
           return denyDecision(
