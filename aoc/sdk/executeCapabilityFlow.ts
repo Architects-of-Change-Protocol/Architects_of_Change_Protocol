@@ -14,6 +14,10 @@ import type { MarketMakerRegistry } from '../capabilities/market/marketMakerRegi
 import { evaluateCapabilityAccess } from '../capabilities/core/evaluateCapabilityAccess';
 import { consumeCapabilityAccess } from '../capabilities/runtime/consumeCapabilityAccess';
 import { interpretWithCapability } from '../capabilities/interpreter/interpretWithCapability';
+import { capabilityAccessReasonCodes } from '../capabilities/core/reasonCodes';
+
+const CAPABILITY_FLOW_ALLOWED_REASON =
+  'Capability flow succeeded after evaluation and runtime consumption.';
 
 export type ExecuteCapabilityFlowRequest = {
   capability: CapabilityTokenV1;
@@ -42,8 +46,8 @@ export type ExecuteCapabilityFlowResponse = {
   evaluation: CapabilityAccessDecision;
   consumption?: CapabilityConsumptionDecision;
   interpretation?: AIInterpreterResponse;
-  reasonCode?: string;
-  reason?: string;
+  reasonCode: string;
+  reason: string;
 };
 
 function normalizeResourceForInterpreter(resource: CapabilityResource): string {
@@ -108,35 +112,18 @@ export function executeCapabilityFlow(
       stage: 'consumption',
       evaluation,
       consumption,
-      reasonCode: consumption.reasonCode,
-      reason: consumption.reason
+      reasonCode: capabilityAccessReasonCodes.ACCESS_ALLOWED,
+      reason: CAPABILITY_FLOW_ALLOWED_REASON
     };
   }
 
-  const interpretation = interpretWithCapability(
-    {
-      capability: request.capability,
-      consent: request.consent ?? undefined,
-      action: request.action,
-      resource: normalizeResourceForInterpreter(request.resource),
-      now:
-        request.now instanceof Date
-          ? request.now.toISOString().replace(/\.\d{3}Z$/, 'Z')
-          : typeof request.now === 'number'
-            ? new Date(request.now).toISOString().replace(/\.\d{3}Z$/, 'Z')
-            : request.now,
-      paymentContext: request.paymentContext,
-      input: {
-        query: request.interpreter.query,
-        context: request.interpreter.context
-      }
-    },
-    {
-      marketMakerRegistry: request.marketMakerRegistry,
-      hooks: request.hooks,
-      registries: request.registries
+  const interpretation = interpretWithCapability({
+    resource: normalizeResourceForInterpreter(request.resource),
+    input: {
+      query: request.interpreter.query,
+      context: request.interpreter.context
     }
-  );
+  });
 
   return {
     allowed: interpretation.allowed,
@@ -144,7 +131,12 @@ export function executeCapabilityFlow(
     evaluation,
     consumption,
     interpretation,
-    reasonCode: interpretation.allowed ? undefined : interpretation.error?.code,
-    reason: interpretation.allowed ? undefined : interpretation.error?.message
+    reasonCode: interpretation.allowed
+      ? capabilityAccessReasonCodes.ACCESS_ALLOWED
+      : interpretation.error?.code ?? 'INTERPRETER_EXECUTION_FAILED',
+    reason:
+      interpretation.allowed
+        ? CAPABILITY_FLOW_ALLOWED_REASON
+        : interpretation.error?.message ?? 'Interpreter execution failed.'
   };
 }

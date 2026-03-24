@@ -26,6 +26,8 @@ import { verifyCapabilityConsentBinding } from '../consent/consentBinding';
 const CLOCK_SKEW_SECONDS = 300;
 const ALLOWED_RESOURCE_TYPES = new Set(['field', 'content', 'pack']);
 const HASH_HEX_PATTERN = /^[a-f0-9]{64}$/;
+const CAPABILITY_CONSUMPTION_ALLOWED_REASON =
+  'Capability consumption is authorized and all runtime enforcement checks passed.';
 
 export const capabilityConsumptionReasonCodes = {
   ...capabilityAccessReasonCodes,
@@ -41,6 +43,16 @@ export type CapabilityConsumptionReasonCode =
       typeof capabilityConsumptionReasonCodes,
       keyof typeof capabilityAccessReasonCodes
     >];
+
+export const capabilityConsumptionReasonCodeTaxonomy = {
+  authorization: capabilityAccessReasonCodes,
+  runtime: {
+    CAPABILITY_REVOKED: capabilityConsumptionReasonCodes.CAPABILITY_REVOKED,
+    CAPABILITY_REPLAYED: capabilityConsumptionReasonCodes.CAPABILITY_REPLAYED,
+    REPLAY_PROTECTION_REQUIRED: capabilityConsumptionReasonCodes.REPLAY_PROTECTION_REQUIRED,
+    RATE_LIMITED: capabilityConsumptionReasonCodes.RATE_LIMITED
+  }
+} as const;
 
 export type CapabilityConsumptionCheckState = 'pass' | 'fail' | 'not_applicable';
 
@@ -481,7 +493,6 @@ export function consumeCapabilityAccess(
   const now = normalizeNow(request.now);
   const evaluatedAt = normalizeEvaluatedAt(now);
   const checks = makeChecks();
-  let capabilityForUsage: CapabilityTokenV1 | undefined;
 
   try {
     const normalizedCapability = cloneCapability(request.capability);
@@ -495,16 +506,42 @@ export function consumeCapabilityAccess(
     checks.resource = 'pass';
 
     const capability = normalizedCapability as CapabilityTokenV1;
-    capabilityForUsage = capability;
     const metadata = sanitizeMetadata({
       capabilityHash: capability.capability_hash,
       tokenId: capability.token_id
     });
 
     if (normalizedConsent) {
-      validateConsentObject(normalizedConsent);
-      verifyCapabilityConsentBinding(capability, normalizedConsent);
-      checks.consent = 'pass';
+      try {
+        validateConsentObject(normalizedConsent);
+      } catch (error) {
+        checks.consent = 'fail';
+        return deny(
+          evaluatedAt,
+          capabilityAccessReasonCodes.CONSENT_INVALID,
+          (error as Error).message || 'Parent consent is invalid for capability consumption.',
+          checks,
+          sanitizeMetadata({ ...metadata, failureStage: 'integrity' }),
+          false,
+          false
+        );
+      }
+
+      try {
+        verifyCapabilityConsentBinding(capability, normalizedConsent);
+        checks.consent = 'pass';
+      } catch (error) {
+        checks.consent = 'fail';
+        return deny(
+          evaluatedAt,
+          capabilityAccessReasonCodes.CONSENT_MISMATCH,
+          (error as Error).message || 'Capability does not match the supplied parent consent.',
+          checks,
+          sanitizeMetadata({ ...metadata, failureStage: 'integrity' }),
+          false,
+          false
+        );
+      }
     }
 
     try {
@@ -519,58 +556,13 @@ export function consumeCapabilityAccess(
         checks,
         sanitizeMetadata({ ...metadata, failureStage: 'temporal' }),
         false,
-        false,
-        recordUsage(request, capability, 'deny', evaluatedAt)
-      );
-    }
-
-    checks.revocation = 'pass';
-    if (isRevoked(capability.capability_hash, request.registries?.revocationRegistry)) {
-      checks.revocation = 'fail';
-      return deny(
-        evaluatedAt,
-        capabilityConsumptionReasonCodes.CAPABILITY_REVOKED,
-        'Capability token has been revoked.',
-        checks,
-        sanitizeMetadata({ ...metadata, failureStage: 'revocation' }),
-        false,
-        true,
-        recordUsage(request, capability, 'deny', evaluatedAt)
+        false
       );
     }
 
     const nonceRegistry = request.registries?.nonceRegistry;
     const shouldConsume = request.consume !== false;
     const shouldCheckReplay = Boolean(nonceRegistry) && shouldConsume;
-
-    if (shouldCheckReplay) {
-      checks.replay = 'pass';
-      if (nonceRegistry!.hasSeen(capability.token_id, now)) {
-        checks.replay = 'fail';
-        return deny(
-          evaluatedAt,
-          capabilityConsumptionReasonCodes.CAPABILITY_REPLAYED,
-          'Capability token_id has already been presented (replay detected).',
-          checks,
-          sanitizeMetadata({ ...metadata, failureStage: 'replay' }),
-          true,
-          true,
-          recordUsage(request, capability, 'deny', evaluatedAt)
-        );
-      }
-    } else if (request.requireReplayProtection) {
-      checks.replay = 'fail';
-      return deny(
-        evaluatedAt,
-        capabilityConsumptionReasonCodes.REPLAY_PROTECTION_REQUIRED,
-        'Replay protection is required for consumption but no nonce registry was supplied.',
-        checks,
-        sanitizeMetadata({ ...metadata, failureStage: 'replay' }),
-        false,
-        true,
-        recordUsage(request, capability, 'deny', evaluatedAt)
-      );
-    }
 
     const accessDecision = evaluateCapabilityAccess(
       buildEvaluationRequest(
@@ -604,7 +596,7 @@ export function consumeCapabilityAccess(
         }),
         shouldCheckReplay,
         true,
-        recordUsage(request, capability, 'deny', evaluatedAt),
+        undefined,
         buildPaymentDecision(normalizedConsent, request.paymentContext?.paid === true)
       );
     }
@@ -633,8 +625,7 @@ export function consumeCapabilityAccess(
             failureStage: 'rate_limit'
           }),
           shouldCheckReplay,
-          true,
-          recordUsage(request, capability, 'deny', evaluatedAt)
+          false
         );
       }
 
@@ -646,6 +637,47 @@ export function consumeCapabilityAccess(
         rateLimitMaxAttempts: rateLimitConfig.maxAttempts,
         rateLimitWindowMs: rateLimitConfig.windowMs
       });
+    }
+
+    checks.revocation = 'pass';
+    if (isRevoked(capability.capability_hash, request.registries?.revocationRegistry)) {
+      checks.revocation = 'fail';
+      return deny(
+        evaluatedAt,
+        capabilityConsumptionReasonCodes.CAPABILITY_REVOKED,
+        'Capability token has been revoked.',
+        checks,
+        sanitizeMetadata({ ...metadata, failureStage: 'revocation' }),
+        shouldCheckReplay,
+        true
+      );
+    }
+
+    if (shouldCheckReplay) {
+      checks.replay = 'pass';
+      if (nonceRegistry!.hasSeen(capability.token_id, now)) {
+        checks.replay = 'fail';
+        return deny(
+          evaluatedAt,
+          capabilityConsumptionReasonCodes.CAPABILITY_REPLAYED,
+          'Capability token_id has already been presented (replay detected).',
+          checks,
+          sanitizeMetadata({ ...metadata, failureStage: 'replay' }),
+          true,
+          true
+        );
+      }
+    } else if (request.requireReplayProtection) {
+      checks.replay = 'fail';
+      return deny(
+        evaluatedAt,
+        capabilityConsumptionReasonCodes.REPLAY_PROTECTION_REQUIRED,
+        'Replay protection is required for consumption but no nonce registry was supplied.',
+        checks,
+        sanitizeMetadata({ ...metadata, failureStage: 'replay' }),
+        false,
+        true
+      );
     }
 
     const paid = request.paymentContext?.paid === true;
@@ -660,7 +692,7 @@ export function consumeCapabilityAccess(
         sanitizeMetadata({ ...metadata, failureStage: 'payment' }),
         shouldCheckReplay,
         true,
-        recordUsage(request, capability, 'deny', evaluatedAt),
+        undefined,
         payment
       );
     }
@@ -677,8 +709,8 @@ export function consumeCapabilityAccess(
     return {
       allowed: true,
       decision: 'allow',
-      reasonCode: accessDecision.reasonCode,
-      reason: accessDecision.reason,
+      reasonCode: capabilityAccessReasonCodes.ACCESS_ALLOWED,
+      reason: CAPABILITY_CONSUMPTION_ALLOWED_REASON,
       evaluatedAt,
       checks,
       metadata: sanitizeMetadata({ ...metadata, failureStage: 'completed' }),
@@ -700,8 +732,7 @@ export function consumeCapabilityAccess(
       checks,
       sanitizeMetadata({ failureStage: 'integrity' }),
       false,
-      checks.revocation !== 'not_applicable',
-      recordUsage(request, capabilityForUsage, 'deny', evaluatedAt)
+      checks.revocation !== 'not_applicable'
     );
   }
 }

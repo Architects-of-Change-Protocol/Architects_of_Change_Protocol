@@ -1,6 +1,7 @@
 export {
   consumeCapabilityAccess,
   capabilityConsumptionReasonCodes,
+  capabilityConsumptionReasonCodeTaxonomy,
   InMemoryConsentUsageRegistry,
   InMemoryRateLimitRegistry
 } from './consumeCapabilityAccess';

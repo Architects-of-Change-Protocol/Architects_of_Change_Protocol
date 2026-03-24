@@ -26,3 +26,34 @@ export const capabilityAccessReasonCodes = {
 
 export type CapabilityAccessReasonCode =
   (typeof capabilityAccessReasonCodes)[keyof typeof capabilityAccessReasonCodes];
+
+export const capabilityReasonCodeTaxonomy = {
+  authorization: [
+    capabilityAccessReasonCodes.CAPABILITY_MISSING,
+    capabilityAccessReasonCodes.CAPABILITY_INVALID,
+    capabilityAccessReasonCodes.CAPABILITY_INACTIVE,
+    capabilityAccessReasonCodes.CAPABILITY_NOT_YET_VALID,
+    capabilityAccessReasonCodes.CAPABILITY_EXPIRED,
+    capabilityAccessReasonCodes.CONSENT_EXPIRED,
+    capabilityAccessReasonCodes.EXPIRATION_MISMATCH,
+    capabilityAccessReasonCodes.ACTION_MISSING,
+    capabilityAccessReasonCodes.ACTION_NOT_ALLOWED,
+    capabilityAccessReasonCodes.RESOURCE_MISSING,
+    capabilityAccessReasonCodes.RESOURCE_NOT_ALLOWED,
+    capabilityAccessReasonCodes.CONSENT_INVALID,
+    capabilityAccessReasonCodes.CONSENT_MISMATCH
+  ] as const,
+  runtime: [
+    capabilityAccessReasonCodes.MARKET_MAKER_REQUIRED,
+    capabilityAccessReasonCodes.MARKET_MAKER_MISMATCH,
+    capabilityAccessReasonCodes.UNKNOWN_MARKET_MAKER,
+    capabilityAccessReasonCodes.MARKET_MAKER_DEPRECATED,
+    capabilityAccessReasonCodes.MARKET_MAKER_REVOKED,
+    capabilityAccessReasonCodes.PAYMENT_REQUIRED
+  ] as const,
+  policy: [
+    capabilityAccessReasonCodes.POLICY_DENIED,
+    capabilityAccessReasonCodes.USAGE_DENIED,
+    capabilityAccessReasonCodes.INTERNAL_EVALUATION_ERROR
+  ] as const
+} as const;
