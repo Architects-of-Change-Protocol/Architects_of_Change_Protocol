@@ -271,16 +271,10 @@ function enforceCapabilityTemporalIntegrity(
   enforceTimestampWithinSkew(capability.issued_at, now, 'Capability issued_at');
 
   if (capability.not_before) {
-    const notBefore = enforceTimestampWithinSkew(capability.not_before, now, 'Capability not_before');
-    if (now.getTime() < notBefore.getTime()) {
-      throw new Error('Capability not yet valid.');
-    }
+    enforceTimestampWithinSkew(capability.not_before, now, 'Capability not_before');
   }
 
-  const expiresAt = enforceTimestampWithinSkew(capability.expires_at, now, 'Capability expires_at');
-  if (expiresAt.getTime() < now.getTime()) {
-    throw new Error('Capability has expired.');
-  }
+  enforceTimestampWithinSkew(capability.expires_at, now, 'Capability expires_at');
 
   if (consent) {
     enforceTimestampWithinSkew(consent.issued_at, now, 'Consent issued_at');

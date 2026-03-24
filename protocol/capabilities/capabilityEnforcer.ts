@@ -59,6 +59,7 @@ function mapReasonCode(reasonCode: string): EnforceCapabilityDecision['code'] {
     case capabilityAccessReasonCodes.ACCESS_ALLOWED:
       return 'OK';
     case capabilityAccessReasonCodes.CAPABILITY_EXPIRED:
+    case capabilityAccessReasonCodes.CONSENT_EXPIRED:
       return 'EXPIRED';
     case capabilityAccessReasonCodes.CAPABILITY_NOT_YET_VALID:
       return 'NOT_YET_VALID';
@@ -75,6 +76,7 @@ function mapReasonCode(reasonCode: string): EnforceCapabilityDecision['code'] {
       return 'MALFORMED_CAPABILITY';
     case capabilityAccessReasonCodes.CONSENT_INVALID:
     case capabilityAccessReasonCodes.CONSENT_MISMATCH:
+    case capabilityAccessReasonCodes.EXPIRATION_MISMATCH:
       return 'CONSENT_MISMATCH';
     case capabilityAccessReasonCodes.MARKET_MAKER_REQUIRED:
     case capabilityAccessReasonCodes.MARKET_MAKER_MISMATCH:
@@ -153,7 +155,10 @@ export function enforceCapability(
             : !decision.allowed &&
                 decision.reasonCode === capabilityAccessReasonCodes.CAPABILITY_INVALID &&
                 input.consent &&
-                /Consent |Parent consent|Capability consent_ref|Capability subject|Capability grantee|Capability marketMakerId/.test(decision.reason)
+                (/Consent |Parent consent|Capability consent_ref|Capability subject|Capability grantee|Capability marketMakerId/.test(
+                  decision.reason
+                ) ||
+                  decision.reason === 'Capability expires_at must not exceed parent consent expires_at.')
               ? 'CONSENT_MISMATCH'
               : mapReasonCode(decision.reasonCode);
 

@@ -85,6 +85,42 @@ describe('interpretWithCapability', () => {
     expect(response.error?.code).toBe(capabilityAccessReasonCodes.CAPABILITY_INVALID);
   });
 
+  it('denies expired consent before interpreter execution with no side effects', () => {
+    const usageRegistry = new InMemoryConsentUsageRegistry();
+    const interpreterSpy = jest.spyOn(require('../aiInterpreter'), 'runInterpreter');
+    const request = buildRequest({
+      now: '2025-06-15T10:05:02Z',
+      consent: buildConsentObject(
+        'did:aoc:subject123',
+        'did:aoc:grantee456',
+        'grant',
+        [{ type: 'content', ref: CONTENT_REF }],
+        ['read'],
+        {
+          now: new Date(NOW),
+          expires_at: '2025-06-15T10:05:01Z'
+        }
+      )
+    });
+    request.capability = mintCapabilityToken(
+      request.consent!,
+      [{ type: 'content', ref: CONTENT_REF }],
+      ['read'],
+      '2025-06-15T10:05:01Z',
+      { now: new Date(NOW) }
+    );
+
+    const response = interpretWithCapability(request, {
+      registries: { consentUsageRegistry: usageRegistry }
+    });
+
+    expect(response.allowed).toBe(false);
+    expect(response.error?.code).toBe(capabilityAccessReasonCodes.CONSENT_EXPIRED);
+    expect(interpreterSpy).not.toHaveBeenCalled();
+    expect(usageRegistry.get(request.capability.consent_ref)).toBeUndefined();
+    interpreterSpy.mockRestore();
+  });
+
   it('denies when payment required but not paid', () => {
     const request = buildRequest({
       consent: buildConsentObject(
