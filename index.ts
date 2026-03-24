@@ -8,6 +8,7 @@ export * from './pack';
 export * from './storage';
 export * from './protocol/capabilities';
 export * from './aoc/capabilities';
+export * from './aoc/sdk';
 export * from './interpreter';
 
 export * from './enforcement';
