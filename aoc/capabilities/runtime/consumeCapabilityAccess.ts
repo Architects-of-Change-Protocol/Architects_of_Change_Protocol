@@ -31,7 +31,8 @@ export const capabilityConsumptionReasonCodes = {
   ...capabilityAccessReasonCodes,
   CAPABILITY_REVOKED: 'CAPABILITY_REVOKED',
   CAPABILITY_REPLAYED: 'CAPABILITY_REPLAYED',
-  REPLAY_PROTECTION_REQUIRED: 'REPLAY_PROTECTION_REQUIRED'
+  REPLAY_PROTECTION_REQUIRED: 'REPLAY_PROTECTION_REQUIRED',
+  RATE_LIMITED: 'RATE_LIMITED'
 } as const;
 
 export type CapabilityConsumptionReasonCode =
@@ -65,6 +66,67 @@ export interface ConsentUsageRegistry {
     result: ConsentUsageResult,
     timestamp: string
   ): ConsentUsageState;
+}
+
+export type RateLimitConfig = {
+  maxAttempts: number;
+  windowMs: number;
+};
+
+export type RateLimitState = {
+  key: string;
+  count: number;
+  windowStartedAt: string;
+};
+
+export interface RateLimitRegistry {
+  get(key: string): RateLimitState | undefined;
+  increment(key: string, now: Date, config: RateLimitConfig): RateLimitState;
+  isLimited(key: string, now: Date, config: RateLimitConfig): boolean;
+}
+
+export class InMemoryRateLimitRegistry implements RateLimitRegistry {
+  private readonly states = new Map<string, RateLimitState>();
+
+  get(key: string): RateLimitState | undefined {
+    const state = this.states.get(key);
+    return state ? { ...state } : undefined;
+  }
+
+  increment(key: string, now: Date, config: RateLimitConfig): RateLimitState {
+    const nowMs = now.getTime();
+    const current = this.states.get(key);
+    const shouldResetWindow =
+      !current || nowMs - Date.parse(current.windowStartedAt) >= config.windowMs;
+    const next: RateLimitState = shouldResetWindow
+      ? {
+          key,
+          count: 1,
+          windowStartedAt: normalizeEvaluatedAt(now)
+        }
+      : {
+          key,
+          count: current.count + 1,
+          windowStartedAt: current.windowStartedAt
+        };
+
+    this.states.set(key, next);
+    return { ...next };
+  }
+
+  isLimited(key: string, now: Date, config: RateLimitConfig): boolean {
+    const state = this.states.get(key);
+    if (!state) {
+      return false;
+    }
+
+    const withinWindow = now.getTime() - Date.parse(state.windowStartedAt) < config.windowMs;
+    if (!withinWindow) {
+      return false;
+    }
+
+    return state.count >= config.maxAttempts;
+  }
 }
 
 export class InMemoryConsentUsageRegistry implements ConsentUsageRegistry {
@@ -106,6 +168,11 @@ export type CapabilityConsumptionRequest = {
   };
   policyContext?: Record<string, unknown>;
   metadata?: Record<string, unknown>;
+  rateLimit?: {
+    registry: RateLimitRegistry;
+    maxAttempts: number;
+    windowMs: number;
+  };
   marketMakerRegistry?: Pick<MarketMakerRegistry, 'exists' | 'getStatus'>;
   hooks?: CapabilityAccessRequest['hooks'];
   registries?: {
@@ -284,11 +351,25 @@ function enforceCapabilityTemporalIntegrity(
 function sanitizeMetadata(base: {
   capabilityHash?: string;
   tokenId?: string;
+  rateLimitKey?: string;
+  rateLimitWindowStartedAt?: string;
+  rateLimitCount?: number;
+  rateLimitMaxAttempts?: number;
+  rateLimitWindowMs?: number;
   failureStage?: string;
 }): Record<string, unknown> {
   return {
     ...(base.capabilityHash !== undefined ? { capabilityHash: base.capabilityHash } : {}),
     ...(base.tokenId !== undefined ? { tokenId: base.tokenId } : {}),
+    ...(base.rateLimitKey !== undefined ? { rateLimitKey: base.rateLimitKey } : {}),
+    ...(base.rateLimitWindowStartedAt !== undefined
+      ? { rateLimitWindowStartedAt: base.rateLimitWindowStartedAt }
+      : {}),
+    ...(base.rateLimitCount !== undefined ? { rateLimitCount: base.rateLimitCount } : {}),
+    ...(base.rateLimitMaxAttempts !== undefined
+      ? { rateLimitMaxAttempts: base.rateLimitMaxAttempts }
+      : {}),
+    ...(base.rateLimitWindowMs !== undefined ? { rateLimitWindowMs: base.rateLimitWindowMs } : {}),
     ...(base.failureStage !== undefined ? { failureStage: base.failureStage } : {})
   };
 }
@@ -383,6 +464,15 @@ function buildEvaluationRequest(
     marketMakerRegistry: request.marketMakerRegistry,
     hooks: request.hooks
   };
+}
+
+function validateRateLimitConfig(config: RateLimitConfig): void {
+  if (!Number.isInteger(config.maxAttempts) || config.maxAttempts <= 0) {
+    throw new Error('rateLimit.maxAttempts must be a positive integer.');
+  }
+  if (!Number.isInteger(config.windowMs) || config.windowMs <= 0) {
+    throw new Error('rateLimit.windowMs must be a positive integer.');
+  }
 }
 
 export function consumeCapabilityAccess(
@@ -517,6 +607,45 @@ export function consumeCapabilityAccess(
         recordUsage(request, capability, 'deny', evaluatedAt),
         buildPaymentDecision(normalizedConsent, request.paymentContext?.paid === true)
       );
+    }
+
+    if (request.rateLimit) {
+      validateRateLimitConfig(request.rateLimit);
+      const rateLimitKey = capability.consent_ref;
+      const rateLimitConfig: RateLimitConfig = {
+        maxAttempts: request.rateLimit.maxAttempts,
+        windowMs: request.rateLimit.windowMs
+      };
+      if (request.rateLimit.registry.isLimited(rateLimitKey, now, rateLimitConfig)) {
+        const state = request.rateLimit.registry.get(rateLimitKey);
+        return deny(
+          evaluatedAt,
+          capabilityConsumptionReasonCodes.RATE_LIMITED,
+          `Rate limit exceeded for consent_ref "${rateLimitKey}".`,
+          checks,
+          sanitizeMetadata({
+            ...metadata,
+            rateLimitKey,
+            rateLimitWindowStartedAt: state?.windowStartedAt,
+            rateLimitCount: state?.count,
+            rateLimitMaxAttempts: rateLimitConfig.maxAttempts,
+            rateLimitWindowMs: rateLimitConfig.windowMs,
+            failureStage: 'rate_limit'
+          }),
+          shouldCheckReplay,
+          true,
+          recordUsage(request, capability, 'deny', evaluatedAt)
+        );
+      }
+
+      const state = request.rateLimit.registry.increment(rateLimitKey, now, rateLimitConfig);
+      Object.assign(metadata, {
+        rateLimitKey,
+        rateLimitWindowStartedAt: state.windowStartedAt,
+        rateLimitCount: state.count,
+        rateLimitMaxAttempts: rateLimitConfig.maxAttempts,
+        rateLimitWindowMs: rateLimitConfig.windowMs
+      });
     }
 
     const paid = request.paymentContext?.paid === true;

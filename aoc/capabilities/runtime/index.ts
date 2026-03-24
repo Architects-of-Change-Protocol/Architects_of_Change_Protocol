@@ -1,13 +1,17 @@
 export {
   consumeCapabilityAccess,
   capabilityConsumptionReasonCodes,
-  InMemoryConsentUsageRegistry
+  InMemoryConsentUsageRegistry,
+  InMemoryRateLimitRegistry
 } from './consumeCapabilityAccess';
 export type {
   CapabilityConsumptionChecks,
   CapabilityConsumptionDecision,
   CapabilityConsumptionReasonCode,
   CapabilityConsumptionRequest,
+  RateLimitConfig,
+  RateLimitRegistry,
+  RateLimitState,
   ConsentUsageRegistry,
   ConsentUsageResult,
   ConsentUsageState

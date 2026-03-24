@@ -9,7 +9,9 @@ import {
 } from '../core';
 import {
   consumeCapabilityAccess,
-  capabilityConsumptionReasonCodes
+  capabilityConsumptionReasonCodes,
+  type RateLimitConfig,
+  type RateLimitRegistry
 } from '../runtime/consumeCapabilityAccess';
 
 export type EnforceCapabilityInput = {
@@ -20,6 +22,7 @@ export type EnforceCapabilityInput = {
   resource_context?: Record<string, unknown>;
   request_context?: Record<string, unknown>;
   registries?: { nonceRegistry?: NonceRegistry; revocationRegistry?: RevocationRegistry };
+  rateLimit?: RateLimitConfig & { registry: RateLimitRegistry };
   consume?: boolean;
   action?: 'read';
   hooks?: CapabilityAccessRequest['hooks'];
@@ -87,6 +90,7 @@ function mapReasonCode(reasonCode: string): EnforceCapabilityDecision['code'] {
     case capabilityAccessReasonCodes.POLICY_DENIED:
     case capabilityAccessReasonCodes.USAGE_DENIED:
     case capabilityAccessReasonCodes.PAYMENT_REQUIRED:
+    case capabilityConsumptionReasonCodes.RATE_LIMITED:
       return 'RESOURCE_RESTRICTION_FAILED';
     default:
       return 'INTERNAL_DENY';
@@ -136,6 +140,7 @@ export function enforceCapability(
   const decision = consumeCapabilityAccess({
     ...buildLegacyAccessRequest(input, type, ref),
     registries: input.registries,
+    rateLimit: input.rateLimit,
     consume: input.consume,
     requireReplayProtection: false
   });

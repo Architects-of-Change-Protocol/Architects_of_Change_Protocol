@@ -1,5 +1,9 @@
 export { evaluateCapabilityAccess } from '../capabilities/core/evaluateCapabilityAccess';
-export { consumeCapabilityAccess } from '../capabilities/runtime/consumeCapabilityAccess';
+export {
+  consumeCapabilityAccess,
+  InMemoryRateLimitRegistry,
+  InMemoryConsentUsageRegistry
+} from '../capabilities/runtime/consumeCapabilityAccess';
 
 export {
   mintCapabilityToken,
@@ -34,7 +38,10 @@ export type {
 export type {
   CapabilityConsumptionDecision,
   CapabilityConsumptionRequest,
-  CapabilityConsumptionReasonCode
+  CapabilityConsumptionReasonCode,
+  RateLimitConfig,
+  RateLimitRegistry,
+  RateLimitState
 } from '../capabilities/runtime';
 
 export type { CapabilityTokenV1, MintCapabilityOptions, ScopeEntry as CapabilityScopeEntry } from '../../capability/types';

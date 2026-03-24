@@ -3,6 +3,7 @@ import { mintCapabilityToken } from '../../../capability';
 import { capabilityAccessReasonCodes } from '../../../enforcement';
 import { enforceCapability } from '../capabilityEnforcer';
 import { MarketMakerRegistry } from '../../../shared/marketMakerRegistry';
+import { InMemoryRateLimitRegistry } from '../consumeCapabilityAccess';
 
 const SUBJECT = 'did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK';
 const GRANTEE = 'did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH';
@@ -227,6 +228,40 @@ describe('legacy capability bridge mapping', () => {
       }
     });
     expect(policyDecision.code).toBe('RESOURCE_RESTRICTION_FAILED');
+  });
+
+  it('maps RATE_LIMITED consumption denies to RESOURCE_RESTRICTION_FAILED', () => {
+    const { token, consent } = buildToken();
+    const rateLimitRegistry = new InMemoryRateLimitRegistry();
+
+    const firstDecision = enforceCapability({
+      token,
+      consent,
+      required_scope: `content:${CONTENT_REF}`,
+      now: NOW,
+      consume: false,
+      rateLimit: {
+        registry: rateLimitRegistry,
+        maxAttempts: 1,
+        windowMs: 60_000
+      }
+    });
+    expect(firstDecision.code).toBe('OK');
+
+    const secondDecision = enforceCapability({
+      token: buildToken().token,
+      consent,
+      required_scope: `content:${CONTENT_REF}`,
+      now: new Date('2025-06-15T10:00:01Z'),
+      consume: false,
+      rateLimit: {
+        registry: rateLimitRegistry,
+        maxAttempts: 1,
+        windowMs: 60_000
+      }
+    });
+    expect(secondDecision.code).toBe('RESOURCE_RESTRICTION_FAILED');
+    expect(secondDecision.reason).toContain('Rate limit exceeded');
   });
 
   it('denies non-read actions when the legacy bridge is misused outside its read-only contract', () => {
