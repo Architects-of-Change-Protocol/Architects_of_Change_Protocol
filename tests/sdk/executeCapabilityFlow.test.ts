@@ -162,4 +162,77 @@ describe('executeCapabilityFlow', () => {
     expect(result.interpretation?.allowed).toBe(true);
     expect(result.allowed).toBe(true);
   });
+
+  it('returns evaluation-stage deny with trust reason passthrough for deprecated and revoked market makers', () => {
+    const deprecatedRegistry = createMarketMakerRegistry();
+    const revokedRegistry = createMarketMakerRegistry();
+    const { consent, capability } = createCapability();
+
+    deprecatedRegistry.register({
+      id: 'legacy-hrkey-v1',
+      name: 'Legacy HRKey',
+      version: '0.9.0',
+      capabilities: ['content.read'],
+      status: 'deprecated',
+      created_at: NOW
+    });
+    revokedRegistry.register({
+      id: 'legacy-hrkey-v1',
+      name: 'Legacy HRKey',
+      version: '0.9.0',
+      capabilities: ['content.read'],
+      status: 'revoked',
+      created_at: NOW
+    });
+
+    const deprecatedResult = executeCapabilityFlow({
+      capability,
+      consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      marketMakerId: MARKET_MAKER_ID,
+      marketMakerRegistry: {
+        exists: (id: string) => (id === MARKET_MAKER_ID ? true : deprecatedRegistry.exists(id)),
+        getStatus: (id: string) =>
+          id === MARKET_MAKER_ID ? 'deprecated' : deprecatedRegistry.getStatus(id)
+      },
+      now: NOW,
+      interpreter: {
+        enabled: true,
+        query: 'This should not run.'
+      }
+    });
+
+    expect(deprecatedResult.allowed).toBe(false);
+    expect(deprecatedResult.stage).toBe('evaluation');
+    expect(deprecatedResult.consumption).toBeUndefined();
+    expect(deprecatedResult.interpretation).toBeUndefined();
+    expect(deprecatedResult.reasonCode).toBe('MARKET_MAKER_DEPRECATED');
+    expect(deprecatedResult.reasonCode).toBe(deprecatedResult.evaluation.reasonCode);
+
+    const revokedResult = executeCapabilityFlow({
+      capability,
+      consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      marketMakerId: MARKET_MAKER_ID,
+      marketMakerRegistry: {
+        exists: (id: string) => (id === MARKET_MAKER_ID ? true : revokedRegistry.exists(id)),
+        getStatus: (id: string) =>
+          id === MARKET_MAKER_ID ? 'revoked' : revokedRegistry.getStatus(id)
+      },
+      now: NOW,
+      interpreter: {
+        enabled: true,
+        query: 'This should not run.'
+      }
+    });
+
+    expect(revokedResult.allowed).toBe(false);
+    expect(revokedResult.stage).toBe('evaluation');
+    expect(revokedResult.consumption).toBeUndefined();
+    expect(revokedResult.interpretation).toBeUndefined();
+    expect(revokedResult.reasonCode).toBe('MARKET_MAKER_REVOKED');
+    expect(revokedResult.reasonCode).toBe(revokedResult.evaluation.reasonCode);
+  });
 });
