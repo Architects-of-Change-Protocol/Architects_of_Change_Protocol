@@ -12,6 +12,7 @@ import {
   capabilityConsumptionReasonCodes,
   consumeCapabilityAccess,
   InMemoryConsentUsageRegistry,
+  InMemoryRateLimitRegistry,
   type ConsentUsageRegistry
 } from '../consumeCapabilityAccess';
 import { enforceCapability } from '../capabilityEnforcer';
@@ -218,6 +219,141 @@ describe('consumeCapabilityAccess', () => {
     expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.ACCESS_ALLOWED);
     expect(decision.payment).toBeUndefined();
     expect(decision.usage?.usageCount).toBe(1);
+  });
+
+  it('allows consumption under the configured fixed-window rate limit', () => {
+    const rateLimitRegistry = new InMemoryRateLimitRegistry();
+    const first = buildToken();
+    const second = buildToken();
+
+    const firstDecision = consumeCapabilityAccess({
+      capability: first.token,
+      consent: first.consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: NOW,
+      consume: false,
+      rateLimit: {
+        registry: rateLimitRegistry,
+        maxAttempts: 2,
+        windowMs: 60_000
+      },
+      registries: { revocationRegistry: new InMemoryRevocationRegistry() }
+    });
+
+    const secondDecision = consumeCapabilityAccess({
+      capability: second.token,
+      consent: second.consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: new Date('2025-06-15T10:00:10Z'),
+      consume: false,
+      rateLimit: {
+        registry: rateLimitRegistry,
+        maxAttempts: 2,
+        windowMs: 60_000
+      },
+      registries: { revocationRegistry: new InMemoryRevocationRegistry() }
+    });
+
+    expect(firstDecision.allowed).toBe(true);
+    expect(secondDecision.allowed).toBe(true);
+    expect(rateLimitRegistry.get(first.token.consent_ref)?.count).toBe(2);
+  });
+
+  it('denies with RATE_LIMITED once configured attempts are exceeded', () => {
+    const usageRegistry = new InMemoryConsentUsageRegistry();
+    const nonceRegistry = new InMemoryNonceRegistry();
+    const rateLimitRegistry = new InMemoryRateLimitRegistry();
+    const first = buildToken();
+    const second = buildToken();
+
+    consumeCapabilityAccess({
+      capability: first.token,
+      consent: first.consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: NOW,
+      rateLimit: {
+        registry: rateLimitRegistry,
+        maxAttempts: 1,
+        windowMs: 60_000
+      },
+      registries: {
+        nonceRegistry,
+        revocationRegistry: new InMemoryRevocationRegistry(),
+        consentUsageRegistry: usageRegistry
+      }
+    });
+
+    const limitedDecision = consumeCapabilityAccess({
+      capability: second.token,
+      consent: second.consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: new Date('2025-06-15T10:00:10Z'),
+      rateLimit: {
+        registry: rateLimitRegistry,
+        maxAttempts: 1,
+        windowMs: 60_000
+      },
+      registries: {
+        nonceRegistry,
+        revocationRegistry: new InMemoryRevocationRegistry(),
+        consentUsageRegistry: usageRegistry
+      }
+    });
+
+    expect(limitedDecision.allowed).toBe(false);
+    expect(limitedDecision.reasonCode).toBe(capabilityConsumptionReasonCodes.RATE_LIMITED);
+    expect(limitedDecision.metadata.failureStage).toBe('rate_limit');
+    expect(limitedDecision.metadata.rateLimitKey).toBe(first.token.consent_ref);
+    expect(limitedDecision.usage).toEqual({
+      usageCount: 1,
+      lastAccessedAt: '2025-06-15T10:00:10Z',
+      lastAccessResult: 'deny'
+    });
+    expect(nonceRegistry.hasSeen(second.token.token_id, NOW)).toBe(false);
+  });
+
+  it('resets fixed-window rate limits after windowMs passes', () => {
+    const rateLimitRegistry = new InMemoryRateLimitRegistry();
+    const first = buildToken();
+    const second = buildToken();
+
+    const firstDecision = consumeCapabilityAccess({
+      capability: first.token,
+      consent: first.consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: NOW,
+      consume: false,
+      rateLimit: {
+        registry: rateLimitRegistry,
+        maxAttempts: 1,
+        windowMs: 30_000
+      },
+      registries: { revocationRegistry: new InMemoryRevocationRegistry() }
+    });
+
+    const secondDecision = consumeCapabilityAccess({
+      capability: second.token,
+      consent: second.consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: new Date('2025-06-15T10:00:31Z'),
+      consume: false,
+      rateLimit: {
+        registry: rateLimitRegistry,
+        maxAttempts: 1,
+        windowMs: 30_000
+      },
+      registries: { revocationRegistry: new InMemoryRevocationRegistry() }
+    });
+
+    expect(firstDecision.allowed).toBe(true);
+    expect(secondDecision.allowed).toBe(true);
+    expect(rateLimitRegistry.get(first.token.consent_ref)?.count).toBe(1);
   });
 
   it('denies priced capability consumption when payment has not been satisfied', () => {
@@ -499,6 +635,29 @@ describe('consumeCapabilityAccess', () => {
     expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.ACTION_NOT_ALLOWED);
     expect(decision.consumed).toBe(false);
     expect(nonceRegistry.hasSeen(token.token_id, NOW)).toBe(false);
+  });
+
+  it('keeps evaluation deny precedence over rate limiting', () => {
+    const rateLimitRegistry = new InMemoryRateLimitRegistry();
+    const { token, consent } = buildToken();
+
+    const decision = consumeCapabilityAccess({
+      capability: token,
+      consent,
+      action: 'share',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: NOW,
+      rateLimit: {
+        registry: rateLimitRegistry,
+        maxAttempts: 1,
+        windowMs: 60_000
+      },
+      registries: { revocationRegistry: new InMemoryRevocationRegistry() }
+    });
+
+    expect(decision.allowed).toBe(false);
+    expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.ACTION_NOT_ALLOWED);
+    expect(rateLimitRegistry.get(token.consent_ref)).toBeUndefined();
   });
 
   it('denies malformed resources and invalid inputs deterministically', () => {

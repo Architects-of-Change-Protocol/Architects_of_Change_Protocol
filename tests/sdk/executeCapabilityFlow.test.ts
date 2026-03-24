@@ -1,4 +1,5 @@
 import {
+  InMemoryRateLimitRegistry,
   MarketMakerRegistry,
   buildConsentObject,
   executeCapabilityFlow,
@@ -161,6 +162,50 @@ describe('executeCapabilityFlow', () => {
     expect(result.consumption?.allowed).toBe(true);
     expect(result.interpretation?.allowed).toBe(true);
     expect(result.allowed).toBe(true);
+  });
+
+  it('returns consumption-stage RATE_LIMITED and does not invoke interpreter when rate limit is hit', () => {
+    const { consent, capability: firstCapability } = createCapability({ marketMakerBound: false });
+    const { capability: secondCapability } = createCapability({ marketMakerBound: false });
+    const rateLimitRegistry = new InMemoryRateLimitRegistry();
+
+    const first = executeCapabilityFlow({
+      capability: firstCapability,
+      consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: NOW,
+      rateLimit: {
+        registry: rateLimitRegistry,
+        maxAttempts: 1,
+        windowMs: 60_000
+      }
+    });
+
+    const second = executeCapabilityFlow({
+      capability: secondCapability,
+      consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: '2025-06-15T10:00:05Z',
+      rateLimit: {
+        registry: rateLimitRegistry,
+        maxAttempts: 1,
+        windowMs: 60_000
+      },
+      interpreter: {
+        enabled: true,
+        query: 'This second request should be throttled.'
+      }
+    });
+
+    expect(first.allowed).toBe(true);
+    expect(first.stage).toBe('consumption');
+    expect(second.allowed).toBe(false);
+    expect(second.stage).toBe('consumption');
+    expect(second.reasonCode).toBe('RATE_LIMITED');
+    expect(second.reasonCode).toBe(second.consumption?.reasonCode);
+    expect(second.interpretation).toBeUndefined();
   });
 
   it('returns evaluation-stage deny with trust reason passthrough for deprecated and revoked market makers', () => {

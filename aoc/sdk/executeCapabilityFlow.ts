@@ -26,6 +26,7 @@ export type ExecuteCapabilityFlowRequest = {
   paymentContext?: {
     paid: boolean;
   };
+  rateLimit?: CapabilityConsumptionRequest['rateLimit'];
   registries?: CapabilityConsumptionRequest['registries'];
   hooks?: CapabilityAccessRequest['hooks'];
   interpreter?: {
@@ -85,6 +86,7 @@ export function executeCapabilityFlow(
     marketMakerRegistry: request.marketMakerRegistry,
     now: request.now,
     paymentContext: request.paymentContext,
+    rateLimit: request.rateLimit,
     hooks: request.hooks,
     registries: request.registries
   });

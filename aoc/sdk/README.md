@@ -45,7 +45,8 @@ import {
   buildConsentObject,
   mintCapabilityToken,
   evaluateCapabilityAccess,
-  consumeCapabilityAccess
+  consumeCapabilityAccess,
+  InMemoryRateLimitRegistry
 } from '../aoc/sdk';
 
 const consent = buildConsentObject(
@@ -84,7 +85,12 @@ const consumption = consumeCapabilityAccess({
   action: 'read',
   resource: { type: 'content', ref: 'a'.repeat(64) },
   marketMakerId: 'hrkey-v1',
-  now: '2025-06-15T10:00:00Z'
+  now: '2025-06-15T10:00:00Z',
+  rateLimit: {
+    registry: new InMemoryRateLimitRegistry(),
+    maxAttempts: 5,
+    windowMs: 60_000
+  }
 });
 ```
 
@@ -180,3 +186,9 @@ if (!result.allowed) {
   console.error('Reason:', result.reason);
 }
 ```
+
+## Runtime throttling note
+
+`RATE_LIMITED` is a deterministic **consumption-stage** deny reason from `consumeCapabilityAccess(...)`.
+It is not an authorization failure: evaluation still runs first, then rate limiting, then (if allowed) payment/usage/interpreter side effects.
+The current MVP strategy is a fixed-window counter keyed by `consent_ref`, and if `rateLimit` is omitted there is no throttling.
