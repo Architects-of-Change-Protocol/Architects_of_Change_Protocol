@@ -2,10 +2,8 @@ export {
   consumeCapabilityAccess,
   capabilityConsumptionReasonCodes,
   InMemoryConsentUsageRegistry
-} from '../../aoc/capabilities/runtime/consumeCapabilityAccess';
-
+} from './consumeCapabilityAccess';
 export type {
-  CapabilityConsumptionCheckState,
   CapabilityConsumptionChecks,
   CapabilityConsumptionDecision,
   CapabilityConsumptionReasonCode,
@@ -13,4 +11,4 @@ export type {
   ConsentUsageRegistry,
   ConsentUsageResult,
   ConsentUsageState
-} from '../../aoc/capabilities/runtime/consumeCapabilityAccess';
+} from './consumeCapabilityAccess';
