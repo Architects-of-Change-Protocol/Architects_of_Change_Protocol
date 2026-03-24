@@ -49,19 +49,4 @@ export function verifyCapabilityConsentBinding(
     }
   }
 
-  if (token.issued_at < consent.issued_at) {
-    throw new Error(
-      'Capability issued_at must be at or after parent consent issued_at.'
-    );
-  }
-  if (consent.expires_at !== null && token.expires_at > consent.expires_at) {
-    throw new Error(
-      'Capability expires_at must not exceed parent consent expires_at.'
-    );
-  }
-  if (token.not_before !== null && token.not_before < consent.issued_at) {
-    throw new Error(
-      'Capability not_before must be at or after parent consent issued_at.'
-    );
-  }
 }

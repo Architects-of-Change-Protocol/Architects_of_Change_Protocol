@@ -1,5 +1,9 @@
 import { buildConsentObject } from '../../../consent';
-import { mintCapabilityToken } from '../../../capability';
+import {
+  canonicalizeCapabilityPayload,
+  computeCapabilityHash,
+  mintCapabilityToken
+} from '../../../capability';
 import { InMemoryNonceRegistry } from '../../../capability/registries/InMemoryNonceRegistry';
 import { InMemoryRevocationRegistry } from '../../../capability/registries/InMemoryRevocationRegistry';
 import { MarketMakerRegistry } from '../../../shared/marketMakerRegistry';
@@ -734,7 +738,7 @@ describe('consumeCapabilityAccess', () => {
 
 
 
-  it('denies expired capabilities at the boundary before the engine can run', () => {
+  it('denies expired capabilities via centralized evaluation and does not run hooks', () => {
     const consentNow = new Date('2025-06-15T10:00:00Z');
     const consumeNow = new Date('2025-06-15T10:00:02Z');
     const consent = buildConsent(undefined, '2025-06-15T10:00:05Z', consentNow);
@@ -767,8 +771,8 @@ describe('consumeCapabilityAccess', () => {
     });
 
     expect(decision.allowed).toBe(false);
-    expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.CAPABILITY_INVALID);
-    expect(decision.reason).toBe('Capability has expired.');
+    expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.CAPABILITY_EXPIRED);
+    expect(decision.reason).toBe('Capability has expired at the requested evaluation time.');
     expect(decision.checks.temporal).toBe('fail');
     expect(decision.metadata).toEqual({
       capabilityHash: expiredToken.capability_hash,
@@ -777,7 +781,7 @@ describe('consumeCapabilityAccess', () => {
     });
   });
 
-  it('denies capabilities that are not yet valid at the boundary', () => {
+  it('denies capabilities that are not yet valid via centralized evaluation', () => {
     const consentNow = new Date('2025-06-15T10:00:00Z');
     const consumeNow = new Date('2025-06-15T10:00:01Z');
     const consent = buildConsent(undefined, '2025-06-15T10:00:05Z', consentNow);
@@ -808,8 +812,8 @@ describe('consumeCapabilityAccess', () => {
     });
 
     expect(decision.allowed).toBe(false);
-    expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.CAPABILITY_INVALID);
-    expect(decision.reason).toBe('Capability not yet valid.');
+    expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.CAPABILITY_NOT_YET_VALID);
+    expect(decision.reason).toBe('Capability is not yet valid at the requested evaluation time.');
     expect(decision.checks.temporal).toBe('fail');
   });
 
@@ -878,6 +882,76 @@ describe('consumeCapabilityAccess', () => {
     expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.CAPABILITY_INVALID);
     expect(decision.reason).toBe('Capability not_before exceeds allowed clock skew.');
     expect(decision.checks.temporal).toBe('fail');
+  });
+
+  it('denies when consent is expired and does not increment usage or allow payment bypass', () => {
+    const usageRegistry = new InMemoryConsentUsageRegistry();
+    const consentNow = new Date('2025-06-15T10:00:00Z');
+    const consent = buildConsent(undefined, '2025-06-15T10:00:01Z', consentNow, {
+      model: 'per_use',
+      amount: 25,
+      currency: 'USD'
+    });
+    const token = mintCapabilityToken(
+      consent,
+      [{ type: 'content', ref: CONTENT_REF }],
+      ['read'],
+      '2025-06-15T10:00:01Z',
+      { now: consentNow }
+    );
+
+    const decision = consumeCapabilityAccess({
+      capability: token,
+      consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: new Date('2025-06-15T10:00:02Z'),
+      paymentContext: { paid: true },
+      registries: {
+        nonceRegistry: new InMemoryNonceRegistry(),
+        revocationRegistry: new InMemoryRevocationRegistry(),
+        consentUsageRegistry: usageRegistry
+      }
+    });
+
+    expect(decision.allowed).toBe(false);
+    expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.CONSENT_EXPIRED);
+    expect(decision.payment).toEqual({ required: false, amount: 25, currency: 'USD' });
+    expect(decision.usage?.usageCount).toBe(0);
+    expect(usageRegistry.get(token.consent_ref)?.usageCount).toBe(0);
+  });
+
+  it('denies expiration mismatch when capability exceeds consent window', () => {
+    const consent = buildConsent(undefined, '2025-06-15T10:00:03Z', new Date('2025-06-15T10:00:00Z'));
+    const token = mintCapabilityToken(
+      consent,
+      [{ type: 'content', ref: CONTENT_REF }],
+      ['read'],
+      '2025-06-15T10:00:03Z',
+      { now: new Date('2025-06-15T10:00:00Z') }
+    );
+    const forgedToken = {
+      ...token,
+      expires_at: '2025-06-15T10:00:04Z'
+    };
+    forgedToken.capability_hash = computeCapabilityHash(
+      canonicalizeCapabilityPayload(forgedToken as any)
+    );
+
+    const decision = consumeCapabilityAccess({
+      capability: forgedToken,
+      consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: NOW,
+      registries: {
+        nonceRegistry: new InMemoryNonceRegistry(),
+        revocationRegistry: new InMemoryRevocationRegistry()
+      }
+    });
+
+    expect(decision.allowed).toBe(false);
+    expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.EXPIRATION_MISMATCH);
   });
 
   it('allows temporal edge values that stay within the skew window', () => {

@@ -37,7 +37,7 @@ function buildToken(overrides: Record<string, unknown> = {}) {
         consent,
         [{ type: 'content', ref: CONTENT_REF }],
         ['read'],
-        '2025-06-15T10:05:00Z',
+        '2025-06-15T10:00:03Z',
         { now: new Date('2025-06-15T10:00:00Z') }
       ),
       ...overrides
@@ -61,10 +61,10 @@ describe('legacy capability bridge mapping', () => {
       token,
       consent: mismatchedConsent,
       required_scope: `content:${CONTENT_REF}`,
-      now: NOW
+      now: new Date('2025-06-15T10:00:05Z')
     });
 
-    expect(decision.code).toBe('CONSENT_MISMATCH');
+    expect(decision).toMatchObject({ code: 'CONSENT_MISMATCH' });
   });
 
   it('maps consent-invalid bridge pre-checks to CONSENT_MISMATCH', () => {
@@ -81,10 +81,37 @@ describe('legacy capability bridge mapping', () => {
         revoke_target: { capability_hash: token.capability_hash }
       } as any,
       required_scope: `content:${CONTENT_REF}`,
-      now: NOW
+      now: new Date('2025-06-15T10:00:05Z')
     });
 
     expect(decision.code).toBe('CONSENT_MISMATCH');
+  });
+
+  it('maps consent expiration to EXPIRED', () => {
+    const consent = buildConsentObject(
+      SUBJECT,
+      GRANTEE,
+      'grant',
+      [{ type: 'content', ref: CONTENT_REF }],
+      ['read'],
+      { now: new Date('2025-06-15T10:00:01Z'), expires_at: '2025-06-15T10:00:04Z' }
+    );
+    const token = mintCapabilityToken(
+      consent,
+      [{ type: 'content', ref: CONTENT_REF }],
+      ['read'],
+      '2025-06-15T10:00:04Z',
+      { now: new Date('2025-06-15T10:00:01Z') }
+    );
+
+    const decision = enforceCapability({
+      token,
+      consent,
+      required_scope: `content:${CONTENT_REF}`,
+      now: new Date('2025-06-15T10:00:05Z')
+    });
+
+    expect(decision.code).toBe('EXPIRED');
   });
 
   it('maps market-maker binding decisions to REQUEST_CONTEXT_MISMATCH', () => {

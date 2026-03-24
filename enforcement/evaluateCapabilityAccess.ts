@@ -112,6 +112,20 @@ function evaluateConsentBinding(
   return null;
 }
 
+
+function parseTimestampOrNull(value: unknown): Date | null {
+  if (typeof value !== 'string') {
+    return null;
+  }
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    return null;
+  }
+
+  return parsed;
+}
+
 function evaluateHookResult(
   hookResult: CapabilityAccessHookResult,
   evaluatedAt: string,
@@ -286,7 +300,78 @@ export function evaluateCapabilityAccess(
         );
       }
 
-      if (evaluatedAt > normalized.capability.expiresAt) {
+      const capabilityExpiresAt = new Date(normalized.capability.expiresAt);
+      const capabilityIssuedAt = parseTimestampOrNull(
+        (normalized.capability.raw as Record<string, unknown>).issued_at
+      );
+      const consentIssuedAt = parseTimestampOrNull(normalized.consent?.issued_at);
+      const consentExpiresAt = parseTimestampOrNull(normalized.consent?.expires_at ?? null);
+
+      if (capabilityIssuedAt && capabilityExpiresAt.getTime() <= capabilityIssuedAt.getTime()) {
+        checks.temporal = 'fail';
+        return denyDecision(
+          evaluatedAt,
+          capabilityAccessReasonCodes.EXPIRATION_MISMATCH,
+          'Capability expiration must be later than capability issuance.',
+          checks,
+          {
+            failureStage: 'temporal',
+            capabilityHash: normalized.capability.capabilityHash,
+            tokenId: normalized.capability.tokenId,
+            consentRef: normalized.capability.consentRef
+          }
+        );
+      }
+
+      if (consentIssuedAt && capabilityExpiresAt.getTime() <= consentIssuedAt.getTime()) {
+        checks.temporal = 'fail';
+        return denyDecision(
+          evaluatedAt,
+          capabilityAccessReasonCodes.EXPIRATION_MISMATCH,
+          'Capability expiration must be later than parent consent issuance.',
+          checks,
+          {
+            failureStage: 'temporal',
+            capabilityHash: normalized.capability.capabilityHash,
+            tokenId: normalized.capability.tokenId,
+            consentRef: normalized.capability.consentRef
+          }
+        );
+      }
+
+      if (consentExpiresAt && capabilityExpiresAt.getTime() > consentExpiresAt.getTime()) {
+        checks.temporal = 'fail';
+        return denyDecision(
+          evaluatedAt,
+          capabilityAccessReasonCodes.EXPIRATION_MISMATCH,
+          'Capability expiration exceeds parent consent expiration.',
+          checks,
+          {
+            failureStage: 'temporal',
+            capabilityHash: normalized.capability.capabilityHash,
+            tokenId: normalized.capability.tokenId,
+            consentRef: normalized.capability.consentRef
+          }
+        );
+      }
+
+      if (consentExpiresAt && new Date(evaluatedAt).getTime() > consentExpiresAt.getTime()) {
+        checks.temporal = 'fail';
+        return denyDecision(
+          evaluatedAt,
+          capabilityAccessReasonCodes.CONSENT_EXPIRED,
+          'Parent consent has expired at the requested evaluation time.',
+          checks,
+          {
+            failureStage: 'temporal',
+            capabilityHash: normalized.capability.capabilityHash,
+            tokenId: normalized.capability.tokenId,
+            consentRef: normalized.capability.consentRef
+          }
+        );
+      }
+
+      if (new Date(evaluatedAt).getTime() > capabilityExpiresAt.getTime()) {
         checks.temporal = 'fail';
         return denyDecision(
           evaluatedAt,

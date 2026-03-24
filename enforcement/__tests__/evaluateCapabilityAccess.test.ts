@@ -157,6 +157,41 @@ describe('evaluateCapabilityAccess', () => {
     expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.CAPABILITY_EXPIRED);
   });
 
+
+  it('denies when parent consent is expired even if capability is otherwise valid', () => {
+    const { capability, consent } = buildCapability();
+    const decision = evaluateCapabilityAccess({
+      capability,
+      consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: '2026-02-01T00:00:00Z'
+    });
+
+    expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.CONSENT_EXPIRED);
+  });
+
+  it('denies when capability expiry exceeds parent consent expiry', () => {
+    const { capability, consent } = buildCapability();
+    const forgedCapability: any = {
+      ...capability,
+      expires_at: '2026-02-01T00:00:00Z'
+    };
+    forgedCapability.capability_hash = computeCapabilityHash(
+      canonicalizeCapabilityPayload(forgedCapability as any)
+    );
+
+    const decision = evaluateCapabilityAccess({
+      capability: forgedCapability,
+      consent,
+      action: 'read',
+      resource: { type: 'content', ref: CONTENT_REF },
+      now: '2025-08-01T00:00:00Z'
+    });
+
+    expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.EXPIRATION_MISMATCH);
+  });
+
   it('denies invalid requested actions as structurally invalid input', () => {
     const { capability } = buildCapability();
     const decision = evaluateCapabilityAccess({
