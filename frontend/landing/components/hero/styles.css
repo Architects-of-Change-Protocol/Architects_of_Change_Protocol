@@ -1,0 +1,154 @@
+:root {
+  --hero-bg: #050506;
+  --hero-text: #f5f7fa;
+  --hero-muted: #7e8796;
+  --hero-cta-bg: #f5f7fa;
+  --hero-cta-text: #0d0f12;
+  --hero-cta-bg-hover: #ffffff;
+}
+
+.landing-hero {
+  background: var(--hero-bg);
+  color: var(--hero-text);
+}
+
+.section {
+  padding: 6rem 1.5rem;
+}
+
+.section--xl {
+  min-height: 100svh;
+}
+
+.section--dark {
+  background-color: var(--hero-bg);
+}
+
+.container {
+  width: 100%;
+  margin-inline: auto;
+}
+
+.container--narrow {
+  max-width: 72rem;
+}
+
+.landing-hero__container,
+.landing-hero__content {
+  min-height: calc(100svh - 12rem);
+}
+
+.landing-hero__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.stack--lg {
+  gap: 1.5rem;
+}
+
+.display {
+  margin: 0;
+  line-height: 1.03;
+  text-wrap: balance;
+}
+
+.display--xl {
+  font-size: clamp(2.7rem, 5.8vw, 5.6rem);
+}
+
+.weight--semibold {
+  font-weight: 600;
+}
+
+.tracking--tight {
+  letter-spacing: -0.03em;
+}
+
+.block {
+  display: block;
+}
+
+.body {
+  margin: 0;
+}
+
+.body--lg {
+  font-size: clamp(0.98rem, 1.18vw, 1.15rem);
+  line-height: 1.7;
+}
+
+.tone--muted {
+  color: var(--hero-muted);
+}
+
+.max-w-prose {
+  max-width: 40rem;
+}
+
+.mx-auto {
+  margin-inline: auto;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+  border: 0;
+  font: inherit;
+}
+
+.btn--primary {
+  padding: 1.02rem 1.7rem;
+  border-radius: 999px;
+  background: var(--hero-cta-bg);
+  color: var(--hero-cta-text);
+  font-size: 1.04rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.btn--premium {
+  box-shadow: 0 0 0 1px rgba(10, 14, 22, 0.4), 0 14px 34px rgba(0, 0, 0, 0.48);
+  transition: transform 180ms ease, box-shadow 220ms ease, background-color 220ms ease;
+}
+
+.btn--premium:hover,
+.btn--premium:focus-visible {
+  background: var(--hero-cta-bg-hover);
+  box-shadow: 0 0 0 1px rgba(10, 14, 22, 0.5), 0 18px 44px rgba(0, 0, 0, 0.58);
+  transform: translateY(-1px);
+}
+
+.btn--premium:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.55);
+  outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+  .section {
+    padding: 4.5rem 1rem;
+  }
+
+  .landing-hero__container,
+  .landing-hero__content {
+    min-height: calc(100svh - 9rem);
+  }
+
+  .stack--lg {
+    gap: 1.15rem;
+  }
+}
