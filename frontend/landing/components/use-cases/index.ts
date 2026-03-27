@@ -1,7 +1,25 @@
-import { landingContent } from '../../lib/content';
-import { renderSectionStub } from '../shared';
-
 export function LandingUseCases(): string {
-  // TODO(figma): Replace this stub with Figma-generated use-cases component markup.
-  return renderSectionStub(landingContent.sections.useCases);
+  return [
+    '<section id="use-cases" data-landing-section="use-cases" class="landing-use-cases section section--dark" aria-labelledby="landing-use-cases-title">',
+    '  <div class="landing-use-cases__container container container--narrow">',
+    '    <div class="landing-use-cases__content stack stack--lg">',
+    '      <h2 id="landing-use-cases-title" class="landing-use-cases__title display display--xl weight--semibold tracking--tight text-center max-w-prose mx-auto">Where AOC is used</h2>',
+    '      <div class="landing-use-cases__list stack stack--lg max-w-prose mx-auto">',
+    '        <article class="landing-use-cases__item stack">',
+    '          <h3 class="landing-use-cases__item-title body body--lg weight--semibold">Hiring (HRKey)</h3>',
+    '          <p class="landing-use-cases__item-body body body--lg tone--muted">Candidates share role-specific credentials only. Employers verify proof without collecting full personal records.</p>',
+    '        </article>',
+    '        <article class="landing-use-cases__item stack">',
+    '          <h3 class="landing-use-cases__item-title body body--lg weight--semibold">Healthcare data</h3>',
+    '          <p class="landing-use-cases__item-body body body--lg tone--muted">Patients grant clinics scoped, time-limited access for treatment. Access is revoked when care ends.</p>',
+    '        </article>',
+    '        <article class="landing-use-cases__item stack">',
+    '          <h3 class="landing-use-cases__item-title body body--lg weight--semibold">Identity and reputation</h3>',
+    '          <p class="landing-use-cases__item-body body body--lg tone--muted">People prove trust signals from prior work or communities without exposing unrelated history.</p>',
+    '        </article>',
+    '      </div>',
+    '    </div>',
+    '  </div>',
+    '</section>',
+  ].join('\\n');
 }
