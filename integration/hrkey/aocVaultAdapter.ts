@@ -17,6 +17,7 @@
 import { createInMemoryVault } from '../../vault';
 import type { Vault } from '../../vault';
 import { buildConsentObject } from '../../consent';
+import { normalizeConsent, parseConsent, validateConsent } from '../../protocol/consent';
 
 import type {
   IHRKeyVaultAdapter,
@@ -89,10 +90,22 @@ export function createHRKeyAdapter(vault?: Vault): IHRKeyVaultAdapter {
       },
     );
 
-    // Store in Vault (Vault validates structure).
-    const consent_hash = v.storeConsent(consent);
+    // Transitional adapter step while HRKey migrates to protocol consent core:
+    // fail-closed before persistence if consent cannot be parsed/validated.
+    const parsedConsent = parseConsent(consent);
+    const normalizedConsent = normalizeConsent(parsedConsent);
+    const validation = validateConsent(normalizedConsent);
 
-    return { consent_hash, consent };
+    if (!validation.valid) {
+      throw new Error(
+        `Consent rejected by protocol core validator: ${validation.errors.join('; ')}`
+      );
+    }
+
+    // Store in Vault (Vault validates structure).
+    const consent_hash = v.storeConsent(normalizedConsent);
+
+    return { consent_hash, consent: normalizedConsent };
   }
 
   // ── mintCapability ──────────────────────────────────────────────
