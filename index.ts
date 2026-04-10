@@ -10,6 +10,7 @@ export * from './protocol/capabilities';
 export * from './protocol/consent';
 export * from './protocol/enforcement';
 export * from './protocol/execution';
+export * from './protocol/adapters';
 export * from './aoc/capabilities';
 export * from './aoc/sdk';
 export * from './interpreter';
