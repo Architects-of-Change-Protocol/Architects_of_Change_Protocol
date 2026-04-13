@@ -24,3 +24,5 @@ export type {
   ConsentDecision,
   ConsentDecisionReasonCode,
 } from './types';
+
+export * from './capability-index';
