@@ -3,7 +3,7 @@ import { evaluateEnforcement, type EnforcementDecision } from '../../protocol/en
 import { mintCapability, type ProtocolCapability } from '../../protocol/capability';
 import { DataAccessService } from '../access/service';
 import type { DataAccessDecision, DataAccessRequestInput } from '../access/types';
-import { RuntimeAuditService, type AuditEvent, type ListAuditEventsInput } from '../audit/service';
+import { RuntimeAuditService, type ListAuditEventsInput, type RuntimeAuditEvent } from '../audit/service';
 import { RlusdPayoutAdapter } from '../payout/payoutAdapters/rlusd.adapter';
 import { RlusdPayoutExecutorService } from '../payout/rlusdPayoutExecutor.service';
 import type { PayoutCallbackInput, PayoutExecuteResult } from '../payout/types';
@@ -191,7 +191,7 @@ export function executeRoute(
   | PayoutExecuteResult
   | DataAccessDecision
   | { received: true; reason_code: string }
-  | { events: AuditEvent[] }
+  | { events: RuntimeAuditEvent[] }
   | UsageSummaryResult
 > {
   try {

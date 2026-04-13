@@ -2,7 +2,7 @@ import { authorizeExecution, type ExecutionAuthorizationResult } from '../../pro
 import { evaluateEnforcement, type EnforcementDecision } from '../../protocol/enforcement';
 import { mintCapability, type MintCapabilityInput, type ProtocolCapability } from '../../protocol/capability';
 import type { DataAccessDecision, DataAccessRequestInput } from '../access/types';
-import type { AuditEvent } from '../audit/service';
+import type { RuntimeAuditEvent } from '../audit/service';
 import type { GrantConsentInput, RegisterCredentialInput, VerifyIdentityInput } from '../trust/service';
 import type {
   AocIdentityConsentRecord,
@@ -57,7 +57,7 @@ export interface HostedRuntimeSdk {
   executePayout(input: RlusdWithdrawalRequest): Promise<PayoutExecuteResult>;
   callbackPayout(input: PayoutCallbackInput): Promise<PayoutCallbackResult>;
   requestDataAccess(input: DataAccessRequestInput): Promise<DataAccessDecision>;
-  listAuditEvents(input?: ListAuditEventsInput): Promise<AuditEvent[]>;
+  listAuditEvents(input?: ListAuditEventsInput): Promise<RuntimeAuditEvent[]>;
   getUsageSummary(input: GetUsageSummaryInput): Promise<UsageSummaryResult>;
 }
 
@@ -178,11 +178,11 @@ export class HostedRuntimeClient implements HostedRuntimeSdk {
     return this.post('/data/access', input);
   }
 
-  async listAuditEvents(input: ListAuditEventsInput = {}): Promise<AuditEvent[]> {
+  async listAuditEvents(input: ListAuditEventsInput = {}): Promise<RuntimeAuditEvent[]> {
     if (this.mode === 'local') {
       throw new Error('Audit event listing is only available in hosted mode.');
     }
-    const result = await this.get<{ events: AuditEvent[] }>('/audit/events', input);
+    const result = await this.get<{ events: RuntimeAuditEvent[] }>('/audit/events', input);
     return result.events;
   }
 
