@@ -2,6 +2,8 @@ import type { AddressInfo } from 'net';
 import { createRuntimeServer } from '../api/server';
 import { DEFAULT_RUNTIME_CORE } from '../api/routes';
 import { DEFAULT_TRUST_ISSUERS, InMemoryTrustService } from '../trust/service';
+import { RlusdPayoutAdapter } from '../payout/payoutAdapters/rlusd.adapter';
+import { RlusdPayoutExecutorService } from '../payout/rlusdPayoutExecutor.service';
 
 describe('trust layer hosted endpoints', () => {
   it('supports credential registration and verification', async () => {
@@ -10,6 +12,7 @@ describe('trust layer hosted endpoints', () => {
       core: {
         ...DEFAULT_RUNTIME_CORE,
         trustService,
+        payoutExecutor: new RlusdPayoutExecutorService(trustService, new RlusdPayoutAdapter()),
       },
     });
     await new Promise<void>((resolve) => server.listen(0, resolve));
@@ -59,6 +62,7 @@ describe('trust layer hosted endpoints', () => {
       core: {
         ...DEFAULT_RUNTIME_CORE,
         trustService,
+        payoutExecutor: new RlusdPayoutExecutorService(trustService, new RlusdPayoutAdapter()),
       },
     });
     await new Promise<void>((resolve) => server.listen(0, resolve));

@@ -9,6 +9,7 @@ import type {
   RlusdWithdrawalRequest,
 } from '../trust/types';
 import type { ApiResponse, RuntimeMode } from '../types/api-types';
+import type { PayoutCallbackInput, PayoutExecuteResult } from '../payout/types';
 
 type FetchLike = typeof fetch;
 
@@ -102,10 +103,18 @@ export class HostedRuntimeClient {
     return this.post('/trust/consent/grant', input);
   }
 
-  async executePayout(input: RlusdWithdrawalRequest): Promise<{ allowed: boolean; reason_code: string }> {
+  async executePayout(input: RlusdWithdrawalRequest): Promise<PayoutExecuteResult> {
     if (this.mode === 'local') {
       throw new Error('Payout execution is only available in hosted mode.');
     }
     return this.post('/payout/execute', input);
   }
+  async callbackPayout(input: PayoutCallbackInput): Promise<{ received: true; reason_code: string }> {
+    if (this.mode === 'local') {
+      throw new Error('Payout callback is only available in hosted mode.');
+    }
+    return this.post('/payout/callback', input);
+  }
+
 }
+

@@ -13,3 +13,5 @@ export type {
   TrustAuditEvent,
 } from './trust/types';
 export type { ApiRequest, ApiResponse, ErrorResponse, RuntimeEndpoint } from './types/api-types';
+
+export type { PayoutCallbackInput, PayoutExecuteResult, PayoutAuditEvent } from './payout/types';
