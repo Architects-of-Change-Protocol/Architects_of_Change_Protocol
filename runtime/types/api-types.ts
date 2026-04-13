@@ -3,6 +3,7 @@ export type RuntimeEndpoint =
   | '/execution/authorize'
   | '/capability/mint'
   | '/payout/execute'
+  | '/payout/callback'
   | '/trust/credential/register'
   | '/trust/verify'
   | '/trust/consent/grant';

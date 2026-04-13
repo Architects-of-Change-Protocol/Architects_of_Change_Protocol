@@ -26,3 +26,6 @@ export type {
   ResolvedField,
   UnresolvedField,
 } from './types';
+
+export { HrkeyPayoutEngine } from './payoutEngine';
+export type { HrkeyPayoutEngineOptions } from './payoutEngine';

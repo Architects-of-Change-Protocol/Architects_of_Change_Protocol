@@ -1,6 +1,9 @@
 import { authorizeExecution, type ExecutionAuthorizationResult } from '../../protocol/execution';
 import { evaluateEnforcement, type EnforcementDecision } from '../../protocol/enforcement';
 import { mintCapability, type ProtocolCapability } from '../../protocol/capability';
+import { RlusdPayoutAdapter } from '../payout/payoutAdapters/rlusd.adapter';
+import { RlusdPayoutExecutorService } from '../payout/rlusdPayoutExecutor.service';
+import type { PayoutCallbackInput, PayoutExecuteResult } from '../payout/types';
 import { InMemoryTrustService, type GrantConsentInput, type RegisterCredentialInput, type VerifyIdentityInput } from '../trust/service';
 import type {
   AocIdentityConsentRecord,
@@ -15,13 +18,17 @@ export type RuntimeCore = {
   authorizeExecution: typeof authorizeExecution;
   mintCapability: typeof mintCapability;
   trustService: InMemoryTrustService;
+  payoutExecutor: RlusdPayoutExecutorService;
 };
+
+const defaultTrustService = new InMemoryTrustService();
 
 export const DEFAULT_RUNTIME_CORE: RuntimeCore = {
   evaluateEnforcement,
   authorizeExecution,
   mintCapability,
-  trustService: new InMemoryTrustService(),
+  trustService: defaultTrustService,
+  payoutExecutor: new RlusdPayoutExecutorService(defaultTrustService, new RlusdPayoutAdapter()),
 };
 
 
@@ -42,6 +49,14 @@ function success<T>(data: T): ApiResponse<T> {
 
 function failure(code: string, message: string): ApiResponse<never> {
   return { success: false, error: { code, message } };
+}
+
+function isNonEmptyString(value: unknown): value is string {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
+function isNumericString(value: unknown): value is string {
+  return typeof value === 'string' && /^\d+(\.\d+)?$/.test(value.trim());
 }
 
 export function deriveDecision(endpoint: RuntimeEndpoint, data: unknown): { decision: 'allow' | 'deny'; reasonCode: string } {
@@ -68,6 +83,9 @@ export function deriveDecision(endpoint: RuntimeEndpoint, data: unknown): { deci
     const payout = data as { allowed: boolean; reason_code: string };
     return { decision: payout.allowed ? 'allow' : 'deny', reasonCode: payout.reason_code };
   }
+  if (endpoint === '/payout/callback') {
+    return { decision: 'allow', reasonCode: 'PAYOUT_CALLBACK_RECEIVED' };
+  }
 
   return {
     decision: 'allow',
@@ -86,7 +104,8 @@ export function executeRoute(
   | AocIdentityCredentialRecord
   | IdentityVerificationResult
   | AocIdentityConsentRecord
-  | { allowed: boolean; reason_code: string }
+  | PayoutExecuteResult
+  | { received: true; reason_code: string }
 > {
   try {
     switch (endpoint) {
@@ -96,8 +115,32 @@ export function executeRoute(
         return success(core.authorizeExecution(reviveNow(payload as Parameters<typeof authorizeExecution>[0])));
       case '/capability/mint':
         return success(core.mintCapability(payload as Parameters<typeof mintCapability>[0]));
-      case '/payout/execute':
-        return success(core.trustService.enforcePayoutKyc(payload as RlusdWithdrawalRequest));
+      case '/payout/execute': {
+        const request = payload as Partial<RlusdWithdrawalRequest>;
+        if (!isNonEmptyString(request.withdrawal_id)) {
+          return failure('INVALID_PAYOUT_REQUEST', 'withdrawal_id is required.');
+        }
+        if (!isNonEmptyString(request.subject_hash)) {
+          return failure('INVALID_PAYOUT_REQUEST', 'subject_hash is required.');
+        }
+        if (!isNonEmptyString(request.consumer_id)) {
+          return failure('INVALID_PAYOUT_REQUEST', 'consumer_id is required.');
+        }
+        if (!isNumericString(request.amount)) {
+          return failure('INVALID_PAYOUT_REQUEST', 'amount must be a numeric string.');
+        }
+
+        try {
+          return success(core.payoutExecutor.execute(request as RlusdWithdrawalRequest));
+        } catch (error) {
+          return failure(
+            'PAYOUT_EXECUTION_ERROR',
+            error instanceof Error ? error.message : 'Unknown payout execution error.'
+          );
+        }
+      }
+      case '/payout/callback':
+        return success(core.payoutExecutor.callback(payload as PayoutCallbackInput));
       case '/trust/credential/register':
         return success(core.trustService.registerCredential(payload as RegisterCredentialInput));
       case '/trust/verify':
