@@ -137,6 +137,7 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
     if (isMeteredEndpoint(pathname)) {
       const consumerId = maybeResolveUsageConsumerId(pathname, payload);
       if (consumerId !== undefined) {
+        const occurredAt = new Date().toISOString();
         Promise.resolve()
           .then(() => {
             core.usageService.recordUsage({
@@ -144,6 +145,15 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
               endpoint: pathname,
               decision: decisionInfo.decision,
               reason_code: decisionInfo.reasonCode,
+              usedAt: new Date(occurredAt),
+            });
+
+            core.monetizationService.recordUsageAsBillable({
+              consumer_id: consumerId,
+              resource: pathname,
+              action: 'execute',
+              quantity: 1,
+              occurred_at: occurredAt,
             });
           })
           .catch(() => {
