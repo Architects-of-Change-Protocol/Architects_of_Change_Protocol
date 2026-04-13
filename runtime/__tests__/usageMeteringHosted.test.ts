@@ -8,6 +8,7 @@ import { HostedRuntimeClient } from '../sdk/client';
 import { DEFAULT_TRUST_ISSUERS, InMemoryTrustService } from '../trust/service';
 import { InMemoryUsageService } from '../usage';
 import { RuntimeAuditService } from '../audit/service';
+import { closeServer, startServer } from './helpers/serverLifecycle';
 
 function buildCore() {
   const trustService = new InMemoryTrustService(DEFAULT_TRUST_ISSUERS);
@@ -29,7 +30,7 @@ function buildCore() {
 describe('usage metering + fee estimation', () => {
   it('increments usage for allowed /data/access', async () => {
     const server = createRuntimeServer({ core: buildCore() });
-    await new Promise<void>((resolve) => server.listen(0, resolve));
+    await startServer(server);
 
     try {
       const { port } = server.address() as AddressInfo;
@@ -73,13 +74,13 @@ describe('usage metering + fee estimation', () => {
         total_estimated_fee: 0.05,
       });
     } finally {
-      await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+      await closeServer(server);
     }
   });
 
   it('increments usage for denied /data/access', async () => {
     const server = createRuntimeServer({ core: buildCore() });
-    await new Promise<void>((resolve) => server.listen(0, resolve));
+    await startServer(server);
 
     try {
       const { port } = server.address() as AddressInfo;
@@ -103,13 +104,13 @@ describe('usage metering + fee estimation', () => {
         total_estimated_fee: 0.05,
       });
     } finally {
-      await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+      await closeServer(server);
     }
   });
 
   it('increments usage for /payout/execute and calculates fee', async () => {
     const server = createRuntimeServer({ core: buildCore() });
-    await new Promise<void>((resolve) => server.listen(0, resolve));
+    await startServer(server);
 
     try {
       const { port } = server.address() as AddressInfo;
@@ -150,13 +151,13 @@ describe('usage metering + fee estimation', () => {
         total_estimated_fee: 0.25,
       });
     } finally {
-      await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+      await closeServer(server);
     }
   });
 
   it('filters usage summary by endpoint and date', async () => {
     const server = createRuntimeServer({ core: buildCore() });
-    await new Promise<void>((resolve) => server.listen(0, resolve));
+    await startServer(server);
 
     try {
       const { port } = server.address() as AddressInfo;
@@ -202,13 +203,13 @@ describe('usage metering + fee estimation', () => {
         total_estimated_fee: 0.1,
       });
     } finally {
-      await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+      await closeServer(server);
     }
   });
 
   it('preserves multi-market-maker separation in usage summaries', async () => {
     const server = createRuntimeServer({ core: buildCore() });
-    await new Promise<void>((resolve) => server.listen(0, resolve));
+    await startServer(server);
 
     try {
       const { port } = server.address() as AddressInfo;
@@ -252,13 +253,13 @@ describe('usage metering + fee estimation', () => {
       expect(xSummary.data?.endpoints[0]?.count).toBe(1);
       expect(ySummary.data?.endpoints[0]?.count).toBe(1);
     } finally {
-      await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+      await closeServer(server);
     }
   });
 
   it('does not meter malformed requests that fail validation', async () => {
     const server = createRuntimeServer({ core: buildCore() });
-    await new Promise<void>((resolve) => server.listen(0, resolve));
+    await startServer(server);
 
     try {
       const { port } = server.address() as AddressInfo;
@@ -285,7 +286,7 @@ describe('usage metering + fee estimation', () => {
       expect(summary.success).toBe(true);
       expect(summary.data?.endpoints).toEqual([]);
     } finally {
-      await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+      await closeServer(server);
     }
   });
 });

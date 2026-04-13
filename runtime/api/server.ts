@@ -137,12 +137,23 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
     if (isMeteredEndpoint(pathname)) {
       const consumerId = maybeResolveUsageConsumerId(pathname, payload);
       if (consumerId !== undefined) {
-        core.usageService.recordUsage({
-          consumer_id: consumerId,
-          endpoint: pathname,
-          decision: decisionInfo.decision,
-          reason_code: decisionInfo.reasonCode,
-        });
+        Promise.resolve()
+          .then(() => {
+            core.usageService.recordUsage({
+              consumer_id: consumerId,
+              endpoint: pathname,
+              decision: decisionInfo.decision,
+              reason_code: decisionInfo.reasonCode,
+            });
+          })
+          .catch(() => {
+            logger.log({
+              requestId,
+              endpoint: pathname,
+              decision: 'deny',
+              reason_code: 'USAGE_METERING_ERROR',
+            });
+          });
       }
     }
 

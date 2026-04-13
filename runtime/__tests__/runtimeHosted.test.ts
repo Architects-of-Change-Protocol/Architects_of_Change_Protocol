@@ -4,32 +4,13 @@ import { createRuntimeServer } from '../api/server';
 import { InMemoryApiKeyStore } from '../auth/apiKeys';
 import { InMemoryRateLimiter } from '../limits/rateLimiter';
 import { HostedRuntimeClient } from '../sdk/client';
+import { closeServer, startServer } from './helpers/serverLifecycle';
 
 jest.setTimeout(15000);
 
 const SUBJECT = 'did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK';
 const GRANTEE = 'did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH';
 const REF_A = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
-
-async function startServer(server: ReturnType<typeof createRuntimeServer>): Promise<void> {
-  await new Promise<void>((resolve, reject) => {
-    server.once('error', reject);
-    server.listen(0, () => {
-      server.off('error', reject);
-      resolve();
-    });
-  });
-}
-
-async function closeServer(server: ReturnType<typeof createRuntimeServer>): Promise<void> {
-  if (!server.listening) {
-    return;
-  }
-
-  await new Promise<void>((resolve, reject) => {
-    server.close((error) => (error ? reject(error) : resolve()));
-  });
-}
 
 function buildMintInput() {
   const consent = buildConsentObject(SUBJECT, GRANTEE, 'grant', [{ type: 'content', ref: REF_A }], ['read'], {
