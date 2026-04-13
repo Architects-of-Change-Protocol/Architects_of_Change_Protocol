@@ -18,7 +18,6 @@ export type { ApiRequest, ApiResponse, ErrorResponse, RuntimeEndpoint } from './
 export type { PayoutCallbackInput, PayoutExecuteResult, PayoutAuditEvent } from './payout/types';
 
 export type { DataAccessAuditEvent, DataAccessDecision, DataAccessRequestInput, AccessTokenRecord } from './access/types';
-export type { AuditEvent } from './audit/service';
 export type { GetUsageSummaryInput, ListAuditEventsInput } from './sdk/client';
 export { InMemoryUsageService, UNIT_PRICES } from './usage';
 export type {
@@ -29,3 +28,5 @@ export type {
   UsageSummaryQuery,
   UsageSummaryResult,
 } from './usage';
+
+export * from './audit';
