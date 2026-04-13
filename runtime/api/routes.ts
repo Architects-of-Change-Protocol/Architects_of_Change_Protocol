@@ -15,6 +15,8 @@ import type {
   RlusdWithdrawalRequest,
 } from '../trust/types';
 import type { ApiResponse, RuntimeEndpoint } from '../types/api-types';
+import { InMemoryUsageService, isMeteredEndpoint } from '../usage';
+import type { MeteredRuntimeEndpoint, UsageSummaryResult } from '../usage';
 
 export type RuntimeCore = {
   evaluateEnforcement: typeof evaluateEnforcement;
@@ -24,12 +26,14 @@ export type RuntimeCore = {
   payoutExecutor: RlusdPayoutExecutorService;
   dataAccessService: DataAccessService;
   auditService: RuntimeAuditService;
+  usageService: InMemoryUsageService;
 };
 
 const defaultTrustService = new InMemoryTrustService();
 const defaultPayoutExecutor = new RlusdPayoutExecutorService(defaultTrustService, new RlusdPayoutAdapter());
 const defaultDataAccessService = new DataAccessService(defaultTrustService);
 const defaultAuditService = new RuntimeAuditService(defaultTrustService, defaultPayoutExecutor, defaultDataAccessService);
+const defaultUsageService = new InMemoryUsageService();
 
 const ROUTE_ERRORS = {
   invalidRequest: 'INVALID_REQUEST',
@@ -46,6 +50,7 @@ export const DEFAULT_RUNTIME_CORE: RuntimeCore = {
   payoutExecutor: defaultPayoutExecutor,
   dataAccessService: defaultDataAccessService,
   auditService: defaultAuditService,
+  usageService: defaultUsageService,
 };
 
 function reviveNow<T extends Record<string, unknown>>(payload: T): T {
@@ -93,6 +98,16 @@ function parseOptionalDate(input: unknown): Date | undefined {
   return parsed;
 }
 
+function parseOptionalMeteredEndpoint(input: unknown): MeteredRuntimeEndpoint | undefined {
+  if (input === undefined) {
+    return undefined;
+  }
+  if (input !== '/data/access' && input !== '/payout/execute' && input !== '/trust/verify') {
+    return undefined;
+  }
+  return input;
+}
+
 export function deriveDecision(endpoint: RuntimeEndpoint, data: unknown): { decision: 'allow' | 'deny'; reasonCode: string } {
   if (endpoint === '/enforcement/evaluate') {
     const enforcement = data as EnforcementDecision;
@@ -131,6 +146,9 @@ export function deriveDecision(endpoint: RuntimeEndpoint, data: unknown): { deci
   if (endpoint === '/audit/events') {
     return { decision: 'allow', reasonCode: 'AUDIT_EVENTS_LISTED' };
   }
+  if (endpoint === '/usage/summary') {
+    return { decision: 'allow', reasonCode: 'USAGE_SUMMARY_LISTED' };
+  }
 
   const knownEndpoints: RuntimeEndpoint[] = [
     '/enforcement/evaluate',
@@ -143,6 +161,7 @@ export function deriveDecision(endpoint: RuntimeEndpoint, data: unknown): { deci
     '/trust/consent/grant',
     '/data/access',
     '/audit/events',
+    '/usage/summary',
   ];
 
   if (!knownEndpoints.includes(endpoint)) {
@@ -173,6 +192,7 @@ export function executeRoute(
   | DataAccessDecision
   | { received: true; reason_code: string }
   | { events: AuditEvent[] }
+  | UsageSummaryResult
 > {
   try {
     switch (endpoint) {
@@ -255,10 +275,51 @@ export function executeRoute(
 
         return success({ events });
       }
+      case '/usage/summary': {
+        const request = payload as { consumer_id?: string; endpoint?: string; from?: string; to?: string };
+        if (!isNonEmptyString(request.consumer_id)) {
+          return failure(ROUTE_ERRORS.invalidRequest, 'consumer_id is required.');
+        }
+
+        const endpoint = parseOptionalMeteredEndpoint(request.endpoint);
+        if (request.endpoint !== undefined && endpoint === undefined) {
+          return failure(ROUTE_ERRORS.invalidRequest, 'endpoint must be one of /data/access, /payout/execute, /trust/verify.');
+        }
+
+        const from = parseOptionalDate(request.from);
+        const to = parseOptionalDate(request.to);
+        if (request.from !== undefined && from === undefined) {
+          return failure(ROUTE_ERRORS.invalidRequest, 'from must be a valid ISO-8601 date string.');
+        }
+        if (request.to !== undefined && to === undefined) {
+          return failure(ROUTE_ERRORS.invalidRequest, 'to must be a valid ISO-8601 date string.');
+        }
+
+        return success(
+          core.usageService.getSummary({
+            consumer_id: request.consumer_id,
+            endpoint,
+            from,
+            to,
+          })
+        );
+      }
       default:
         return failure(ROUTE_ERRORS.routeNotFound, `Unsupported endpoint: ${endpoint}`);
     }
   } catch (error) {
     return failure(ROUTE_ERRORS.protocolError, error instanceof Error ? error.message : 'Unknown protocol error.');
   }
+}
+
+export function maybeResolveUsageConsumerId(endpoint: RuntimeEndpoint, payload: unknown): string | undefined {
+  if (!isMeteredEndpoint(endpoint) || payload === null || typeof payload !== 'object') {
+    return undefined;
+  }
+
+  const candidate = (payload as { consumer_id?: unknown }).consumer_id;
+  if (typeof candidate !== 'string' || candidate.trim() === '') {
+    return undefined;
+  }
+  return candidate;
 }

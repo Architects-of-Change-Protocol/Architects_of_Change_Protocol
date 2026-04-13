@@ -8,7 +8,8 @@ export type RuntimeEndpoint =
   | '/trust/verify'
   | '/trust/consent/grant'
   | '/data/access'
-  | '/audit/events';
+  | '/audit/events'
+  | '/usage/summary';
 
 export type ApiRequest<T> = {
   requestId?: string;

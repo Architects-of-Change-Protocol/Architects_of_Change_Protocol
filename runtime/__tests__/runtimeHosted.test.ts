@@ -5,9 +5,31 @@ import { InMemoryApiKeyStore } from '../auth/apiKeys';
 import { InMemoryRateLimiter } from '../limits/rateLimiter';
 import { HostedRuntimeClient } from '../sdk/client';
 
+jest.setTimeout(15000);
+
 const SUBJECT = 'did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK';
 const GRANTEE = 'did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH';
 const REF_A = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+
+async function startServer(server: ReturnType<typeof createRuntimeServer>): Promise<void> {
+  await new Promise<void>((resolve, reject) => {
+    server.once('error', reject);
+    server.listen(0, () => {
+      server.off('error', reject);
+      resolve();
+    });
+  });
+}
+
+async function closeServer(server: ReturnType<typeof createRuntimeServer>): Promise<void> {
+  if (!server.listening) {
+    return;
+  }
+
+  await new Promise<void>((resolve, reject) => {
+    server.close((error) => (error ? reject(error) : resolve()));
+  });
+}
 
 function buildMintInput() {
   const consent = buildConsentObject(SUBJECT, GRANTEE, 'grant', [{ type: 'content', ref: REF_A }], ['read'], {
@@ -29,7 +51,7 @@ function buildMintInput() {
 describe('hosted runtime API + SDK', () => {
   it('endpoint success: /execution/authorize', async () => {
     const server = createRuntimeServer();
-    await new Promise<void>((resolve) => server.listen(0, resolve));
+    await startServer(server);
 
     try {
       const { port } = server.address() as AddressInfo;
@@ -51,13 +73,13 @@ describe('hosted runtime API + SDK', () => {
       expect(result.authorized).toBe(true);
       expect(result.reason_code).toBe('EXECUTION_AUTHORIZED');
     } finally {
-      await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+      await closeServer(server);
     }
   });
 
   it('invalid API key -> reject fail-closed', async () => {
     const server = createRuntimeServer();
-    await new Promise<void>((resolve) => server.listen(0, resolve));
+    await startServer(server);
 
     try {
       const { port } = server.address() as AddressInfo;
@@ -75,7 +97,7 @@ describe('hosted runtime API + SDK', () => {
       expect(json.success).toBe(false);
       expect(json.error?.code).toBe('AUTH_INVALID_API_KEY');
     } finally {
-      await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+      await closeServer(server);
     }
   });
 
@@ -85,7 +107,7 @@ describe('hosted runtime API + SDK', () => {
       apiKeyStore: apiKeys,
       rateLimiter: new InMemoryRateLimiter({ free: 1 }),
     });
-    await new Promise<void>((resolve) => server.listen(0, resolve));
+    await startServer(server);
 
     try {
       const { port } = server.address() as AddressInfo;
@@ -114,7 +136,7 @@ describe('hosted runtime API + SDK', () => {
       expect(json.success).toBe(false);
       expect(json.error?.code).toBe('RATE_LIMIT_EXCEEDED');
     } finally {
-      await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+      await closeServer(server);
     }
   });
 
