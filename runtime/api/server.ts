@@ -5,7 +5,8 @@ import { InMemoryRateLimiter } from '../limits/rateLimiter';
 import { RuntimeLogger } from '../logging/logger';
 import type { ApiResponse, RuntimeEndpoint } from '../types/api-types';
 import { authAndLimit } from './middleware';
-import { DEFAULT_RUNTIME_CORE, deriveDecision, executeRoute, type RuntimeCore } from './routes';
+import { DEFAULT_RUNTIME_CORE, deriveDecision, executeRoute, maybeResolveUsageConsumerId, type RuntimeCore } from './routes';
+import { isMeteredEndpoint } from '../usage';
 
 const POST_ENDPOINTS: RuntimeEndpoint[] = [
   '/enforcement/evaluate',
@@ -19,7 +20,7 @@ const POST_ENDPOINTS: RuntimeEndpoint[] = [
   '/data/access',
 ];
 
-const GET_ENDPOINTS: RuntimeEndpoint[] = ['/audit/events'];
+const GET_ENDPOINTS: RuntimeEndpoint[] = ['/audit/events', '/usage/summary'];
 
 export type RuntimeServerDeps = {
   apiKeyStore?: InMemoryApiKeyStore;
@@ -132,6 +133,18 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
       decision: decisionInfo.decision,
       reason_code: decisionInfo.reasonCode,
     });
+
+    if (isMeteredEndpoint(pathname)) {
+      const consumerId = maybeResolveUsageConsumerId(pathname, payload);
+      if (consumerId !== undefined) {
+        core.usageService.recordUsage({
+          consumer_id: consumerId,
+          endpoint: pathname,
+          decision: decisionInfo.decision,
+          reason_code: decisionInfo.reasonCode,
+        });
+      }
+    }
 
     return sendJson(response, 200, routeResult);
   });

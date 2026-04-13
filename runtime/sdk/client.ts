@@ -12,6 +12,7 @@ import type {
 } from '../trust/types';
 import type { ApiResponse, RuntimeMode } from '../types/api-types';
 import type { PayoutCallbackInput, PayoutExecuteResult } from '../payout/types';
+import type { MeteredRuntimeEndpoint, UsageSummaryResult } from '../usage';
 
 type FetchLike = typeof fetch;
 
@@ -26,6 +27,13 @@ export type ListAuditEventsInput = {
   subject_hash?: string;
   consumer_id?: string;
   event_type?: string;
+  from?: string;
+  to?: string;
+};
+
+export type GetUsageSummaryInput = {
+  consumer_id: string;
+  endpoint?: MeteredRuntimeEndpoint;
   from?: string;
   to?: string;
 };
@@ -50,6 +58,7 @@ export interface HostedRuntimeSdk {
   callbackPayout(input: PayoutCallbackInput): Promise<PayoutCallbackResult>;
   requestDataAccess(input: DataAccessRequestInput): Promise<DataAccessDecision>;
   listAuditEvents(input?: ListAuditEventsInput): Promise<AuditEvent[]>;
+  getUsageSummary(input: GetUsageSummaryInput): Promise<UsageSummaryResult>;
 }
 
 export class HostedRuntimeClient implements HostedRuntimeSdk {
@@ -175,5 +184,12 @@ export class HostedRuntimeClient implements HostedRuntimeSdk {
     }
     const result = await this.get<{ events: AuditEvent[] }>('/audit/events', input);
     return result.events;
+  }
+
+  async getUsageSummary(input: GetUsageSummaryInput): Promise<UsageSummaryResult> {
+    if (this.mode === 'local') {
+      throw new Error('Usage summary is only available in hosted mode.');
+    }
+    return this.get('/usage/summary', input);
   }
 }
