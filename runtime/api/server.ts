@@ -7,7 +7,7 @@ import type { ApiResponse, RuntimeEndpoint } from '../types/api-types';
 import { authAndLimit } from './middleware';
 import { DEFAULT_RUNTIME_CORE, deriveDecision, executeRoute, type RuntimeCore } from './routes';
 
-const ENDPOINTS: RuntimeEndpoint[] = [
+const POST_ENDPOINTS: RuntimeEndpoint[] = [
   '/enforcement/evaluate',
   '/execution/authorize',
   '/capability/mint',
@@ -16,7 +16,10 @@ const ENDPOINTS: RuntimeEndpoint[] = [
   '/trust/credential/register',
   '/trust/verify',
   '/trust/consent/grant',
+  '/data/access',
 ];
+
+const GET_ENDPOINTS: RuntimeEndpoint[] = ['/audit/events'];
 
 export type RuntimeServerDeps = {
   apiKeyStore?: InMemoryApiKeyStore;
@@ -45,6 +48,14 @@ async function parseJson(request: IncomingMessage): Promise<unknown> {
   return JSON.parse(raw);
 }
 
+function parseGetPayload(url: URL): Record<string, string> {
+  const payload: Record<string, string> = {};
+  for (const [key, value] of url.searchParams.entries()) {
+    payload[key] = value;
+  }
+  return payload;
+}
+
 export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
   const apiKeyStore = deps.apiKeyStore ?? new InMemoryApiKeyStore(DEFAULT_API_KEYS);
   const rateLimiter = deps.rateLimiter ?? new InMemoryRateLimiter();
@@ -52,15 +63,20 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
   const core = deps.core ?? DEFAULT_RUNTIME_CORE;
 
   return createServer(async (request, response) => {
-    if (request.method !== 'POST' || request.url === undefined) {
+    if (request.url === undefined) {
       return sendJson(response, 404, {
         success: false,
-        error: { code: 'ROUTE_NOT_FOUND', message: 'Only POST endpoints are supported.' },
+        error: { code: 'ROUTE_NOT_FOUND', message: 'Unknown endpoint.' },
       });
     }
 
-    const pathname = new URL(request.url, 'http://localhost').pathname as RuntimeEndpoint;
-    if (!ENDPOINTS.includes(pathname)) {
+    const url = new URL(request.url, 'http://localhost');
+    const pathname = url.pathname as RuntimeEndpoint;
+    const method = request.method ?? 'GET';
+
+    const isPost = method === 'POST' && POST_ENDPOINTS.includes(pathname);
+    const isGet = method === 'GET' && GET_ENDPOINTS.includes(pathname);
+    if (!isPost && !isGet) {
       return sendJson(response, 404, {
         success: false,
         error: { code: 'ROUTE_NOT_FOUND', message: `Unknown endpoint: ${pathname}` },
@@ -81,17 +97,21 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
     const { requestId } = authResult.data;
 
     let payload: unknown;
-    try {
-      payload = await parseJson(request);
-    } catch (error) {
-      logger.log({ requestId, endpoint: pathname, decision: 'deny', reason_code: 'REQUEST_PARSE_ERROR' });
-      return sendJson(response, 400, {
-        success: false,
-        error: {
-          code: 'REQUEST_PARSE_ERROR',
-          message: error instanceof Error ? error.message : 'Invalid JSON payload.',
-        },
-      });
+    if (method === 'GET') {
+      payload = parseGetPayload(url);
+    } else {
+      try {
+        payload = await parseJson(request);
+      } catch (error) {
+        logger.log({ requestId, endpoint: pathname, decision: 'deny', reason_code: 'REQUEST_PARSE_ERROR' });
+        return sendJson(response, 400, {
+          success: false,
+          error: {
+            code: 'REQUEST_PARSE_ERROR',
+            message: error instanceof Error ? error.message : 'Invalid JSON payload.',
+          },
+        });
+      }
     }
 
     const routeResult = executeRoute(pathname, payload, core);

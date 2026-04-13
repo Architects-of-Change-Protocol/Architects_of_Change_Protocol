@@ -1,6 +1,8 @@
 import { authorizeExecution, type ExecutionAuthorizationResult } from '../../protocol/execution';
 import { evaluateEnforcement, type EnforcementDecision } from '../../protocol/enforcement';
 import { mintCapability, type MintCapabilityInput, type ProtocolCapability } from '../../protocol/capability';
+import type { DataAccessDecision, DataAccessRequestInput } from '../access/types';
+import type { AuditEvent } from '../audit/service';
 import type { GrantConsentInput, RegisterCredentialInput, VerifyIdentityInput } from '../trust/service';
 import type {
   AocIdentityConsentRecord,
@@ -18,6 +20,14 @@ export type HostedRuntimeClientOptions = {
   baseUrl?: string;
   mode?: RuntimeMode;
   fetchImpl?: FetchLike;
+};
+
+export type ListAuditEventsInput = {
+  subject_hash?: string;
+  consumer_id?: string;
+  event_type?: string;
+  from?: string;
+  to?: string;
 };
 
 async function parseApiResponse<T>(response: Response): Promise<T> {
@@ -38,6 +48,8 @@ export interface HostedRuntimeSdk {
   grantIdentityConsent(input: GrantConsentInput): Promise<AocIdentityConsentRecord>;
   executePayout(input: RlusdWithdrawalRequest): Promise<PayoutExecuteResult>;
   callbackPayout(input: PayoutCallbackInput): Promise<PayoutCallbackResult>;
+  requestDataAccess(input: DataAccessRequestInput): Promise<DataAccessDecision>;
+  listAuditEvents(input?: ListAuditEventsInput): Promise<AuditEvent[]>;
 }
 
 export class HostedRuntimeClient implements HostedRuntimeSdk {
@@ -65,6 +77,28 @@ export class HostedRuntimeClient implements HostedRuntimeSdk {
         'x-api-key': this.apiKey,
       },
       body: JSON.stringify(payload),
+    });
+
+    return parseApiResponse<TResponse>(response);
+  }
+
+  private async get<TResponse>(path: string, params: Record<string, string | undefined>): Promise<TResponse> {
+    if (this.apiKey === undefined || this.apiKey.trim() === '') {
+      throw new Error('HostedRuntimeClient remote mode requires apiKey.');
+    }
+
+    const url = new URL(`${this.baseUrl}${path}`);
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value.trim() !== '') {
+        url.searchParams.set(key, value);
+      }
+    });
+
+    const response = await this.fetchImpl(url, {
+      method: 'GET',
+      headers: {
+        'x-api-key': this.apiKey,
+      },
     });
 
     return parseApiResponse<TResponse>(response);
@@ -128,4 +162,18 @@ export class HostedRuntimeClient implements HostedRuntimeSdk {
     return this.post('/payout/callback', input);
   }
 
+  async requestDataAccess(input: DataAccessRequestInput): Promise<DataAccessDecision> {
+    if (this.mode === 'local') {
+      throw new Error('Data access requests are only available in hosted mode.');
+    }
+    return this.post('/data/access', input);
+  }
+
+  async listAuditEvents(input: ListAuditEventsInput = {}): Promise<AuditEvent[]> {
+    if (this.mode === 'local') {
+      throw new Error('Audit event listing is only available in hosted mode.');
+    }
+    const result = await this.get<{ events: AuditEvent[] }>('/audit/events', input);
+    return result.events;
+  }
 }
