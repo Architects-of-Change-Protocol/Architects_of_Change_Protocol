@@ -19,4 +19,13 @@ export type { PayoutCallbackInput, PayoutExecuteResult, PayoutAuditEvent } from 
 
 export type { DataAccessAuditEvent, DataAccessDecision, DataAccessRequestInput, AccessTokenRecord } from './access/types';
 export type { AuditEvent } from './audit/service';
-export type { ListAuditEventsInput } from './sdk/client';
+export type { GetUsageSummaryInput, ListAuditEventsInput } from './sdk/client';
+export { InMemoryUsageService, UNIT_PRICES } from './usage';
+export type {
+  MeteredRuntimeEndpoint,
+  UsageDecision,
+  UsageRecord,
+  UsageSummaryItem,
+  UsageSummaryQuery,
+  UsageSummaryResult,
+} from './usage';

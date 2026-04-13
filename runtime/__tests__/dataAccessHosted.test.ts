@@ -7,6 +7,7 @@ import { RlusdPayoutAdapter } from '../payout/payoutAdapters/rlusd.adapter';
 import { RlusdPayoutExecutorService } from '../payout/rlusdPayoutExecutor.service';
 import { HostedRuntimeClient } from '../sdk/client';
 import { DEFAULT_TRUST_ISSUERS, InMemoryTrustService } from '../trust/service';
+import { closeServer, startServer } from './helpers/serverLifecycle';
 
 function buildCore() {
   const trustService = new InMemoryTrustService(DEFAULT_TRUST_ISSUERS);
@@ -26,7 +27,7 @@ function buildCore() {
 describe('data access + audit endpoints', () => {
   it('allows data access with valid credential + consent and emits audit events', async () => {
     const server = createRuntimeServer({ core: buildCore() });
-    await new Promise<void>((resolve) => server.listen(0, resolve));
+    await startServer(server);
 
     try {
       const { port } = server.address() as AddressInfo;
@@ -74,13 +75,13 @@ describe('data access + audit endpoints', () => {
       expect(accessRequested).toBeDefined();
       expect(accessAllowed).toBeDefined();
     } finally {
-      await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+      await closeServer(server);
     }
   });
 
   it('denies access when consent is missing', async () => {
     const server = createRuntimeServer({ core: buildCore() });
-    await new Promise<void>((resolve) => server.listen(0, resolve));
+    await startServer(server);
 
     try {
       const { port } = server.address() as AddressInfo;
@@ -109,13 +110,13 @@ describe('data access + audit endpoints', () => {
       const deniedEvents = await client.listAuditEvents({ event_type: 'DATA_ACCESS_DENIED', consumer_id: 'mm-beta' });
       expect(deniedEvents.length).toBeGreaterThan(0);
     } finally {
-      await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+      await closeServer(server);
     }
   });
 
   it('denies access when trust/credential is missing and keeps market-maker separation', async () => {
     const server = createRuntimeServer({ core: buildCore() });
-    await new Promise<void>((resolve) => server.listen(0, resolve));
+    await startServer(server);
 
     try {
       const { port } = server.address() as AddressInfo;
@@ -162,13 +163,13 @@ describe('data access + audit endpoints', () => {
       expect(gammaEvents.every((event) => !('consumer_id' in event) || event.consumer_id === 'mm-gamma')).toBe(true);
       expect(deltaEvents.every((event) => !('consumer_id' in event) || event.consumer_id === 'mm-delta')).toBe(true);
     } finally {
-      await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+      await closeServer(server);
     }
   });
 
   it('supports direct GET filter queries for audit events', async () => {
     const server = createRuntimeServer({ core: buildCore() });
-    await new Promise<void>((resolve) => server.listen(0, resolve));
+    await startServer(server);
 
     try {
       const { port } = server.address() as AddressInfo;
@@ -211,7 +212,7 @@ describe('data access + audit endpoints', () => {
       expect(json.success).toBe(true);
       expect(json.data?.events.every((event) => event.event_type === 'DATA_ACCESS_DENIED')).toBe(true);
     } finally {
-      await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+      await closeServer(server);
     }
   });
 });

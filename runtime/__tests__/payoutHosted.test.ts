@@ -6,6 +6,7 @@ import { DEFAULT_RUNTIME_CORE } from '../api/routes';
 import { RlusdPayoutAdapter } from '../payout/payoutAdapters/rlusd.adapter';
 import { RlusdPayoutExecutorService } from '../payout/rlusdPayoutExecutor.service';
 import { DEFAULT_TRUST_ISSUERS, InMemoryTrustService } from '../trust/service';
+import { closeServer, startServer } from './helpers/serverLifecycle';
 
 describe('payout engine hosted endpoints', () => {
   it('supports payout callback endpoint', async () => {
@@ -18,7 +19,7 @@ describe('payout engine hosted endpoints', () => {
         payoutExecutor,
       },
     });
-    await new Promise<void>((resolve) => server.listen(0, resolve));
+    await startServer(server);
 
     try {
       const { port } = server.address() as AddressInfo;
@@ -41,7 +42,7 @@ describe('payout engine hosted endpoints', () => {
       expect(json.data?.received).toBe(true);
       expect(json.data?.reason_code).toBe('SETTLED');
     } finally {
-      await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+      await closeServer(server);
     }
   });
 
@@ -55,7 +56,7 @@ describe('payout engine hosted endpoints', () => {
         payoutExecutor,
       },
     });
-    await new Promise<void>((resolve) => server.listen(0, resolve));
+    await startServer(server);
 
     try {
       const { port } = server.address() as AddressInfo;
@@ -79,7 +80,7 @@ describe('payout engine hosted endpoints', () => {
       expect(json.success).toBe(false);
       expect(json.error?.code).toBe('INVALID_REQUEST');
     } finally {
-      await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+      await closeServer(server);
     }
   });
 
@@ -130,7 +131,7 @@ describe('payout engine hosted endpoints', () => {
         } as never,
       },
     });
-    await new Promise<void>((resolve) => server.listen(0, resolve));
+    await startServer(server);
 
     try {
       const { port } = server.address() as AddressInfo;
@@ -155,7 +156,7 @@ describe('payout engine hosted endpoints', () => {
       expect(json.data?.allowed).toBe(true);
       expect(json.data?.reason_code).toBe('PAYOUT_ALLOWED');
     } finally {
-      await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+      await closeServer(server);
     }
   });
 
