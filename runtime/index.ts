@@ -20,6 +20,15 @@ export type { PayoutCallbackInput, PayoutExecuteResult, PayoutAuditEvent } from 
 export type { DataAccessAuditEvent, DataAccessDecision, DataAccessRequestInput, AccessTokenRecord } from './access/types';
 export type { GetUsageSummaryInput, ListAuditEventsInput } from './sdk/client';
 export { InMemoryUsageService, UNIT_PRICES } from './usage';
+export { InMemoryMonetizationService, InMemoryPricingRegistry } from './monetization';
+export type {
+  PricingRule,
+  BillableEvent,
+  BillableEventQuery,
+  ConsumerBillingSummary,
+  MonetizationUsageEvent,
+} from './monetization';
+
 export type {
   MeteredRuntimeEndpoint,
   UsageDecision,

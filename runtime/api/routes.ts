@@ -16,6 +16,7 @@ import type {
 } from '../trust/types';
 import type { ApiResponse, RuntimeEndpoint } from '../types/api-types';
 import { InMemoryUsageService, isMeteredEndpoint } from '../usage';
+import { InMemoryMonetizationService, InMemoryPricingRegistry, type PricingRule } from '../monetization';
 import type { MeteredRuntimeEndpoint, UsageSummaryResult } from '../usage';
 
 export type RuntimeCore = {
@@ -27,13 +28,21 @@ export type RuntimeCore = {
   dataAccessService: DataAccessService;
   auditService: RuntimeAuditService;
   usageService: InMemoryUsageService;
+  monetizationService: InMemoryMonetizationService;
 };
+
+const DEFAULT_PRICING_RULES: PricingRule[] = [
+  { resource: '/data/access', action: 'execute', unit_price: 0.05, currency: 'AOC' },
+  { resource: '/payout/execute', action: 'execute', unit_price: 0.25, currency: 'AOC' },
+  { resource: '/trust/verify', action: 'execute', unit_price: 0, currency: 'AOC' },
+];
 
 const defaultTrustService = new InMemoryTrustService();
 const defaultPayoutExecutor = new RlusdPayoutExecutorService(defaultTrustService, new RlusdPayoutAdapter());
 const defaultDataAccessService = new DataAccessService(defaultTrustService);
 const defaultAuditService = new RuntimeAuditService(defaultTrustService, defaultPayoutExecutor, defaultDataAccessService);
 const defaultUsageService = new InMemoryUsageService();
+const defaultMonetizationService = new InMemoryMonetizationService(new InMemoryPricingRegistry(DEFAULT_PRICING_RULES));
 
 const ROUTE_ERRORS = {
   invalidRequest: 'INVALID_REQUEST',
@@ -51,6 +60,7 @@ export const DEFAULT_RUNTIME_CORE: RuntimeCore = {
   dataAccessService: defaultDataAccessService,
   auditService: defaultAuditService,
   usageService: defaultUsageService,
+  monetizationService: defaultMonetizationService,
 };
 
 function reviveNow<T extends Record<string, unknown>>(payload: T): T {

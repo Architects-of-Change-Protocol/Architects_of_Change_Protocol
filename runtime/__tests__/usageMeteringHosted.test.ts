@@ -8,7 +8,14 @@ import { HostedRuntimeClient } from '../sdk/client';
 import { DEFAULT_TRUST_ISSUERS, InMemoryTrustService } from '../trust/service';
 import { InMemoryUsageService } from '../usage';
 import { RuntimeAuditService } from '../audit/service';
+import { InMemoryMonetizationService, InMemoryPricingRegistry, type PricingRule } from '../monetization';
 import { closeServer, startServer } from './helpers/serverLifecycle';
+
+const TEST_PRICING_RULES: PricingRule[] = [
+  { resource: '/data/access', action: 'execute', unit_price: 0.05, currency: 'AOC' },
+  { resource: '/payout/execute', action: 'execute', unit_price: 0.25, currency: 'AOC' },
+  { resource: '/trust/verify', action: 'execute', unit_price: 0, currency: 'AOC' },
+];
 
 function buildCore() {
   const trustService = new InMemoryTrustService(DEFAULT_TRUST_ISSUERS);
@@ -16,6 +23,7 @@ function buildCore() {
   const dataAccessService = new DataAccessService(trustService);
   const usageService = new InMemoryUsageService();
   const auditService = new RuntimeAuditService(trustService, payoutExecutor, dataAccessService);
+  const monetizationService = new InMemoryMonetizationService(new InMemoryPricingRegistry(TEST_PRICING_RULES));
 
   return {
     ...DEFAULT_RUNTIME_CORE,
@@ -24,6 +32,7 @@ function buildCore() {
     dataAccessService,
     auditService,
     usageService,
+    monetizationService,
   };
 }
 
