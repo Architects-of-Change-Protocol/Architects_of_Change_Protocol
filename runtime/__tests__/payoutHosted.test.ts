@@ -45,7 +45,7 @@ describe('payout engine hosted endpoints', () => {
     }
   });
 
-  it('returns INVALID_PAYOUT_REQUEST for malformed payout payload', async () => {
+  it('returns INVALID_REQUEST for malformed payout payload', async () => {
     const trustService = new InMemoryTrustService(DEFAULT_TRUST_ISSUERS);
     const payoutExecutor = new RlusdPayoutExecutorService(trustService, new RlusdPayoutAdapter());
     const server = createRuntimeServer({
@@ -77,7 +77,7 @@ describe('payout engine hosted endpoints', () => {
       const json = (await response.json()) as { success: boolean; error?: { code: string } };
       expect(response.status).toBe(400);
       expect(json.success).toBe(false);
-      expect(json.error?.code).toBe('INVALID_PAYOUT_REQUEST');
+      expect(json.error?.code).toBe('INVALID_REQUEST');
     } finally {
       await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
     }
@@ -162,8 +162,13 @@ describe('payout engine hosted endpoints', () => {
   it('keeps only one /payout/execute case and no direct enforcePayoutKyc route call', () => {
     const routesSource = readFileSync(join(__dirname, '..', 'api', 'routes.ts'), 'utf8');
     const executeCaseCount = routesSource.split("case '/payout/execute':").length - 1;
+    const defaultCoreBlock = routesSource.match(/export const DEFAULT_RUNTIME_CORE[\s\S]*?};/)?.[0] ?? '';
+    const payoutExecutorKeyCount = defaultCoreBlock.split('payoutExecutor:').length - 1;
 
     expect(executeCaseCount).toBe(1);
+    expect(payoutExecutorKeyCount).toBe(1);
     expect(routesSource.includes('enforcePayoutKyc')).toBe(false);
+    expect(routesSource.includes('INVALID_PAYOUT_REQUEST')).toBe(false);
+    expect(routesSource.includes('PAYOUT_EXECUTION_ERROR')).toBe(false);
   });
 });

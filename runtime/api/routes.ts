@@ -22,13 +22,21 @@ export type RuntimeCore = {
 };
 
 const defaultTrustService = new InMemoryTrustService();
+const defaultPayoutExecutor = new RlusdPayoutExecutorService(defaultTrustService, new RlusdPayoutAdapter());
+
+const ROUTE_ERRORS = {
+  invalidRequest: 'INVALID_REQUEST',
+  executionError: 'EXECUTION_ERROR',
+  routeNotFound: 'ROUTE_NOT_FOUND',
+  protocolError: 'PROTOCOL_ERROR',
+} as const;
 
 export const DEFAULT_RUNTIME_CORE: RuntimeCore = {
   evaluateEnforcement,
   authorizeExecution,
   mintCapability,
   trustService: defaultTrustService,
-  payoutExecutor: new RlusdPayoutExecutorService(defaultTrustService, new RlusdPayoutAdapter()),
+  payoutExecutor: defaultPayoutExecutor,
 };
 
 
@@ -84,7 +92,8 @@ export function deriveDecision(endpoint: RuntimeEndpoint, data: unknown): { deci
     return { decision: payout.allowed ? 'allow' : 'deny', reasonCode: payout.reason_code };
   }
   if (endpoint === '/payout/callback') {
-    return { decision: 'allow', reasonCode: 'PAYOUT_CALLBACK_RECEIVED' };
+    const callback = data as { received: true; reason_code: string };
+    return { decision: callback.received ? 'allow' : 'deny', reasonCode: callback.reason_code };
   }
 
   return {
@@ -118,23 +127,23 @@ export function executeRoute(
       case '/payout/execute': {
         const request = payload as Partial<RlusdWithdrawalRequest>;
         if (!isNonEmptyString(request.withdrawal_id)) {
-          return failure('INVALID_PAYOUT_REQUEST', 'withdrawal_id is required.');
+          return failure(ROUTE_ERRORS.invalidRequest, 'withdrawal_id is required.');
         }
         if (!isNonEmptyString(request.subject_hash)) {
-          return failure('INVALID_PAYOUT_REQUEST', 'subject_hash is required.');
+          return failure(ROUTE_ERRORS.invalidRequest, 'subject_hash is required.');
         }
         if (!isNonEmptyString(request.consumer_id)) {
-          return failure('INVALID_PAYOUT_REQUEST', 'consumer_id is required.');
+          return failure(ROUTE_ERRORS.invalidRequest, 'consumer_id is required.');
         }
         if (!isNumericString(request.amount)) {
-          return failure('INVALID_PAYOUT_REQUEST', 'amount must be a numeric string.');
+          return failure(ROUTE_ERRORS.invalidRequest, 'amount must be a numeric string.');
         }
 
         try {
           return success(core.payoutExecutor.execute(request as RlusdWithdrawalRequest));
         } catch (error) {
           return failure(
-            'PAYOUT_EXECUTION_ERROR',
+            ROUTE_ERRORS.executionError,
             error instanceof Error ? error.message : 'Unknown payout execution error.'
           );
         }
@@ -148,9 +157,9 @@ export function executeRoute(
       case '/trust/consent/grant':
         return success(core.trustService.grantConsent(payload as GrantConsentInput));
       default:
-        return failure('ROUTE_NOT_FOUND', `Unsupported endpoint: ${endpoint}`);
+        return failure(ROUTE_ERRORS.routeNotFound, `Unsupported endpoint: ${endpoint}`);
     }
   } catch (error) {
-    return failure('PROTOCOL_ERROR', error instanceof Error ? error.message : 'Unknown protocol error.');
+    return failure(ROUTE_ERRORS.protocolError, error instanceof Error ? error.message : 'Unknown protocol error.');
   }
 }

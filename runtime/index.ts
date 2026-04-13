@@ -1,5 +1,6 @@
 export { createRuntimeServer } from './api/server';
 export { HostedRuntimeClient } from './sdk/client';
+export type { HostedRuntimeSdk, HostedRuntimeClientOptions, PayoutCallbackResult } from './sdk/client';
 export { InMemoryApiKeyStore, DEFAULT_API_KEYS } from './auth/apiKeys';
 export { InMemoryRateLimiter } from './limits/rateLimiter';
 export { RuntimeLogger } from './logging/logger';

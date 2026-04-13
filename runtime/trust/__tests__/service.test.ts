@@ -3,6 +3,7 @@ import type { RlusdWithdrawalRequest } from '../types';
 
 const SUBJECT_HASH = '0xsubjecthash01';
 const CONSUMER = 'hrkey-v1';
+const CONSUMER_B = 'market-maker-b';
 
 function buildWithdrawalRequest(overrides: Partial<RlusdWithdrawalRequest> = {}): RlusdWithdrawalRequest {
   return {
@@ -79,5 +80,43 @@ describe('InMemoryTrustService', () => {
 
     expect(blocked.allowed).toBe(false);
     expect(blocked.reason_code).toBe('PAYOUT_BLOCKED_NOT_FOUND');
+  });
+
+  it('enforces consumer-specific consent across multiple consumer_id values', () => {
+    const trust = new InMemoryTrustService(DEFAULT_TRUST_ISSUERS);
+    trust.registerCredential({
+      credential_ref: 'cred_multi_consumer',
+      subject_hash: SUBJECT_HASH,
+      issuer_id: 'kyc-global-v1',
+      credential_hash: '0xcredentialhash_multi',
+      metadata_hash: '0xmetadatahash_multi',
+      kyc_level: 'basic',
+      issued_at: '2026-01-01T00:00:00Z',
+      expires_at: '2027-01-01T00:00:00Z',
+    });
+
+    trust.grantConsent({
+      consent_id: 'consent_consumer_a',
+      subject_hash: SUBJECT_HASH,
+      consumer_id: CONSUMER,
+      issuer_id: 'kyc-global-v1',
+      granted_at: '2026-02-01T00:00:00Z',
+    });
+
+    const consumerA = trust.verifyIdentity({
+      subject_hash: SUBJECT_HASH,
+      consumer_id: CONSUMER,
+      now: new Date('2026-02-01T00:00:00Z'),
+    });
+    const consumerB = trust.verifyIdentity({
+      subject_hash: SUBJECT_HASH,
+      consumer_id: CONSUMER_B,
+      now: new Date('2026-02-01T00:00:00Z'),
+    });
+
+    expect(consumerA.valid).toBe(true);
+    expect(consumerA.reason_code).toBe('VERIFIED');
+    expect(consumerB.valid).toBe(false);
+    expect(consumerB.reason_code).toBe('CONSENT_REQUIRED');
   });
 });

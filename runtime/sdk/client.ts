@@ -23,12 +23,24 @@ export type HostedRuntimeClientOptions = {
 async function parseApiResponse<T>(response: Response): Promise<T> {
   const parsed = (await response.json()) as ApiResponse<T>;
   if (!parsed.success || parsed.data === undefined) {
-    throw new Error(parsed.error?.message ?? parsed.error?.code ?? 'Unknown API error.');
+    const code = parsed.error?.code ?? 'UNKNOWN_API_ERROR';
+    const message = parsed.error?.message ?? 'Unknown API error.';
+    throw new Error(`[${code}] ${message}`);
   }
   return parsed.data;
 }
 
-export class HostedRuntimeClient {
+export type PayoutCallbackResult = { received: true; reason_code: string };
+
+export interface HostedRuntimeSdk {
+  registerCredential(input: RegisterCredentialInput): Promise<AocIdentityCredentialRecord>;
+  verifyIdentity(input: VerifyIdentityInput): Promise<IdentityVerificationResult>;
+  grantIdentityConsent(input: GrantConsentInput): Promise<AocIdentityConsentRecord>;
+  executePayout(input: RlusdWithdrawalRequest): Promise<PayoutExecuteResult>;
+  callbackPayout(input: PayoutCallbackInput): Promise<PayoutCallbackResult>;
+}
+
+export class HostedRuntimeClient implements HostedRuntimeSdk {
   private readonly mode: RuntimeMode;
   private readonly apiKey?: string;
   private readonly baseUrl: string;
@@ -109,7 +121,7 @@ export class HostedRuntimeClient {
     }
     return this.post('/payout/execute', input);
   }
-  async callbackPayout(input: PayoutCallbackInput): Promise<{ received: true; reason_code: string }> {
+  async callbackPayout(input: PayoutCallbackInput): Promise<PayoutCallbackResult> {
     if (this.mode === 'local') {
       throw new Error('Payout callback is only available in hosted mode.');
     }
@@ -117,4 +129,3 @@ export class HostedRuntimeClient {
   }
 
 }
-
