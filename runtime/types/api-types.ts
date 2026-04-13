@@ -1,7 +1,11 @@
 export type RuntimeEndpoint =
   | '/enforcement/evaluate'
   | '/execution/authorize'
-  | '/capability/mint';
+  | '/capability/mint'
+  | '/payout/execute'
+  | '/trust/credential/register'
+  | '/trust/verify'
+  | '/trust/consent/grant';
 
 export type ApiRequest<T> = {
   requestId?: string;

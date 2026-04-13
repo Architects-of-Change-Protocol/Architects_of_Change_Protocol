@@ -7,7 +7,15 @@ import type { ApiResponse, RuntimeEndpoint } from '../types/api-types';
 import { authAndLimit } from './middleware';
 import { DEFAULT_RUNTIME_CORE, deriveDecision, executeRoute, type RuntimeCore } from './routes';
 
-const ENDPOINTS: RuntimeEndpoint[] = ['/enforcement/evaluate', '/execution/authorize', '/capability/mint'];
+const ENDPOINTS: RuntimeEndpoint[] = [
+  '/enforcement/evaluate',
+  '/execution/authorize',
+  '/capability/mint',
+  '/payout/execute',
+  '/trust/credential/register',
+  '/trust/verify',
+  '/trust/consent/grant',
+];
 
 export type RuntimeServerDeps = {
   apiKeyStore?: InMemoryApiKeyStore;
