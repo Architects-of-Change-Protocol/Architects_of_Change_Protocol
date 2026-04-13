@@ -4,6 +4,7 @@ import { DEFAULT_RUNTIME_CORE } from '../api/routes';
 import { DEFAULT_TRUST_ISSUERS, InMemoryTrustService } from '../trust/service';
 import { RlusdPayoutAdapter } from '../payout/payoutAdapters/rlusd.adapter';
 import { RlusdPayoutExecutorService } from '../payout/rlusdPayoutExecutor.service';
+import { closeServer, startServer } from './helpers/serverLifecycle';
 
 describe('trust layer hosted endpoints', () => {
   it('supports credential registration and verification', async () => {
@@ -15,7 +16,7 @@ describe('trust layer hosted endpoints', () => {
         payoutExecutor: new RlusdPayoutExecutorService(trustService, new RlusdPayoutAdapter()),
       },
     });
-    await new Promise<void>((resolve) => server.listen(0, resolve));
+    await startServer(server);
 
     try {
       const { port } = server.address() as AddressInfo;
@@ -52,7 +53,7 @@ describe('trust layer hosted endpoints', () => {
       expect(verifyJson.data?.valid).toBe(true);
       expect(verifyJson.data?.issuer).toBe('kyc-global-v1');
     } finally {
-      await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+      await closeServer(server);
     }
   });
 
@@ -65,7 +66,7 @@ describe('trust layer hosted endpoints', () => {
         payoutExecutor: new RlusdPayoutExecutorService(trustService, new RlusdPayoutAdapter()),
       },
     });
-    await new Promise<void>((resolve) => server.listen(0, resolve));
+    await startServer(server);
 
     try {
       const { port } = server.address() as AddressInfo;
@@ -143,7 +144,7 @@ describe('trust layer hosted endpoints', () => {
       expect(allowedJson.data?.allowed).toBe(true);
       expect(allowedJson.data?.reason_code).toBe('PAYOUT_ALLOWED');
     } finally {
-      await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
+      await closeServer(server);
     }
   });
 });
