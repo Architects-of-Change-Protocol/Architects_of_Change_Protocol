@@ -16,3 +16,7 @@ export type {
 export type { ApiRequest, ApiResponse, ErrorResponse, RuntimeEndpoint } from './types/api-types';
 
 export type { PayoutCallbackInput, PayoutExecuteResult, PayoutAuditEvent } from './payout/types';
+
+export type { DataAccessAuditEvent, DataAccessDecision, DataAccessRequestInput, AccessTokenRecord } from './access/types';
+export type { AuditEvent } from './audit/service';
+export type { ListAuditEventsInput } from './sdk/client';

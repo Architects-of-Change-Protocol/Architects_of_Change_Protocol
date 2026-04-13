@@ -1,6 +1,9 @@
 import { authorizeExecution, type ExecutionAuthorizationResult } from '../../protocol/execution';
 import { evaluateEnforcement, type EnforcementDecision } from '../../protocol/enforcement';
 import { mintCapability, type ProtocolCapability } from '../../protocol/capability';
+import { DataAccessService } from '../access/service';
+import type { DataAccessDecision, DataAccessRequestInput } from '../access/types';
+import { RuntimeAuditService, type AuditEvent, type ListAuditEventsInput } from '../audit/service';
 import { RlusdPayoutAdapter } from '../payout/payoutAdapters/rlusd.adapter';
 import { RlusdPayoutExecutorService } from '../payout/rlusdPayoutExecutor.service';
 import type { PayoutCallbackInput, PayoutExecuteResult } from '../payout/types';
@@ -19,10 +22,14 @@ export type RuntimeCore = {
   mintCapability: typeof mintCapability;
   trustService: InMemoryTrustService;
   payoutExecutor: RlusdPayoutExecutorService;
+  dataAccessService: DataAccessService;
+  auditService: RuntimeAuditService;
 };
 
 const defaultTrustService = new InMemoryTrustService();
 const defaultPayoutExecutor = new RlusdPayoutExecutorService(defaultTrustService, new RlusdPayoutAdapter());
+const defaultDataAccessService = new DataAccessService(defaultTrustService);
+const defaultAuditService = new RuntimeAuditService(defaultTrustService, defaultPayoutExecutor, defaultDataAccessService);
 
 const ROUTE_ERRORS = {
   invalidRequest: 'INVALID_REQUEST',
@@ -37,8 +44,9 @@ export const DEFAULT_RUNTIME_CORE: RuntimeCore = {
   mintCapability,
   trustService: defaultTrustService,
   payoutExecutor: defaultPayoutExecutor,
+  dataAccessService: defaultDataAccessService,
+  auditService: defaultAuditService,
 };
-
 
 function reviveNow<T extends Record<string, unknown>>(payload: T): T {
   if (typeof payload.now === 'string') {
@@ -65,6 +73,24 @@ function isNonEmptyString(value: unknown): value is string {
 
 function isNumericString(value: unknown): value is string {
   return typeof value === 'string' && /^\d+(\.\d+)?$/.test(value.trim());
+}
+
+function parseOptionalDate(input: unknown): Date | undefined {
+  if (input === undefined) {
+    return undefined;
+  }
+  if (input instanceof Date) {
+    return input;
+  }
+  if (typeof input !== 'string') {
+    return undefined;
+  }
+
+  const parsed = new Date(input);
+  if (Number.isNaN(parsed.getTime())) {
+    return undefined;
+  }
+  return parsed;
 }
 
 export function deriveDecision(endpoint: RuntimeEndpoint, data: unknown): { decision: 'allow' | 'deny'; reasonCode: string } {
@@ -95,10 +121,40 @@ export function deriveDecision(endpoint: RuntimeEndpoint, data: unknown): { deci
     const callback = data as { received: true; reason_code: string };
     return { decision: callback.received ? 'allow' : 'deny', reasonCode: callback.reason_code };
   }
+  if (endpoint === '/data/access') {
+    const access = data as { allowed: boolean; reason_code: string };
+    return { decision: access.allowed ? 'allow' : 'deny', reasonCode: access.reason_code };
+  }
+  if (endpoint === '/capability/mint') {
+    return { decision: 'allow', reasonCode: 'CAPABILITY_MINTED' };
+  }
+  if (endpoint === '/audit/events') {
+    return { decision: 'allow', reasonCode: 'AUDIT_EVENTS_LISTED' };
+  }
+
+  const knownEndpoints: RuntimeEndpoint[] = [
+    '/enforcement/evaluate',
+    '/execution/authorize',
+    '/capability/mint',
+    '/payout/execute',
+    '/payout/callback',
+    '/trust/credential/register',
+    '/trust/verify',
+    '/trust/consent/grant',
+    '/data/access',
+    '/audit/events',
+  ];
+
+  if (!knownEndpoints.includes(endpoint)) {
+    return {
+      decision: 'deny',
+      reasonCode: 'UNKNOWN_ENDPOINT',
+    };
+  }
 
   return {
     decision: 'allow',
-    reasonCode: 'CAPABILITY_MINTED',
+    reasonCode: 'UNHANDLED_ENDPOINT',
   };
 }
 
@@ -114,7 +170,9 @@ export function executeRoute(
   | IdentityVerificationResult
   | AocIdentityConsentRecord
   | PayoutExecuteResult
+  | DataAccessDecision
   | { received: true; reason_code: string }
+  | { events: AuditEvent[] }
 > {
   try {
     switch (endpoint) {
@@ -156,6 +214,47 @@ export function executeRoute(
         return success(core.trustService.verifyIdentity(reviveNow(payload as VerifyIdentityInput)));
       case '/trust/consent/grant':
         return success(core.trustService.grantConsent(payload as GrantConsentInput));
+      case '/data/access': {
+        const request = reviveNow(payload as Partial<DataAccessRequestInput>);
+        if (!isNonEmptyString(request.subject_hash)) {
+          return failure(ROUTE_ERRORS.invalidRequest, 'subject_hash is required.');
+        }
+        if (!isNonEmptyString(request.consumer_id)) {
+          return failure(ROUTE_ERRORS.invalidRequest, 'consumer_id is required.');
+        }
+        if (!isNonEmptyString(request.dataset_id)) {
+          return failure(ROUTE_ERRORS.invalidRequest, 'dataset_id is required.');
+        }
+        if (!isNonEmptyString(request.purpose)) {
+          return failure(ROUTE_ERRORS.invalidRequest, 'purpose is required.');
+        }
+        if (request.requested_scope !== undefined && !Array.isArray(request.requested_scope)) {
+          return failure(ROUTE_ERRORS.invalidRequest, 'requested_scope must be an array when provided.');
+        }
+
+        return success(core.dataAccessService.requestAccess(request as DataAccessRequestInput));
+      }
+      case '/audit/events': {
+        const request = payload as Partial<ListAuditEventsInput>;
+        const from = parseOptionalDate(request.from);
+        const to = parseOptionalDate(request.to);
+        if (request.from !== undefined && from === undefined) {
+          return failure(ROUTE_ERRORS.invalidRequest, 'from must be a valid ISO-8601 date string.');
+        }
+        if (request.to !== undefined && to === undefined) {
+          return failure(ROUTE_ERRORS.invalidRequest, 'to must be a valid ISO-8601 date string.');
+        }
+
+        const events = core.auditService.listEvents({
+          subject_hash: request.subject_hash,
+          consumer_id: request.consumer_id,
+          event_type: request.event_type,
+          from,
+          to,
+        });
+
+        return success({ events });
+      }
       default:
         return failure(ROUTE_ERRORS.routeNotFound, `Unsupported endpoint: ${endpoint}`);
     }

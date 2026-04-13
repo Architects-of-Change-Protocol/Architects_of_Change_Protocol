@@ -6,7 +6,9 @@ export type RuntimeEndpoint =
   | '/payout/callback'
   | '/trust/credential/register'
   | '/trust/verify'
-  | '/trust/consent/grant';
+  | '/trust/consent/grant'
+  | '/data/access'
+  | '/audit/events';
 
 export type ApiRequest<T> = {
   requestId?: string;
