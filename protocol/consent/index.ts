@@ -3,6 +3,9 @@ export { normalizeConsent } from './consent-normalizer';
 export { validateConsent } from './consent-validator';
 export { evaluateConsentState, isConsentActive, isConsentRevoked } from './consent-state';
 export { doesConsentAllowScope } from './consent-machine';
+export { evaluateConsent } from './evaluate';
+export { isValidConsentRecord, isValidConsentRequest } from './validate';
+export { CONSENT_DECISION_REASON_CODES } from './types';
 
 export { ConsentParseError, ConsentValidationError } from './consent-errors';
 
@@ -14,3 +17,10 @@ export type {
   ConsentEvaluationOptions,
   ConsentScopeRequest,
 } from './consent-types';
+
+export type {
+  ConsentRecord,
+  ConsentRequest,
+  ConsentDecision,
+  ConsentDecisionReasonCode,
+} from './types';
