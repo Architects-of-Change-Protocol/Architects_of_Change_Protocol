@@ -1,6 +1,13 @@
 import { authorizeExecution, type ExecutionAuthorizationResult } from '../../protocol/execution';
 import { evaluateEnforcement, type EnforcementDecision } from '../../protocol/enforcement';
 import { mintCapability, type MintCapabilityInput, type ProtocolCapability } from '../../protocol/capability';
+import type { GrantConsentInput, RegisterCredentialInput, VerifyIdentityInput } from '../trust/service';
+import type {
+  AocIdentityConsentRecord,
+  AocIdentityCredentialRecord,
+  IdentityVerificationResult,
+  RlusdWithdrawalRequest,
+} from '../trust/types';
 import type { ApiResponse, RuntimeMode } from '../types/api-types';
 
 type FetchLike = typeof fetch;
@@ -72,5 +79,33 @@ export class HostedRuntimeClient {
     }
 
     return this.post('/capability/mint', input);
+  }
+
+  async registerCredential(input: RegisterCredentialInput): Promise<AocIdentityCredentialRecord> {
+    if (this.mode === 'local') {
+      throw new Error('Credential registration is only available in hosted mode.');
+    }
+    return this.post('/trust/credential/register', input);
+  }
+
+  async verifyIdentity(input: VerifyIdentityInput): Promise<IdentityVerificationResult> {
+    if (this.mode === 'local') {
+      throw new Error('Identity verification is only available in hosted mode.');
+    }
+    return this.post('/trust/verify', input);
+  }
+
+  async grantIdentityConsent(input: GrantConsentInput): Promise<AocIdentityConsentRecord> {
+    if (this.mode === 'local') {
+      throw new Error('Consent grant is only available in hosted mode.');
+    }
+    return this.post('/trust/consent/grant', input);
+  }
+
+  async executePayout(input: RlusdWithdrawalRequest): Promise<{ allowed: boolean; reason_code: string }> {
+    if (this.mode === 'local') {
+      throw new Error('Payout execution is only available in hosted mode.');
+    }
+    return this.post('/payout/execute', input);
   }
 }
