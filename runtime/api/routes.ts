@@ -4,6 +4,7 @@ import { mintCapability, type ProtocolCapability } from '../../protocol/capabili
 import { DataAccessService } from '../access/service';
 import type { DataAccessDecision, DataAccessRequestInput } from '../access/types';
 import { RuntimeAuditService, type ListAuditEventsInput, type RuntimeAuditEvent } from '../audit/service';
+import { InMemoryAuditService } from '../audit/service';
 import { RlusdPayoutAdapter } from '../payout/payoutAdapters/rlusd.adapter';
 import { RlusdPayoutExecutorService } from '../payout/rlusdPayoutExecutor.service';
 import type { PayoutCallbackInput, PayoutExecuteResult } from '../payout/types';
@@ -29,6 +30,7 @@ export type RuntimeCore = {
   auditService: RuntimeAuditService;
   usageService: InMemoryUsageService;
   monetizationService: InMemoryMonetizationService;
+  capabilityAuditService: InMemoryAuditService;
 };
 
 const DEFAULT_PRICING_RULES: PricingRule[] = [
@@ -43,6 +45,7 @@ const defaultDataAccessService = new DataAccessService(defaultTrustService);
 const defaultAuditService = new RuntimeAuditService(defaultTrustService, defaultPayoutExecutor, defaultDataAccessService);
 const defaultUsageService = new InMemoryUsageService();
 const defaultMonetizationService = new InMemoryMonetizationService(new InMemoryPricingRegistry(DEFAULT_PRICING_RULES));
+const defaultCapabilityAuditService = new InMemoryAuditService();
 
 const ROUTE_ERRORS = {
   invalidRequest: 'INVALID_REQUEST',
@@ -61,6 +64,7 @@ export const DEFAULT_RUNTIME_CORE: RuntimeCore = {
   auditService: defaultAuditService,
   usageService: defaultUsageService,
   monetizationService: defaultMonetizationService,
+  capabilityAuditService: defaultCapabilityAuditService,
 };
 
 function reviveNow<T extends Record<string, unknown>>(payload: T): T {

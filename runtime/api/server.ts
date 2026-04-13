@@ -7,6 +7,7 @@ import type { ApiResponse, RuntimeEndpoint } from '../types/api-types';
 import { authAndLimit } from './middleware';
 import { DEFAULT_RUNTIME_CORE, deriveDecision, executeRoute, maybeResolveUsageConsumerId, type RuntimeCore } from './routes';
 import { isMeteredEndpoint } from '../usage';
+import { enforceCapabilityAccess, type EnforcementMode } from '../enforcement';
 
 const POST_ENDPOINTS: RuntimeEndpoint[] = [
   '/enforcement/evaluate',
@@ -27,6 +28,8 @@ export type RuntimeServerDeps = {
   rateLimiter?: InMemoryRateLimiter;
   logger?: RuntimeLogger;
   core?: RuntimeCore;
+  capabilitySecret?: string;
+  enforcementMode?: EnforcementMode;
 };
 
 function sendJson(response: ServerResponse, statusCode: number, body: ApiResponse<unknown>): void {
@@ -62,6 +65,8 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
   const rateLimiter = deps.rateLimiter ?? new InMemoryRateLimiter();
   const logger = deps.logger ?? new RuntimeLogger();
   const core = deps.core ?? DEFAULT_RUNTIME_CORE;
+  const capabilitySecret = deps.capabilitySecret ?? process.env.AOC_CAPABILITY_SECRET ?? 'aoc_runtime_capability_secret';
+  const enforcementMode = deps.enforcementMode ?? (process.env.ENFORCEMENT_MODE === 'strict' ? 'strict' : 'soft');
 
   return createServer(async (request, response) => {
     if (request.url === undefined) {
@@ -112,6 +117,49 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
             message: error instanceof Error ? error.message : 'Invalid JSON payload.',
           },
         });
+      }
+    }
+
+    if (
+      method === 'POST' &&
+      (pathname === '/data/access' || pathname === '/payout/execute') &&
+      payload !== null &&
+      typeof payload === 'object'
+    ) {
+      const requestPayload = payload as { subject_hash?: unknown; consumer_id?: unknown };
+      const subjectId = typeof requestPayload.subject_hash === 'string' ? requestPayload.subject_hash : undefined;
+      const requesterId = typeof requestPayload.consumer_id === 'string' ? requestPayload.consumer_id : undefined;
+
+      if (subjectId !== undefined && requesterId !== undefined) {
+        const capabilityResult = enforceCapabilityAccess({
+          endpoint: pathname,
+          headers: request.headers,
+          payload,
+          subject_id: subjectId,
+          requester_id: requesterId,
+          mode: enforcementMode,
+          capabilitySecret,
+        });
+
+        if (capabilityResult.auditEvent !== undefined) {
+          core.capabilityAuditService.recordEvent(capabilityResult.auditEvent);
+        }
+
+        if (!capabilityResult.allowed) {
+          logger.log({
+            requestId,
+            endpoint: pathname,
+            decision: 'deny',
+            reason_code: capabilityResult.authorization?.reason_code ?? capabilityResult.reason_code,
+          });
+          return sendJson(response, 403, {
+            success: false,
+            error: {
+              code: 'CAPABILITY_ACCESS_DENIED',
+              message: `Capability enforcement denied access (${capabilityResult.reason_code}).`,
+            },
+          });
+        }
       }
     }
 
