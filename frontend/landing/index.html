@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AOC - Architects of Change Protocol</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Inter', system-ui, sans-serif; }
+  </style>
+</head>
+<body class="bg-black text-white">
+
+  <!-- Navbar -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-lg border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-white rounded-2xl flex items-center justify-center text-black font-bold text-3xl animate-spin">A</div>
+        <span class="text-2xl font-semibold tracking-tighter">AOC</span>
+      </div>
+      <div class="hidden md:flex gap-10 text-sm">
+        <a href="#problem" class="hover:text-gray-300">Problem</a>
+        <a href="#solution" class="hover:text-gray-300">Solution</a>
+        <a href="#how" class="hover:text-gray-300">How it works</a>
+      </div>
+      <a href="#" class="px-6 py-2.5 bg-white text-black rounded-full text-sm font-semibold">Launch App</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="min-h-screen flex items-center justify-center pt-20 text-center px-6">
+    <div>
+      <h1 class="text-7xl md:text-8xl lg:text-[110px] font-semibold tracking-tighter leading-none mb-6">
+        You don't own your data.
+      </h1>
+      <p class="text-5xl md:text-6xl lg:text-7xl font-light tracking-tighter text-gray-300 mb-10">
+        You just hope no one abuses it.
+      </p>
+      <p class="text-2xl text-gray-400 max-w-2xl mx-auto mb-16">
+        There is a better system. One where access is granted, not assumed.
+      </p>
+      <button class="px-12 py-6 bg-[#00f0ff] hover:bg-cyan-400 text-black font-semibold text-2xl rounded-2xl transition-all">
+        Enter the new model →
+      </button>
+    </div>
+  </section>
+
+  <!-- The current model is broken -->
+  <section class="py-32 border-t border-white/10">
+    <div class="max-w-5xl mx-auto px-6">
+      <h2 class="text-6xl font-semibold text-center mb-20">The current model is broken.</h2>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="bg-zinc-900 p-12 rounded-3xl text-2xl">Your data is copied.<br>Stored.<br><span class="text-gray-400">Resold.</span></div>
+        <div class="bg-zinc-900 p-12 rounded-3xl text-2xl">Consent is implied.<br><span class="text-gray-400">Not explicit.</span></div>
+        <div class="bg-zinc-900 p-12 rounded-3xl text-2xl">You never see who accessed what.</div>
+        <div class="bg-zinc-900 p-12 rounded-3xl text-2xl">Trust is a blind assumption.</div>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>
