@@ -8,54 +8,106 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     body { font-family: 'Inter', system-ui, sans-serif; }
+    .hero-main { font-size: 5.8rem; line-height: 1.05; letter-spacing: -5px; }
+    @media (min-width: 768px) { .hero-main { font-size: 7.5rem; } }
+    @media (min-width: 1024px) { .hero-main { font-size: 9rem; } }
   </style>
 </head>
-<body class="bg-black text-white">
+<body class="bg-black text-white overflow-x-hidden">
 
   <!-- Navbar -->
   <nav class="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-lg border-b border-white/10">
     <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-white rounded-2xl flex items-center justify-center text-black font-bold text-3xl animate-spin">A</div>
+        <div class="w-11 h-11 bg-white rounded-2xl flex items-center justify-center text-black font-bold text-3xl animate-spin-slow">A</div>
         <span class="text-2xl font-semibold tracking-tighter">AOC</span>
       </div>
-      <div class="hidden md:flex gap-10 text-sm">
+      <div class="hidden md:flex gap-10 text-sm font-medium">
         <a href="#problem" class="hover:text-gray-300">Problem</a>
         <a href="#solution" class="hover:text-gray-300">Solution</a>
         <a href="#how" class="hover:text-gray-300">How it works</a>
       </div>
-      <a href="#" class="px-6 py-2.5 bg-white text-black rounded-full text-sm font-semibold">Launch App</a>
+      <a href="#" class="px-6 py-2.5 bg-white text-black rounded-full text-sm font-semibold hover:bg-gray-200 transition">Launch App</a>
     </div>
   </nav>
 
-  <!-- Hero -->
-  <section class="min-h-screen flex items-center justify-center pt-20 text-center px-6">
-    <div>
-      <h1 class="text-7xl md:text-8xl lg:text-[110px] font-semibold tracking-tighter leading-none mb-6">
-        You don't own your data.
-      </h1>
-      <p class="text-5xl md:text-6xl lg:text-7xl font-light tracking-tighter text-gray-300 mb-10">
-        You just hope no one abuses it.
-      </p>
-      <p class="text-2xl text-gray-400 max-w-2xl mx-auto mb-16">
-        There is a better system. One where access is granted, not assumed.
-      </p>
-      <button class="px-12 py-6 bg-[#00f0ff] hover:bg-cyan-400 text-black font-semibold text-2xl rounded-2xl transition-all">
+  <!-- HERO -->
+  <section class="min-h-screen flex items-center justify-center pt-20 relative text-center px-6">
+    <div class="max-w-6xl">
+      <h1 class="hero-main font-semibold mb-6">You don't own your data.</h1>
+      <p class="text-6xl md:text-7xl lg:text-8xl font-light tracking-tighter text-gray-300 mb-10">You just hope no one abuses it.</p>
+      <p class="text-2xl md:text-3xl text-gray-400 max-w-3xl mx-auto mb-16">There is a better system. One where access is granted, not assumed.</p>
+      
+      <button class="px-16 py-7 bg-[#00f0ff] hover:bg-[#00e5ff] text-black font-semibold text-2xl rounded-2xl transition-all active:scale-95 shadow-2xl shadow-cyan-500/50">
         Enter the new model →
       </button>
     </div>
   </section>
 
   <!-- The current model is broken -->
-  <section class="py-32 border-t border-white/10">
+  <section id="problem" class="py-32 border-t border-white/10">
     <div class="max-w-5xl mx-auto px-6">
-      <h2 class="text-6xl font-semibold text-center mb-20">The current model is broken.</h2>
+      <h2 class="text-6xl md:text-7xl font-semibold tracking-tight text-center mb-20">The current model is broken.</h2>
       <div class="grid md:grid-cols-2 gap-8">
-        <div class="bg-zinc-900 p-12 rounded-3xl text-2xl">Your data is copied.<br>Stored.<br><span class="text-gray-400">Resold.</span></div>
-        <div class="bg-zinc-900 p-12 rounded-3xl text-2xl">Consent is implied.<br><span class="text-gray-400">Not explicit.</span></div>
-        <div class="bg-zinc-900 p-12 rounded-3xl text-2xl">You never see who accessed what.</div>
-        <div class="bg-zinc-900 p-12 rounded-3xl text-2xl">Trust is a blind assumption.</div>
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-12 text-2xl leading-relaxed">Your data is copied.<br>Stored.<br><span class="text-gray-400">Resold.</span></div>
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-12 text-2xl leading-relaxed">Consent is implied.<br><span class="text-gray-400">Not explicit.</span></div>
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-12 text-2xl leading-relaxed">You never see who accessed what.</div>
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-12 text-2xl leading-relaxed">Trust is a blind assumption.</div>
       </div>
+    </div>
+  </section>
+
+  <!-- What if access required permission? -->
+  <section class="py-32 border-t border-white/10 bg-black">
+    <div class="max-w-5xl mx-auto px-6 text-center">
+      <h2 class="text-6xl md:text-7xl font-semibold tracking-tight mb-8">What if access required permission?</h2>
+      <p class="text-2xl text-gray-400 max-w-3xl mx-auto mb-20">A system where every piece of data is locked behind explicit, modular consent.</p>
+      
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-10 flex gap-6">
+          <div class="text-[#00f0ff] text-4xl">🛡️</div>
+          <div><h3 class="text-2xl font-semibold mb-3">You approve access</h3><p class="text-gray-400">You decide who can see your data.</p></div>
+        </div>
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-10 flex gap-6">
+          <div class="text-[#00f0ff] text-4xl">🔐</div>
+          <div><h3 class="text-2xl font-semibold mb-3">You define scope</h3><p class="text-gray-400">Granular control over what gets shared.</p></div>
+        </div>
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-10 flex gap-6">
+          <div class="text-[#00f0ff] text-4xl">↩️</div>
+          <div><h3 class="text-2xl font-semibold mb-3">You can revoke at any time</h3><p class="text-gray-400">No permanent access.</p></div>
+        </div>
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-10 flex gap-6">
+          <div class="text-[#00f0ff] text-4xl">👁️</div>
+          <div><h3 class="text-2xl font-semibold mb-3">Every interaction is traceable</h3><p class="text-gray-400">Full transparency and auditability.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AOC is not an app -->
+  <section class="py-32 border-t border-white/10">
+    <div class="max-w-5xl mx-auto px-6 text-center">
+      <h2 class="text-6xl md:text-7xl font-semibold tracking-tight mb-4">AOC is not an app.</h2>
+      <h3 class="text-6xl md:text-7xl font-semibold tracking-tight text-[#00f0ff] mb-12">It's a new data layer.</h3>
+      <p class="text-2xl text-gray-400 max-w-3xl mx-auto mb-20">A sovereign infrastructure where individuals control access to their information.</p>
+      
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-10"><h4 class="text-2xl font-semibold mb-4">Consent-based access</h4><p class="text-gray-400">Nothing happens without explicit permission</p></div>
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-10"><h4 class="text-2xl font-semibold mb-4">Modular permissions</h4><p class="text-gray-400">Granular control over what gets shared</p></div>
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-10"><h4 class="text-2xl font-semibold mb-4">Verifiable interactions</h4><p class="text-gray-400">Every access event is cryptographically logged</p></div>
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-10"><h4 class="text-2xl font-semibold mb-4">No central ownership</h4><p class="text-gray-400">Data remains sovereign to the individual</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="py-32 border-t border-white/10 bg-black text-center">
+    <div class="max-w-3xl mx-auto px-6">
+      <h2 class="text-6xl md:text-7xl font-semibold tracking-tight mb-12">Access should be earned.</h2>
+      <button class="px-16 py-7 bg-[#00f0ff] hover:bg-[#00e5ff] text-black font-semibold text-2xl rounded-2xl transition-all active:scale-95">
+        Start building on AOC →
+      </button>
+      <p class="mt-10 text-gray-400 text-lg">Join the infrastructure for sovereign data</p>
     </div>
   </section>
 
