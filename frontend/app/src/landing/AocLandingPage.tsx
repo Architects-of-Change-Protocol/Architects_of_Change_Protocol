@@ -1,4 +1,3 @@
-import React from 'react';
 import { ProblemCard } from './components/ProblemCard';
 import { DataPipelineAnimation } from './components/DataPipelineAnimation';
 import { ImplicitConsentAnimation } from './components/ImplicitConsentAnimation';
