@@ -1,3 +1,4 @@
+import { LogoRotating } from '../components/logo/LogoRotating';
 import { ProblemCard } from './components/ProblemCard';
 import { DataPipelineAnimation } from './components/DataPipelineAnimation';
 import { ImplicitConsentAnimation } from './components/ImplicitConsentAnimation';
@@ -12,10 +13,8 @@ export const renderAocLandingPage = () => {
           <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 flex items-center justify-center">
-                <div className="w-10 h-10 bg-white rounded-2xl flex items-center justify-center text-black font-bold text-3xl animate-[spin_30s_linear_infinite]">
-                  A
-                </div>
-              </div>
+  <LogoRotating size={28} inverted />
+</div>
 
               <div className="flex items-baseline">
                 <span className="text-xl font-semibold tracking-tighter">AOC</span>
