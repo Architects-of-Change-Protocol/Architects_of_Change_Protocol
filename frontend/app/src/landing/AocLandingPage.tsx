@@ -45,7 +45,7 @@ export const renderAocLandingPage = () => {
 
               <div className="flex items-baseline">
                 <span className="text-xl font-semibold tracking-tighter">AOC</span>
-                <span className="text-xs text-gray-500 uppercase tracking-[0.2em] ml-2">
+                <span className="text-xs text-gray-300 uppercase tracking-[0.2em] ml-2">
                   Protocol
                 </span>
               </div>
@@ -77,11 +77,11 @@ export const renderAocLandingPage = () => {
             You don't own your data.
           </h1>
 
-          <p className="reveal reveal-delay-1 text-[52px] md:text-[62px] leading-none font-light tracking-[-2px] text-gray-400 mb-8">
+          <p className="reveal reveal-delay-1 text-[52px] md:text-[62px] leading-none font-light tracking-[-2px] text-gray-300 mb-8">
             You just hope no one abuses it.
           </p>
 
-          <p className="reveal reveal-delay-2 max-w-[620px] mx-auto text-[21px] text-gray-400 leading-relaxed mb-14">
+          <p className="reveal reveal-delay-2 max-w-[620px] mx-auto text-[21px] text-gray-300 leading-relaxed mb-14">
             There is a better system. One where access is granted, not assumed.
           </p>
 
@@ -143,7 +143,7 @@ export const renderAocLandingPage = () => {
               What if access required permission?
             </h2>
 
-            <p className="text-xl text-gray-400">
+            <p className="text-xl text-gray-300">
               Not assumed. Not inherited. Not silently granted.
             </p>
           </header>
@@ -184,13 +184,13 @@ export const renderAocLandingPage = () => {
               01 Define permissions
             </div>
 
-            <div className="reveal reveal-delay-1 text-gray-500 text-3xl">→</div>
+            <div className="reveal reveal-delay-1 text-gray-300 text-3xl">→</div>
 
             <div className="reveal reveal-delay-2 bg-white/5 border border-white/10 rounded-3xl p-8 w-64">
               02 Evaluate request
             </div>
 
-            <div className="reveal reveal-delay-2 text-gray-500 text-3xl">→</div>
+            <div className="reveal reveal-delay-2 text-gray-300 text-3xl">→</div>
 
             <div className="reveal reveal-delay-3 bg-white/5 border border-white/10 rounded-3xl p-8 w-64">
               03 Grant & audit access
