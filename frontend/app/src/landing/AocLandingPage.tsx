@@ -24,6 +24,7 @@ function useRevealOnScroll() {
 
     return () => observer.disconnect();
   }, []);
+
 }
 
 export const renderAocLandingPage = () => {
@@ -54,6 +55,7 @@ export const renderAocLandingPage = () => {
           {/* CTA */}
           <a
             href="#how"
+            onClick={() => track('launch_app_click', { location: 'navbar', page: 'landing' })}
             className="px-6 py-2.5 bg-white text-black rounded-full text-sm font-semibold hover:bg-gray-200 transition"
           >
             Launch App
@@ -79,6 +81,7 @@ export const renderAocLandingPage = () => {
 
           <a
             href="#solution"
+            onClick={() => track('cta_click', { cta: 'enter_new_model', location: 'hero', page: 'landing' })}
             className="reveal reveal-delay-3 px-12 py-5 bg-[#00f0ff] hover:bg-[#00d4e0] text-black font-semibold text-xl rounded-2xl transition-all active:scale-[0.97] inline-block"
           >
             Enter the new model →
@@ -203,7 +206,10 @@ export const renderAocLandingPage = () => {
             Access should be earned.
           </h2>
 
-          <button className="px-12 py-6 bg-[#00f0ff] text-black font-semibold text-2xl rounded-2xl hover:scale-[1.02] transition">
+          <button
+            onClick={() => track('final_cta_click', { cta: 'start_building_on_aoc', location: 'footer', page: 'landing' })}
+            className="px-12 py-6 bg-[#00f0ff] text-black font-semibold text-2xl rounded-2xl hover:scale-[1.02] transition"
+          >
             Start building on AOC →
           </button>
         </div>
