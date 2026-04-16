@@ -4,16 +4,10 @@ export function DataPipelineAnimation() {
   return (
     <div className="w-full max-w-[420px] aspect-[16/9] flex items-center justify-center">
       <svg viewBox="0 0 800 450" className="w-full h-full">
-        <defs>
-          <radialGradient id="cubeGlowLanding" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#ff2a2a" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#ff2a2a" stopOpacity="0" />
-          </radialGradient>
-        </defs>
-
         <rect width="800" height="450" fill="transparent" />
 
-        {/* user */}
+        <ellipse cx="400" cy="225" rx="220" ry="120" fill="rgba(255,42,42,0.07)" />
+
         <g transform="translate(90,165)" stroke="rgba(255,255,255,0.8)" fill="none">
           <circle cx="40" cy="25" r="15" strokeWidth="2" />
           <path d="M 40 40 L 40 75" strokeWidth="2.5" strokeLinecap="round" />
@@ -22,7 +16,6 @@ export function DataPipelineAnimation() {
           <rect x="32" y="42" width="16" height="16" rx="2" fill="#ff2a2a" stroke="rgba(255,255,255,0.25)" />
         </g>
 
-        {/* dashed flow */}
         <path
           d="M 160 225 L 320 225"
           stroke="rgba(255,42,42,0.22)"
@@ -31,7 +24,6 @@ export function DataPipelineAnimation() {
           fill="none"
         />
 
-        {/* center machine */}
         <g transform="translate(330,150)">
           <rect x="0" y="0" width="140" height="100" rx="5" fill="rgba(18,18,26,0.92)" stroke="rgba(255,42,42,0.28)" strokeWidth="2" />
           <rect x="0" y="0" width="140" height="20" fill="rgba(28,28,40,0.85)" stroke="rgba(255,42,42,0.18)" strokeWidth="1" />
@@ -42,7 +34,6 @@ export function DataPipelineAnimation() {
           <circle cx="90" cy="10" r="3" fill="#ff2a2a" />
         </g>
 
-        {/* belt */}
         <g transform="translate(500,195)">
           <rect x="0" y="0" width="130" height="16" rx="8" fill="rgba(65,65,80,0.4)" stroke="rgba(255,42,42,0.18)" />
           <rect x="6" y="3" width="18" height="10" rx="4" fill="rgba(255,42,42,0.15)" />
@@ -51,7 +42,6 @@ export function DataPipelineAnimation() {
           <rect x="96" y="3" width="18" height="10" rx="4" fill="rgba(255,42,42,0.08)" />
         </g>
 
-        {/* shadow figures */}
         <g transform="translate(650,150)">
           <ellipse cx="25" cy="20" rx="12" ry="14" fill="rgba(18,18,26,0.96)" stroke="rgba(255,42,42,0.2)" strokeWidth="1" />
           <path d="M 25 34 L 25 60 L 18 80 L 32 80 L 25 60" fill="rgba(18,18,26,0.96)" stroke="rgba(255,42,42,0.2)" strokeWidth="1" />
@@ -64,7 +54,6 @@ export function DataPipelineAnimation() {
           <circle cx="80" cy="18" r="2.4" fill="#ff2a2a" />
         </g>
 
-        {/* cubes */}
         <rect x="121" y="202" width="16" height="16" rx="2" fill="#ff2a2a" stroke="#ff6b6b" />
         <rect x="380" y="190" width="12" height="12" rx="2" fill="#ff2a2a" />
         <rect x="380" y="210" width="12" height="12" rx="2" fill="#ff2a2a" />
@@ -72,12 +61,8 @@ export function DataPipelineAnimation() {
         <rect x="570" y="198" width="14" height="14" rx="2" fill="#ff2a2a" />
         <rect x="610" y="198" width="14" height="14" rx="2" fill="#ff2a2a" />
 
-        {/* money */}
         <text x="610" y="350" fill="rgba(255,42,42,0.85)" fontSize="22" fontFamily="Orbitron, monospace">$</text>
         <text x="680" y="350" fill="rgba(255,42,42,0.85)" fontSize="22" fontFamily="Orbitron, monospace">$</text>
-
-        {/* glow */}
-        <ellipse cx="400" cy="225" rx="220" ry="120" fill="rgba(255,42,42,0.07)" />
       </svg>
     </div>
   );
