@@ -1,15 +1,11 @@
-import React from 'react';
-
 interface LogoProps {
   size?: number;
   inverted?: boolean;
-  showAccent?: boolean;
 }
 
 export const LogoRotating = ({
   size = 32,
   inverted = true,
-  showAccent = false,
 }: LogoProps) => {
   const stroke = inverted ? '#ffffff' : '#000000';
 
