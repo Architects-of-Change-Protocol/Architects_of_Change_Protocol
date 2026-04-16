@@ -24,43 +24,50 @@ function useRevealOnScroll() {
 
     return () => observer.disconnect();
   }, []);
-
 }
 
 export const renderAocLandingPage = () => {
   useRevealOnScroll();
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white overflow-hidden font-sans">
+    <main className="min-h-screen bg-[#0a0a0a] text-white overflow-hidden font-sans">
 
       {/* NAVBAR */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-lg border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <header>
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-lg border-b border-white/10">
+          <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
 
-          {/* Logo */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 flex items-center justify-center">
-              <LogoRotating size={28} inverted={true} />
+            {/* Logo */}
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 flex items-center justify-center">
+                <LogoRotating size={28} inverted />
+              </div>
+
+              <div className="flex items-baseline">
+                <span className="text-xl font-semibold tracking-tighter">AOC</span>
+                <span className="text-xs text-gray-500 uppercase tracking-[0.2em] ml-2">
+                  Protocol
+                </span>
+              </div>
             </div>
-            <span className="text-xl font-semibold tracking-tighter">AOC</span><span className="text-xs text-gray-500 uppercase tracking-[0.2em] ml-2">Protocol</span>
-          </div>
 
-          {/* Nav links */}
-          <div className="hidden md:flex items-center gap-10 text-sm font-medium">
-            <a href="#problem" className="hover:text-gray-300 transition">Problem</a>
-            <a href="#solution" className="hover:text-gray-300 transition">Solution</a>
-            <a href="#how" className="hover:text-gray-300 transition">How it works</a>
-          </div>
+            {/* Nav links */}
+            <div className="hidden md:flex items-center gap-10 text-sm font-medium">
+              <a href="#problem" className="hover:text-gray-300 transition">Problem</a>
+              <a href="#solution" className="hover:text-gray-300 transition">Solution</a>
+              <a href="#how" className="hover:text-gray-300 transition">How it works</a>
+            </div>
 
-          {/* CTA */}
-          <a
-            href="#how"
-            className="px-6 py-2.5 bg-white text-black rounded-full text-sm font-semibold hover:bg-gray-200 transition"
-          >
-            Launch App
-          </a>
-        </div>
-      </nav>
+            {/* CTA */}
+            <a
+              href="#how"
+              className="px-6 py-2.5 bg-white text-black rounded-full text-sm font-semibold hover:bg-gray-200 transition"
+            >
+              Launch App
+            </a>
+          </div>
+        </nav>
+      </header>
 
       {/* HERO */}
       <section className="min-h-screen flex items-center pt-16">
@@ -88,41 +95,40 @@ export const renderAocLandingPage = () => {
       </section>
 
       {/* PROBLEM */}
-      <section id="problem" className="scroll-mt-24 py-40 border-t border-white/10 relative">
-
+      <section id="problem" className="scroll-mt-24 py-40 border-t border-white/10">
         <div className="max-w-6xl mx-auto px-6">
 
-          <div className="text-center mb-20 reveal">
+          <header className="text-center mb-20 reveal">
             <h2 className="text-5xl md:text-6xl font-semibold tracking-tight">
               The current model is broken.
             </h2>
-          </div>
+          </header>
 
           <div className="grid md:grid-cols-2 gap-10">
 
-            <div className="reveal bg-red-950/10 border border-red-800/30 rounded-3xl p-12 hover:-translate-y-1 transition">
+            <article className="reveal bg-red-950/10 border border-red-800/30 rounded-3xl p-12 hover:-translate-y-1 transition">
               <p className="text-2xl text-red-100">
                 Your data is copied. Stored. Resold.
               </p>
-            </div>
+            </article>
 
-            <div className="reveal reveal-delay-1 bg-red-950/10 border border-red-800/30 rounded-3xl p-12 hover:-translate-y-1 transition">
+            <article className="reveal reveal-delay-1 bg-red-950/10 border border-red-800/30 rounded-3xl p-12 hover:-translate-y-1 transition">
               <p className="text-2xl text-red-100">
                 Consent is implied. Not explicit.
               </p>
-            </div>
+            </article>
 
-            <div className="reveal reveal-delay-2 bg-red-950/10 border border-red-800/30 rounded-3xl p-12 hover:-translate-y-1 transition">
+            <article className="reveal reveal-delay-2 bg-red-950/10 border border-red-800/30 rounded-3xl p-12 hover:-translate-y-1 transition">
               <p className="text-2xl text-red-100">
                 You never see who accessed what.
               </p>
-            </div>
+            </article>
 
-            <div className="reveal reveal-delay-3 bg-red-950/10 border border-red-800/30 rounded-3xl p-12 hover:-translate-y-1 transition">
+            <article className="reveal reveal-delay-3 bg-red-950/10 border border-red-800/30 rounded-3xl p-12 hover:-translate-y-1 transition">
               <p className="text-2xl text-red-100">
                 Trust is a blind assumption.
               </p>
-            </div>
+            </article>
 
           </div>
         </div>
@@ -130,10 +136,9 @@ export const renderAocLandingPage = () => {
 
       {/* SOLUTION */}
       <section id="solution" className="scroll-mt-24 py-40 border-t border-white/10">
-
         <div className="max-w-5xl mx-auto px-6 text-center">
 
-          <div className="mb-24 reveal">
+          <header className="mb-24 reveal">
             <h2 className="text-5xl md:text-6xl font-semibold mb-6">
               What if access required permission?
             </h2>
@@ -141,25 +146,25 @@ export const renderAocLandingPage = () => {
             <p className="text-xl text-gray-400">
               Not assumed. Not inherited. Not silently granted.
             </p>
-          </div>
+          </header>
 
           <div className="grid md:grid-cols-2 gap-8">
 
-            <div className="reveal bg-white/[0.03] border border-white/10 rounded-3xl p-10 hover:-translate-y-1 transition">
+            <article className="reveal bg-white/[0.03] border border-white/10 rounded-3xl p-10 hover:-translate-y-1 transition">
               Explicit consent
-            </div>
+            </article>
 
-            <div className="reveal reveal-delay-1 bg-white/[0.03] border border-white/10 rounded-3xl p-10 hover:-translate-y-1 transition">
+            <article className="reveal reveal-delay-1 bg-white/[0.03] border border-white/10 rounded-3xl p-10 hover:-translate-y-1 transition">
               Modular permissions
-            </div>
+            </article>
 
-            <div className="reveal reveal-delay-2 bg-white/[0.03] border border-white/10 rounded-3xl p-10 hover:-translate-y-1 transition">
+            <article className="reveal reveal-delay-2 bg-white/[0.03] border border-white/10 rounded-3xl p-10 hover:-translate-y-1 transition">
               Verifiable interactions
-            </div>
+            </article>
 
-            <div className="reveal reveal-delay-3 bg-white/[0.03] border border-white/10 rounded-3xl p-10 hover:-translate-y-1 transition">
+            <article className="reveal reveal-delay-3 bg-white/[0.03] border border-white/10 rounded-3xl p-10 hover:-translate-y-1 transition">
               Full control remains with the user
-            </div>
+            </article>
 
           </div>
         </div>
@@ -167,7 +172,6 @@ export const renderAocLandingPage = () => {
 
       {/* HOW */}
       <section id="how" className="scroll-mt-24 py-32 border-t border-white/10">
-
         <div className="max-w-5xl mx-auto px-6 text-center">
 
           <h2 className="reveal text-6xl font-semibold mb-16">
@@ -198,7 +202,6 @@ export const renderAocLandingPage = () => {
 
       {/* CTA */}
       <section className="py-32 border-t border-white/10 text-center">
-
         <div className="reveal">
           <h2 className="text-6xl font-semibold mb-8">
             Access should be earned.
@@ -210,9 +213,8 @@ export const renderAocLandingPage = () => {
             Start building on AOC →
           </button>
         </div>
-
       </section>
 
-    </div>
+    </main>
   );
 };
