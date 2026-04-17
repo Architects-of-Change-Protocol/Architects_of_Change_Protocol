@@ -1,13 +1,7 @@
-import { motion } from "motion/react";
-
 export function HowItWorksFlow() {
   return (
     <svg viewBox="0 0 900 300" className="w-full h-full">
-      
-      {/* === STAGE 1: PERMISSIONS === */}
       <g transform="translate(80,150)">
-        
-        {/* Panel */}
         <rect
           x="-60"
           y="-50"
@@ -18,9 +12,8 @@ export function HowItWorksFlow() {
           stroke="rgba(0,240,255,0.2)"
         />
 
-        {/* Toggles */}
         {[0, 1, 2].map((i) => (
-          <motion.rect
+          <rect
             key={i}
             x="-40"
             y={-25 + i * 20}
@@ -28,19 +21,20 @@ export function HowItWorksFlow() {
             height="10"
             rx="5"
             fill="#00f0ff"
-            initial={{ opacity: 0.2 }}
-            animate={{ opacity: [0.2, 1, 0.2] }}
-            transition={{
-              delay: i * 0.6,
-              duration: 2,
-              repeat: Infinity,
-            }}
-          />
+            opacity="0.2"
+          >
+            <animate
+              attributeName="opacity"
+              values="0.2;1;0.2"
+              dur="2s"
+              begin={`${i * 0.6}s`}
+              repeatCount="indefinite"
+            />
+          </rect>
         ))}
       </g>
 
-      {/* === FLOW LINE === */}
-      <motion.line
+      <line
         x1="150"
         y1="150"
         x2="750"
@@ -50,24 +44,16 @@ export function HowItWorksFlow() {
         opacity="0.3"
       />
 
-      {/* === MOVING REQUEST PULSE === */}
-      <motion.circle
-        r="4"
-        fill="#00f0ff"
-        initial={{ cx: 150 }}
-        animate={{ cx: 750 }}
-        cy="150"
-        transition={{
-          duration: 3,
-          repeat: Infinity,
-          ease: "linear",
-        }}
-      />
+      <circle r="4" cy="150" fill="#00f0ff">
+        <animate
+          attributeName="cx"
+          values="150;750"
+          dur="3s"
+          repeatCount="indefinite"
+        />
+      </circle>
 
-      {/* === STAGE 2: ENGINE === */}
       <g transform="translate(450,150)">
-        
-        {/* Engine Box */}
         <rect
           x="-80"
           y="-60"
@@ -78,52 +64,43 @@ export function HowItWorksFlow() {
           stroke="rgba(0,240,255,0.3)"
         />
 
-        {/* Rotating Core */}
-        <motion.rect
-          width="20"
-          height="20"
-          x="-10"
-          y="-10"
-          fill="#00f0ff"
-          animate={{ rotate: 360 }}
-          transition={{
-            duration: 4,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-        />
+        <rect width="20" height="20" x="-10" y="-10" fill="#00f0ff">
+          <animateTransform
+            attributeName="transform"
+            type="rotate"
+            from="0 0 0"
+            to="360 0 0"
+            dur="4s"
+            repeatCount="indefinite"
+          />
+        </rect>
 
-        {/* Scan Line */}
-        <motion.line
+        <line
           x1="-60"
           x2="60"
           y1="-30"
           y2="-30"
           stroke="#00f0ff"
           strokeWidth="1"
-          animate={{ y1: [-30, 30, -30], y2: [-30, 30, -30] }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-          }}
-        />
+        >
+          <animate
+            attributeName="y1"
+            values="-30;30;-30"
+            dur="2s"
+            repeatCount="indefinite"
+          />
+          <animate
+            attributeName="y2"
+            values="-30;30;-30"
+            dur="2s"
+            repeatCount="indefinite"
+          />
+        </line>
       </g>
 
-      {/* === STAGE 3: AUDIT LOG === */}
       <g transform="translate(750,150)">
-        
         {[0, 1, 2, 3].map((i) => (
-          <motion.g
-            key={i}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              delay: i * 0.5,
-              duration: 0.5,
-              repeat: Infinity,
-              repeatDelay: 2,
-            }}
-          >
+          <g key={i}>
             <rect
               x="-40"
               y={-40 + i * 20}
@@ -132,18 +109,34 @@ export function HowItWorksFlow() {
               rx="4"
               fill="rgba(0,240,255,0.1)"
               stroke="#00f0ff"
-            />
+              opacity="0"
+            >
+              <animate
+                attributeName="opacity"
+                values="0;1;1;0"
+                dur="2.5s"
+                begin={`${i * 0.5}s`}
+                repeatCount="indefinite"
+              />
+            </rect>
 
-            {/* Check */}
             <text
               x="-30"
               y={-32 + i * 20}
               fill="#00f0ff"
               fontSize="10"
+              opacity="0"
             >
               ✓
+              <animate
+                attributeName="opacity"
+                values="0;1;1;0"
+                dur="2.5s"
+                begin={`${i * 0.5}s`}
+                repeatCount="indefinite"
+              />
             </text>
-          </motion.g>
+          </g>
         ))}
       </g>
     </svg>
