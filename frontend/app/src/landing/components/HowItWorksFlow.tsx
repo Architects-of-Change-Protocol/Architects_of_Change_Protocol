@@ -1,6 +1,15 @@
 export function HowItWorksFlow() {
+  const intakeBars = [0, 1, 2];
+  const outputRows = [0, 1, 2, 3];
+
   return (
-    <svg viewBox="0 0 900 300" className="w-full h-full">
+    <svg
+      viewBox="0 0 900 300"
+      preserveAspectRatio="xMidYMid meet"
+      className="w-full h-full"
+      aria-hidden="true"
+    >
+      {/* Input / source */}
       <g transform="translate(80,150)">
         <rect
           x="-60"
@@ -12,7 +21,7 @@ export function HowItWorksFlow() {
           stroke="rgba(0,240,255,0.2)"
         />
 
-        {[0, 1, 2].map((i) => (
+        {intakeBars.map((i) => (
           <rect
             key={i}
             x="-40"
@@ -34,6 +43,7 @@ export function HowItWorksFlow() {
         ))}
       </g>
 
+      {/* Flow line */}
       <line
         x1="150"
         y1="150"
@@ -44,7 +54,8 @@ export function HowItWorksFlow() {
         opacity="0.3"
       />
 
-      <circle r="4" cy="150" fill="#00f0ff">
+      {/* Moving signal */}
+      <circle cx="150" cy="150" r="4" fill="#00f0ff">
         <animate
           attributeName="cx"
           values="150;750"
@@ -53,6 +64,7 @@ export function HowItWorksFlow() {
         />
       </circle>
 
+      {/* Processing / engine */}
       <g transform="translate(450,150)">
         <rect
           x="-80"
@@ -64,7 +76,7 @@ export function HowItWorksFlow() {
           stroke="rgba(0,240,255,0.3)"
         />
 
-        <rect width="20" height="20" x="-10" y="-10" fill="#00f0ff">
+        <rect x="-10" y="-10" width="20" height="20" fill="#00f0ff">
           <animateTransform
             attributeName="transform"
             type="rotate"
@@ -77,8 +89,8 @@ export function HowItWorksFlow() {
 
         <line
           x1="-60"
-          x2="60"
           y1="-30"
+          x2="60"
           y2="-30"
           stroke="#00f0ff"
           strokeWidth="1"
@@ -98,8 +110,9 @@ export function HowItWorksFlow() {
         </line>
       </g>
 
+      {/* Output / verified results */}
       <g transform="translate(750,150)">
-        {[0, 1, 2, 3].map((i) => (
+        {outputRows.map((i) => (
           <g key={i}>
             <rect
               x="-40"
@@ -121,10 +134,12 @@ export function HowItWorksFlow() {
             </rect>
 
             <text
-              x="-30"
-              y={-32 + i * 20}
+              x="-24"
+              y={-34 + i * 20}
               fill="#00f0ff"
               fontSize="10"
+              textAnchor="middle"
+              dominantBaseline="middle"
               opacity="0"
             >
               ✓
