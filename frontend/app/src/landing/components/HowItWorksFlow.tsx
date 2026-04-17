@@ -1,173 +1,445 @@
-export function HowItWorksFlow() {
-  return (
-    <div className="w-full h-full min-h-[340px] flex items-center justify-center bg-black">
-      <svg
-        viewBox="0 0 1260 360"
-        width="100%"
-        height="100%"
-        preserveAspectRatio="xMidYMid meet"
-        className="block"
-      >
-        <defs>
-          <radialGradient id="cyanGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#00f0ff" stopOpacity="0.18" />
-            <stop offset="100%" stopColor="#00f0ff" stopOpacity="0" />
-          </radialGradient>
-        </defs>
+import { useEffect, useMemo, useState } from "react";
 
-        {/* stage labels */}
-        <text x="95" y="30" fill="#00f0ff" fontSize="15" fontFamily="Orbitron, monospace" letterSpacing="2">
-          STAGE 01
-        </text>
-        <text x="68" y="60" fill="white" fontSize="22" fontFamily="Inter, Arial, sans-serif">
+type FlowStatus = "pending" | "granted" | "denied";
+
+type FlowLine = {
+  id: number;
+  lane: number;
+  progress: number; // 0 -> 1 across the system
+  status: FlowStatus;
+};
+
+const STAGE_Y = 150;
+const LANES = [-16, -6, 4, 14];
+const MAX_LINES = 8;
+
+export function HowItWorksFlow() {
+  const [lines, setLines] = useState<FlowLine[]>([]);
+  const [nextId, setNextId] = useState(0);
+
+  useEffect(() => {
+    const spawnInterval = window.setInterval(() => {
+      setLines((prev) => {
+        const id = nextId;
+        const lane = id % LANES.length;
+
+        const next: FlowLine = {
+          id,
+          lane,
+          progress: 0,
+          status: "pending",
+        };
+
+        return [next, ...prev].slice(0, MAX_LINES);
+      });
+
+      setNextId((prev) => prev + 1);
+    }, 1700);
+
+    const tickInterval = window.setInterval(() => {
+      setLines((prev) =>
+        prev
+          .map((line) => {
+            const nextProgress = line.progress + 0.018;
+
+            let nextStatus = line.status;
+
+            // Decision happens around stage 2
+            if (line.status === "pending" && nextProgress >= 0.5) {
+              nextStatus = line.id % 4 === 0 ? "denied" : "granted";
+            }
+
+            return {
+              ...line,
+              progress: nextProgress,
+              status: nextStatus,
+            };
+          })
+          .filter((line) => line.progress <= 1.08)
+      );
+    }, 40);
+
+    return () => {
+      window.clearInterval(spawnInterval);
+      window.clearInterval(tickInterval);
+    };
+  }, [nextId]);
+
+  const completedLog = useMemo(
+    () =>
+      lines
+        .filter((line) => line.progress >= 0.84 && line.status !== "pending")
+        .sort((a, b) => b.id - a.id)
+        .slice(0, 5),
+    [lines]
+  );
+
+  return (
+    <svg viewBox="0 0 900 300" className="w-full h-full" role="img" aria-label="How AOC Protocol works">
+      <defs>
+        <linearGradient id="panelFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="rgba(20,20,30,0.95)" />
+          <stop offset="100%" stopColor="rgba(10,10,18,0.92)" />
+        </linearGradient>
+
+        <linearGradient id="cyanBeam" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="rgba(0,240,255,0.00)" />
+          <stop offset="50%" stopColor="rgba(0,240,255,0.75)" />
+          <stop offset="100%" stopColor="rgba(0,240,255,0.00)" />
+        </linearGradient>
+
+        <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="4" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+
+        <filter id="panelGlow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="8" result="blur" />
+          <feColorMatrix
+            in="blur"
+            type="matrix"
+            values="
+              0 0 0 0 0
+              0 0 0 0 0.94
+              0 0 0 0 1
+              0 0 0 0.18 0
+            "
+          />
+        </filter>
+      </defs>
+
+      {/* ambient rails */}
+      <line
+        x1="182"
+        y1={STAGE_Y}
+        x2="705"
+        y2={STAGE_Y}
+        stroke="rgba(0,240,255,0.08)"
+        strokeWidth="2"
+      />
+      <line
+        x1="182"
+        y1={STAGE_Y + 18}
+        x2="705"
+        y2={STAGE_Y + 18}
+        stroke="rgba(255,255,255,0.04)"
+        strokeWidth="1"
+      />
+
+      {/* stage 1 */}
+      <g transform="translate(110,150)">
+        <rect
+          x="-68"
+          y="-58"
+          width="136"
+          height="116"
+          rx="18"
+          fill="url(#panelFill)"
+          stroke="rgba(0,240,255,0.18)"
+        />
+        <rect
+          x="-68"
+          y="-58"
+          width="136"
+          height="116"
+          rx="18"
+          fill="none"
+          stroke="rgba(0,240,255,0.09)"
+          filter="url(#panelGlow)"
+        />
+
+        <text
+          x="0"
+          y="-74"
+          textAnchor="middle"
+          fill="rgba(255,255,255,0.92)"
+          fontSize="13"
+          fontWeight="600"
+          letterSpacing="0.2"
+        >
           Define Permissions
         </text>
 
-        <text x="485" y="30" fill="#00f0ff" fontSize="15" fontFamily="Orbitron, monospace" letterSpacing="2">
-          STAGE 02
-        </text>
-        <text x="438" y="60" fill="white" fontSize="22" fontFamily="Inter, Arial, sans-serif">
+        <rect x="-42" y="-24" width="84" height="12" rx="6" fill="rgba(0,240,255,0.16)" />
+        <rect x="-42" y="-2" width="72" height="10" rx="5" fill="rgba(255,255,255,0.14)" />
+        <rect x="-42" y="18" width="58" height="10" rx="5" fill="rgba(255,255,255,0.10)" />
+
+        {[0, 1, 2].map((i) => (
+          <rect
+            key={i}
+            x="-50"
+            y={-30 + i * 18}
+            width="8"
+            height="8"
+            rx="4"
+            fill="#00f0ff"
+            opacity="0.9"
+          >
+            <animate
+              attributeName="opacity"
+              values="0.35;1;0.35"
+              dur="2.2s"
+              begin={`${i * 0.28}s`}
+              repeatCount="indefinite"
+            />
+          </rect>
+        ))}
+      </g>
+
+      {/* connector 1 */}
+      <g>
+        <line
+          x1="178"
+          y1={STAGE_Y}
+          x2="335"
+          y2={STAGE_Y}
+          stroke="rgba(0,240,255,0.16)"
+          strokeWidth="2"
+        />
+        <rect x="228" y="146" width="58" height="8" rx="4" fill="url(#cyanBeam)" opacity="0.75">
+          <animateTransform
+            attributeName="transform"
+            type="translate"
+            from="-18 0"
+            to="28 0"
+            dur="1.7s"
+            repeatCount="indefinite"
+          />
+          <animate
+            attributeName="opacity"
+            values="0;0.9;0"
+            dur="1.7s"
+            repeatCount="indefinite"
+          />
+        </rect>
+      </g>
+
+      {/* stage 2 */}
+      <g transform="translate(390,150)">
+        <rect
+          x="-86"
+          y="-66"
+          width="172"
+          height="132"
+          rx="22"
+          fill="url(#panelFill)"
+          stroke="rgba(0,240,255,0.20)"
+        />
+        <rect
+          x="-86"
+          y="-66"
+          width="172"
+          height="132"
+          rx="22"
+          fill="none"
+          stroke="rgba(0,240,255,0.10)"
+          filter="url(#panelGlow)"
+        />
+
+        <text
+          x="0"
+          y="-82"
+          textAnchor="middle"
+          fill="rgba(255,255,255,0.92)"
+          fontSize="13"
+          fontWeight="600"
+          letterSpacing="0.2"
+        >
           Evaluate Request
         </text>
 
-        <text x="930" y="30" fill="#00f0ff" fontSize="15" fontFamily="Orbitron, monospace" letterSpacing="2">
-          STAGE 03
-        </text>
-        <text x="870" y="60" fill="white" fontSize="22" fontFamily="Inter, Arial, sans-serif">
-          Grant & Audit Access
-        </text>
+        <rect x="-52" y="-22" width="104" height="14" rx="7" fill="rgba(0,240,255,0.10)" />
+        <rect x="-36" y="2" width="72" height="10" rx="5" fill="rgba(255,255,255,0.14)" />
+        <rect x="-46" y="22" width="92" height="10" rx="5" fill="rgba(255,255,255,0.08)" />
 
-        {/* stage 1 orb */}
-        <circle cx="145" cy="122" r="30" fill="url(#cyanGlow)" />
-        <circle cx="145" cy="122" r="17" fill="#00f0ff">
-          <animate attributeName="opacity" values="0.55;1;0.55" dur="1.8s" repeatCount="indefinite" />
+        <circle cx="-56" cy="-15" r="3" fill="#00f0ff" filter="url(#softGlow)">
+          <animate attributeName="opacity" values="0.25;1;0.25" dur="1.4s" repeatCount="indefinite" />
         </circle>
-
-        {/* stage 1 permissions panel */}
-        <g transform="translate(18,168)">
-          <rect x="0" y="0" width="290" height="108" rx="12" fill="rgba(18,18,22,0.96)" stroke="rgba(0,240,255,0.4)" strokeWidth="1.2" />
-
-          <text x="16" y="25" fill="rgba(255,255,255,0.72)" fontSize="13" fontFamily="Inter, Arial, sans-serif">Read</text>
-          <text x="16" y="50" fill="rgba(255,255,255,0.72)" fontSize="13" fontFamily="Inter, Arial, sans-serif">Write</text>
-          <text x="16" y="75" fill="rgba(255,255,255,0.72)" fontSize="13" fontFamily="Inter, Arial, sans-serif">Execute</text>
-          <text x="16" y="100" fill="rgba(255,255,255,0.72)" fontSize="13" fontFamily="Inter, Arial, sans-serif">Admin</text>
-
-          {[0, 1, 2].map((i) => (
-            <g key={i} transform={`translate(228, ${10 + i * 25})`}>
-              <rect x="0" y="0" width="46" height="18" rx="9" fill="rgba(0,240,255,0.22)" />
-              <circle cy="9" r="6.5" fill="#00f0ff">
-                <animate attributeName="cx" values="14;32;14;32" dur="2.2s" begin={`${i * 0.25}s`} repeatCount="indefinite" />
-              </circle>
-            </g>
-          ))}
-
-          <g transform="translate(228,85)">
-            <rect x="0" y="0" width="46" height="18" rx="9" fill="rgba(120,130,150,0.16)" />
-            <circle cx="14" cy="9" r="6.5" fill="rgba(180,185,200,0.65)" />
-          </g>
-        </g>
-
-        {/* pipeline */}
-        <line x1="308" y1="222" x2="910" y2="222" stroke="rgba(0,240,255,0.45)" strokeWidth="2" />
-
-        <circle cy="222" r="6" fill="#00f0ff">
-          <animate attributeName="cx" values="308;910" dur="2.6s" repeatCount="indefinite" />
-          <animate attributeName="opacity" values="0.6;1;0.6" dur="1s" repeatCount="indefinite" />
+        <circle cx="0" cy="-15" r="3" fill="#00f0ff" filter="url(#softGlow)">
+          <animate attributeName="opacity" values="0.25;1;0.25" dur="1.4s" begin="0.22s" repeatCount="indefinite" />
         </circle>
+        <circle cx="56" cy="-15" r="3" fill="#00f0ff" filter="url(#softGlow)">
+          <animate attributeName="opacity" values="0.25;1;0.25" dur="1.4s" begin="0.44s" repeatCount="indefinite" />
+        </circle>
+      </g>
 
-        {/* stage 2 engine */}
-        <g transform="translate(415,95)">
-          <rect x="0" y="0" width="380" height="190" rx="14" fill="rgba(18,18,22,0.96)" stroke="rgba(0,240,255,0.42)" strokeWidth="1.2" />
+      {/* connector 2 */}
+      <g>
+        <line
+          x1="476"
+          y1={STAGE_Y}
+          x2="632"
+          y2={STAGE_Y}
+          stroke="rgba(0,240,255,0.16)"
+          strokeWidth="2"
+        />
+        <rect x="525" y="146" width="58" height="8" rx="4" fill="url(#cyanBeam)" opacity="0.75">
+          <animateTransform
+            attributeName="transform"
+            type="translate"
+            from="-18 0"
+            to="28 0"
+            dur="1.7s"
+            begin="0.35s"
+            repeatCount="indefinite"
+          />
+          <animate
+            attributeName="opacity"
+            values="0;0.9;0"
+            dur="1.7s"
+            begin="0.35s"
+            repeatCount="indefinite"
+          />
+        </rect>
+      </g>
 
-          <g transform="translate(170,56)">
-            <rect x="-12" y="-12" width="24" height="24" fill="#00f0ff">
-              <animateTransform attributeName="transform" type="rotate" values="0 0 0;360 0 0" dur="5s" repeatCount="indefinite" />
-            </rect>
+      {/* dynamic flow lines */}
+      {lines.map((line) => {
+        const laneY = STAGE_Y + LANES[line.lane];
+        const xStart = 178;
+        const xEnd = 632;
+        const x = xStart + (xEnd - xStart) * line.progress;
 
-            <rect x="-38" y="-38" width="76" height="76" rx="8" fill="none" stroke="rgba(0,240,255,0.58)" strokeWidth="2">
-              <animateTransform attributeName="transform" type="rotate" values="0 0 0;360 0 0" dur="7s" repeatCount="indefinite" />
-            </rect>
+        const stroke =
+          line.status === "granted"
+            ? "#00f0b4"
+            : line.status === "denied"
+              ? "#ff5a5a"
+              : "#00f0ff";
 
-            <rect x="-38" y="-38" width="76" height="76" rx="8" fill="none" stroke="rgba(0,240,255,0.32)" strokeWidth="2">
-              <animateTransform attributeName="transform" type="rotate" values="0 0 0;-360 0 0" dur="9s" repeatCount="indefinite" />
-            </rect>
+        const headOpacity = line.progress < 0.03 ? 0 : 1;
+        const trailOpacity =
+          line.status === "pending"
+            ? 0.26
+            : line.status === "granted"
+              ? 0.34
+              : 0.30;
+
+        return (
+          <g key={line.id}>
+            <line
+              x1={xStart}
+              y1={laneY}
+              x2={Math.max(xStart, x - 10)}
+              y2={laneY}
+              stroke={stroke}
+              strokeWidth="2"
+              opacity={trailOpacity}
+            />
+            <circle
+              cx={x}
+              cy={laneY}
+              r="3.5"
+              fill={stroke}
+              opacity={headOpacity}
+              filter="url(#softGlow)"
+            />
           </g>
+        );
+      })}
 
-          <line x1="28" y1="92" x2="312" y2="92" stroke="#00f0ff" strokeWidth="2" opacity="0.8">
-            <animate attributeName="opacity" values="0.35;1;0.35" dur="1.8s" repeatCount="indefinite" />
-          </line>
+      {/* stage 3 */}
+      <g transform="translate(720,150)">
+        <rect
+          x="-82"
+          y="-72"
+          width="164"
+          height="144"
+          rx="22"
+          fill="url(#panelFill)"
+          stroke="rgba(0,240,255,0.20)"
+        />
+        <rect
+          x="-82"
+          y="-72"
+          width="164"
+          height="144"
+          rx="22"
+          fill="none"
+          stroke="rgba(0,240,255,0.10)"
+          filter="url(#panelGlow)"
+        />
 
-          <g transform="translate(34,112)">
-            {[
-              [0, 0], [72, 0], [144, 0], [216, 0],
-              [0, 40], [72, 40], [144, 40], [216, 40],
-            ].map(([x, y], i) => (
-              <rect
-                key={i}
-                x={x}
-                y={y}
-                width="56"
-                height="26"
-                rx="4"
-                fill="rgba(0,240,255,0.06)"
-                stroke="rgba(0,240,255,0.5)"
-                strokeWidth="1"
-              >
-                <animate attributeName="fill-opacity" values="0.18;0.55;0.18" dur="2.2s" begin={`${i * 0.12}s`} repeatCount="indefinite" />
-              </rect>
-            ))}
-          </g>
-        </g>
-
-        {/* stage 3 badge */}
-        <g transform="translate(1020,95)">
-          <rect x="0" y="0" width="72" height="72" fill="rgba(0,240,255,0.08)" stroke="rgba(0,240,255,0.7)" strokeWidth="2" />
-          <path d="M 20 37 L 32 49 L 52 24" fill="none" stroke="#00f0ff" strokeWidth="4.5" strokeLinecap="round" strokeLinejoin="round">
-            <animate attributeName="opacity" values="0.55;1;0.55" dur="1.2s" repeatCount="indefinite" />
-          </path>
-        </g>
-
-        {/* stage 3 audit panel */}
-        <g transform="translate(860,182)">
-          <rect x="0" y="0" width="340" height="108" rx="12" fill="rgba(18,18,22,0.96)" stroke="rgba(0,240,255,0.42)" strokeWidth="1.2" />
-          <circle cx="16" cy="18" r="4.5" fill="#00f0ff" />
-          <text x="30" y="22" fill="rgba(255,255,255,0.72)" fontSize="12.5" fontFamily="Inter, Arial, sans-serif">
-            AUDIT LOG
-          </text>
-
-          {[
-            ['✓ GRANTED', '#0019'],
-            ['✓ GRANTED', '#0018'],
-            ['✓ GRANTED', '#0017'],
-            ['✕ DENIED', '#0016'],
-          ].map(([label, id], i) => (
-            <g key={i} transform={`translate(16, ${42 + i * 20})`}>
-              <circle cx="0" cy="0" r="3.5" fill={i === 3 ? 'rgba(150,160,180,0.65)' : '#00f0ff'}>
-                <animate attributeName="opacity" values="0.35;1;0.35" dur="2s" begin={`${i * 0.18}s`} repeatCount="indefinite" />
-              </circle>
-              <text x="12" y="4" fill={i === 3 ? 'rgba(150,160,180,0.75)' : '#00f0ff'} fontSize="12" fontFamily="Inter, Arial, sans-serif">
-                {label}
-              </text>
-              <text x="260" y="4" fill="rgba(150,160,180,0.75)" fontSize="12" fontFamily="Inter, Arial, sans-serif">
-                {id}
-              </text>
-            </g>
-          ))}
-        </g>
-
-        {/* footer caption */}
         <text
-          x="630"
-          y="334"
+          x="0"
+          y="-88"
           textAnchor="middle"
-          fill="rgba(160,180,220,0.72)"
-          fontSize="14"
-          letterSpacing="2"
-          fontFamily="Orbitron, monospace"
+          fill="rgba(255,255,255,0.92)"
+          fontSize="13"
+          fontWeight="600"
+          letterSpacing="0.2"
         >
-          ACCESS IS EVALUATED, NOT ASSUMED.
+          Grant &amp; Audit Access
         </text>
-      </svg>
-    </div>
+
+        {/* log frame */}
+        <rect
+          x="-60"
+          y="-40"
+          width="120"
+          height="88"
+          rx="12"
+          fill="rgba(255,255,255,0.03)"
+          stroke="rgba(255,255,255,0.06)"
+        />
+
+        {completedLog.map((entry, i) => {
+          const y = -28 + i * 16;
+          const ok = entry.status === "granted";
+
+          return (
+            <g key={entry.id} transform={`translate(0, ${y})`}>
+              <rect
+                x="-50"
+                y="0"
+                width="100"
+                height="10"
+                rx="5"
+                fill={ok ? "rgba(0,240,180,0.12)" : "rgba(255,90,90,0.12)"}
+              />
+              <rect
+                x="-50"
+                y="0"
+                width="28"
+                height="10"
+                rx="5"
+                fill={ok ? "#00f0b4" : "#ff5a5a"}
+              />
+              <rect
+                x="-18"
+                y="2"
+                width="48"
+                height="6"
+                rx="3"
+                fill="rgba(255,255,255,0.16)"
+              />
+              <rect
+                x="34"
+                y="2"
+                width="10"
+                height="6"
+                rx="3"
+                fill="rgba(255,255,255,0.09)"
+              />
+            </g>
+          );
+        })}
+
+        {/* subtle audit pulse */}
+        <circle cx="50" cy="-52" r="4" fill="#00f0ff" filter="url(#softGlow)">
+          <animate
+            attributeName="opacity"
+            values="0.2;1;0.2"
+            dur="1.6s"
+            repeatCount="indefinite"
+          />
+        </circle>
+      </g>
+    </svg>
   );
 }
+
+export default HowItWorksFlow;
