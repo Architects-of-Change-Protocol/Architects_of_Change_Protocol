@@ -1,3 +1,4 @@
+import { HowItWorksFlow } from './components/HowItWorksFlow';
 import { LogoRotating } from '../components/logo/LogoRotating';
 import { ProblemCard } from './components/ProblemCard';
 import { DataPipelineAnimation } from './components/DataPipelineAnimation';
@@ -134,24 +135,14 @@ export const renderAocLandingPage = () => {
       </section>
 
       <section id="how" className="scroll-mt-24 py-32 border-t border-white/10">
-        <div className="max-w-5xl mx-auto px-6 text-center">
-          <h2 className=" text-6xl font-semibold mb-16">How it works</h2>
+  <div className="max-w-6xl mx-auto px-6 text-center">
+    <h2 className="text-6xl font-semibold mb-10">How it works</h2>
 
-          <div className="flex flex-col md:flex-row gap-10 justify-center">
-            <div className=" bg-white/5 border border-white/10 rounded-3xl p-8 w-64">
-              01 Define permissions
-            </div>
-            <div className=" text-gray-300 text-3xl">→</div>
-            <div className=" bg-white/5 border border-white/10 rounded-3xl p-8 w-64">
-              02 Evaluate request
-            </div>
-            <div className=" text-gray-300 text-3xl">→</div>
-            <div className=" bg-white/5 border border-white/10 rounded-3xl p-8 w-64">
-              03 Grant &amp; audit access
-            </div>
-          </div>
-        </div>
-      </section>
+    <div className="h-[300px] md:h-[340px] w-full">
+      <HowItWorksFlow />
+    </div>
+  </div>
+</section>
 
       <section className="py-32 border-t border-white/10 text-center">
         <div className="">
