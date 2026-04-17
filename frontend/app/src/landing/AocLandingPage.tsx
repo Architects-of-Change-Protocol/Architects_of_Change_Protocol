@@ -138,8 +138,10 @@ export const renderAocLandingPage = () => {
   <div className="max-w-6xl mx-auto px-6 text-center">
     <h2 className="text-6xl font-semibold mb-10">How it works</h2>
 
-    <div className="h-[300px] md:h-[340px] w-full">
-      <HowItWorksFlow />
+    <div className="w-full h-[320px] flex items-center justify-center bg-black">
+      <div className="w-full max-w-5xl h-full">
+        <HowItWorksFlow />
+      </div>
     </div>
   </div>
 </section>
