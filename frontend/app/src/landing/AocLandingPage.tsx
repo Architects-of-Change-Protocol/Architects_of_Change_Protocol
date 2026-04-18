@@ -6,6 +6,7 @@ import { ImplicitConsentAnimation } from './components/ImplicitConsentAnimation'
 import { InvisibleAccessAnimation } from './components/InvisibleAccessAnimation';
 import { BlindTrustAnimation } from './components/BlindTrustAnimation';
 import { ModularPermissionsAnimation } from './components/ModularPermissionsAnimation';
+import { ExplicitConsentAnimation } from './components/ExplicitConsentAnimation';
 
 export const renderAocLandingPage = () => {
   return (
@@ -123,6 +124,8 @@ export const renderAocLandingPage = () => {
               Explicit consent
             </article>
             <article className="bg-white/[0.03] border border-white/10 rounded-3xl p-8 hover:-translate-y-1 transition flex items-center justify-center min-h-[320px]"><ModularPermissionsAnimation /></article>
+
+            <article className="bg-white/[0.03] border border-white/10 rounded-3xl p-8 hover:-translate-y-1 transition flex items-center justify-center min-h-[320px]"><ExplicitConsentAnimation /></article>
             <article className="bg-white/[0.03] border border-white/10 rounded-3xl p-10 hover:-translate-y-1 transition">
               Verifiable interactions
             </article>
