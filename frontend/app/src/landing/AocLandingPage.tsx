@@ -143,9 +143,9 @@ export const renderAocLandingPage = () => {
             permissions, then granted or denied, and permanently recorded.
           </p>
 
-          <div className="w-full h-[420px] sm:h-[420px] md:h-[460px] flex items-center justify-center bg-black">
+          <div className="w-full h-[520px] sm:h-[520px] md:h-[460px] flex items-center justify-center bg-black">
             <div className="w-full max-w-5xl h-full rounded-3xl border border-white/10 bg-white/[0.02] p-4 sm:p-6 md:p-8">
-              <div className="w-full h-full flex items-center justify-center"><div className="w-full h-full transform rotate-90 sm:rotate-0 scale-[1.4] sm:scale-100 origin-center"><HowItWorksFlow /></div></div>
+              <div className="w-full h-full flex items-center justify-center"><div className="w-full h-full transform rotate-90 sm:rotate-0 scale-[1.7] sm:scale-100 origin-center"><HowItWorksFlow /></div></div>
             </div>
           </div>
 
