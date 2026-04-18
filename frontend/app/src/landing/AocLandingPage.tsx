@@ -10,7 +10,7 @@ export const renderAocLandingPage = () => {
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white overflow-hidden font-sans">
       <header>
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-lg border-b border-white/10">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-black relative/90 backdrop-blur-lg border-b border-white/10">
           <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 flex items-center justify-center">
@@ -19,20 +19,20 @@ export const renderAocLandingPage = () => {
 
               <div className="flex items-baseline">
                 <span className="text-xl font-semibold tracking-tighter">AOC</span>
-                <span className="text-xs text-gray-300 uppercase tracking-[0.2em] ml-2">
+                <span className="text-xs text-white uppercase tracking-[0.2em] ml-2">
                   Protocol
                 </span>
               </div>
             </div>
 
             <div className="hidden md:flex items-center gap-10 text-sm font-medium">
-              <a href="#problem" className="hover:text-gray-300 transition">
+              <a href="#problem" className="hover:text-white transition">
                 Problem
               </a>
-              <a href="#solution" className="hover:text-gray-300 transition">
+              <a href="#solution" className="hover:text-white transition">
                 Solution
               </a>
-              <a href="#how" className="hover:text-gray-300 transition">
+              <a href="#how" className="hover:text-white transition">
                 How it works
               </a>
             </div>
@@ -53,17 +53,17 @@ export const renderAocLandingPage = () => {
             You don&apos;t own your data.
           </h1>
 
-          <p className="text-[52px] md:text-[62px] leading-none font-light tracking-[-2px] text-gray-300 mb-8">
+          <p className="text-[52px] md:text-[62px] leading-none font-light tracking-[-2px] text-white mb-8">
             You just hope no one abuses it.
           </p>
 
-          <p className="max-w-[620px] mx-auto text-[21px] text-gray-300 leading-relaxed mb-14">
+          <p className="max-w-[620px] mx-auto text-[21px] text-white leading-relaxed mb-14">
             There is a better system. One where access is granted, not assumed.
           </p>
 
           <a
             href="#solution"
-            className="px-12 py-5 bg-[#00f0ff] hover:bg-[#00d4e0] text-black font-semibold text-xl rounded-2xl transition-all active:scale-[0.97] inline-block"
+            className="px-12 py-5 bg-[#00f0ff] hover:bg-[#00d4e0] text-black font-semibold text-xl rounded-2xl transition-all active:scale-[2.8] inline-block"
           >
             Enter the new model →
           </a>
@@ -112,7 +112,7 @@ export const renderAocLandingPage = () => {
             <h2 className="text-5xl md:text-6xl font-semibold mb-6">
               What if access required permission?
             </h2>
-            <p className="text-xl text-gray-300">
+            <p className="text-xl text-white">
               Not assumed. Not inherited. Not silently granted.
             </p>
           </header>
@@ -143,7 +143,7 @@ export const renderAocLandingPage = () => {
             permissions, then granted or denied, and permanently recorded.
           </p>
 
-          <div className="w-full h-[550px] sm:h-[420px] md:h-[460px] flex items-center justify-center bg-black">
+          <div className="w-full h-[550px] sm:h-[420px] md:h-[460px] flex items-center justify-center bg-black relative before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_center,rgba(255,0,0,0.15)_0%,transparent_70%)]">
             <div className="relative w-full max-w-5xl h-full rounded-3xl border border-white/10 bg-white/[0.02] p-4 sm:p-6 md:p-8">
               <div className="absolute left-5 top-[104px] w-[165px] sm:hidden text-left pointer-events-none">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-300/80">
@@ -173,7 +173,7 @@ export const renderAocLandingPage = () => {
               </div>
 
               <div className="w-full h-full flex items-center justify-center pl-[138px] sm:pl-0">
-                <div className="w-full h-full transform rotate-90 sm:rotate-0 scale-[2.6] sm:scale-100 origin-center">
+                <div className="w-full h-full transform rotate-90 sm:rotate-0 scale-[2.8] sm:scale-100 origin-center">
                   <HowItWorksFlow />
                 </div>
               </div>
@@ -223,7 +223,7 @@ export const renderAocLandingPage = () => {
       <section className="py-32 border-t border-white/10 text-center">
         <div>
           <h2 className="text-6xl font-semibold mb-8">Access should be earned.</h2>
-          <button className="px-12 py-6 bg-[#00f0ff] text-black font-semibold text-2xl rounded-2xl hover:scale-[1.02] transition">
+          <button className="px-12 py-6 bg-[#00f0ff] text-black font-semibold text-2xl rounded-2xl hover:scale-[2.8] transition">
             Start building on AOC →
           </button>
         </div>
