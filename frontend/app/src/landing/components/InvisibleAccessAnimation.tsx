@@ -1,115 +1,194 @@
 export function InvisibleAccessAnimation() {
   return (
-    <div className="w-full max-w-[420px] aspect-[16/9] flex items-center justify-center">
+    <div className="w-full max-w-[470px] aspect-[16/9] flex items-center justify-center">
       <svg viewBox="0 0 800 450" className="w-full h-full">
         <defs>
-          <radialGradient id="vaultGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#4de3ff" stopOpacity="0.12" />
-            <stop offset="100%" stopColor="#4de3ff" stopOpacity="0" />
-          </radialGradient>
+          <filter id="cyanGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="8" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+
+          <filter id="redGlow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="5" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+
+          <filter id="shadowBlur" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="2.4" />
+          </filter>
         </defs>
 
         <rect width="800" height="450" fill="transparent" />
 
-        {/* faint cyan vault glow */}
-        <ellipse cx="410" cy="235" rx="150" ry="100" fill="url(#vaultGlow)" />
+        {/* vault ambient glow */}
+        <ellipse cx="410" cy="220" rx="150" ry="105" fill="rgba(0,240,255,0.08)">
+          <animate attributeName="rx" values="145;158;145" dur="3.2s" repeatCount="indefinite" />
+          <animate attributeName="ry" values="100;110;100" dur="3.2s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.55;0.85;0.55" dur="3.2s" repeatCount="indefinite" />
+        </ellipse>
 
-        {/* stick figure */}
-        <g transform="translate(120,155)" stroke="rgba(255,255,255,0.82)" fill="none">
-          <circle cx="40" cy="25" r="15" strokeWidth="2" />
-          <path d="M 40 40 L 40 75" strokeWidth="2.5" strokeLinecap="round" />
-          <path d="M 40 50 L 25 60 M 40 50 L 55 60" strokeWidth="2" strokeLinecap="round" />
-          <path d="M 40 75 L 30 105 M 40 75 L 50 105" strokeWidth="2" strokeLinecap="round" />
+        {/* user */}
+        <g transform="translate(160,145)" stroke="rgba(255,255,255,0.9)" fill="none">
+          <circle cx="0" cy="0" r="18" strokeWidth="2" />
+          <line x1="0" y1="18" x2="0" y2="72" strokeWidth="2.2" strokeLinecap="round" />
+          <line x1="0" y1="36" x2="-24" y2="56" strokeWidth="2" strokeLinecap="round" />
+          <line x1="0" y1="36" x2="24" y2="56" strokeWidth="2" strokeLinecap="round" />
+          <line x1="0" y1="72" x2="-16" y2="118" strokeWidth="2" strokeLinecap="round" />
+          <line x1="0" y1="72" x2="16" y2="118" strokeWidth="2" strokeLinecap="round" />
         </g>
 
-        {/* shadow observer behind user */}
-        <g opacity="0.28" transform="translate(210,165)">
-          <ellipse cx="28" cy="20" rx="13" ry="15" fill="rgba(80,90,120,0.4)" />
+        {/* vault */}
+        <g transform="translate(350,115)">
+          {/* top face */}
           <path
-            d="M 28 35 L 28 64 L 20 84 L 36 84 L 28 64"
-            fill="rgba(80,90,120,0.28)"
+            d="M 60 20 L 104 42 L 60 64 L 16 42 Z"
+            stroke="rgba(255,255,255,0.58)"
+            strokeWidth="1.5"
+            fill="rgba(0,240,255,0.10)"
+            filter="url(#cyanGlow)"
           />
-          <circle cx="23" cy="19" r="2.2" fill="#ff2a2a">
-            <animate attributeName="opacity" values="0.15;0.8;0.15" dur="1.8s" repeatCount="indefinite" />
-          </circle>
-          <circle cx="33" cy="19" r="2.2" fill="#ff2a2a">
-            <animate attributeName="opacity" values="0.15;0.8;0.15" dur="1.8s" begin="0.2s" repeatCount="indefinite" />
-          </circle>
-        </g>
-
-        {/* vault cube */}
-        <g transform="translate(340,150)">
-          <polygon
-            points="100,30 150,58 100,86 50,58"
-            fill="rgba(120,200,220,0.10)"
-            stroke="rgba(160,230,255,0.75)"
-            strokeWidth="2"
+          {/* left face */}
+          <path
+            d="M 16 42 L 16 112 L 60 136 L 60 64 Z"
+            stroke="rgba(255,255,255,0.35)"
+            strokeWidth="1.4"
+            fill="rgba(0,240,255,0.05)"
           />
-          <polygon
-            points="50,58 100,86 100,150 50,122"
-            fill="rgba(90,160,180,0.10)"
-            stroke="rgba(160,230,255,0.6)"
-            strokeWidth="2"
-          />
-          <polygon
-            points="100,86 150,58 150,122 100,150"
-            fill="rgba(50,120,150,0.08)"
-            stroke="rgba(160,230,255,0.45)"
-            strokeWidth="2"
+          {/* right face */}
+          <path
+            d="M 60 64 L 60 136 L 104 112 L 104 42 Z"
+            stroke="rgba(255,255,255,0.48)"
+            strokeWidth="1.4"
+            fill="rgba(0,240,255,0.08)"
+            filter="url(#cyanGlow)"
           />
 
           {/* lock */}
-          <g transform="translate(85,86)">
-            <rect
-              x="0"
-              y="14"
-              width="30"
-              height="26"
-              rx="4"
-              fill="rgba(180,240,255,0.1)"
-              stroke="rgba(220,250,255,0.7)"
-              strokeWidth="1.4"
-            />
-            <path
-              d="M 7 14 L 7 8 C 7 1, 23 1, 23 8 L 23 14"
-              fill="none"
-              stroke="rgba(220,250,255,0.7)"
-              strokeWidth="1.4"
-            />
-            <circle cx="15" cy="27" r="4" fill="none" stroke="rgba(220,250,255,0.75)" strokeWidth="1.2" />
-            <line x1="15" y1="31" x2="15" y2="38" stroke="rgba(220,250,255,0.75)" strokeWidth="1.2" />
-          </g>
-        </g>
+          <circle cx="60" cy="88" r="8" stroke="rgba(255,255,255,0.82)" strokeWidth="1.5" fill="none" />
+          <rect x="54" y="92" width="12" height="10" stroke="rgba(255,255,255,0.82)" strokeWidth="1.5" fill="none" />
 
-        {/* invisible access line */}
-        <path
-          d="M 470 214 L 645 120"
-          stroke="#ff2a2a"
-          strokeWidth="2"
-          strokeDasharray="10 10"
-          fill="none"
-          opacity="0.75"
-        >
-          <animate attributeName="stroke-dashoffset" values="0;-40" dur="1.4s" repeatCount="indefinite" />
-          <animate attributeName="opacity" values="0.35;0.9;0.35" dur="1.4s" repeatCount="indefinite" />
-        </path>
-
-        {/* red watcher eye */}
-        <g transform="translate(655,82)">
-          <ellipse
-            cx="0"
-            cy="0"
-            rx="26"
-            ry="15"
-            fill="rgba(255,42,42,0.07)"
-            stroke="rgba(255,42,42,0.5)"
-            strokeWidth="2"
-          />
-          <circle cx="0" cy="0" r="6" fill="#ff2a2a">
-            <animate attributeName="r" values="5;7;5" dur="1.8s" repeatCount="indefinite" />
-            <animate attributeName="opacity" values="0.65;1;0.65" dur="1.8s" repeatCount="indefinite" />
+          {/* subtle pulse on vault */}
+          <circle cx="60" cy="88" r="26" fill="rgba(0,240,255,0.06)">
+            <animate attributeName="r" values="22;30;22" dur="2.8s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.2;0.45;0.2" dur="2.8s" repeatCount="indefinite" />
           </circle>
         </g>
+
+        {/* shadow figure right */}
+        <g transform="translate(585,142)">
+          <animateTransform
+            attributeName="transform"
+            type="translate"
+            values="585 142;578 142;585 142;590 142;585 142"
+            dur="8s"
+            repeatCount="indefinite"
+          />
+          <ellipse cx="25" cy="18" rx="12" ry="15" fill="rgba(20,20,30,0.92)" />
+          <path
+            d="M 25 34 L 25 74 L 12 98 M 25 74 L 38 98 M 25 48 L 8 60 M 25 48 L 42 60"
+            stroke="rgba(32,32,42,0.86)"
+            strokeWidth="8"
+            strokeLinecap="round"
+            fill="none"
+            filter="url(#shadowBlur)"
+          />
+          <circle cx="20" cy="15" r="2.4" fill="#ff2a2a" filter="url(#redGlow)">
+            <animate attributeName="opacity" values="0.7;1;0.7" dur="1.8s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="30" cy="15" r="2.4" fill="#ff2a2a" filter="url(#redGlow)">
+            <animate attributeName="opacity" values="0.7;1;0.7" dur="1.8s" begin="0.12s" repeatCount="indefinite" />
+          </circle>
+        </g>
+
+        {/* shadow figure left/back */}
+        <g transform="translate(282,170)">
+          <animateTransform
+            attributeName="transform"
+            type="translate"
+            values="282 170;288 170;282 170;276 170;282 170"
+            dur="9s"
+            repeatCount="indefinite"
+          />
+          <ellipse cx="22" cy="15" rx="11" ry="14" fill="rgba(20,20,30,0.88)" />
+          <path
+            d="M 22 29 L 22 64 L 10 88 M 22 64 L 34 88 M 22 42 L 7 54 M 22 42 L 37 54"
+            stroke="rgba(32,32,42,0.78)"
+            strokeWidth="7"
+            strokeLinecap="round"
+            fill="none"
+            filter="url(#shadowBlur)"
+          />
+          <circle cx="18" cy="13" r="2" fill="#ff2a2a" filter="url(#redGlow)">
+            <animate attributeName="opacity" values="0.65;1;0.65" dur="2s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="26" cy="13" r="2" fill="#ff2a2a" filter="url(#redGlow)">
+            <animate attributeName="opacity" values="0.65;1;0.65" dur="2s" begin="0.16s" repeatCount="indefinite" />
+          </circle>
+        </g>
+
+        {/* extraction stream 1 */}
+        <path
+          d="M 408 223 Q 505 200 585 160"
+          stroke="rgba(255,42,42,0.34)"
+          strokeWidth="2"
+          fill="none"
+          strokeDasharray="6 6"
+        />
+        <circle r="4" fill="#ff2a2a" filter="url(#redGlow)">
+          <animateMotion
+            dur="3s"
+            repeatCount="indefinite"
+            path="M 408 223 Q 505 200 585 160"
+          />
+          <animate attributeName="opacity" values="0;1;1;0" dur="3s" repeatCount="indefinite" />
+        </circle>
+
+        {/* extraction stream 2 */}
+        <path
+          d="M 392 230 Q 330 205 285 185"
+          stroke="rgba(255,42,42,0.24)"
+          strokeWidth="1.6"
+          fill="none"
+          strokeDasharray="4 8"
+        />
+        <circle r="3.2" fill="#ff2a2a" filter="url(#redGlow)">
+          <animateMotion
+            dur="3.6s"
+            begin="1s"
+            repeatCount="indefinite"
+            path="M 392 230 Q 330 205 285 185"
+          />
+          <animate attributeName="opacity" values="0;1;1;0" dur="3.6s" begin="1s" repeatCount="indefinite" />
+        </circle>
+
+        {/* watching eye */}
+        <g transform="translate(600,86)">
+          <animateTransform
+            attributeName="transform"
+            type="rotate"
+            values="0 20 14;4 20 14;-4 20 14;0 20 14"
+            dur="6s"
+            repeatCount="indefinite"
+          />
+          <ellipse cx="20" cy="14" rx="18" ry="12" stroke="#ff2a2a" strokeWidth="1.5" fill="none" opacity="0.42" />
+          <circle cx="20" cy="14" r="6" fill="#ff2a2a" opacity="0.86" filter="url(#redGlow)" />
+          <circle cx="20" cy="14" r="3" fill="#ff6666" />
+        </g>
+
+        {/* subtle glitch sweep */}
+        <rect x="0" y="0" width="800" height="450" fill="url(#none)" opacity="0">
+          <animate attributeName="opacity" values="0;0;0.08;0;0" dur="10s" repeatCount="indefinite" />
+        </rect>
+        <rect x="0" y="0" width="800" height="450" fill="rgba(255,42,42,0.06)">
+          <animate attributeName="opacity" values="0;0;0.05;0;0" dur="10s" repeatCount="indefinite" />
+          <animate attributeName="x" values="-6;3;-2;0;0" dur="0.35s" begin="7.7s" repeatCount="indefinite" />
+        </rect>
       </svg>
     </div>
   );
