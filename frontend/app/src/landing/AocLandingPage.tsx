@@ -14,8 +14,8 @@ export const renderAocLandingPage = () => {
           <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 flex items-center justify-center">
-  <LogoRotating size={28} inverted />
-</div>
+                <LogoRotating size={28} inverted />
+              </div>
 
               <div className="flex items-baseline">
                 <span className="text-xl font-semibold tracking-tighter">AOC</span>
@@ -49,21 +49,21 @@ export const renderAocLandingPage = () => {
 
       <section className="min-h-screen flex items-center pt-16">
         <div className="max-w-5xl mx-auto px-6 text-center">
-          <h1 className=" text-[68px] md:text-[82px] leading-[1.05] font-semibold tracking-[-3.5px] mb-6">
+          <h1 className="text-[68px] md:text-[82px] leading-[1.05] font-semibold tracking-[-3.5px] mb-6">
             You don&apos;t own your data.
           </h1>
 
-          <p className=" text-[52px] md:text-[62px] leading-none font-light tracking-[-2px] text-gray-300 mb-8">
+          <p className="text-[52px] md:text-[62px] leading-none font-light tracking-[-2px] text-gray-300 mb-8">
             You just hope no one abuses it.
           </p>
 
-          <p className=" max-w-[620px] mx-auto text-[21px] text-gray-300 leading-relaxed mb-14">
+          <p className="max-w-[620px] mx-auto text-[21px] text-gray-300 leading-relaxed mb-14">
             There is a better system. One where access is granted, not assumed.
           </p>
 
           <a
             href="#solution"
-            className=" px-12 py-5 bg-[#00f0ff] hover:bg-[#00d4e0] text-black font-semibold text-xl rounded-2xl transition-all active:scale-[0.97] inline-block"
+            className="px-12 py-5 bg-[#00f0ff] hover:bg-[#00d4e0] text-black font-semibold text-xl rounded-2xl transition-all active:scale-[0.97] inline-block"
           >
             Enter the new model →
           </a>
@@ -72,32 +72,32 @@ export const renderAocLandingPage = () => {
 
       <section id="problem" className="scroll-mt-24 py-40 border-t border-white/10">
         <div className="max-w-6xl mx-auto px-6">
-          <header className="text-center mb-20 ">
+          <header className="text-center mb-20">
             <h2 className="text-5xl md:text-6xl font-semibold tracking-tight">
               The current model is broken.
             </h2>
           </header>
 
           <div className="grid md:grid-cols-2 gap-10">
-            <div className="">
+            <div>
               <ProblemCard title={<>Your data is copied. Stored. Resold.</>}>
                 <DataPipelineAnimation />
               </ProblemCard>
             </div>
 
-            <div className="">
+            <div>
               <ProblemCard title={<>Consent is implied. Not explicit.</>}>
                 <ImplicitConsentAnimation />
               </ProblemCard>
             </div>
 
-            <div className="">
+            <div>
               <ProblemCard title={<>You never see who accessed what.</>}>
                 <InvisibleAccessAnimation />
               </ProblemCard>
             </div>
 
-            <div className="">
+            <div>
               <ProblemCard title={<>Trust is a blind assumption.</>}>
                 <BlindTrustAnimation />
               </ProblemCard>
@@ -108,7 +108,7 @@ export const renderAocLandingPage = () => {
 
       <section id="solution" className="scroll-mt-24 py-40 border-t border-white/10">
         <div className="max-w-5xl mx-auto px-6 text-center">
-          <header className="mb-24 ">
+          <header className="mb-24">
             <h2 className="text-5xl md:text-6xl font-semibold mb-6">
               What if access required permission?
             </h2>
@@ -118,16 +118,16 @@ export const renderAocLandingPage = () => {
           </header>
 
           <div className="grid md:grid-cols-2 gap-8">
-            <article className=" bg-white/[0.03] border border-white/10 rounded-3xl p-10 hover:-translate-y-1 transition">
+            <article className="bg-white/[0.03] border border-white/10 rounded-3xl p-10 hover:-translate-y-1 transition">
               Explicit consent
             </article>
-            <article className=" bg-white/[0.03] border border-white/10 rounded-3xl p-10 hover:-translate-y-1 transition">
+            <article className="bg-white/[0.03] border border-white/10 rounded-3xl p-10 hover:-translate-y-1 transition">
               Modular permissions
             </article>
-            <article className=" bg-white/[0.03] border border-white/10 rounded-3xl p-10 hover:-translate-y-1 transition">
+            <article className="bg-white/[0.03] border border-white/10 rounded-3xl p-10 hover:-translate-y-1 transition">
               Verifiable interactions
             </article>
-            <article className=" bg-white/[0.03] border border-white/10 rounded-3xl p-10 hover:-translate-y-1 transition">
+            <article className="bg-white/[0.03] border border-white/10 rounded-3xl p-10 hover:-translate-y-1 transition">
               Full control remains with the user
             </article>
           </div>
@@ -135,19 +135,62 @@ export const renderAocLandingPage = () => {
       </section>
 
       <section id="how" className="scroll-mt-24 py-32 border-t border-white/10">
-  <div className="max-w-6xl mx-auto px-6 text-center">
-    <h2 className="text-6xl font-semibold mb-10">How it works</h2>
+        <div className="max-w-6xl mx-auto px-6 text-center">
+          <h2 className="text-5xl md:text-6xl font-semibold mb-4">How it works</h2>
 
-    <div className="w-full h-[320px] flex items-center justify-center bg-black">
-      <div className="w-full max-w-5xl h-full">
-        <HowItWorksFlow />
-      </div>
-    </div>
-  </div>
-</section>
+          <p className="max-w-2xl mx-auto text-base sm:text-lg leading-7 text-white/60 mb-10">
+            AOC enforces access in real time. Every request is evaluated against explicit
+            permissions, then granted or denied, and permanently recorded.
+          </p>
+
+          <div className="w-full h-[360px] sm:h-[420px] md:h-[460px] flex items-center justify-center bg-black">
+            <div className="w-full max-w-5xl h-full rounded-3xl border border-white/10 bg-white/[0.02] p-4 sm:p-6 md:p-8">
+              <HowItWorksFlow />
+            </div>
+          </div>
+
+          <div className="mt-10 grid grid-cols-1 gap-5 sm:gap-6 md:grid-cols-3">
+            <article className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-300/80">
+                Step 1
+              </p>
+              <h3 className="mt-2 text-lg font-semibold text-white">
+                Define Permissions
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-white/60">
+                Every interaction starts with explicit rules. Who can access what, under which conditions.
+              </p>
+            </article>
+
+            <article className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-300/80">
+                Step 2
+              </p>
+              <h3 className="mt-2 text-lg font-semibold text-white">
+                Evaluate Request
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-white/60">
+                Each request is checked in real time against permissions, context, and policy.
+              </p>
+            </article>
+
+            <article className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-300/80">
+                Step 3
+              </p>
+              <h3 className="mt-2 text-lg font-semibold text-white">
+                Grant &amp; Audit Access
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-white/60">
+                Approved actions execute. Every outcome is recorded for transparency and auditability.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
 
       <section className="py-32 border-t border-white/10 text-center">
-        <div className="">
+        <div>
           <h2 className="text-6xl font-semibold mb-8">Access should be earned.</h2>
           <button className="px-12 py-6 bg-[#00f0ff] text-black font-semibold text-2xl rounded-2xl hover:scale-[1.02] transition">
             Start building on AOC →
