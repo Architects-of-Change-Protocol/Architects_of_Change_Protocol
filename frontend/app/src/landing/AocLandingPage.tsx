@@ -143,9 +143,42 @@ export const renderAocLandingPage = () => {
             permissions, then granted or denied, and permanently recorded.
           </p>
 
-          <div className="w-full h-[520px] sm:h-[520px] md:h-[460px] flex items-center justify-center bg-black">
-            <div className="w-full max-w-5xl h-full rounded-3xl border border-white/10 bg-white/[0.02] p-4 sm:p-6 md:p-8">
-              <div className="w-full h-full flex items-center justify-center"><div className="w-full h-full transform rotate-90 sm:rotate-0 scale-[1.7] sm:scale-100 origin-center"><HowItWorksFlow /></div></div>
+          <div className="w-full h-[520px] sm:h-[420px] md:h-[460px] flex items-center justify-center bg-black">
+            <div className="relative w-full max-w-5xl h-full rounded-3xl border border-white/10 bg-white/[0.02] p-4 sm:p-6 md:p-8">
+              <div className="absolute inset-y-0 left-3 z-10 flex flex-col justify-around text-left sm:hidden pointer-events-none">
+                <div className="w-[120px]">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-300/80">
+                    Step 1
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-white">
+                    Define Permissions
+                  </p>
+                </div>
+
+                <div className="w-[120px]">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-300/80">
+                    Step 2
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-white">
+                    Evaluate Request
+                  </p>
+                </div>
+
+                <div className="w-[120px]">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-300/80">
+                    Step 3
+                  </p>
+                  <p className="mt-1 text-sm font-semibold text-white">
+                    Grant &amp; Audit Access
+                  </p>
+                </div>
+              </div>
+
+              <div className="w-full h-full flex items-center justify-center pl-[116px] sm:pl-0">
+                <div className="w-full h-full transform rotate-90 sm:rotate-0 scale-[1.7] sm:scale-100 origin-center">
+                  <HowItWorksFlow />
+                </div>
+              </div>
             </div>
           </div>
 

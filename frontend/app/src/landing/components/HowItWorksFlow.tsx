@@ -155,8 +155,7 @@ export function HowItWorksFlow() {
           fill="rgba(255,255,255,0.92)"
           fontSize="13"
           fontWeight="600"
-          letterSpacing="0.2"
-         transform="rotate(-90)" className="sm:[transform:none]">
+          letterSpacing="0.2" className="hidden sm:block">
           Define Permissions
         </text>
 
@@ -241,8 +240,7 @@ export function HowItWorksFlow() {
           fill="rgba(255,255,255,0.92)"
           fontSize="13"
           fontWeight="600"
-          letterSpacing="0.2"
-         transform="rotate(-90)" className="sm:[transform:none]">
+          letterSpacing="0.2" className="hidden sm:block">
           Evaluate Request
         </text>
 
@@ -362,8 +360,7 @@ export function HowItWorksFlow() {
           fill="rgba(255,255,255,0.92)"
           fontSize="13"
           fontWeight="600"
-          letterSpacing="0.2"
-         transform="rotate(-90)" className="sm:[transform:none]">
+          letterSpacing="0.2" className="hidden sm:block">
           Grant &amp; Audit Access
         </text>
 
