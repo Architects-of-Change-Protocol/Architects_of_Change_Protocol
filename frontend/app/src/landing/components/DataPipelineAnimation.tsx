@@ -1,6 +1,6 @@
 export function DataPipelineAnimation() {
   return (
-    <div className="w-full max-w-[420px] aspect-[16/9] flex items-center justify-center">
+    <div className="w-full max-w-[470px] aspect-[16/9] flex items-center justify-center">
       <svg viewBox="0 0 800 450" className="w-full h-full">
         
         <defs>
@@ -21,7 +21,7 @@ export function DataPipelineAnimation() {
 
         {/* USER */}
         <g transform="translate(90,170)" stroke="white" strokeWidth="2">
-          <circle cx="30" cy="10" r="10" fill="none" />
+          <circle opacity="0.8" cx="30" cy="10" r="10" fill="none" />
           <line x1="30" y1="20" x2="30" y2="50" />
           <line x1="30" y1="30" x2="15" y2="40" />
           <line x1="30" y1="30" x2="45" y2="40" />
@@ -76,12 +76,12 @@ export function DataPipelineAnimation() {
 
         {/* RECEIVERS */}
         <g transform="translate(660,160)" stroke="rgba(255,0,0,0.4)">
-          <circle cx="0" cy="0" r="10" fill="none" />
+          <circle opacity="0.8" cx="0" cy="0" r="10" fill="none" />
           <line x1="0" y1="10" x2="0" y2="30" />
         </g>
 
         <g transform="translate(700,160)" stroke="rgba(255,0,0,0.4)">
-          <circle cx="0" cy="0" r="10" fill="none" />
+          <circle opacity="0.8" cx="0" cy="0" r="10" fill="none" />
           <line x1="0" y1="10" x2="0" y2="30" />
         </g>
 
