@@ -156,7 +156,7 @@ export function HowItWorksFlow() {
           fontSize="13"
           fontWeight="600"
           letterSpacing="0.2"
-        >
+         transform="rotate(-90)" className="sm:[transform:none]">
           Define Permissions
         </text>
 
@@ -242,7 +242,7 @@ export function HowItWorksFlow() {
           fontSize="13"
           fontWeight="600"
           letterSpacing="0.2"
-        >
+         transform="rotate(-90)" className="sm:[transform:none]">
           Evaluate Request
         </text>
 
@@ -363,7 +363,7 @@ export function HowItWorksFlow() {
           fontSize="13"
           fontWeight="600"
           letterSpacing="0.2"
-        >
+         transform="rotate(-90)" className="sm:[transform:none]">
           Grant &amp; Audit Access
         </text>
 
