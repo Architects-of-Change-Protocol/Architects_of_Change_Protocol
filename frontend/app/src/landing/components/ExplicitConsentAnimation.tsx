@@ -11,21 +11,21 @@ export function ExplicitConsentAnimation() {
   }, []);
 
   return (
-    <svg viewBox="0 0 900 300" className="w-full h-full">
+    <svg viewBox="0 0 900 300" className="w-full h-full scale-125">
 
       {/* USER */}
-      <g transform="translate(120,150)">
+      <g transform="translate(160,150)">
         <circle r="35" fill="rgba(0,240,255,0.08)" stroke="rgba(0,240,255,0.4)" />
         <circle r="8" cy="-5" fill="#00f0ff" />
       </g>
 
       {/* PANEL */}
-      <g transform="translate(350,150)">
+      <g transform="translate(400,150)">
         <rect
           x="-100"
           y="-70"
-          width="200"
-          height="140"
+          width="240"
+          height="160"
           rx="18"
           fill="rgba(20,20,30,0.9)"
           stroke={step >= 1 ? "#00f0ff" : "rgba(0,240,255,0.25)"}
