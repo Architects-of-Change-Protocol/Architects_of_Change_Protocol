@@ -42,7 +42,7 @@ export const renderAocLandingPage = () => {
             </div>
 
             <a
-              href="#how"
+              href="/enterprise"
               className="px-6 py-2.5 bg-white text-black rounded-full text-sm font-semibold hover:bg-gray-200 transition"
             >
               Launch App
@@ -67,7 +67,7 @@ export const renderAocLandingPage = () => {
 
           <a
             href="#solution"
-            className="px-12 py-5 bg-[#00f0ff] hover:bg-[#00d4e0] text-black font-semibold text-xl rounded-2xl transition-all active:scale-[2.8] inline-block"
+            className="px-12 py-5 bg-[#00f0ff] hover:bg-[#00d4e0] text-black font-semibold text-xl rounded-2xl transition-all active:scale-[0.98] inline-block"
           >
             Enter the new model →
           </a>
