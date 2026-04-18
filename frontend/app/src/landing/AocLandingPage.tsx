@@ -143,7 +143,7 @@ export const renderAocLandingPage = () => {
             permissions, then granted or denied, and permanently recorded.
           </p>
 
-          <div className="w-full h-[610px] sm:h-[420px] md:h-[460px] flex items-center justify-center bg-black">
+          <div className="w-full h-[570px] sm:h-[420px] md:h-[460px] flex items-center justify-center bg-black">
             <div className="relative w-full max-w-5xl h-full rounded-3xl border border-white/10 bg-white/[0.02] p-4 sm:p-6 md:p-8">
               <div className="absolute left-5 top-[104px] w-[165px] sm:hidden text-left pointer-events-none">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-300/80">
@@ -154,7 +154,7 @@ export const renderAocLandingPage = () => {
                 </p>
               </div>
 
-              <div className="absolute left-5 top-[288px] w-[165px] sm:hidden text-left pointer-events-none">
+              <div className="absolute left-5 top-[272px] w-[165px] sm:hidden text-left pointer-events-none">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-300/80">
                   Step 2
                 </p>
@@ -163,7 +163,7 @@ export const renderAocLandingPage = () => {
                 </p>
               </div>
 
-              <div className="absolute left-5 top-[452px] w-[165px] sm:hidden text-left pointer-events-none">
+              <div className="absolute left-5 top-[436px] w-[165px] sm:hidden text-left pointer-events-none">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-300/80">
                   Step 3
                 </p>
