@@ -36,14 +36,14 @@ export const renderAocLandingPage = () => {
               <a href="#solution" className="hover:text-white transition">
                 Solution
               </a>
-              <a href="/enterprise" className="hover:text-white transition">
+              <a href="#how" className="hover:text-white transition">
                 How it works
               </a>
             </div>
 
             <a
-              href="/enterprise"
-              className="px-6 py-2.5 bg-white text-black rounded-full text-sm font-semibold hover:bg-gray-200 transition"
+              href="/app"
+              className="px-6 py-2.5 bg-white text-black rounded-full text-sm font-semibold hover:bg-gray-200 transition active:scale-[0.98] inline-block"
             >
               Launch App
             </a>
@@ -65,12 +65,21 @@ export const renderAocLandingPage = () => {
             There is a better system. One where access is granted, not assumed.
           </p>
 
-          <a
-            href="#solution"
-            className="px-12 py-5 bg-[#00f0ff] hover:bg-[#00d4e0] text-black font-semibold text-xl rounded-2xl transition-all active:scale-[0.98] inline-block"
-          >
-            Enter the new model →
-          </a>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="#solution"
+              className="px-12 py-5 bg-[#00f0ff] hover:bg-[#00d4e0] text-black font-semibold text-xl rounded-2xl transition-all active:scale-[0.98] inline-block"
+            >
+              Enter the new model →
+            </a>
+
+            <a
+              href="/enterprise"
+              className="px-10 py-5 border border-white/15 hover:border-white/30 text-white font-semibold text-xl rounded-2xl transition-all active:scale-[0.98] inline-block"
+            >
+              Integrate AOC
+            </a>
+          </div>
         </div>
       </section>
 
