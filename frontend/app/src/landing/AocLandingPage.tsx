@@ -36,7 +36,7 @@ export const renderAocLandingPage = () => {
               <a href="#solution" className="hover:text-white transition">
                 Solution
               </a>
-              <a href="#how" className="hover:text-white transition">
+              <a href="/enterprise" className="hover:text-white transition">
                 How it works
               </a>
             </div>
