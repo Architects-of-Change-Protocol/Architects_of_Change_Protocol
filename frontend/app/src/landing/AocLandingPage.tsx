@@ -7,6 +7,7 @@ import { InvisibleAccessAnimation } from './components/InvisibleAccessAnimation'
 import { BlindTrustAnimation } from './components/BlindTrustAnimation';
 import { ModularPermissionsAnimation } from './components/ModularPermissionsAnimation';
 import { ExplicitConsentAnimation } from './components/ExplicitConsentAnimation';
+import { VerifiableInteractionsAnimation } from './components/VerifiableInteractionsAnimation';
 
 export const renderAocLandingPage = () => {
   return (
@@ -132,8 +133,11 @@ export const renderAocLandingPage = () => {
                 <ModularPermissionsAnimation />
               </div>
             </article>
-            <article className="bg-white/[0.03] border border-white/10 rounded-3xl p-10 hover:-translate-y-1 transition">
-              Verifiable interactions
+            <article className="bg-white/[0.03] border border-white/10 rounded-3xl p-8 hover:-translate-y-1 transition min-h-[320px] flex flex-col">
+              <div className="text-sm text-white/60 mb-4">Verifiable interactions</div>
+              <div className="flex-1 flex items-center justify-center">
+                <VerifiableInteractionsAnimation />
+              </div>
             </article>
             <article className="bg-white/[0.03] border border-white/10 rounded-3xl p-10 hover:-translate-y-1 transition">
               Full control remains with the user
