@@ -5,6 +5,7 @@ import { DataPipelineAnimation } from './components/DataPipelineAnimation';
 import { ImplicitConsentAnimation } from './components/ImplicitConsentAnimation';
 import { InvisibleAccessAnimation } from './components/InvisibleAccessAnimation';
 import { BlindTrustAnimation } from './components/BlindTrustAnimation';
+import { AocInfrastructureAnimated } from './components/AocInfrastructureAnimated'
 
 export const renderAocLandingPage = () => {
   return (
