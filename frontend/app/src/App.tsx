@@ -1,9 +1,9 @@
-import { renderAocLandingPage } from './landing/AocLandingPage';
-import { renderEnterprisePage } from './landing/EnterprisePage';
+import { AocLandingPage } from './landing/AocLandingPage';
+import { EnterprisePage } from './landing/EnterprisePage';
 
 function App() {
-  if (window.location.pathname === '/enterprise') return renderEnterprisePage();
-  return renderAocLandingPage();
+  if (window.location.pathname === '/enterprise') return <EnterprisePage />;
+  return <AocLandingPage />;
 }
 
 export default App;
