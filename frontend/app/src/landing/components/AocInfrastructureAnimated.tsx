@@ -13,12 +13,17 @@ export function AocInfrastructureAnimated() {
           </p>
         </header>
 
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-5 md:gap-4">
           <VerticalCard title="HR" subtitle="References • Hiring • Reputation" />
           <VerticalCard title="Finance" subtitle="Consented Access • Risk Signals" />
           <VerticalCard title="Health" subtitle="Patient-Controlled Data" />
           <VerticalCard title="Events" subtitle="Tickets • Credentials • Rewards" />
-          <VerticalCard title="AI Agents" subtitle="Scoped Machine Access" active />
+          <VerticalCard
+            title="AI Agents"
+            subtitle="Scoped Machine Access"
+            active
+            className="col-span-2 md:col-span-1"
+          />
         </div>
 
         <div className="relative mt-10">
@@ -244,23 +249,26 @@ function VerticalCard({
   title,
   subtitle,
   active = false,
+  className,
 }: {
   title: string
   subtitle: string
   active?: boolean
+  className?: string
 }) {
   return (
     <div
       className={[
-        'rounded-[20px] border px-5 py-6 transition-all duration-500',
+        'min-h-[104px] rounded-[20px] border px-4 py-4 transition-all duration-500 md:min-h-[132px] md:px-5 md:py-6',
         'bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.015))]',
         active
           ? 'border-cyan-400/45 shadow-[0_0_32px_rgba(0,240,255,0.12)] animate-ai-card-pulse'
           : 'border-white/10',
+        className,
       ].join(' ')}
     >
-      <div className="text-xl font-semibold text-white">{title}</div>
-      <div className="mt-3 text-sm text-white/45">{subtitle}</div>
+      <div className="text-lg font-semibold text-white md:text-xl">{title}</div>
+      <div className="mt-2 text-xs text-white/45 md:mt-3 md:text-sm">{subtitle}</div>
     </div>
   )
 }
