@@ -1,3 +1,4 @@
+import { AocInfrastructureAnimated } from "./components/AocInfrastructureAnimated";
 import { LogoRotating } from '../components/logo/LogoRotating';
 
 export const renderEnterprisePage = () => {
@@ -158,6 +159,21 @@ export const renderEnterprisePage = () => {
         <div className="max-w-6xl mx-auto px-6">
           <header className="text-center mb-16">
             <h2 className="text-4xl md:text-6xl font-semibold tracking-tight mb-4">
+      <section className="py-24">
+        <div className="w-full">
+          <div className="mb-10 max-w-3xl mx-auto text-center">
+            <p className="text-sm uppercase tracking-[0.25em] text-white/50 mb-4">Shared Infrastructure</p>
+            <h2 className="text-4xl md:text-5xl font-semibold text-white mb-4">
+              A single control plane for governed enterprise access
+            </h2>
+            <p className="text-white/70 text-lg leading-relaxed">
+              AOC provides a unified layer for consent, policy enforcement, capability restrictions,
+              identity-aware access, and full auditability across enterprise systems.
+            </p>
+          </div>
+          <AocInfrastructureAnimated />
+        </div>
+      </section>
               How enterprises can use AOC
             </h2>
             <p className="max-w-3xl mx-auto text-white/60 text-lg">
