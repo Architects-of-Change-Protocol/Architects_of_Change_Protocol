@@ -3,17 +3,17 @@ export function AocInfrastructureAnimated() {
     <section className="relative w-full overflow-hidden rounded-[28px] border border-white/10 bg-[#050816]">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(0,240,255,0.08),transparent_35%),radial-gradient(circle_at_bottom,rgba(124,58,237,0.08),transparent_35%)]" />
 
-      <div className="relative mx-auto w-full max-w-[1180px] px-6 py-10 md:px-8 md:py-14">
-        <header className="mb-10 text-center">
-          <h2 className="text-3xl font-semibold tracking-tight text-white md:text-5xl">
+      <div className="relative mx-auto w-full max-w-[1180px] px-4 py-7 md:px-8 md:py-14">
+        <header className="mb-6 md:mb-10 text-center">
+          <h2 className="text-2xl font-semibold tracking-tight text-white md:text-5xl">
             One control plane across every data-driven vertical
           </h2>
-          <p className="mt-4 text-[11px] uppercase tracking-[0.35em] text-white/55 md:text-xs">
+          <p className="mt-3 md:mt-4 text-[10px] uppercase tracking-[0.22em] md:tracking-[0.35em] text-white/55 md:text-xs">
             Consent • Policy • Identity • Capability Control • Audit
           </p>
         </header>
 
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
+        <div className="grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-5">
           <VerticalCard title="HR" subtitle="References • Hiring • Reputation" />
           <VerticalCard title="Finance" subtitle="Consented Access • Risk Signals" />
           <VerticalCard title="Health" subtitle="Patient-Controlled Data" />
@@ -21,26 +21,26 @@ export function AocInfrastructureAnimated() {
           <VerticalCard title="AI Agents" subtitle="Scoped Machine Access" active />
         </div>
 
-        <div className="relative mt-10">
+        <div className="relative mt-6 md:mt-10">
           <div className="pointer-events-none absolute left-0 right-0 top-[32px] h-px bg-cyan-400/25" />
           <div className="pointer-events-none absolute left-0 right-0 bottom-[32px] h-px bg-cyan-400/25" />
 
-          <div className="relative rounded-[22px] border border-cyan-400/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.015),rgba(255,255,255,0.01))] px-5 py-8 md:px-8 md:py-10">
-            <div className="mb-5 text-center text-[11px] font-medium uppercase tracking-[0.28em] text-white/55">
+          <div className="relative rounded-[18px] md:rounded-[22px] border border-cyan-400/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.015),rgba(255,255,255,0.01))] px-3 py-5 md:px-8 md:py-10">
+            <div className="mb-4 md:mb-5 text-center text-[10px] md:text-[11px] font-medium uppercase tracking-[0.2em] md:tracking-[0.28em] text-white/55">
               Access Requests &amp; Decision Flow
             </div>
 
             <div className="relative mx-auto max-w-[940px]">
-              <div className="absolute left-[8%] right-[8%] top-[56px] h-px bg-gradient-to-r from-cyan-400/10 via-fuchsia-400/35 to-cyan-400/10" />
+              <div className="absolute left-[8%] right-[8%] top-[42px] md:top-[56px] h-px bg-gradient-to-r from-cyan-400/10 via-fuchsia-400/35 to-cyan-400/10" />
 
-              <div className="grid grid-cols-4 gap-4 text-center">
+              <div className="grid grid-cols-4 gap-2 md:gap-4 text-center">
                 <FlowStep label="Request" />
                 <FlowStep label="Evaluate" />
                 <FlowStep label="Transform" />
                 <FlowStep label="Enforce" />
               </div>
 
-              <div className="relative mt-6 h-10 overflow-hidden">
+              <div className="relative mt-4 md:mt-6 h-9 md:h-10 overflow-hidden">
                 <div className="absolute left-1/2 top-0 -translate-x-1/2 whitespace-nowrap text-[11px] md:text-xs">
                   <span className="inline-block animate-request-fade rounded-full border border-cyan-400/20 bg-cyan-400/8 px-3 py-1 text-cyan-300 shadow-[0_0_24px_rgba(0,240,255,0.12)]">
                     AI Agent → Request: Employment history (scoped access)
@@ -48,14 +48,14 @@ export function AocInfrastructureAnimated() {
                 </div>
               </div>
 
-              <div className="pointer-events-none absolute left-[10%] right-[10%] top-[49px] h-4">
+              <div className="pointer-events-none absolute left-[10%] right-[10%] top-[35px] md:top-[49px] h-4">
                 <div className="signal-dot" />
               </div>
 
-              <div className="pointer-events-none absolute left-[32%] top-[78px] h-[96px] w-px bg-gradient-to-b from-fuchsia-400/0 via-fuchsia-400/35 to-fuchsia-400/0 animate-link-pulse" />
-              <div className="pointer-events-none absolute left-[74%] top-[78px] h-[96px] w-px bg-gradient-to-b from-cyan-400/0 via-cyan-400/35 to-cyan-400/0 animate-link-pulse-delayed" />
+              <div className="pointer-events-none absolute left-[32%] top-[58px] md:top-[78px] h-[72px] md:h-[96px] w-px bg-gradient-to-b from-fuchsia-400/0 via-fuchsia-400/35 to-fuchsia-400/0 animate-link-pulse" />
+              <div className="pointer-events-none absolute left-[74%] top-[58px] md:top-[78px] h-[72px] md:h-[96px] w-px bg-gradient-to-b from-cyan-400/0 via-cyan-400/35 to-cyan-400/0 animate-link-pulse-delayed" />
 
-              <div className="mt-6 flex justify-end">
+              <div className="mt-4 md:mt-6 flex justify-end">
                 <div className="animate-output-fade rounded-full border border-emerald-400/20 bg-emerald-400/8 px-3 py-1 text-[11px] text-emerald-300 shadow-[0_0_24px_rgba(16,185,129,0.12)] md:text-xs">
                   Scoped Access Granted
                 </div>
@@ -64,7 +64,7 @@ export function AocInfrastructureAnimated() {
           </div>
         </div>
 
-        <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-5">
+        <div className="mt-6 md:mt-10 grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-5">
           <ModuleCard title="Identity" />
           <ModuleCard title="Policy" active="policy" />
           <ModuleCard title="Consent" />
@@ -72,7 +72,7 @@ export function AocInfrastructureAnimated() {
           <ModuleCard title="Audit" />
         </div>
 
-        <div className="relative mt-10 overflow-hidden rounded-[26px] border border-cyan-400/10 bg-[linear-gradient(180deg,rgba(124,58,237,0.08),rgba(255,255,255,0.02))] px-6 py-10 text-center md:px-10 md:py-14">
+        <div className="relative mt-6 md:mt-10 overflow-hidden rounded-[20px] md:rounded-[26px] border border-cyan-400/10 bg-[linear-gradient(180deg,rgba(124,58,237,0.08),rgba(255,255,255,0.02))] px-4 py-5 text-center md:px-10 md:py-14 hidden md:block">
           <div className="absolute inset-x-0 top-0 h-[5px] bg-gradient-to-r from-cyan-400 via-fuchsia-400 to-cyan-400 shadow-[0_0_24px_rgba(0,240,255,0.35)]" />
           <div className="absolute inset-x-0 top-0 mx-auto h-24 w-[70%] bg-cyan-400/10 blur-3xl" />
 
@@ -250,26 +250,29 @@ function VerticalCard({
   active?: boolean
 }) {
   return (
-    <div
+    <button
+      type="button"
       className={[
-        'rounded-[20px] border px-5 py-6 transition-all duration-500',
+        'w-full text-left rounded-[16px] md:rounded-[20px] border px-3 py-3.5 md:px-5 md:py-6 transition-all duration-500 min-h-[110px] md:min-h-0',
         'bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.015))]',
+        'hover:-translate-y-0.5 active:scale-[0.99]',
         active
           ? 'border-cyan-400/45 shadow-[0_0_32px_rgba(0,240,255,0.12)] animate-ai-card-pulse'
           : 'border-white/10',
       ].join(' ')}
     >
-      <div className="text-xl font-semibold text-white">{title}</div>
-      <div className="mt-3 text-sm text-white/45">{subtitle}</div>
-    </div>
+      <div className="text-base md:text-xl font-semibold text-white">{title}</div>
+      <div className="mt-1.5 md:mt-3 text-xs md:text-sm leading-snug text-white/45">{subtitle}</div>
+      <div className="mt-2 text-[10px] uppercase tracking-[0.16em] text-cyan-300/70">Explore use case →</div>
+    </button>
   )
 }
 
 function FlowStep({ label }: { label: string }) {
   return (
     <div className="relative">
-      <div className="mx-auto mb-2 h-2.5 w-2.5 rounded-full bg-[#8b5cf6] shadow-[0_0_18px_rgba(139,92,246,0.6)]" />
-      <div className="text-[10px] uppercase tracking-[0.24em] text-white/38 md:text-[11px]">
+      <div className="mx-auto mb-1.5 md:mb-2 h-2 w-2 md:h-2.5 md:w-2.5 rounded-full bg-[#8b5cf6] shadow-[0_0_18px_rgba(139,92,246,0.6)]" />
+      <div className="text-[9px] md:text-[11px] uppercase tracking-[0.14em] md:tracking-[0.24em] text-white/38">
         {label}
       </div>
     </div>
@@ -286,7 +289,7 @@ function ModuleCard({
   return (
     <div
       className={[
-        'rounded-[18px] border px-5 py-6 text-center text-lg font-semibold text-white',
+        'rounded-[14px] md:rounded-[18px] border px-3 py-3.5 md:px-5 md:py-6 text-center text-sm md:text-lg font-semibold text-white',
         'bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))]',
         active === 'policy'
           ? 'animate-module-pulse border-white/10'
