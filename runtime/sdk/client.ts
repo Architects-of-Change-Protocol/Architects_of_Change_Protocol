@@ -13,6 +13,7 @@ import type {
 import type { ApiResponse, RuntimeMode } from '../types/api-types';
 import type { PayoutCallbackInput, PayoutExecuteResult } from '../payout/types';
 import type { MeteredRuntimeEndpoint, UsageSummaryResult } from '../usage';
+import type { AccessRequest, ConsentDecision, CreateAccessRequestInput, GrantedAccess } from '../controlPlane';
 
 type FetchLike = typeof fetch;
 
@@ -59,6 +60,16 @@ export interface HostedRuntimeSdk {
   requestDataAccess(input: DataAccessRequestInput): Promise<DataAccessDecision>;
   listAuditEvents(input?: ListAuditEventsInput): Promise<RuntimeAuditEvent[]>;
   getUsageSummary(input: GetUsageSummaryInput): Promise<UsageSummaryResult>;
+  createAccessRequest(input: CreateAccessRequestInput): Promise<AccessRequest>;
+  listAccessRequests(input: { subject_id: string; status?: 'pending' | 'approved' | 'denied' }): Promise<AccessRequest[]>;
+  decideAccessRequest(input: {
+    request_id: string;
+    subject_id: string;
+    decision: 'approve' | 'deny';
+    reason?: string;
+  }): Promise<{ request: AccessRequest; decision: ConsentDecision; grant?: GrantedAccess }>;
+  listActiveGrants(input?: { subject_id?: string; requester_id?: string }): Promise<GrantedAccess[]>;
+  revokeGrant(input: { grant_id: string; subject_id?: string; requester_id?: string }): Promise<GrantedAccess>;
 }
 
 export class HostedRuntimeClient implements HostedRuntimeSdk {
@@ -191,5 +202,45 @@ export class HostedRuntimeClient implements HostedRuntimeSdk {
       throw new Error('Usage summary is only available in hosted mode.');
     }
     return this.get('/usage/summary', input);
+  }
+
+  async createAccessRequest(input: CreateAccessRequestInput): Promise<AccessRequest> {
+    if (this.mode === 'local') {
+      throw new Error('Control-plane access request endpoints are only available in hosted mode.');
+    }
+    return this.post('/access/request', input);
+  }
+
+  async listAccessRequests(input: { subject_id: string; status?: 'pending' | 'approved' | 'denied' }): Promise<AccessRequest[]> {
+    if (this.mode === 'local') {
+      throw new Error('Control-plane access request endpoints are only available in hosted mode.');
+    }
+    return this.get('/access/requests', input);
+  }
+
+  async decideAccessRequest(input: {
+    request_id: string;
+    subject_id: string;
+    decision: 'approve' | 'deny';
+    reason?: string;
+  }): Promise<{ request: AccessRequest; decision: ConsentDecision; grant?: GrantedAccess }> {
+    if (this.mode === 'local') {
+      throw new Error('Control-plane access request endpoints are only available in hosted mode.');
+    }
+    return this.post('/access/request/decision', input);
+  }
+
+  async listActiveGrants(input: { subject_id?: string; requester_id?: string } = {}): Promise<GrantedAccess[]> {
+    if (this.mode === 'local') {
+      throw new Error('Control-plane grant endpoints are only available in hosted mode.');
+    }
+    return this.get('/access/grants/active', input);
+  }
+
+  async revokeGrant(input: { grant_id: string; subject_id?: string; requester_id?: string }): Promise<GrantedAccess> {
+    if (this.mode === 'local') {
+      throw new Error('Control-plane grant endpoints are only available in hosted mode.');
+    }
+    return this.post('/access/grant/revoke', input);
   }
 }

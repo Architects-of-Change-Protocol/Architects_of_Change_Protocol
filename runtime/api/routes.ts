@@ -19,6 +19,7 @@ import type { ApiResponse, RuntimeEndpoint } from '../types/api-types';
 import { InMemoryUsageService, isMeteredEndpoint } from '../usage';
 import { InMemoryMonetizationService, InMemoryPricingRegistry, type PricingRule } from '../monetization';
 import type { MeteredRuntimeEndpoint, UsageSummaryResult } from '../usage';
+import { ControlPlaneService, type AccessRequest, type ConsentDecision, type GrantedAccess } from '../controlPlane';
 
 export type RuntimeCore = {
   evaluateEnforcement: typeof evaluateEnforcement;
@@ -31,6 +32,7 @@ export type RuntimeCore = {
   usageService: InMemoryUsageService;
   monetizationService: InMemoryMonetizationService;
   capabilityAuditService: InMemoryAuditService;
+  controlPlaneService: ControlPlaneService;
 };
 
 const DEFAULT_PRICING_RULES: PricingRule[] = [
@@ -46,6 +48,7 @@ const defaultAuditService = new RuntimeAuditService(defaultTrustService, default
 const defaultUsageService = new InMemoryUsageService();
 const defaultMonetizationService = new InMemoryMonetizationService(new InMemoryPricingRegistry(DEFAULT_PRICING_RULES));
 const defaultCapabilityAuditService = new InMemoryAuditService();
+const defaultControlPlaneService = new ControlPlaneService();
 
 const ROUTE_ERRORS = {
   invalidRequest: 'INVALID_REQUEST',
@@ -65,6 +68,7 @@ export const DEFAULT_RUNTIME_CORE: RuntimeCore = {
   usageService: defaultUsageService,
   monetizationService: defaultMonetizationService,
   capabilityAuditService: defaultCapabilityAuditService,
+  controlPlaneService: defaultControlPlaneService,
 };
 
 function reviveNow<T extends Record<string, unknown>>(payload: T): T {
@@ -157,6 +161,22 @@ export function deriveDecision(endpoint: RuntimeEndpoint, data: unknown): { deci
   if (endpoint === '/capability/mint') {
     return { decision: 'allow', reasonCode: 'CAPABILITY_MINTED' };
   }
+  if (endpoint === '/access/request') {
+    return { decision: 'allow', reasonCode: 'ACCESS_REQUEST_CREATED' };
+  }
+  if (endpoint === '/access/requests') {
+    return { decision: 'allow', reasonCode: 'ACCESS_REQUESTS_LISTED' };
+  }
+  if (endpoint === '/access/request/decision') {
+    const result = data as { decision: { decision: 'approve' | 'deny' } };
+    return { decision: 'allow', reasonCode: result.decision.decision === 'approve' ? 'ACCESS_REQUEST_APPROVED' : 'ACCESS_REQUEST_DENIED' };
+  }
+  if (endpoint === '/access/grants/active') {
+    return { decision: 'allow', reasonCode: 'ACTIVE_GRANTS_LISTED' };
+  }
+  if (endpoint === '/access/grant/revoke') {
+    return { decision: 'allow', reasonCode: 'GRANT_REVOKED' };
+  }
   if (endpoint === '/audit/events') {
     return { decision: 'allow', reasonCode: 'AUDIT_EVENTS_LISTED' };
   }
@@ -168,6 +188,11 @@ export function deriveDecision(endpoint: RuntimeEndpoint, data: unknown): { deci
     '/enforcement/evaluate',
     '/execution/authorize',
     '/capability/mint',
+    '/access/request',
+    '/access/requests',
+    '/access/request/decision',
+    '/access/grants/active',
+    '/access/grant/revoke',
     '/payout/execute',
     '/payout/callback',
     '/trust/credential/register',
@@ -204,6 +229,11 @@ export function executeRoute(
   | AocIdentityConsentRecord
   | PayoutExecuteResult
   | DataAccessDecision
+  | AccessRequest
+  | AccessRequest[]
+  | { request: AccessRequest; decision: ConsentDecision; grant?: GrantedAccess }
+  | GrantedAccess
+  | GrantedAccess[]
   | { received: true; reason_code: string }
   | { events: RuntimeAuditEvent[] }
   | UsageSummaryResult
@@ -216,6 +246,91 @@ export function executeRoute(
         return success(core.authorizeExecution(reviveNow(payload as Parameters<typeof authorizeExecution>[0])));
       case '/capability/mint':
         return success(core.mintCapability(payload as Parameters<typeof mintCapability>[0]));
+      case '/access/request': {
+        const request = payload as {
+          subject_id?: string;
+          requester_id?: string;
+          dataset_id?: string;
+          purpose?: string;
+          requested_scope?: string[];
+        };
+        if (!isNonEmptyString(request.subject_id)) {
+          return failure(ROUTE_ERRORS.invalidRequest, 'subject_id is required.');
+        }
+        if (!isNonEmptyString(request.requester_id)) {
+          return failure(ROUTE_ERRORS.invalidRequest, 'requester_id is required.');
+        }
+        if (!isNonEmptyString(request.dataset_id)) {
+          return failure(ROUTE_ERRORS.invalidRequest, 'dataset_id is required.');
+        }
+        if (!isNonEmptyString(request.purpose)) {
+          return failure(ROUTE_ERRORS.invalidRequest, 'purpose is required.');
+        }
+        if (request.requested_scope !== undefined && !Array.isArray(request.requested_scope)) {
+          return failure(ROUTE_ERRORS.invalidRequest, 'requested_scope must be an array when provided.');
+        }
+        return success(
+          core.controlPlaneService.createAccessRequest({
+            subject_id: request.subject_id,
+            requester_id: request.requester_id,
+            dataset_id: request.dataset_id,
+            purpose: request.purpose,
+            requested_scope: request.requested_scope,
+          })
+        );
+      }
+      case '/access/requests': {
+        const request = payload as { subject_id?: string; status?: 'pending' | 'approved' | 'denied' };
+        if (!isNonEmptyString(request.subject_id)) {
+          return failure(ROUTE_ERRORS.invalidRequest, 'subject_id is required.');
+        }
+        if (
+          request.status !== undefined &&
+          request.status !== 'pending' &&
+          request.status !== 'approved' &&
+          request.status !== 'denied'
+        ) {
+          return failure(ROUTE_ERRORS.invalidRequest, 'status must be one of pending, approved, denied.');
+        }
+        return success(core.controlPlaneService.listRequestsBySubject({ subject_id: request.subject_id, status: request.status }));
+      }
+      case '/access/request/decision': {
+        const request = payload as { request_id?: string; subject_id?: string; decision?: 'approve' | 'deny'; reason?: string };
+        if (!isNonEmptyString(request.request_id)) {
+          return failure(ROUTE_ERRORS.invalidRequest, 'request_id is required.');
+        }
+        if (!isNonEmptyString(request.subject_id)) {
+          return failure(ROUTE_ERRORS.invalidRequest, 'subject_id is required.');
+        }
+        if (request.decision !== 'approve' && request.decision !== 'deny') {
+          return failure(ROUTE_ERRORS.invalidRequest, 'decision must be approve or deny.');
+        }
+        return success(
+          core.controlPlaneService.decideAccessRequest({
+            request_id: request.request_id,
+            subject_id: request.subject_id,
+            decision: request.decision,
+            reason: request.reason,
+          })
+        );
+      }
+      case '/access/grants/active': {
+        const request = payload as { subject_id?: string; requester_id?: string };
+        return success(core.controlPlaneService.listActiveGrants({ subject_id: request.subject_id, requester_id: request.requester_id }));
+      }
+      case '/access/grant/revoke': {
+        const request = payload as { grant_id?: string; subject_id?: string; requester_id?: string };
+        if (!isNonEmptyString(request.grant_id)) {
+          return failure(ROUTE_ERRORS.invalidRequest, 'grant_id is required.');
+        }
+        return success(
+          core.controlPlaneService.revokeGrant({
+            grant_id: request.grant_id,
+            subject_id: request.subject_id,
+            requester_id: request.requester_id,
+          })
+        );
+      }
       case '/payout/execute': {
         const request = payload as Partial<RlusdWithdrawalRequest>;
         if (!isNonEmptyString(request.withdrawal_id)) {
