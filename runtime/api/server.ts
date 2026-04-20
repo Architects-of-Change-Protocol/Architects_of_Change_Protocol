@@ -13,6 +13,9 @@ const POST_ENDPOINTS: RuntimeEndpoint[] = [
   '/enforcement/evaluate',
   '/execution/authorize',
   '/capability/mint',
+  '/access/request',
+  '/access/request/decision',
+  '/access/grant/revoke',
   '/payout/execute',
   '/payout/callback',
   '/trust/credential/register',
@@ -21,7 +24,7 @@ const POST_ENDPOINTS: RuntimeEndpoint[] = [
   '/data/access',
 ];
 
-const GET_ENDPOINTS: RuntimeEndpoint[] = ['/audit/events', '/usage/summary'];
+const GET_ENDPOINTS: RuntimeEndpoint[] = ['/access/requests', '/access/grants/active', '/audit/events', '/usage/summary'];
 
 export type RuntimeServerDeps = {
   apiKeyStore?: InMemoryApiKeyStore;

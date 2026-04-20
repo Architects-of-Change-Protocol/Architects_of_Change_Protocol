@@ -39,3 +39,4 @@ export type {
 } from './usage';
 
 export * from './audit';
+export * from './controlPlane';
