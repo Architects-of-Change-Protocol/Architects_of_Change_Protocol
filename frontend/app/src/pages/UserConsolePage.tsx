@@ -1,28 +1,58 @@
 import { useState } from 'react';
 import { useAccessRequests } from '../hooks/useAccessRequests';
 import { useGrants } from '../hooks/useGrants';
+import {
+  getDatasetLabel,
+  getPurposeLabel,
+  getRequesterLabel,
+  getScopeLabel,
+} from '../lib/labels';
 import { MOCK_SUBJECT_ID, runtimeClient } from '../lib/runtimeClient';
 
 export function UserConsolePage() {
-  const { requests, loading: requestsLoading, error: requestsError, reload: reloadRequests } = useAccessRequests({
+  const {
+    requests,
+    loading: requestsLoading,
+    error: requestsError,
+    reload: reloadRequests,
+  } = useAccessRequests({
     subjectId: MOCK_SUBJECT_ID,
     status: 'pending',
   });
-  const { grants, loading: grantsLoading, error: grantsError, reload: reloadGrants } = useGrants({
+
+  const {
+    grants,
+    loading: grantsLoading,
+    error: grantsError,
+    reload: reloadGrants,
+  } = useGrants({
     subjectId: MOCK_SUBJECT_ID,
   });
 
   const [decisionLoadingId, setDecisionLoadingId] = useState<string | null>(null);
   const [revokeLoadingId, setRevokeLoadingId] = useState<string | null>(null);
+  const [dismissedRequestIds, setDismissedRequestIds] = useState<Record<string, true>>({});
+  const [recentlyApprovedRequestId, setRecentlyApprovedRequestId] = useState<string | null>(null);
 
   const decide = async (requestId: string, decision: 'approve' | 'deny') => {
     setDecisionLoadingId(requestId);
+
     try {
       await runtimeClient.decideAccessRequest({
         request_id: requestId,
         subject_id: MOCK_SUBJECT_ID,
         decision,
       });
+
+      setDismissedRequestIds((current) => ({ ...current, [requestId]: true }));
+
+      if (decision === 'approve') {
+        setRecentlyApprovedRequestId(requestId);
+        window.setTimeout(() => {
+          setRecentlyApprovedRequestId((current) => (current === requestId ? null : current));
+        }, 1400);
+      }
+
       await Promise.all([reloadRequests(), reloadGrants()]);
     } finally {
       setDecisionLoadingId(null);
@@ -31,50 +61,63 @@ export function UserConsolePage() {
 
   const revoke = async (grantId: string) => {
     setRevokeLoadingId(grantId);
+
     try {
       await runtimeClient.revokeGrant({
         grant_id: grantId,
         subject_id: MOCK_SUBJECT_ID,
       });
+
       await reloadGrants();
     } finally {
       setRevokeLoadingId(null);
     }
   };
 
+  const visibleRequests = requests.filter(
+    (request) => dismissedRequestIds[request.request_id] === undefined,
+  );
+
   return (
     <section className="space-y-8">
       <h1 className="text-2xl font-semibold">User Dashboard</h1>
 
       <div className="space-y-3">
-        <h2 className="text-lg font-semibold">Requests Inbox</h2>
+        <h2 className="text-lg font-semibold">Who wants your data</h2>
+        <p className="text-sm text-white/60">You decide who can access your data</p>
+
+        {recentlyApprovedRequestId !== null && (
+          <p className="text-emerald-300 text-sm">Approved</p>
+        )}
+
         {requestsError !== null && <p className="text-red-300 text-sm">{requestsError}</p>}
+
         <table className="w-full text-sm border border-white/10">
           <thead className="text-left bg-white/5">
             <tr>
-              <th className="p-2">Request</th>
               <th className="p-2">Requester</th>
               <th className="p-2">Dataset</th>
-              <th className="p-2">Purpose</th>
-              <th className="p-2">Scope</th>
+              <th className="p-2">Why</th>
+              <th className="p-2">What they want</th>
               <th className="p-2">Actions</th>
             </tr>
           </thead>
+
           <tbody>
-            {!requestsLoading && requests.length === 0 && (
+            {!requestsLoading && visibleRequests.length === 0 && (
               <tr>
-                <td className="p-2 text-white/60" colSpan={6}>
-                  No pending requests.
+                <td className="p-2 text-white/60" colSpan={5}>
+                  No one is requesting your data
                 </td>
               </tr>
             )}
-            {requests.map((request) => (
+
+            {visibleRequests.map((request) => (
               <tr key={request.request_id} className="border-t border-white/10">
-                <td className="p-2">{request.request_id}</td>
-                <td className="p-2">{request.requester_id}</td>
-                <td className="p-2">{request.dataset_id}</td>
-                <td className="p-2">{request.purpose}</td>
-                <td className="p-2">{request.requested_scope.join(', ')}</td>
+                <td className="p-2">{getRequesterLabel(request.requester_id)}</td>
+                <td className="p-2">{getDatasetLabel(request.dataset_id)}</td>
+                <td className="p-2">{getPurposeLabel(request.purpose)}</td>
+                <td className="p-2">{getScopeLabel(request.requested_scope)}</td>
                 <td className="p-2">
                   <div className="flex gap-2">
                     <button
@@ -85,8 +128,9 @@ export function UserConsolePage() {
                         void decide(request.request_id, 'approve');
                       }}
                     >
-                      Approve
+                      {decisionLoadingId === request.request_id ? 'Approving...' : 'Approve'}
                     </button>
+
                     <button
                       type="button"
                       disabled={decisionLoadingId === request.request_id}
@@ -95,7 +139,7 @@ export function UserConsolePage() {
                         void decide(request.request_id, 'deny');
                       }}
                     >
-                      Deny
+                      {decisionLoadingId === request.request_id ? 'Working...' : 'Deny'}
                     </button>
                   </div>
                 </td>
@@ -106,34 +150,36 @@ export function UserConsolePage() {
       </div>
 
       <div className="space-y-3">
-        <h2 className="text-lg font-semibold">Active Accesses</h2>
+        <h2 className="text-lg font-semibold">Who has access now</h2>
+
         {grantsError !== null && <p className="text-red-300 text-sm">{grantsError}</p>}
+
         <table className="w-full text-sm border border-white/10">
           <thead className="text-left bg-white/5">
             <tr>
-              <th className="p-2">Grant</th>
-              <th className="p-2">Requester</th>
+              <th className="p-2">Who</th>
               <th className="p-2">Dataset</th>
-              <th className="p-2">Scope</th>
-              <th className="p-2">Granted At</th>
+              <th className="p-2">Why</th>
+              <th className="p-2">What they can access</th>
               <th className="p-2">Actions</th>
             </tr>
           </thead>
+
           <tbody>
             {!grantsLoading && grants.length === 0 && (
               <tr>
-                <td className="p-2 text-white/60" colSpan={6}>
-                  No active grants.
+                <td className="p-2 text-white/60" colSpan={5}>
+                  No active access to your data
                 </td>
               </tr>
             )}
+
             {grants.map((grant) => (
               <tr key={grant.grant_id} className="border-t border-white/10">
-                <td className="p-2">{grant.grant_id}</td>
-                <td className="p-2">{grant.requester_id}</td>
-                <td className="p-2">{grant.dataset_id}</td>
-                <td className="p-2">{grant.scope.join(', ')}</td>
-                <td className="p-2">{grant.granted_at}</td>
+                <td className="p-2">{getRequesterLabel(grant.requester_id)}</td>
+                <td className="p-2">{getDatasetLabel(grant.dataset_id)}</td>
+                <td className="p-2">Approved data access</td>
+                <td className="p-2">{getScopeLabel(grant.scope)}</td>
                 <td className="p-2">
                   <button
                     type="button"
@@ -143,7 +189,7 @@ export function UserConsolePage() {
                       void revoke(grant.grant_id);
                     }}
                   >
-                    Revoke
+                    {revokeLoadingId === grant.grant_id ? 'Revoking...' : 'Revoke'}
                   </button>
                 </td>
               </tr>
