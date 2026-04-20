@@ -61,7 +61,11 @@ export interface HostedRuntimeSdk {
   listAuditEvents(input?: ListAuditEventsInput): Promise<RuntimeAuditEvent[]>;
   getUsageSummary(input: GetUsageSummaryInput): Promise<UsageSummaryResult>;
   createAccessRequest(input: CreateAccessRequestInput): Promise<AccessRequest>;
-  listAccessRequests(input: { subject_id: string; status?: 'pending' | 'approved' | 'denied' }): Promise<AccessRequest[]>;
+  listAccessRequests(input: {
+    subject_id: string;
+    requester_id?: string;
+    status?: 'pending' | 'approved' | 'denied';
+  }): Promise<AccessRequest[]>;
   decideAccessRequest(input: {
     request_id: string;
     subject_id: string;
@@ -211,7 +215,11 @@ export class HostedRuntimeClient implements HostedRuntimeSdk {
     return this.post('/access/request', input);
   }
 
-  async listAccessRequests(input: { subject_id: string; status?: 'pending' | 'approved' | 'denied' }): Promise<AccessRequest[]> {
+  async listAccessRequests(input: {
+    subject_id: string;
+    requester_id?: string;
+    status?: 'pending' | 'approved' | 'denied';
+  }): Promise<AccessRequest[]> {
     if (this.mode === 'local') {
       throw new Error('Control-plane access request endpoints are only available in hosted mode.');
     }
