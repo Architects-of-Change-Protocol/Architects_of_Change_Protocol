@@ -18,7 +18,9 @@ export function AocInfrastructureAnimated() {
           <VerticalCard title="Finance" subtitle="Consented Access • Risk Signals" />
           <VerticalCard title="Health" subtitle="Patient-Controlled Data" />
           <VerticalCard title="Events" subtitle="Tickets • Credentials • Rewards" />
-          <VerticalCard title="AI Agents" subtitle="Scoped Machine Access" active />
+          <div className="col-span-2 md:col-span-1">
+            <VerticalCard title="AI Agents" subtitle="Scoped Machine Access" active />
+          </div>
         </div>
 
         <div className="relative mt-10">
@@ -69,7 +71,9 @@ export function AocInfrastructureAnimated() {
           <ModuleCard title="Policy" active="policy" />
           <ModuleCard title="Consent" />
           <ModuleCard title="Capabilities" active="capabilities" />
+          <div className="col-span-2 md:col-span-1">
           <ModuleCard title="Audit" />
+        </div>
         </div>
 
         <div className="relative mt-10 overflow-hidden rounded-[26px] border border-cyan-400/10 bg-[linear-gradient(180deg,rgba(124,58,237,0.08),rgba(255,255,255,0.02))] px-6 py-10 text-center md:px-10 md:py-14">
@@ -252,7 +256,7 @@ function VerticalCard({
   return (
     <div
       className={[
-        'rounded-[20px] border px-5 py-6 transition-all duration-500',
+        'rounded-[20px] border px-5 py-7 transition-all duration-500',
         'bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.015))]',
         active
           ? 'border-cyan-400/45 shadow-[0_0_32px_rgba(0,240,255,0.12)] animate-ai-card-pulse'
@@ -286,7 +290,7 @@ function ModuleCard({
   return (
     <div
       className={[
-        'rounded-[18px] border px-5 py-6 text-center text-lg font-semibold text-white',
+        'rounded-[18px] border px-5 py-7 text-center text-lg font-semibold text-white',
         'bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))]',
         active === 'policy'
           ? 'animate-module-pulse border-white/10'
