@@ -1,7 +1,8 @@
+import { cardAnimationFrameClass, cardAnimationSvgClass } from './cardAnimationFrameClass';
 export function InvisibleAccessAnimation() {
   return (
-    <div className="w-full max-w-[470px] aspect-[16/9] flex items-center justify-center">
-      <svg viewBox="0 0 800 450" className="w-full h-full">
+    <div className={cardAnimationFrameClass}>
+      <svg viewBox="0 0 800 450" className={cardAnimationSvgClass} preserveAspectRatio="xMidYMid meet">
         <defs>
           <filter id="cyanGlow" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur stdDeviation="8" result="blur" />
