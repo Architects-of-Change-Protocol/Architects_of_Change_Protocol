@@ -429,7 +429,7 @@ function VerticalCard({
         'rounded-[20px] border px-5 py-7 transition-colors duration-500',
         'bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.015))]',
         active
-          ? 'border-cyan-400/45 shadow-[0_0_32px_rgba(0,240,255,0.12)] animate-ai-card-pulse'
+          ? 'border-white/10 animate-ai-card-pulse'
           : 'border-white/10 animate-card-breathe',
       ].join(' ')}
     >
