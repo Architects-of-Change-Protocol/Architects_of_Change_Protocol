@@ -33,31 +33,31 @@ export function AocInfrastructureAnimated() {
             </div>
 
             <div className="relative mx-auto max-w-[940px]">
-              <div className="absolute left-[8%] right-[8%] top-[56px] h-px bg-gradient-to-r from-cyan-400/10 via-fuchsia-400/35 to-cyan-400/10" />
+              <div className="absolute left-[14%] right-[14%] top-[92px] h-px bg-gradient-to-r from-cyan-400/10 via-fuchsia-400/35 to-cyan-400/10 md:left-[8%] md:right-[8%] md:top-[56px]" />
 
-              <div className="grid grid-cols-4 gap-4 text-center">
+              <div className="grid grid-cols-2 gap-y-5 gap-x-4 text-center md:grid-cols-4">
                 <FlowStep label="Request" />
                 <FlowStep label="Evaluate" />
                 <FlowStep label="Transform" />
                 <FlowStep label="Enforce" />
               </div>
 
-              <div className="relative mt-6 h-10 overflow-hidden">
-                <div className="absolute left-1/2 top-0 -translate-x-1/2 whitespace-nowrap text-[11px] md:text-xs">
-                  <span className="inline-block animate-request-fade rounded-full border border-cyan-400/20 bg-cyan-400/8 px-3 py-1 text-cyan-300 shadow-[0_0_24px_rgba(0,240,255,0.12)]">
+              <div className="relative mt-6 min-h-[72px] overflow-visible md:h-10 md:min-h-0">
+                <div className="absolute left-1/2 top-0 w-[88%] -translate-x-1/2 text-center text-[11px] md:w-auto md:whitespace-nowrap md:text-xs">
+                  <span className="inline-block max-w-full animate-request-fade rounded-2xl border border-cyan-400/20 bg-cyan-400/8 px-3 py-2 leading-snug text-cyan-300 shadow-[0_0_24px_rgba(0,240,255,0.12)] md:rounded-full md:py-1">
                     AI Agent → Request: Employment history (scoped access)
                   </span>
                 </div>
               </div>
 
-              <div className="pointer-events-none absolute left-[10%] right-[10%] top-[49px] h-4">
+              <div className="pointer-events-none absolute left-[12%] right-[12%] top-[116px] h-4 md:left-[10%] md:right-[10%] md:top-[49px]">
                 <div className="signal-dot" />
               </div>
 
-              <div className="pointer-events-none absolute left-[32%] top-[78px] h-[96px] w-px bg-gradient-to-b from-fuchsia-400/0 via-fuchsia-400/35 to-fuchsia-400/0 animate-link-pulse" />
-              <div className="pointer-events-none absolute left-[74%] top-[78px] h-[96px] w-px bg-gradient-to-b from-cyan-400/0 via-cyan-400/35 to-cyan-400/0 animate-link-pulse-delayed" />
+              <div className="pointer-events-none absolute left-[28%] top-[142px] h-[72px] w-px bg-gradient-to-b from-fuchsia-400/0 via-fuchsia-400/35 to-fuchsia-400/0 animate-link-pulse md:left-[32%] md:top-[78px] md:h-[96px]" />
+              <div className="pointer-events-none absolute left-[72%] top-[142px] h-[72px] w-px bg-gradient-to-b from-cyan-400/0 via-cyan-400/35 to-cyan-400/0 animate-link-pulse-delayed md:left-[74%] md:top-[78px] md:h-[96px]" />
 
-              <div className="mt-6 flex justify-end">
+              <div className="mt-6 flex justify-center md:justify-end">
                 <div className="animate-output-fade rounded-full border border-emerald-400/20 bg-emerald-400/8 px-3 py-1 text-[11px] text-emerald-300 shadow-[0_0_24px_rgba(16,185,129,0.12)] md:text-xs">
                   Scoped Access Granted
                 </div>
