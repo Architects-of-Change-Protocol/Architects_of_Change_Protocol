@@ -1,3 +1,4 @@
+import { ProtocolFooter } from './components/ProtocolFooter'
 import { AocInfrastructureAnimated } from './components/AocInfrastructureAnimated'
 import { HowItWorksFlow } from './components/HowItWorksFlow';
 import { LogoRotating } from '../components/logo/LogoRotating';
@@ -246,6 +247,7 @@ export const renderAocLandingPage = () => {
         </div>
       </section>
 <AocInfrastructureAnimated />
+<ProtocolFooter />
       <section className="py-32 border-t border-white/10 text-center">
         <div>
           <h2 className="text-6xl font-semibold mb-8">Access should be earned.</h2>
