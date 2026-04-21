@@ -13,25 +13,12 @@ export function AocInfrastructureAnimated() {
           </p>
         </header>
 
-        <div className="relative mx-auto max-w-[940px]">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <VerticalCard title="HR" subtitle="References • Hiring • Reputation" />
-            <VerticalCard title="Finance" subtitle="Consented Access • Risk Signals" />
-          </div>
-
-          <div className="pointer-events-none absolute left-1/2 top-[104px] hidden h-[42px] w-px -translate-x-1/2 bg-gradient-to-b from-cyan-400/45 via-cyan-300/25 to-cyan-400/0 sm:block" />
-          <div className="pointer-events-none absolute left-[25%] top-[104px] hidden h-[42px] w-px -translate-x-1/2 bg-gradient-to-b from-cyan-400/45 via-cyan-300/25 to-cyan-400/0 sm:block" />
-          <div className="pointer-events-none absolute left-[75%] top-[104px] hidden h-[42px] w-px -translate-x-1/2 bg-gradient-to-b from-cyan-400/45 via-cyan-300/25 to-cyan-400/0 sm:block" />
-
-          <div className="relative mt-5 rounded-[20px] border border-cyan-400/45 bg-[linear-gradient(180deg,rgba(6,16,36,0.92),rgba(5,12,28,0.88))] px-6 py-6 shadow-[0_0_42px_rgba(0,240,255,0.14)] animate-ai-card-pulse sm:px-8">
-            <div className="flex items-start gap-4 sm:items-center sm:gap-5">
-              <div className="mt-0.5 h-11 w-11 shrink-0 rounded-xl border border-cyan-300/35 bg-cyan-300/10 shadow-[0_0_22px_rgba(0,240,255,0.18)] sm:mt-0" />
-              <div>
-                <h3 className="text-lg font-semibold tracking-tight text-white sm:text-xl">AI Agents</h3>
-                <p className="mt-1 text-xs text-white/70 sm:text-sm">Scoped Machine Access</p>
-              </div>
-            </div>
-          </div>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
+          <VerticalCard title="HR" subtitle="References • Hiring • Reputation" />
+          <VerticalCard title="Finance" subtitle="Consented Access • Risk Signals" />
+          <VerticalCard title="Health" subtitle="Patient-Controlled Data" />
+          <VerticalCard title="Events" subtitle="Tickets • Credentials • Rewards" />
+          <VerticalCard title="AI Agents" subtitle="Scoped Machine Access" active />
         </div>
 
         <div className="relative mt-10">
@@ -77,22 +64,12 @@ export function AocInfrastructureAnimated() {
           </div>
         </div>
 
-        <div className="relative mx-auto mt-10 max-w-[940px]">
-          <div className="pointer-events-none absolute left-1/2 top-[-26px] hidden h-[26px] w-px -translate-x-1/2 bg-gradient-to-b from-cyan-400/0 via-cyan-300/35 to-cyan-400/45 sm:block" />
-
-          <div className="relative rounded-[20px] border border-cyan-300/30 bg-[linear-gradient(180deg,rgba(10,24,44,0.88),rgba(7,18,34,0.84))] px-6 py-6 shadow-[0_0_30px_rgba(0,240,255,0.1)] sm:px-8">
-            <div className="flex items-center gap-4 sm:gap-5">
-              <div className="h-10 w-10 shrink-0 rounded-xl border border-cyan-300/25 bg-cyan-300/8" />
-              <h3 className="text-lg font-semibold tracking-tight text-white sm:text-xl">Audit</h3>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
+        <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-5">
           <ModuleCard title="Identity" />
           <ModuleCard title="Policy" active="policy" />
           <ModuleCard title="Consent" />
           <ModuleCard title="Capabilities" active="capabilities" />
+          <ModuleCard title="Audit" />
         </div>
 
         <div className="relative mt-10 overflow-hidden rounded-[26px] border border-cyan-400/10 bg-[linear-gradient(180deg,rgba(124,58,237,0.08),rgba(255,255,255,0.02))] px-6 py-10 text-center md:px-10 md:py-14">
@@ -266,15 +243,20 @@ export function AocInfrastructureAnimated() {
 function VerticalCard({
   title,
   subtitle,
+  active = false,
 }: {
   title: string
   subtitle: string
+  active?: boolean
 }) {
   return (
     <div
       className={[
-        'rounded-[20px] border border-white/10 px-5 py-6 transition-all duration-500',
+        'rounded-[20px] border px-5 py-6 transition-all duration-500',
         'bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.015))]',
+        active
+          ? 'border-cyan-400/45 shadow-[0_0_32px_rgba(0,240,255,0.12)] animate-ai-card-pulse'
+          : 'border-white/10',
       ].join(' ')}
     >
       <div className="text-xl font-semibold text-white">{title}</div>
