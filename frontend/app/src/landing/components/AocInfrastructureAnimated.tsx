@@ -13,19 +13,19 @@ export function AocInfrastructureAnimated() {
           </p>
         </header>
 
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
+        <div className="grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-5">
           <VerticalCard title="HR" subtitle="References • Hiring • Reputation" />
           <VerticalCard title="Finance" subtitle="Consented Access • Risk Signals" />
           <VerticalCard title="Health" subtitle="Patient-Controlled Data" />
           <VerticalCard title="Events" subtitle="Tickets • Credentials • Rewards" />
-          <VerticalCard title="AI Agents" subtitle="Scoped Machine Access" active />
+          <div className="col-span-2 md:col-span-1"><VerticalCard title="AI Agents" subtitle="Scoped Machine Access" active /></div>
         </div>
 
-        <div className="relative mt-10 animate-stage-structure">
+        <div className="relative mt-8 md:mt-10 animate-stage-structure">
           <div className="pointer-events-none absolute left-0 right-0 top-[32px] h-px bg-cyan-400/25" />
           <div className="pointer-events-none absolute left-0 right-0 bottom-[32px] h-px bg-cyan-400/25" />
 
-          <div className="relative rounded-[22px] border border-cyan-400/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.015),rgba(255,255,255,0.01))] px-5 py-8 md:px-8 md:py-10">
+          <div className="relative rounded-[22px] border border-cyan-400/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.015),rgba(255,255,255,0.01))] px-4 py-6 md:px-8 md:py-10">
             <div className="mb-5 text-center text-[11px] font-medium uppercase tracking-[0.28em] text-white/55">
               Access Requests &amp; Decision Flow
             </div>
@@ -64,15 +64,15 @@ export function AocInfrastructureAnimated() {
           </div>
         </div>
 
-        <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-5">
+        <div className="mt-8 md:mt-10 grid grid-cols-2 gap-3 md:gap-4 md:grid-cols-5">
           <ModuleCard title="Identity" />
           <ModuleCard title="Policy" active="policy" />
           <ModuleCard title="Consent" />
           <ModuleCard title="Capabilities" active="capabilities" />
-          <ModuleCard title="Audit" />
+          <div className="col-span-2 md:col-span-1"><ModuleCard title="Audit" /></div>
         </div>
 
-        <div className="relative mt-10 overflow-hidden rounded-[26px] border border-cyan-400/10 bg-[linear-gradient(180deg,rgba(124,58,237,0.08),rgba(255,255,255,0.02))] px-6 py-10 text-center md:px-10 md:py-14 animate-stage-outcome">
+        <div className="relative mt-8 md:mt-10 overflow-hidden rounded-[26px] border border-cyan-400/10 bg-[linear-gradient(180deg,rgba(124,58,237,0.08),rgba(255,255,255,0.02))] px-5 py-8 text-center md:px-10 md:py-14 animate-stage-outcome">
           <div className="absolute inset-x-0 top-0 h-[5px] bg-gradient-to-r from-cyan-400 via-fuchsia-400 to-cyan-400 shadow-[0_0_24px_rgba(0,240,255,0.35)]" />
           <div className="absolute inset-x-0 top-0 mx-auto h-24 w-[70%] bg-cyan-400/10 blur-3xl" />
 
@@ -429,8 +429,8 @@ function VerticalCard({
           : 'border-white/10 animate-card-breathe hover:-translate-y-[3px] hover:border-cyan-400/50 hover:shadow-[0_0_32px_rgba(0,240,255,0.14)]',
       ].join(' ')}
     >
-      <div className="text-xl font-semibold text-white transition-all duration-300 group-hover:text-cyan-200 group-hover:drop-shadow-[0_0_6px_rgba(0,240,255,0.5)]">{title}</div>
-      <div className="mt-3 text-sm text-white/45 transition-all duration-300 group-hover:text-white/75">{subtitle}</div>
+      <div className="text-lg sm:text-xl font-semibold text-white transition-all duration-300 group-hover:text-cyan-200 group-hover:drop-shadow-[0_0_6px_rgba(0,240,255,0.5)]">{title}</div>
+      <div className="mt-2 text-[15px] sm:text-sm leading-7 sm:leading-6 text-white/45 transition-all duration-300 group-hover:text-white/75">{subtitle}</div>
     </div>
   )
 }
