@@ -429,8 +429,8 @@ function VerticalCard({
           : 'border-white/10 animate-card-breathe',
       ].join(' ')}
     >
-      <div className="text-xl font-semibold text-white">{title}</div>
-      <div className="mt-3 text-sm text-white/45">{subtitle}</div>
+      <div className="text-xl font-semibold text-white transition-all duration-300 group-hover:text-cyan-200 group-hover:drop-shadow-[0_0_6px_rgba(0,240,255,0.5)]">{title}</div>
+      <div className="mt-3 text-sm text-white/45 transition-all duration-300 group-hover:text-white/75">{subtitle}</div>
     </div>
   )
 }
@@ -474,6 +474,8 @@ function ModuleCard({
           : active === 'capabilities'
             ? 'animate-module-pulse-delayed border-white/10'
             : 'border-white/10',
+        'hover:border-cyan-300/60',
+        'hover:shadow-[0_0_40px_rgba(0,240,255,0.18)]',
       ].join(' ')}
     >
       {title}
