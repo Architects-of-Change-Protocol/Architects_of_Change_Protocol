@@ -422,11 +422,11 @@ function VerticalCard({
   return (
     <div
       className={[
-        'rounded-[20px] border px-5 py-7 transition-colors duration-500',
+        'group h-full rounded-[20px] border px-5 py-7 transition-all duration-300 ease-out',
         'bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.015))]',
         active
-          ? 'border-white/10'
-          : 'border-white/10 animate-card-breathe',
+          ? 'border-white/10 hover:-translate-y-[3px] hover:border-cyan-300/70 hover:shadow-[0_0_40px_rgba(0,240,255,0.18)]'
+          : 'border-white/10 animate-card-breathe hover:-translate-y-[3px] hover:border-cyan-400/50 hover:shadow-[0_0_32px_rgba(0,240,255,0.14)]',
       ].join(' ')}
     >
       <div className="text-xl font-semibold text-white transition-all duration-300 group-hover:text-cyan-200 group-hover:drop-shadow-[0_0_6px_rgba(0,240,255,0.5)]">{title}</div>
@@ -467,18 +467,18 @@ function ModuleCard({
   return (
     <div
       className={[
-        'rounded-[18px] border px-5 py-7 text-center text-lg font-semibold text-white',
+        'group h-full rounded-[18px] border px-5 py-7 text-center text-lg font-semibold text-white transition-all duration-300 ease-out',
         'bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))]',
         active === 'policy'
           ? 'animate-module-pulse border-white/10'
           : active === 'capabilities'
             ? 'animate-module-pulse-delayed border-white/10'
             : 'border-white/10',
-        'hover:border-cyan-300/60',
+        'hover:-translate-y-[3px] hover:border-cyan-300/60',
         'hover:shadow-[0_0_40px_rgba(0,240,255,0.18)]',
       ].join(' ')}
     >
-      {title}
+      <span className="transition-all duration-300 group-hover:text-cyan-200 group-hover:drop-shadow-[0_0_6px_rgba(0,240,255,0.45)]">{title}</span>
     </div>
   )
 }
