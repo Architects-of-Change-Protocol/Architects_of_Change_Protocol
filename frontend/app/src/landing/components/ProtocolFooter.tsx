@@ -31,8 +31,8 @@ const ecosystemLinks: FooterItem[] = [
 export function ProtocolFooter() {
   return (
     <section className="border-t border-white/10 bg-[#050816]">
-      <div className="mx-auto w-full max-w-7xl px-6 pb-6 pt-14 md:pt-16">
-        <div className="footer-fade rounded-3xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01))] px-6 py-10 text-center md:px-10 md:py-12">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 pb-6 pt-12 md:pt-16">
+        <div className="footer-fade rounded-3xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01))] px-4 sm:px-6 py-8 text-center md:px-10 md:py-12">
           <p className="text-[11px] uppercase tracking-[0.24em] text-cyan-200/60">Protocol handoff</p>
           <h2 className="mx-auto mt-4 max-w-2xl text-3xl font-semibold tracking-tight text-white md:text-4xl">
             Ship access systems with explicit control semantics.
@@ -41,12 +41,12 @@ export function ProtocolFooter() {
             Use protocol primitives for scoped permissions, machine capability boundaries, and deterministic audit trails.
           </p>
 
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+          <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
             <a
               href={DOCS_URL}
               target="_blank"
               rel="noreferrer"
-              className="footer-link-hover inline-flex min-w-[170px] items-center justify-center rounded-xl border border-cyan-300/35 bg-cyan-300/90 px-5 py-3 text-sm font-semibold text-[#031018] transition-colors hover:bg-cyan-200"
+              className="footer-link-hover inline-flex w-full sm:w-auto sm:min-w-[170px] items-center justify-center rounded-xl border border-cyan-300/35 bg-cyan-300/90 px-5 py-3 text-sm font-semibold text-[#031018] transition-colors hover:bg-cyan-200"
             >
               Read the Docs
             </a>
@@ -54,14 +54,14 @@ export function ProtocolFooter() {
               href={REPO_URL}
               target="_blank"
               rel="noreferrer"
-              className="footer-link-hover inline-flex min-w-[170px] items-center justify-center rounded-xl border border-white/20 px-5 py-3 text-sm font-medium text-white/80 transition-colors hover:border-white/35 hover:text-white"
+              className="footer-link-hover inline-flex w-full sm:w-auto sm:min-w-[170px] items-center justify-center rounded-xl border border-white/20 px-5 py-3 text-sm font-medium text-white/80 transition-colors hover:border-white/35 hover:text-white"
             >
               View GitHub
             </a>
           </div>
         </div>
 
-        <footer className="footer-fade mt-10 rounded-3xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.008))] px-6 py-10 md:px-10 md:py-12">
+        <footer className="footer-fade mt-10 rounded-3xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.008))] px-4 sm:px-6 py-8 md:px-10 md:py-12">
           <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
             <div className="max-w-sm">
               <h3 className="text-base font-semibold tracking-tight text-white">AOC Protocol</h3>

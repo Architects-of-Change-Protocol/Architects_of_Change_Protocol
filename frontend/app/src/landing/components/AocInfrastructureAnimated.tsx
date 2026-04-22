@@ -18,9 +18,7 @@ export function AocInfrastructureAnimated() {
           <VerticalCard title="Finance" subtitle="Consented Access • Risk Signals" />
           <VerticalCard title="Health" subtitle="Patient-Controlled Data" />
           <VerticalCard title="Events" subtitle="Tickets • Credentials • Rewards" />
-          <div className="col-span-2 md:col-span-1">
-            <VerticalCard title="AI Agents" subtitle="Scoped Machine Access" active />
-          </div>
+          <VerticalCard title="AI Agents" subtitle="Scoped Machine Access" active />
         </div>
 
         <div className="relative mt-10 animate-stage-structure">
@@ -71,9 +69,7 @@ export function AocInfrastructureAnimated() {
           <ModuleCard title="Policy" active="policy" />
           <ModuleCard title="Consent" />
           <ModuleCard title="Capabilities" active="capabilities" />
-          <div className="col-span-2 md:col-span-1">
-            <ModuleCard title="Audit" />
-          </div>
+          <ModuleCard title="Audit" />
         </div>
 
         <div className="relative mt-10 overflow-hidden rounded-[26px] border border-cyan-400/10 bg-[linear-gradient(180deg,rgba(124,58,237,0.08),rgba(255,255,255,0.02))] px-6 py-10 text-center md:px-10 md:py-14 animate-stage-outcome">
