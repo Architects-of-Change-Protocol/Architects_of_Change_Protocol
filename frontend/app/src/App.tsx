@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { renderAocLandingPage } from './landing/AocLandingPage';
 import { renderEnterprisePage } from './landing/EnterprisePage';
 import { renderDocsPage } from './landing/DocsPage';
+import { renderContactPage } from './landing/ContactPage';
 
 function getView() {
   const params = new URLSearchParams(window.location.search);
@@ -23,6 +24,7 @@ export default function App() {
 
   if (view === 'docs') return renderDocsPage();
   if (view === 'enterprise') return renderEnterprisePage();
+  if (view === 'contact') return renderContactPage();
 
   return renderAocLandingPage();
 }

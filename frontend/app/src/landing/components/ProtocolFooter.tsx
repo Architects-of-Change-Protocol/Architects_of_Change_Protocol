@@ -13,18 +13,11 @@ const protocolLinks: FooterItem[] = [
   { label: 'Audit Layer' },
 ]
 
-const resourceLinks: FooterItem[] = [
+const navigationLinks: FooterItem[] = [
   { label: 'Docs', href: '/?view=docs' },
-  { label: 'GitHub', href: REPO_URL, external: true },
-  { label: 'Whitepaper' },
-  { label: 'FAQ' },
-]
-
-const ecosystemLinks: FooterItem[] = [
-  { label: 'Market Makers' },
   { label: 'Enterprise', href: '/?view=enterprise' },
-  { label: 'Contact', href: 'mailto:hello@aocprotocol.xyz?subject=AOC%20Protocol%20Inquiry' },
-  { label: 'Updates' },
+  { label: 'Contact Us', href: '/?view=contact' },
+  { label: 'GitHub', href: REPO_URL, external: true },
 ]
 
 export function ProtocolFooter() {
@@ -37,29 +30,24 @@ export function ProtocolFooter() {
             Ship access systems with explicit control semantics.
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-white/65 md:text-base">
-            Use protocol primitives for scoped permissions, machine capability boundaries, and deterministic audit trails.
+            Explore the docs, review enterprise positioning, or contact the protocol directly.
           </p>
 
           <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
-            <a
-              href="/?view=docs"
-              className="footer-link-hover inline-flex w-full sm:w-auto sm:min-w-[170px] items-center justify-center rounded-xl border border-cyan-300/35 bg-cyan-300/90 px-5 py-3 text-sm font-semibold text-[#031018] transition-colors hover:bg-cyan-200"
-            >
+            <a href="/?view=docs" className="footer-link-hover inline-flex w-full sm:w-auto sm:min-w-[170px] items-center justify-center rounded-xl border border-cyan-300/35 bg-cyan-300/90 px-5 py-3 text-sm font-semibold text-[#031018] transition-colors hover:bg-cyan-200">
               Read the Docs
             </a>
-            <a
-              href={REPO_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="footer-link-hover inline-flex w-full sm:w-auto sm:min-w-[170px] items-center justify-center rounded-xl border border-white/20 px-5 py-3 text-sm font-medium text-white/80 transition-colors hover:border-white/35 hover:text-white"
-            >
+            <a href="/?view=enterprise" className="footer-link-hover inline-flex w-full sm:w-auto sm:min-w-[170px] items-center justify-center rounded-xl border border-white/20 px-5 py-3 text-sm font-medium text-white/80 transition-colors hover:border-white/35 hover:text-white">
+              Enterprise
+            </a>
+            <a href={REPO_URL} target="_blank" rel="noreferrer" className="footer-link-hover inline-flex w-full sm:w-auto sm:min-w-[170px] items-center justify-center rounded-xl border border-white/20 px-5 py-3 text-sm font-medium text-white/80 transition-colors hover:border-white/35 hover:text-white">
               View GitHub
             </a>
           </div>
         </div>
 
         <footer className="footer-fade mt-10 rounded-3xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.008))] px-4 sm:px-6 py-8 md:px-10 md:py-12">
-          <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4 lg:gap-8">
+          <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
             <div className="max-w-sm">
               <h3 className="text-base font-semibold tracking-tight text-white">AOC Protocol</h3>
               <div className="mt-4 h-px w-16 bg-cyan-200/20" />
@@ -69,8 +57,7 @@ export function ProtocolFooter() {
             </div>
 
             <FooterColumn title="Protocol" items={protocolLinks} />
-            <FooterColumn title="Resources" items={resourceLinks} />
-            <FooterColumn title="Ecosystem" items={ecosystemLinks} />
+            <FooterColumn title="Navigation" items={navigationLinks} />
           </div>
 
           <div className="mt-10 flex flex-col gap-4 border-t border-white/10 pt-5 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
@@ -89,14 +76,8 @@ export function ProtocolFooter() {
         }
 
         @keyframes footer-fade-up {
-          0% {
-            opacity: 0;
-            transform: translateY(4px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          0% { opacity: 0; transform: translateY(4px); }
+          100% { opacity: 1; transform: translateY(0); }
         }
 
         .footer-fade {
@@ -138,12 +119,7 @@ function FooterColumn({ title, items }: { title: string; items: FooterItem[] }) 
         {items.map((item) => (
           <li key={item.label}>
             {item.href ? (
-              <a
-                href={item.href}
-                target={item.external ? '_blank' : undefined}
-                rel={item.external ? 'noreferrer' : undefined}
-                className="footer-link-hover inline-block text-sm text-white/55 hover:text-white/80"
-              >
+              <a href={item.href} target={item.external ? '_blank' : undefined} rel={item.external ? 'noreferrer' : undefined} className="footer-link-hover inline-block text-sm text-white/55 hover:text-white/80">
                 {item.label}
               </a>
             ) : (
