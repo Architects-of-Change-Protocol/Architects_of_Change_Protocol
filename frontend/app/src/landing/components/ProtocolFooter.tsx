@@ -1,5 +1,4 @@
-const REPO_URL = 'https://github.com/aocprotocol/Architects_of_Change_Protocol'
-const DOCS_URL = `${REPO_URL}/tree/main/protocol`
+const REPO_URL = 'https://github.com/Architects-of-Change-Protocol/Architects_of_Change_Protocol'
 
 type FooterItem = {
   label: string
@@ -15,7 +14,7 @@ const protocolLinks: FooterItem[] = [
 ]
 
 const resourceLinks: FooterItem[] = [
-  { label: 'Docs', href: DOCS_URL, external: true },
+  { label: 'Docs', href: '/?view=docs' },
   { label: 'GitHub', href: REPO_URL, external: true },
   { label: 'Whitepaper' },
   { label: 'FAQ' },
@@ -23,7 +22,7 @@ const resourceLinks: FooterItem[] = [
 
 const ecosystemLinks: FooterItem[] = [
   { label: 'Market Makers' },
-  { label: 'Enterprise', href: '/enterprise' },
+  { label: 'Enterprise', href: '/?view=enterprise' },
   { label: 'Contact', href: 'mailto:hello@aocprotocol.xyz?subject=AOC%20Protocol%20Inquiry' },
   { label: 'Updates' },
 ]
@@ -43,9 +42,7 @@ export function ProtocolFooter() {
 
           <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
             <a
-              href={DOCS_URL}
-              target="_blank"
-              rel="noreferrer"
+              href="/?view=docs"
               className="footer-link-hover inline-flex w-full sm:w-auto sm:min-w-[170px] items-center justify-center rounded-xl border border-cyan-300/35 bg-cyan-300/90 px-5 py-3 text-sm font-semibold text-[#031018] transition-colors hover:bg-cyan-200"
             >
               Read the Docs

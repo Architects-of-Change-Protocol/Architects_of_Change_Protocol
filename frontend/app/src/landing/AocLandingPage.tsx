@@ -76,7 +76,7 @@ export const renderAocLandingPage = () => {
             </a>
 
             <a
-              href="/enterprise"
+              href="/?view=enterprise"
               className="px-10 py-5 border border-white/15 hover:border-white/30 text-white font-semibold text-xl rounded-2xl transition-all active:scale-[0.98] inline-block"
             >
               Integrate AOC
@@ -246,14 +246,16 @@ export const renderAocLandingPage = () => {
           </div>
         </div>
       </section>
-<AocInfrastructureAnimated />
-<ProtocolFooter />
+
+      <AocInfrastructureAnimated />
+      <ProtocolFooter />
+
       <section className="py-32 border-t border-white/10 text-center">
         <div>
           <h2 className="text-6xl font-semibold mb-8">Access should be earned.</h2>
-          <button className="px-12 py-6 bg-[#00f0ff] text-black font-semibold text-2xl rounded-2xl hover:scale-[2.8] transition">
+          <a href="/?view=docs#getting-started" className="inline-flex items-center justify-center px-12 py-6 bg-[#00f0ff] text-black font-semibold text-2xl rounded-2xl hover:scale-105 transition">
             Start building on AOC →
-          </button>
+          </a>
         </div>
       </section>
     </main>

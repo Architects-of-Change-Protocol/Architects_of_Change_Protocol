@@ -1,50 +1,28 @@
-import { SessionProvider, useSession } from './auth/session';
-import { AppShell } from './app/AppShell';
-import { RouterProvider, useRouter } from './app/router';
+import { useEffect, useState } from 'react';
 import { renderAocLandingPage } from './landing/AocLandingPage';
 import { renderEnterprisePage } from './landing/EnterprisePage';
-import { AppEntryPage } from './pages/AppEntryPage';
-import { EnterpriseConsolePage } from './pages/EnterpriseConsolePage';
-import { LoginPage } from './pages/LoginPage';
-import { UserConsolePage } from './pages/UserConsolePage';
+import { renderDocsPage } from './landing/DocsPage';
 
-function AppContent() {
-  const { pathname } = useRouter();
-  const { session } = useSession();
+function getView() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('view') || 'landing';
+}
 
-  if (pathname === '/') return renderAocLandingPage();
-  if (pathname === '/enterprise') return renderEnterprisePage();
-  if (pathname === '/login') return <LoginPage />;
+export default function App() {
+  const [view, setView] = useState(getView());
 
-  if (pathname.startsWith('/app')) {
-    if (!session.authenticated) {
-      return <LoginPage />;
-    }
+  useEffect(() => {
+    const sync = () => setView(getView());
+    window.addEventListener('popstate', sync);
+    window.addEventListener('hashchange', sync);
+    return () => {
+      window.removeEventListener('popstate', sync);
+      window.removeEventListener('hashchange', sync);
+    };
+  }, []);
 
-    let page = <AppEntryPage />;
-
-    if (pathname === '/app/user') {
-      page = session.role === 'user' ? <UserConsolePage /> : <AppEntryPage />;
-    }
-
-    if (pathname === '/app/enterprise') {
-      page = session.role === 'market_maker' ? <EnterpriseConsolePage /> : <AppEntryPage />;
-    }
-
-    return <AppShell>{page}</AppShell>;
-  }
+  if (view === 'docs') return renderDocsPage();
+  if (view === 'enterprise') return renderEnterprisePage();
 
   return renderAocLandingPage();
 }
-
-function App() {
-  return (
-    <SessionProvider>
-      <RouterProvider>
-        <AppContent />
-      </RouterProvider>
-    </SessionProvider>
-  );
-}
-
-export default App;

@@ -12,8 +12,43 @@ export function RouterProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const onPopState = () => setPathname(window.location.pathname);
+
+    const onDocumentClick = (event: MouseEvent) => {
+      if (event.defaultPrevented) return;
+      if (event.button !== 0) return;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+      const target = event.target as HTMLElement | null;
+      const anchor = target?.closest('a') as HTMLAnchorElement | null;
+      if (!anchor) return;
+
+      const href = anchor.getAttribute('href');
+      if (!href) return;
+
+      // ignore external, mailto, tel, hash-only, target=_blank
+      if (
+        href.startsWith('http') ||
+        href.startsWith('mailto:') ||
+        href.startsWith('tel:') ||
+        href.startsWith('#') ||
+        anchor.target === '_blank' ||
+        anchor.hasAttribute('download')
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      window.history.pushState({}, '', href);
+      setPathname(window.location.pathname);
+    };
+
     window.addEventListener('popstate', onPopState);
-    return () => window.removeEventListener('popstate', onPopState);
+    document.addEventListener('click', onDocumentClick);
+
+    return () => {
+      window.removeEventListener('popstate', onPopState);
+      document.removeEventListener('click', onDocumentClick);
+    };
   }, []);
 
   const value = useMemo<RouterValue>(
@@ -25,7 +60,7 @@ export function RouterProvider({ children }: { children: React.ReactNode }) {
         } else {
           window.history.pushState({}, '', to);
         }
-        setPathname(to);
+        setPathname(window.location.pathname);
       },
     }),
     [pathname]
