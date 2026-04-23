@@ -71,7 +71,7 @@ export const renderDocsPage = () => {
           </p>
           <div className="mt-8">
             <a
-              href="/enterprise"
+              href="/?view=enterprise"
               className="inline-flex items-center justify-center rounded-xl border border-cyan-300/40 px-6 py-3 text-sm font-semibold text-cyan-200 transition hover:border-cyan-300/70 hover:bg-cyan-300/10"
             >
               Go to Enterprise page
@@ -90,7 +90,7 @@ export const renderDocsPage = () => {
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
-                href="/"
+                href="/?view=landing"
                 className="inline-flex items-center justify-center rounded-xl border border-white/15 px-6 py-3 text-sm font-semibold text-white/85 transition hover:border-white/30 hover:text-white"
               >
                 Back to landing
