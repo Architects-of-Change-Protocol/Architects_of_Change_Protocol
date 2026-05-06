@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc -b --pretty false",
+    "seed:mock": "node scripts/generateAudienceMockData.mjs > supabase/seed_phase2_generated.sql"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.2",
