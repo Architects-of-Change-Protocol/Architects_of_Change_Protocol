@@ -12,9 +12,9 @@ export const renderEnterprisePage = () => {
       </nav>
 
       <section className="max-w-7xl mx-auto px-6 pt-16 pb-10">
-        <p className="text-cyan-300 text-xs uppercase tracking-[0.23em] mb-5">Phase 2.5 — Interactive Runtime Experience</p>
+        <p className="text-cyan-300 text-xs uppercase tracking-[0.23em] mb-5">Phase 2.6 — Guided Runtime Storytelling Layer</p>
         <h1 className="text-4xl md:text-6xl font-semibold tracking-tight max-w-5xl">Relationship Infrastructure for the AI and Zero-Party Data Era.</h1>
-        <p className="mt-6 text-white/70 text-lg max-w-4xl">AOC operates as runtime trust infrastructure: programmable capabilities, live consent enforcement, bounded AI execution, policy intervention, and append-only auditability across machine-governed relationships.</p>
+        <p className="mt-6 text-white/70 text-lg max-w-4xl">AOC Scenario Engine translates relationship infrastructure into an enterprise narrative: programmable consent, runtime enforcement, reusable audience continuity, AI governance boundaries, and auditable trust outcomes in under five minutes.</p>
       </section>
 
       <section className="max-w-7xl mx-auto px-6 pb-10">
@@ -23,9 +23,9 @@ export const renderEnterprisePage = () => {
 
       <section className="max-w-7xl mx-auto px-6 pb-24 grid md:grid-cols-3 gap-6">
         {[
-          ['Trust Propagation', 'Verified and attested paths propagate safely. Degraded states are isolated and recovered through runtime attestations.'],
-          ['Capability Orchestration', 'Capabilities activate, minimize scope, expire, renew, and revoke in bounded execution paths.'],
-          ['AI Governance Boundaries', 'Agents execute only in delegated scopes with policy-gated interventions and audit-backed evidence.'],
+          ['Business Value Outcomes', 'Each scenario maps enforcement behavior to lower CAC, reusable relationships, risk reduction, and accountable AI operations.'],
+          ['Replay Observability', 'Timeline scrubbing, state snapshots, trust evolution, and telemetry replay provide operational evidence for every relationship event.'],
+          ['Enterprise Story Layer', 'Guided narration explains what happened, why it matters, and how AOC preserves trust continuity across teams and AI agents.'],
         ].map(([title, body]) => (
           <article key={title} className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
             <h3 className="text-xl font-semibold mb-2">{title}</h3>
