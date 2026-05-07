@@ -43,3 +43,5 @@ export * from './controlPlane';
 export * from './governance';
 
 export * from './distributed';
+
+export * from './capabilities';
