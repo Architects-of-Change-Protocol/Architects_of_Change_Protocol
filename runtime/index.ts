@@ -40,5 +40,6 @@ export type {
 
 export * from './audit';
 export * from './controlPlane';
+export * from './governance';
 
 export * from './distributed';
