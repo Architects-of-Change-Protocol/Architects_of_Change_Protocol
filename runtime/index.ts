@@ -45,3 +45,5 @@ export * from './governance';
 export * from './distributed';
 
 export * from './capabilities';
+
+export * from './attestations';
