@@ -30,6 +30,7 @@ function deny(
     resourceId: input.resource.id,
   };
   recordDecisionTrace(trace);
+  policyDecisionAuditHook?.({ eventType: 'policy_decision', traceId, actorId: input.actor.id, resourceId: input.resource.id, action: input.action, allow: true, reason, obligations, metadata: { evaluatedPolicies } });
 
   return {
     allow: false,
@@ -100,6 +101,7 @@ export function evaluateAccess(input: PolicyEvaluationInput): PolicyDecision {
     resourceId: input.resource.id,
   };
   recordDecisionTrace(trace);
+  policyDecisionAuditHook?.({ eventType: 'policy_decision', traceId, actorId: input.actor.id, resourceId: input.resource.id, action: input.action, allow: false, reason, obligations, metadata: { evaluatedPolicies } });
 
   return {
     allow: true,
@@ -109,3 +111,8 @@ export function evaluateAccess(input: PolicyEvaluationInput): PolicyDecision {
     evaluatedPolicies,
   };
 }
+
+
+export type PolicyDecisionAuditHook = (event: Record<string, unknown>) => void;
+let policyDecisionAuditHook: PolicyDecisionAuditHook | undefined;
+export function registerPolicyDecisionAuditHook(hook: PolicyDecisionAuditHook | undefined): void { policyDecisionAuditHook = hook; }

@@ -1,3 +1,4 @@
+import type { IdentityPolicyContext } from './types';
 import { evaluateAccess } from '../policy/pdp';
 import type { PolicyDecision } from '../policy/types';
 import { evaluateIdentityPolicy } from './identity-policy-evaluator';
@@ -15,7 +16,8 @@ export function evaluateAccessWithIdentity(input: EvaluateAccessWithIdentityInpu
       evaluatedPolicies: ['policy.identity.precheck']
     };
 
-    return {
+    identityDecisionAuditHook?.({ eventType: 'identity_denied', actorId: input.identity.actor.actorId, action: input.identity.requestedAction, allow: false, reasons: identityDecision.reasons, obligations: identityDecision.obligations, delegationGrantIds: identityDecision.delegationGrantIds, trustChainRef: identityDecision.trustChainSummary?.rootActorId, metadata: { aiGovernanceFlags: identityDecision.aiGovernanceFlags } });
+  return {
       ...denied,
       identityReasons: identityDecision.reasons,
       identityTrace: {
@@ -40,6 +42,24 @@ export function evaluateAccessWithIdentity(input: EvaluateAccessWithIdentityInpu
     action: input.policyInput.action ?? input.identity.requestedAction
   });
 
+
+  identityDecisionAuditHook?.({
+    eventType: identityDecision.aiGovernanceFlags.blockedByAIScopeRestriction
+      ? 'ai_scope_blocked'
+      : identityDecision.aiGovernanceFlags.sensitiveActionEscalationRequired
+        ? 'ai_escalation_required'
+        : 'policy_decision',
+    actorId: input.identity.actor.actorId,
+    action: input.identity.requestedAction,
+    allow: pdpDecision.allow,
+    reasons: identityDecision.reasons,
+    obligations: Array.from(new Set([...(pdpDecision.obligations ?? []), ...identityDecision.obligations])),
+    traceId: pdpDecision.traceId,
+    delegationGrantIds: identityDecision.delegationGrantIds,
+    trustChainRef: identityDecision.trustChainSummary?.rootActorId,
+    metadata: { aiGovernanceFlags: identityDecision.aiGovernanceFlags }
+  });
+
   return {
     ...pdpDecision,
     obligations: Array.from(new Set([...(pdpDecision.obligations ?? []), ...identityDecision.obligations])),
@@ -52,3 +72,8 @@ export function evaluateAccessWithIdentity(input: EvaluateAccessWithIdentityInpu
     }
   };
 }
+
+
+export type IdentityDecisionAuditHook = (event: Record<string, unknown>) => void;
+let identityDecisionAuditHook: IdentityDecisionAuditHook | undefined;
+export function registerIdentityDecisionAuditHook(hook: IdentityDecisionAuditHook | undefined): void { identityDecisionAuditHook = hook; }
