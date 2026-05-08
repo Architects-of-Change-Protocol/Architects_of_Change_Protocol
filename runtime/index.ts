@@ -51,3 +51,5 @@ export * from './execution-fabric';
 
 export * from './sovereign-runtime';
 export * from './runtime-negotiation';
+
+export * from './governance-treaties';
