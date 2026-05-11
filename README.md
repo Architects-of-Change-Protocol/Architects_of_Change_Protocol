@@ -1,36 +1,23 @@
-# AOC Protocol — Sovereign Data Infrastructure
+# AOC Runtime
 
-AOC is a consent-native control plane where access is granted, not assumed.
+Standalone TypeScript runtime substrate for sovereign organizational cognition.
 
-## What it enables
+## Monorepo structure
 
-- explicit user consent
-- capability-based machine access
-- deterministic enforcement
-- auditable interactions
-- sovereign data exchange
+- `packages/shared-types`: substrate-wide core contracts.
+- `packages/provider-interfaces`: infrastructure provider boundaries.
+- `packages/capability-runtime`: scoped capability evaluation.
+- `packages/governance-runtime`: policy evaluation and actor resolution.
+- `packages/consent-runtime`: consent lifecycle primitives.
+- `packages/audit-runtime`: explainable audit contracts.
+- `packages/portable-cognition`: export/import package seams.
+- `packages/vault-runtime`: namespace-to-vault topology runtime.
+- `examples/pmfreak-adapter`: PMFreak application-layer integration example.
 
-## Quickstart
+## Design boundaries
 
-Root:
-npm install
-npm test
+AOC Runtime is infrastructure-oriented, app-agnostic, and provider-driven. It avoids UI coupling and framework lock-in.
 
-Frontend:
-cd frontend/app
-npm install
-npm run dev
+## Next
 
-## Repo Structure
-
-frontend/app   → website + docs + consoles
-protocol/      → protocol logic
-runtime/       → runtime services
-examples/      → examples
-docs/          → docs
-
-## Why AOC
-
-Traditional systems assume access.
-
-AOC requires permission.
+Use the PMFreak adapter as a migration seam while extracting existing PMFreak governance, consent, and audit flows into provider implementations.

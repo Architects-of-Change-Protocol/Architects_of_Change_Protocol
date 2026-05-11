@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "strict": true,
+    "declaration": true,
+    "declarationMap": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@aoc-runtime/shared-types": [
+        "packages/shared-types/src"
+      ],
+      "@aoc-runtime/provider-interfaces": [
+        "packages/provider-interfaces/src"
+      ],
+      "@aoc-runtime/governance-runtime": [
+        "packages/governance-runtime/src"
+      ],
+      "@aoc-runtime/consent-runtime": [
+        "packages/consent-runtime/src"
+      ],
+      "@aoc-runtime/capability-runtime": [
+        "packages/capability-runtime/src"
+      ],
+      "@aoc-runtime/audit-runtime": [
+        "packages/audit-runtime/src"
+      ],
+      "@aoc-runtime/portable-cognition": [
+        "packages/portable-cognition/src"
+      ],
+      "@aoc-runtime/vault-runtime": [
+        "packages/vault-runtime/src"
+      ]
+    }
+  }
+}
