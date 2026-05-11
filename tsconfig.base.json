@@ -34,6 +34,9 @@
       ],
       "@aoc-runtime/vault-runtime": [
         "packages/vault-runtime/src"
+      ],
+      "@aoc-runtime/authorization-runtime": [
+        "packages/authorization-runtime/src"
       ]
     }
   }

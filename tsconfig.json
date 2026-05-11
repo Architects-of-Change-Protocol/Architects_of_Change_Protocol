@@ -1,14 +1,35 @@
 {
   "files": [],
   "references": [
-    { "path": "packages/shared-types" },
-    { "path": "packages/provider-interfaces" },
-    { "path": "packages/capability-runtime" },
-    { "path": "packages/governance-runtime" },
-    { "path": "packages/consent-runtime" },
-    { "path": "packages/audit-runtime" },
-    { "path": "packages/portable-cognition" },
-    { "path": "packages/vault-runtime" },
-    { "path": "examples/pmfreak-adapter" }
+    {
+      "path": "packages/shared-types"
+    },
+    {
+      "path": "packages/provider-interfaces"
+    },
+    {
+      "path": "packages/capability-runtime"
+    },
+    {
+      "path": "packages/governance-runtime"
+    },
+    {
+      "path": "packages/consent-runtime"
+    },
+    {
+      "path": "packages/audit-runtime"
+    },
+    {
+      "path": "packages/authorization-runtime"
+    },
+    {
+      "path": "packages/portable-cognition"
+    },
+    {
+      "path": "packages/vault-runtime"
+    },
+    {
+      "path": "examples/pmfreak-adapter"
+    }
   ]
 }

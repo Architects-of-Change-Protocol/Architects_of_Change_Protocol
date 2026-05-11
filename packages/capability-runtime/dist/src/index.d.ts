@@ -5,15 +5,20 @@ export interface CapabilityEvaluationInput {
     namespace: NamespaceRef;
     action: string;
     resource: string;
+    now?: string;
 }
+export type CapabilityDecisionReason = "allowed" | "denied" | "missing_capability" | "expired_capability";
 export interface CapabilityDecision {
     allowed: boolean;
+    reason: CapabilityDecisionReason;
     matchedCapability?: CapabilityRef;
-    reason: string;
+    inheritedFromNamespace?: string;
+    reasons: string[];
 }
 export declare class CapabilityRuntime {
     private readonly provider;
     constructor(provider: CapabilityProvider);
+    private namespacePathIncludes;
     evaluate(input: CapabilityEvaluationInput): Promise<CapabilityDecision>;
 }
 //# sourceMappingURL=index.d.ts.map

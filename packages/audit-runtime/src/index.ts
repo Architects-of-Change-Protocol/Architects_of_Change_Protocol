@@ -26,3 +26,26 @@ export interface AuditContract {
   explanation?: DecisionExplanation;
   provenance?: GovernanceProvenance;
 }
+
+export interface RuntimeDecisionEnvelope {
+  decision: "allow" | "deny";
+  allowed: boolean;
+  failedStage?: "governance" | "capability" | "consent";
+  reasoningChain: string[];
+  provenance: Record<string, unknown>;
+  explainability: Record<string, unknown>;
+}
+
+export class AuditRuntime {
+  finalizeDecision<T extends RuntimeDecisionEnvelope>(decision: T): T {
+    return {
+      ...decision,
+      provenance: {
+        runtimeAttribution: "aoc-runtime",
+        policySourceAttribution: (decision.provenance as { policySource?: unknown }).policySource,
+        machineAttribution: (decision.explainability as { governance?: { effectiveActor?: ActorRef } }).governance?.effectiveActor?.actorType === "machine",
+        ...decision.provenance
+      }
+    };
+  }
+}

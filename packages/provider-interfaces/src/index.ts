@@ -19,6 +19,7 @@ export interface VaultProvider {
 
 export interface PolicyProvider {
   getPolicies(scopeId: string): Promise<GovernancePolicy[]>;
+  getParentScopeId?(scopeId: string): Promise<string | null>;
 }
 
 export interface ConsentProvider {

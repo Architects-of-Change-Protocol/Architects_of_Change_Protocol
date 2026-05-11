@@ -9,12 +9,23 @@ export interface GovernanceContext {
 export interface GovernancePolicyState {
     scopeId: string;
     effectivePolicies: GovernancePolicy[];
+    inheritedFrom: string[];
+}
+export interface GovernanceDecision {
+    decision: "allow" | "deny" | "conditional";
+    allowed: boolean;
+    evaluatedScopeId: string;
+    effectiveActor: ActorRef;
+    reasons: string[];
+    policySourceIds: string[];
+    inheritedScopeChain: string[];
 }
 export declare class GovernanceRuntime {
     private readonly policies;
     constructor(policies: PolicyProvider);
     resolveActor(actor: ActorRef, machineActor?: ActorRef): ActorRef;
+    private resolveScopeChain;
     policyState(scopeId: string): Promise<GovernancePolicyState>;
-    evaluatePolicy(context: GovernanceContext, condition: string): Promise<boolean>;
+    evaluate(context: GovernanceContext, condition: string): Promise<GovernanceDecision>;
 }
 //# sourceMappingURL=index.d.ts.map

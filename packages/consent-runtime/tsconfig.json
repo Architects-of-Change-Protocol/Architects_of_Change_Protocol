@@ -10,6 +10,9 @@
   "references": [
     {
       "path": "../shared-types"
+    },
+    {
+      "path": "../provider-interfaces"
     }
   ]
 }
