@@ -72,6 +72,12 @@ export interface GovernanceScope { scopeId: string; namespace: NamespaceRef; all
 export interface GovernancePolicy { policyId: string; version: string; scopeId: string; rules: Array<{ condition: string; effect: "allow" | "deny" }>; updatedAt: string; }
 export interface ConsentGrant { grantId: string; subjectActorId: string; delegateActorId?: string; capability: CapabilityRef; issuedAt: string; expiresAt?: string; revokedAt?: string; }
 
+
+export interface MachineAuthoritySnapshot { authorityProfiles: Array<{ authorityId: string; machineActorId: string; issuedByActorId: string; trustPath: string[]; delegationChain: string[]; issuedAt: string; expiresAt?: string; revokedAt?: string; }>; grants: Array<{ grantId: string; authorityId: string; grantedToMachineActorId: string; grantedByActorId: string; issuedAt: string; expiresAt?: string; revokedAt?: string; }>; }
+export interface MachineDelegationTopology { edges: Array<{ fromMachineActorId: string; toMachineActorId: string; scopeCapabilityIds: string[]; scopeNamespacePaths: string[]; delegatedAt: string; revokedAt?: string; }>; }
+export interface MachineBehaviorConstraintState { policies: Array<{ policyId: string; executionCeiling: number; actionQuota: number; escalationThreshold: number; restrictedDomains: string[]; approvalGateRequired: boolean; humanRequiredBoundary: string; }>; }
+export interface MachineObligationHistory { obligations: Array<{ obligationId: string; machineActorId: string; obligationType: string; status: 'pending' | 'completed' | 'failed'; issuedAt: string; completedAt?: string; }>; }
+
 export interface PortableCognitionPackage {
   packageId: string;
   sourceOrganizationId: string;
@@ -84,7 +90,7 @@ export interface PortableCognitionPackage {
 }
 
 export interface CognitionTopology { namespaces: NamespaceRef[]; actorBindings: Array<{ namespacePath: string; actorId: string }>; }
-export interface GovernanceSnapshot { policies: GovernancePolicy[]; capabilities: CapabilityRef[]; consentGrants: ConsentGrant[]; }
+export interface GovernanceSnapshot { policies: GovernancePolicy[]; capabilities: CapabilityRef[]; consentGrants: ConsentGrant[]; machineAuthority?: MachineAuthoritySnapshot; machineDelegation?: MachineDelegationTopology; machineConstraintState?: MachineBehaviorConstraintState; machineObligationHistory?: MachineObligationHistory; }
 
 export interface AuditEvent { eventId: string; eventType: string; actor: ActorRef; namespace: NamespaceRef; timestamp: string; payload: Record<string, unknown>; }
 export interface AuditContinuity { chainId: string; lastEventId: string; events: AuditEvent[]; }

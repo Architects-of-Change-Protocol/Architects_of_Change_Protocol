@@ -5,3 +5,4 @@ export * from './obligation-runtime';
 export * from './escalation-runtime';
 export * from './human-review';
 export * from './governance-runtime';
+export * from './autonomous-governance-runtime';
