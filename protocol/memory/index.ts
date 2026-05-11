@@ -6,3 +6,5 @@ export * from './decay-engine';
 export * from './nutrient-engine';
 
 export * from './executive-synthesis-engine';
+
+export * from './cognitive-runtime';
