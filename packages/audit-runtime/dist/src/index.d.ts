@@ -1,4 +1,4 @@
-import { ActorRef, AuditEvent, NamespaceRef } from "@aoc-runtime/shared-types";
+import { ActorRef, AuditEvent, GovernanceSignature, NamespaceRef, SignedAuditEvent } from "@aoc-runtime/shared-types";
 export interface DecisionExplanation {
     decisionId: string;
     outcome: "allow" | "deny";
@@ -32,5 +32,11 @@ export interface RuntimeDecisionEnvelope {
 }
 export declare class AuditRuntime {
     finalizeDecision<T extends RuntimeDecisionEnvelope>(decision: T): T;
+    createSignedEvent(event: AuditEvent, chainId: string, signature: GovernanceSignature, previous?: SignedAuditEvent<AuditEvent>): SignedAuditEvent<AuditEvent>;
+    verifyChain(events: SignedAuditEvent<AuditEvent>[]): boolean;
 }
+export declare const signAuditEvent: (payload: {
+    eventHash: string;
+    event: AuditEvent;
+}, privateKey: string, signer: GovernanceSignature["signer"], provenance: GovernanceSignature["provenance"]) => GovernanceSignature;
 //# sourceMappingURL=index.d.ts.map
