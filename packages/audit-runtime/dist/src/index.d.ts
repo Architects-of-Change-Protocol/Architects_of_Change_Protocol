@@ -22,4 +22,15 @@ export interface AuditContract {
     explanation?: DecisionExplanation;
     provenance?: GovernanceProvenance;
 }
+export interface RuntimeDecisionEnvelope {
+    decision: "allow" | "deny";
+    allowed: boolean;
+    failedStage?: "governance" | "capability" | "consent";
+    reasoningChain: string[];
+    provenance: Record<string, unknown>;
+    explainability: Record<string, unknown>;
+}
+export declare class AuditRuntime {
+    finalizeDecision<T extends RuntimeDecisionEnvelope>(decision: T): T;
+}
 //# sourceMappingURL=index.d.ts.map

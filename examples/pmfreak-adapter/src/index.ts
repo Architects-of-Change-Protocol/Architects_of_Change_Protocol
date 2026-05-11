@@ -1,21 +1,27 @@
-import { GovernanceRuntime } from "@aoc-runtime/governance-runtime";
+import { AuditRuntime } from "@aoc-runtime/audit-runtime";
+import { AuthorizationRuntime } from "@aoc-runtime/authorization-runtime";
 import { CapabilityRuntime } from "@aoc-runtime/capability-runtime";
-import { AuditProvider, CapabilityProvider, PolicyProvider } from "@aoc-runtime/provider-interfaces";
+import { ConsentRuntime } from "@aoc-runtime/consent-runtime";
+import { GovernanceRuntime } from "@aoc-runtime/governance-runtime";
+import { AuditProvider, CapabilityProvider, ConsentProvider, PolicyProvider } from "@aoc-runtime/provider-interfaces";
 import { ActorRef, AuditEvent, GovernanceScope, NamespaceRef } from "@aoc-runtime/shared-types";
 
 export interface SupabaseProviderBundle {
   capabilities: CapabilityProvider;
   policies: PolicyProvider;
+  consent: ConsentProvider;
   audit: AuditProvider;
 }
 
 export class PMFreakAocAdapter {
-  private readonly governance: GovernanceRuntime;
-  private readonly capability: CapabilityRuntime;
+  private readonly authorization: AuthorizationRuntime;
 
   constructor(private readonly providers: SupabaseProviderBundle) {
-    this.governance = new GovernanceRuntime(providers.policies);
-    this.capability = new CapabilityRuntime(providers.capabilities);
+    const governance = new GovernanceRuntime(providers.policies);
+    const capability = new CapabilityRuntime(providers.capabilities);
+    const consent = new ConsentRuntime(providers.consent);
+    const audit = new AuditRuntime();
+    this.authorization = new AuthorizationRuntime(governance, capability, consent, audit);
   }
 
   async evaluateAction(input: {
@@ -24,11 +30,11 @@ export class PMFreakAocAdapter {
     scope: GovernanceScope;
     action: string;
     resource: string;
+    machineActor?: ActorRef;
+    at?: string;
   }): Promise<boolean> {
-    const policyAllowed = await this.governance.evaluatePolicy(input, `action:${input.action}`);
-    if (!policyAllowed) return false;
-    const capabilityDecision = await this.capability.evaluate(input);
-    return capabilityDecision.allowed;
+    const decision = await this.authorization.evaluate(input);
+    return decision.allowed;
   }
 
   async writeAudit(event: AuditEvent): Promise<void> {
