@@ -1,5 +1,6 @@
-import { ActorRef, GovernancePolicy, GovernanceScope, NamespaceRef } from "@aoc-runtime/shared-types";
+import { ActorRef, GovernancePolicy, GovernanceScope, GovernanceSignature, NamespaceRef, SignedAuthorizationDecision } from "@aoc-runtime/shared-types";
 import { PolicyProvider } from "@aoc-runtime/provider-interfaces";
+import { signPayload, stableHash } from "../../../crypto";
 
 export interface GovernanceContext {
   actor: ActorRef;
@@ -98,5 +99,13 @@ export class GovernanceRuntime {
       policySourceIds: [],
       inheritedScopeChain: state.inheritedFrom
     };
+  }
+
+  signDecision(decision: GovernanceDecision, privateKey: string, signer: GovernanceSignature["signer"], runtimeSource: string): SignedAuthorizationDecision<GovernanceDecision> {
+    const decisionHash = stableHash(decision);
+    const evaluationHash = stableHash({ decisionHash, runtimeSource, scope: decision.evaluatedScopeId });
+    const signaturePayload = { decisionHash, evaluationHash, decision };
+    const signature = signPayload(signaturePayload, privateKey, signer, { runtimeSource, timestamp: new Date().toISOString() });
+    return { decision, decisionHash, evaluationHash, signature };
   }
 }

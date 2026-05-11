@@ -4,6 +4,7 @@ exports.ConsentRuntime = void 0;
 exports.isGrantActive = isGrantActive;
 exports.isDelegatedGrant = isDelegatedGrant;
 exports.isMachineConsent = isMachineConsent;
+const crypto_1 = require("../../../crypto");
 function isGrantActive(grant, atIso) {
     if (grant.revokedAt && grant.revokedAt <= atIso)
         return false;
@@ -39,6 +40,22 @@ class ConsentRuntime {
             return { allowed: false, reason: "denied", grant: active, reasons: ["Machine consent binding mismatch."] };
         }
         return { allowed: true, reason: "allowed", grant: active, reasons: ["Active consent grant validated."] };
+    }
+    signGrant(grant, privateKey, signer, runtimeSource) {
+        const grantHash = (0, crypto_1.stableHash)(grant);
+        const issuerSignature = (0, crypto_1.signPayload)({ grantHash, grant }, privateKey, signer, { runtimeSource, timestamp: new Date().toISOString() });
+        return { grant, grantHash, issuerSignature };
+    }
+    verifySignedGrant(signedGrant) {
+        if ((0, crypto_1.stableHash)(signedGrant.grant) !== signedGrant.grantHash)
+            return false;
+        if (!(0, crypto_1.verifyPayloadSignature)({ grantHash: signedGrant.grantHash, grant: signedGrant.grant }, signedGrant.issuerSignature))
+            return false;
+        if (signedGrant.delegatedSignature && !(0, crypto_1.verifyPayloadSignature)({ grantHash: signedGrant.grantHash, grant: signedGrant.grant, delegated: true }, signedGrant.delegatedSignature))
+            return false;
+        if (signedGrant.revocationSignature && !(0, crypto_1.verifyPayloadSignature)({ grantHash: signedGrant.grantHash, grant: signedGrant.grant, revokedAt: signedGrant.grant.revokedAt }, signedGrant.revocationSignature))
+            return false;
+        return true;
     }
 }
 exports.ConsentRuntime = ConsentRuntime;
