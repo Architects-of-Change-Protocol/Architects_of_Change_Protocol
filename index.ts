@@ -11,6 +11,7 @@ export * from './protocol/consent';
 export * from './protocol/enforcement';
 export * from './protocol/execution';
 export * from './protocol/adapters';
+export * from './protocol/memory';
 export * from './aoc/capabilities';
 export * from './aoc/sdk';
 export * from './interpreter';
