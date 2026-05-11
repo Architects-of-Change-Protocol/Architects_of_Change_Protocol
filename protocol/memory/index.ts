@@ -4,3 +4,5 @@ export * from './weighting-engine';
 export * from './decay-engine';
 
 export * from './nutrient-engine';
+
+export * from './executive-synthesis-engine';
