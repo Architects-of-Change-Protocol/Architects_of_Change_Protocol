@@ -23,6 +23,9 @@
       "path": "packages/authorization-runtime"
     },
     {
+      "path": "packages/trust-registry-runtime"
+    },
+    {
       "path": "packages/portable-cognition"
     },
     {

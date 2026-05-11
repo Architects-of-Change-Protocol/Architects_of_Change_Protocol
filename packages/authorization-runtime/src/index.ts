@@ -2,7 +2,8 @@ import { AuditRuntime } from "@aoc-runtime/audit-runtime";
 import { CapabilityRuntime } from "@aoc-runtime/capability-runtime";
 import { ConsentRuntime } from "@aoc-runtime/consent-runtime";
 import { GovernanceRuntime } from "@aoc-runtime/governance-runtime";
-import { ActorRef, GovernanceScope, NamespaceRef } from "@aoc-runtime/shared-types";
+import { ActorRef, GovernanceScope, NamespaceRef, GovernanceSignature, TrustBoundaryScope } from "@aoc-runtime/shared-types";
+import { TrustRegistryRuntime } from "@aoc-runtime/trust-registry-runtime";
 
 export type PolicyValue = string | number | boolean | null | string[] | number[] | boolean[];
 
@@ -183,12 +184,19 @@ export interface PolicyRuntimeContext {
   };
 }
 
+export interface FederatedAuthorityInput {
+  signature: GovernanceSignature;
+  scope?: TrustBoundaryScope;
+  provenance?: Record<string, unknown>;
+}
+
 export interface AuthorizationInput extends PolicyRuntimeContext {
   at?: string;
   policies?: RuntimePolicy[];
   policyFragments?: PolicyFragment[];
   providerMetadata?: Record<string, unknown>;
   organizationTopology?: Record<string, unknown>;
+  federatedAuthority?: FederatedAuthorityInput;
 }
 
 export interface AuthorizationDecision {
@@ -362,7 +370,8 @@ export class AuthorizationRuntime {
     private readonly governance: GovernanceRuntime,
     private readonly capability: CapabilityRuntime,
     private readonly consent: ConsentRuntime,
-    private readonly audit: AuditRuntime
+    private readonly audit: AuditRuntime,
+    private readonly trustRegistry?: TrustRegistryRuntime
   ) {}
 
   async evaluate(input: AuthorizationInput): Promise<AuthorizationDecision> {
@@ -374,6 +383,23 @@ export class AuthorizationRuntime {
         provenance: { policySource: policy.matchedConditions, inheritedPolicySources: policy.inheritedPolicySources },
         explainability: { policy }
       });
+    }
+
+
+    if (input.federatedAuthority && this.trustRegistry) {
+      const trust = this.trustRegistry.evaluateSignatureTrust(
+        input.federatedAuthority.signature,
+        input.federatedAuthority.scope,
+        input.at
+      );
+      if (!trust.trusted) {
+        return this.audit.finalizeDecision({
+          decision: "deny", allowed: false, failedStage: "governance", obligations: policy.obligations,
+          reasoningChain: ["Federated trust registry denied authority provenance."],
+          provenance: { rejectedAuthorityPath: trust.rejectedAuthorityPath, revokedIntermediaries: trust.revokedIntermediaries },
+          explainability: { policy, trust }
+        });
+      }
     }
 
     const governance = await this.governance.evaluate(input, `action:${input.action}`);

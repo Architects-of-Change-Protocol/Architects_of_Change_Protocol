@@ -4,13 +4,30 @@
     "composite": true,
     "outDir": "dist"
   },
-  "include": ["src/**/*.ts"],
+  "include": [
+    "src/**/*.ts"
+  ],
   "references": [
-    { "path": "../shared-types" },
-    { "path": "../provider-interfaces" },
-    { "path": "../governance-runtime" },
-    { "path": "../capability-runtime" },
-    { "path": "../consent-runtime" },
-    { "path": "../audit-runtime" }
+    {
+      "path": "../shared-types"
+    },
+    {
+      "path": "../provider-interfaces"
+    },
+    {
+      "path": "../governance-runtime"
+    },
+    {
+      "path": "../capability-runtime"
+    },
+    {
+      "path": "../consent-runtime"
+    },
+    {
+      "path": "../audit-runtime"
+    },
+    {
+      "path": "../trust-registry-runtime"
+    }
   ]
 }
