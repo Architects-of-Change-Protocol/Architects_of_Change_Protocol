@@ -37,6 +37,9 @@
       ],
       "@aoc-runtime/authorization-runtime": [
         "packages/authorization-runtime/src"
+      ],
+      "@aoc-runtime/trust-registry-runtime": [
+        "packages/trust-registry-runtime/src"
       ]
     }
   }

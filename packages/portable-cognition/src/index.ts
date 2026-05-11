@@ -16,7 +16,9 @@ export function computePortableIntegrity(pkg: PortableCognitionPackage): Portabl
   const auditContinuityHash = stableHash(pkg.auditContinuity);
   const packageHash = stableHash(pkg);
   const provenanceHash = stableHash({ packageId: pkg.packageId, sourceOrganizationId: pkg.sourceOrganizationId, exportedAt: pkg.exportedAt });
-  return { packageHash, governanceSnapshotHash, auditContinuityHash, topologyHash, provenanceHash };
+  const federationHash = pkg.federation ? stableHash(pkg.federation) : undefined;
+  const authorityProfilesHash = pkg.authorityProfiles ? stableHash(pkg.authorityProfiles) : undefined;
+  return { packageHash, governanceSnapshotHash, auditContinuityHash, topologyHash, provenanceHash, federationHash, authorityProfilesHash };
 }
 
 export function validatePortablePackage(pkg: PortableCognitionPackageWithIntegrity): ImportValidationResult {
@@ -30,6 +32,8 @@ export function validatePortablePackage(pkg: PortableCognitionPackageWithIntegri
     if (computed.governanceSnapshotHash !== pkg.integrity.governanceSnapshotHash) errors.push("governance_hash_mismatch");
     if (computed.auditContinuityHash !== pkg.integrity.auditContinuityHash) errors.push("audit_hash_mismatch");
     if (computed.topologyHash !== pkg.integrity.topologyHash) errors.push("topology_hash_mismatch");
+    if ((computed.federationHash ?? "") !== (pkg.integrity.federationHash ?? "")) errors.push("federation_hash_mismatch");
+    if ((computed.authorityProfilesHash ?? "") !== (pkg.integrity.authorityProfilesHash ?? "")) errors.push("authority_profiles_hash_mismatch");
   }
   return { valid: errors.length === 0, errors };
 }

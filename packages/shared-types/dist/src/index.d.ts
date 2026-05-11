@@ -11,6 +11,53 @@ export interface NamespaceRef {
     projectId?: string;
     path: string;
 }
+export type TrustBoundaryScopeType = "namespace" | "workspace" | "organization" | "machine";
+export interface TrustBoundaryScope {
+    type: TrustBoundaryScopeType;
+    organizationId?: string;
+    workspaceId?: string;
+    namespacePath?: string;
+    machineId?: string;
+}
+export interface RuntimeTrustNode {
+    runtimeId: string;
+    organizationId: string;
+    runtimeType: "human-operated" | "machine" | "service";
+    authorityKeyIds: string[];
+    scopes: TrustBoundaryScope[];
+    activeFrom: string;
+    activeUntil?: string;
+    revokedAt?: string;
+}
+export interface RuntimeTrustEdge {
+    edgeId: string;
+    fromRuntimeId: string;
+    toRuntimeId: string;
+    mode: "direct-trust" | "delegated-authority";
+    scopes: TrustBoundaryScope[];
+    delegatedKeyIds?: string[];
+    delegatedBySigner?: string;
+    issuedAt: string;
+    expiresAt?: string;
+    revokedAt?: string;
+    reason?: string;
+}
+export interface RuntimeFederation {
+    federationId: string;
+    domain: string;
+    nodes: RuntimeTrustNode[];
+    edges: RuntimeTrustEdge[];
+    metadata?: Record<string, string | number | boolean>;
+}
+export interface AuthorityTrustProfile {
+    authorityId: string;
+    runtimeId: string;
+    signerKeyId: string;
+    trustLevel: "trusted" | "delegated" | "revoked" | "expired";
+    scopes: TrustBoundaryScope[];
+    delegationChain?: string[];
+    updatedAt: string;
+}
 export interface CapabilityRef {
     capabilityId: string;
     action: string;
@@ -48,6 +95,8 @@ export interface PortableCognitionPackage {
     topology: CognitionTopology;
     governanceSnapshot: GovernanceSnapshot;
     auditContinuity: AuditContinuity;
+    federation?: RuntimeFederation;
+    authorityProfiles?: AuthorityTrustProfile[];
 }
 export interface CognitionTopology {
     namespaces: NamespaceRef[];
@@ -94,6 +143,9 @@ export interface GovernanceSignature {
         timestamp: string;
         chainPosition?: number;
         previousHash?: string;
+        federationId?: string;
+        trustPath?: string[];
+        delegatedBy?: string;
     };
 }
 export interface SignedAuthorizationDecision<TDecision = Record<string, unknown>> {
@@ -123,5 +175,7 @@ export interface PortableCognitionIntegrity {
     auditContinuityHash: string;
     topologyHash: string;
     provenanceHash: string;
+    federationHash?: string;
+    authorityProfilesHash?: string;
 }
 //# sourceMappingURL=index.d.ts.map

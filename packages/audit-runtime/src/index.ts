@@ -9,6 +9,13 @@ export interface DecisionExplanation {
   reason: string;
 }
 
+export interface FederatedProvenance {
+  federationId?: string;
+  trustPath?: string[];
+  signerAncestry?: string[];
+  revokedIntermediaries?: string[];
+}
+
 export interface GovernanceProvenance {
   scopeId: string;
   policyVersion: string;
@@ -25,7 +32,7 @@ export interface AuditContract {
   event: AuditEvent;
   attribution: Attribution;
   explanation?: DecisionExplanation;
-  provenance?: GovernanceProvenance;
+  provenance?: GovernanceProvenance & FederatedProvenance;
 }
 
 export interface RuntimeDecisionEnvelope {

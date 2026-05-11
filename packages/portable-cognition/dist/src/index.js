@@ -10,7 +10,9 @@ function computePortableIntegrity(pkg) {
     const auditContinuityHash = (0, crypto_1.stableHash)(pkg.auditContinuity);
     const packageHash = (0, crypto_1.stableHash)(pkg);
     const provenanceHash = (0, crypto_1.stableHash)({ packageId: pkg.packageId, sourceOrganizationId: pkg.sourceOrganizationId, exportedAt: pkg.exportedAt });
-    return { packageHash, governanceSnapshotHash, auditContinuityHash, topologyHash, provenanceHash };
+    const federationHash = pkg.federation ? (0, crypto_1.stableHash)(pkg.federation) : undefined;
+    const authorityProfilesHash = pkg.authorityProfiles ? (0, crypto_1.stableHash)(pkg.authorityProfiles) : undefined;
+    return { packageHash, governanceSnapshotHash, auditContinuityHash, topologyHash, provenanceHash, federationHash, authorityProfilesHash };
 }
 function validatePortablePackage(pkg) {
     const errors = [];
@@ -30,6 +32,10 @@ function validatePortablePackage(pkg) {
             errors.push("audit_hash_mismatch");
         if (computed.topologyHash !== pkg.integrity.topologyHash)
             errors.push("topology_hash_mismatch");
+        if ((computed.federationHash ?? "") !== (pkg.integrity.federationHash ?? ""))
+            errors.push("federation_hash_mismatch");
+        if ((computed.authorityProfilesHash ?? "") !== (pkg.integrity.authorityProfilesHash ?? ""))
+            errors.push("authority_profiles_hash_mismatch");
     }
     return { valid: errors.length === 0, errors };
 }
