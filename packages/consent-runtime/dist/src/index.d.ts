@@ -1,4 +1,4 @@
-import { CapabilityRef, ConsentGrant } from "@aoc-runtime/shared-types";
+import { CapabilityRef, ConsentGrant, GovernanceSignature, SignedConsentGrant } from "@aoc-runtime/shared-types";
 import { ConsentProvider } from "@aoc-runtime/provider-interfaces";
 export interface ConsentQuery {
     actorId: string;
@@ -19,5 +19,7 @@ export declare class ConsentRuntime {
     private readonly provider;
     constructor(provider: ConsentProvider);
     evaluate(query: ConsentQuery): Promise<ConsentDecision>;
+    signGrant(grant: ConsentGrant, privateKey: string, signer: GovernanceSignature["signer"], runtimeSource: string): SignedConsentGrant<ConsentGrant>;
+    verifySignedGrant(signedGrant: SignedConsentGrant<ConsentGrant>): boolean;
 }
 //# sourceMappingURL=index.d.ts.map

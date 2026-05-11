@@ -1,6 +1,6 @@
-import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
+import { createCipheriv, createDecipheriv, createHash, generateKeyPairSync, randomBytes, sign, verify } from 'crypto';
 
-import type { EncryptedObject } from './types';
+import type { EncryptedObject, GovernanceSignature, RuntimeAuthorityIdentity } from './types';
 
 const NONCE_LENGTH = 12;
 const KEY_LENGTH = 32;
@@ -16,6 +16,23 @@ const assertKeyLength = (key: Uint8Array): void => {
     throw new Error(`Invalid key length: expected ${KEY_LENGTH} bytes`);
   }
 };
+
+const canonicalize = (value: unknown): unknown => {
+  if (value === null || value === undefined) return value;
+  if (Array.isArray(value)) return value.map(canonicalize);
+  if (typeof value !== 'object') return value;
+
+  const obj = value as Record<string, unknown>;
+  return Object.keys(obj).sort().reduce<Record<string, unknown>>((acc, key) => {
+    acc[key] = canonicalize(obj[key]);
+    return acc;
+  }, {});
+};
+
+export const canonicalSerialize = (value: unknown): string => JSON.stringify(canonicalize(value));
+
+export const stableHash = (value: unknown): string =>
+  createHash('sha256').update(canonicalSerialize(value)).digest('base64url');
 
 export const encryptObject = (
   key: Uint8Array,
@@ -64,4 +81,54 @@ export const decryptObject = (
   ]);
 
   return new Uint8Array(plaintext);
+};
+
+export const createRuntimeAuthority = (runtimeId: string, issuerId: string, authorityId = `authority:${runtimeId}`): {
+  identity: RuntimeAuthorityIdentity;
+  privateKey: string;
+} => {
+  const { publicKey, privateKey } = generateKeyPairSync('ed25519');
+  const pub = publicKey.export({ type: 'spki', format: 'pem' }).toString();
+  const priv = privateKey.export({ type: 'pkcs8', format: 'pem' }).toString();
+  const keyId = stableHash({ runtimeId, issuerId, publicKey: pub });
+
+  return {
+    identity: { authorityId, issuerId, runtimeId, algorithm: 'ed25519', publicKey: pub, keyId },
+    privateKey: priv
+  };
+};
+
+export const signPayload = (
+  payload: unknown,
+  privateKeyPem: string,
+  signer: RuntimeAuthorityIdentity,
+  provenance: GovernanceSignature['provenance']
+): GovernanceSignature => {
+  const payloadHash = stableHash(payload);
+  const signatureBytes = sign(null, Buffer.from(payloadHash), privateKeyPem);
+  const signedAt = new Date().toISOString();
+
+  return {
+    algorithm: 'ed25519',
+    keyId: signer.keyId,
+    signer,
+    signature: signatureBytes.toString('base64url'),
+    signedAt,
+    payloadHash,
+    provenance
+  };
+};
+
+export const verifyPayloadSignature = (payload: unknown, signatureEnvelope: GovernanceSignature): boolean => {
+  const payloadHash = stableHash(payload);
+  if (payloadHash !== signatureEnvelope.payloadHash) {
+    return false;
+  }
+
+  return verify(
+    null,
+    Buffer.from(payloadHash),
+    signatureEnvelope.signer.publicKey,
+    Buffer.from(signatureEnvelope.signature, 'base64url')
+  );
 };

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuditRuntime = void 0;
+exports.signAuditEvent = exports.AuditRuntime = void 0;
+const crypto_1 = require("../../../crypto");
 class AuditRuntime {
     finalizeDecision(decision) {
         return {
@@ -13,5 +14,27 @@ class AuditRuntime {
             }
         };
     }
+    createSignedEvent(event, chainId, signature, previous) {
+        const previousEventHash = previous?.eventHash;
+        const chainPosition = previous ? previous.chainPosition + 1 : 0;
+        const eventHash = (0, crypto_1.stableHash)({ chainId, chainPosition, previousEventHash, event });
+        return { event, eventHash, previousEventHash, chainPosition, chainId, signature };
+    }
+    verifyChain(events) {
+        for (let i = 0; i < events.length; i += 1) {
+            const current = events[i];
+            const expectedPrev = i === 0 ? undefined : events[i - 1].eventHash;
+            if (current.previousEventHash !== expectedPrev || current.chainPosition !== i)
+                return false;
+            const hash = (0, crypto_1.stableHash)({ chainId: current.chainId, chainPosition: current.chainPosition, previousEventHash: current.previousEventHash, event: current.event });
+            if (hash !== current.eventHash)
+                return false;
+            if (!(0, crypto_1.verifyPayloadSignature)({ eventHash: current.eventHash, event: current.event }, current.signature))
+                return false;
+        }
+        return true;
+    }
 }
 exports.AuditRuntime = AuditRuntime;
+const signAuditEvent = (payload, privateKey, signer, provenance) => (0, crypto_1.signPayload)(payload, privateKey, signer, provenance);
+exports.signAuditEvent = signAuditEvent;

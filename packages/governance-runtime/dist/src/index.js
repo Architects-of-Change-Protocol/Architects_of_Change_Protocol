@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GovernanceRuntime = void 0;
+const crypto_1 = require("../../../crypto");
 class GovernanceRuntime {
     constructor(policies) {
         this.policies = policies;
@@ -69,6 +70,13 @@ class GovernanceRuntime {
             policySourceIds: [],
             inheritedScopeChain: state.inheritedFrom
         };
+    }
+    signDecision(decision, privateKey, signer, runtimeSource) {
+        const decisionHash = (0, crypto_1.stableHash)(decision);
+        const evaluationHash = (0, crypto_1.stableHash)({ decisionHash, runtimeSource, scope: decision.evaluatedScopeId });
+        const signaturePayload = { decisionHash, evaluationHash, decision };
+        const signature = (0, crypto_1.signPayload)(signaturePayload, privateKey, signer, { runtimeSource, timestamp: new Date().toISOString() });
+        return { decision, decisionHash, evaluationHash, signature };
     }
 }
 exports.GovernanceRuntime = GovernanceRuntime;

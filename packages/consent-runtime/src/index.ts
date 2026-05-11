@@ -1,5 +1,6 @@
-import { CapabilityRef, ConsentGrant } from "@aoc-runtime/shared-types";
+import { CapabilityRef, ConsentGrant, GovernanceSignature, SignedConsentGrant } from "@aoc-runtime/shared-types";
 import { ConsentProvider } from "@aoc-runtime/provider-interfaces";
+import { signPayload, stableHash, verifyPayloadSignature } from "../../../crypto";
 
 export interface ConsentQuery {
   actorId: string;
@@ -51,5 +52,19 @@ export class ConsentRuntime {
     }
 
     return { allowed: true, reason: "allowed", grant: active, reasons: ["Active consent grant validated."] };
+  }
+
+  signGrant(grant: ConsentGrant, privateKey: string, signer: GovernanceSignature["signer"], runtimeSource: string): SignedConsentGrant<ConsentGrant> {
+    const grantHash = stableHash(grant);
+    const issuerSignature = signPayload({ grantHash, grant }, privateKey, signer, { runtimeSource, timestamp: new Date().toISOString() });
+    return { grant, grantHash, issuerSignature };
+  }
+
+  verifySignedGrant(signedGrant: SignedConsentGrant<ConsentGrant>): boolean {
+    if (stableHash(signedGrant.grant) !== signedGrant.grantHash) return false;
+    if (!verifyPayloadSignature({ grantHash: signedGrant.grantHash, grant: signedGrant.grant }, signedGrant.issuerSignature)) return false;
+    if (signedGrant.delegatedSignature && !verifyPayloadSignature({ grantHash: signedGrant.grantHash, grant: signedGrant.grant, delegated: true }, signedGrant.delegatedSignature)) return false;
+    if (signedGrant.revocationSignature && !verifyPayloadSignature({ grantHash: signedGrant.grantHash, grant: signedGrant.grant, revokedAt: signedGrant.grant.revokedAt }, signedGrant.revocationSignature)) return false;
+    return true;
   }
 }

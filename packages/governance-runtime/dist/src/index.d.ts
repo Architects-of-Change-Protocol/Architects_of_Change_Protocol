@@ -1,4 +1,4 @@
-import { ActorRef, GovernancePolicy, GovernanceScope, NamespaceRef } from "@aoc-runtime/shared-types";
+import { ActorRef, GovernancePolicy, GovernanceScope, GovernanceSignature, NamespaceRef, SignedAuthorizationDecision } from "@aoc-runtime/shared-types";
 import { PolicyProvider } from "@aoc-runtime/provider-interfaces";
 export interface GovernanceContext {
     actor: ActorRef;
@@ -27,5 +27,6 @@ export declare class GovernanceRuntime {
     private resolveScopeChain;
     policyState(scopeId: string): Promise<GovernancePolicyState>;
     evaluate(context: GovernanceContext, condition: string): Promise<GovernanceDecision>;
+    signDecision(decision: GovernanceDecision, privateKey: string, signer: GovernanceSignature["signer"], runtimeSource: string): SignedAuthorizationDecision<GovernanceDecision>;
 }
 //# sourceMappingURL=index.d.ts.map
