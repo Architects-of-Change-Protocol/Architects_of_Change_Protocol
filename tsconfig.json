@@ -33,6 +33,21 @@
     },
     {
       "path": "examples/pmfreak-adapter"
+    },
+    {
+      "path": "packages/capability-tokens"
+    },
+    {
+      "path": "packages/consent-engine"
+    },
+    {
+      "path": "packages/identity"
+    },
+    {
+      "path": "packages/scoped-access"
+    },
+    {
+      "path": "packages/audit-sdk"
     }
   ]
 }

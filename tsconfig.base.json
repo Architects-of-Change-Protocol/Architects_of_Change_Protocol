@@ -40,6 +40,21 @@
       ],
       "@aoc-runtime/trust-registry-runtime": [
         "packages/trust-registry-runtime/src"
+      ],
+      "@aoc/capability-tokens": [
+        "packages/capability-tokens/src"
+      ],
+      "@aoc/consent-engine": [
+        "packages/consent-engine/src"
+      ],
+      "@aoc/identity": [
+        "packages/identity/src"
+      ],
+      "@aoc/scoped-access": [
+        "packages/scoped-access/src"
+      ],
+      "@aoc/audit-sdk": [
+        "packages/audit-sdk/src"
       ]
     }
   }
