@@ -1,6 +1,6 @@
 import { CapabilityRef, ConsentGrant, GovernanceSignature, SignedConsentGrant } from "@aoc-runtime/shared-types";
 import { ConsentProvider } from "@aoc-runtime/provider-interfaces";
-import { signPayload, stableHash, verifyPayloadSignature } from "../../../crypto";
+import { signPayload, stableHash, verifyPayloadSignature } from "@aoc-runtime/crypto";
 
 export interface ConsentQuery {
   actorId: string;

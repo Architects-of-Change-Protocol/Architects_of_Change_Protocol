@@ -1,4 +1,4 @@
-import { createCipheriv, createDecipheriv, createHash, generateKeyPairSync, randomBytes, sign, verify } from 'crypto';
+import { createCipheriv, createDecipheriv, createHash, generateKeyPairSync, randomBytes, sign, verify } from 'node:crypto';
 
 import type { EncryptedObject, GovernanceSignature, RuntimeAuthorityIdentity } from './types';
 

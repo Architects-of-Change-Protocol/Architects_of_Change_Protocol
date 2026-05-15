@@ -11,11 +11,12 @@
     "build": "tsc -b",
     "typecheck": "tsc -b --pretty false",
     "test": "jest",
-    "lint": "tsc -b --pretty false --noEmit",
+    "lint": "npm run typecheck && npm run lint:semantic-ownership",
     "validate:publishability": "node scripts/validate-publishability.mjs",
     "lint:semantic-ownership": "node scripts/lint-semantic-ownership.mjs",
     "check:runtime-boundaries": "node scripts/check-runtime-boundaries.mjs",
     "check:identity-vocabulary": "node scripts/check-identity-vocabulary.mjs"
+    "validate:release": "npm run typecheck && npm run build && npm run lint:semantic-ownership && npm test && npm run validate:publishability"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
