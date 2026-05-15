@@ -1,34 +1,15 @@
-export type CanonicalId = string;
-export type UtcDateTime = string;
-
-export interface ContextCondition {
-  readonly key: string;
-  readonly operator: 'eq' | 'neq' | 'in' | 'contains' | 'exists';
-  readonly value?: string | number | boolean | readonly string[];
-}
-
-export interface ConsentGrant {
-  readonly schemaVersion: '1.0.0';
-  readonly grantId: CanonicalId;
-  readonly grantor: CanonicalId;
-  readonly grantee: CanonicalId;
-  readonly purpose: string;
-  readonly allowedOperations: readonly string[];
-  readonly legalBasis: {
-    readonly basisType: 'contract' | 'legitimate-interest' | 'consent' | 'public-task' | 'custom';
-    readonly jurisdiction?: string;
-    readonly reference?: string;
-  };
-  readonly contextualConditions?: readonly ContextCondition[];
-  readonly policyRefs?: readonly CanonicalId[];
-  readonly issuedAt: UtcDateTime;
-  readonly expiresAt?: UtcDateTime;
-  readonly revokedAt?: UtcDateTime;
-  readonly revocationReason?: string;
-  readonly extensions?: Readonly<Record<string, unknown>>;
-}
-
-export type PolicyDecisionOutcome = 'allow' | 'deny' | 'conditional';
+/**
+ * Compatibility facade.
+ * Canonical semantic ownership lives in:
+ * @aoc/protocol/contracts
+ */
+export type {
+  CanonicalId,
+  UtcDateTime,
+  ContextCondition,
+  ConsentGrant,
+  PolicyDecision as PolicyDecisionOutcome,
+} from '@aoc/protocol/contracts';
 
 export interface DecisionObligation {
   readonly type: string;
@@ -37,18 +18,18 @@ export interface DecisionObligation {
 
 export interface PolicyDecisionContract {
   readonly schemaVersion: '1.0.0';
-  readonly decisionId: CanonicalId;
-  readonly outcome: PolicyDecisionOutcome;
+  readonly decisionId: string;
+  readonly outcome: 'allow' | 'deny' | 'conditional';
   readonly obligations?: readonly DecisionObligation[];
   readonly reasoningMetadata: Readonly<Record<string, string | number | boolean>>;
-  readonly policyRevisionIds: readonly CanonicalId[];
+  readonly policyRevisionIds: readonly string[];
   readonly evaluationTraceRefs?: readonly string[];
   readonly riskScore?: {
     readonly value: number;
     readonly band: 'low' | 'medium' | 'high' | 'critical';
     readonly modelVersion?: string;
   };
-  readonly evaluatedAt: UtcDateTime;
+  readonly evaluatedAt: string;
 }
 
 export const consentGrantSchemaExample = {

@@ -1,8 +1,12 @@
+/**
+ * Compatibility facade.
+ * Canonical semantic ownership for core protocol semantics lives in:
+ * @aoc/protocol/contracts
+ */
 export type CanonicalId = string;
 export type UtcDateTime = string;
 
 export type PrincipalType = 'human' | 'service' | 'agent' | 'workload';
-
 export type ClaimValue = string | number | boolean | string[] | Record<string, unknown>;
 
 export interface Claim {
@@ -62,18 +66,4 @@ export const identityContractSchemaExample = {
   type: 'object',
   additionalProperties: false,
   required: ['schemaVersion', 'id', 'principalType', 'status', 'createdAt', 'updatedAt', 'claims', 'trust', 'tenant'],
-  properties: {
-    schemaVersion: { const: '1.0.0' },
-    id: { type: 'string', minLength: 3 },
-    deterministicKey: { type: 'string' },
-    principalType: { enum: ['human', 'service', 'agent', 'workload'] },
-    status: { enum: ['active', 'suspended', 'revoked'] },
-    claims: {
-      type: 'array',
-      items: {
-        type: 'object',
-        required: ['name', 'value', 'issuer', 'issuedAt'],
-      },
-    },
-  },
 } as const;
