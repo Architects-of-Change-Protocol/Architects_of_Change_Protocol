@@ -13,7 +13,9 @@
     "test": "jest",
     "lint": "tsc -b --pretty false --noEmit",
     "validate:publishability": "node scripts/validate-publishability.mjs",
-    "lint:semantic-ownership": "node scripts/lint-semantic-ownership.mjs"
+    "lint:semantic-ownership": "node scripts/lint-semantic-ownership.mjs",
+    "check:runtime-boundaries": "node scripts/check-runtime-boundaries.mjs",
+    "check:identity-vocabulary": "node scripts/check-identity-vocabulary.mjs"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
