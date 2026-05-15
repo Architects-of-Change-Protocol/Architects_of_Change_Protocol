@@ -1,23 +1,24 @@
-# AOC Runtime
+# Architects of Change Protocol
 
-Standalone TypeScript runtime substrate for sovereign organizational cognition.
+AOC Protocol defines the semantic contract layer for programmable authority.
 
-## Monorepo structure
+This repository contains protocol-level concepts such as:
 
-- `packages/shared-types`: substrate-wide core contracts.
-- `packages/provider-interfaces`: infrastructure provider boundaries.
-- `packages/capability-runtime`: scoped capability evaluation.
-- `packages/governance-runtime`: policy evaluation and actor resolution.
-- `packages/consent-runtime`: consent lifecycle primitives.
-- `packages/audit-runtime`: explainable audit contracts.
-- `packages/portable-cognition`: export/import package seams.
-- `packages/vault-runtime`: namespace-to-vault topology runtime.
-- `examples/pmfreak-adapter`: PMFreak application-layer integration example.
+- capability semantics
+- delegation semantics
+- policy decision contracts
+- actor and subject models
+- audit lineage contracts
+- SDK/API interface types
 
-## Design boundaries
+This repository is not the enterprise runtime implementation.
 
-AOC Runtime is infrastructure-oriented, app-agnostic, and provider-driven. It avoids UI coupling and framework lock-in.
+## Layering
 
-## Next
+- AOC Protocol: contracts, semantics, interfaces
+- AOC Enterprise: runtime, persistence, APIs, SDK implementation
+- PMFreak: vertical PM product consuming AOC layers
 
-Use the PMFreak adapter as a migration seam while extracting existing PMFreak governance, consent, and audit flows into provider implementations.
+## Current status
+
+Initial copy-first extraction from PMFreak. Some files may still contain runtime dependency references and must be cleaned through adapter interfaces before this package is treated as runtime-independent.
