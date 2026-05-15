@@ -1,5 +1,5 @@
 import { ActorRef, AuditEvent, GovernanceSignature, NamespaceRef, SignedAuditEvent } from "@aoc-runtime/shared-types";
-import { signPayload, stableHash, verifyPayloadSignature } from "../../../crypto";
+import { signPayload, stableHash, verifyPayloadSignature } from "@aoc-runtime/crypto";
 
 export interface DecisionExplanation {
   decisionId: string;
@@ -38,8 +38,9 @@ export interface AuditContract {
 export interface RuntimeDecisionEnvelope {
   decision: "allow" | "deny";
   allowed: boolean;
-  failedStage?: "governance" | "capability" | "consent";
+  failedStage?: "policy" | "governance" | "capability" | "consent";
   reasoningChain: string[];
+  obligations: unknown[];
   provenance: Record<string, unknown>;
   explainability: Record<string, unknown>;
 }

@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.IntegrityVerificationRuntime = void 0;
 exports.computePortableIntegrity = computePortableIntegrity;
 exports.validatePortablePackage = validatePortablePackage;
-const crypto_1 = require("../../../crypto");
+const crypto_1 = require("@aoc-runtime/crypto");
 function computePortableIntegrity(pkg) {
     const topologyHash = (0, crypto_1.stableHash)(pkg.topology);
     const governanceSnapshotHash = (0, crypto_1.stableHash)(pkg.governanceSnapshot);

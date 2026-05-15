@@ -13,7 +13,7 @@ import {
   SignedAuthorizationDecision
 } from "@aoc-runtime/shared-types";
 import { PolicyProvider } from "@aoc-runtime/provider-interfaces";
-import { signPayload, stableHash } from "../../../crypto";
+import { signPayload, stableHash } from "@aoc-runtime/crypto";
 
 export interface GovernanceContext {
   actor: ActorRef;
