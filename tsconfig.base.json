@@ -55,7 +55,20 @@
       ],
       "@aoc/audit-sdk": [
         "packages/audit-sdk/src"
+      ],
+      "@aoc/protocol": [
+        "packages/protocol/src/contracts"
+      ],
+      "@aoc/protocol/contracts": [
+        "packages/protocol/src/contracts"
+      ],
+      "@aoc/protocol/errors": [
+        "packages/protocol/src/errors"
+      ],
+      "@aoc/protocol/claims": [
+        "packages/protocol/src/claims"
       ]
-    }
+    },
+    "ignoreDeprecations": "6.0"
   }
 }
