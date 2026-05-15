@@ -12,7 +12,8 @@
     "typecheck": "tsc -b --pretty false",
     "test": "jest",
     "lint": "tsc -b --pretty false --noEmit",
-    "validate:publishability": "node scripts/validate-publishability.mjs"
+    "validate:publishability": "node scripts/validate-publishability.mjs",
+    "lint:semantic-ownership": "node scripts/lint-semantic-ownership.mjs"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",

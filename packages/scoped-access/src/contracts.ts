@@ -1,3 +1,15 @@
+/**
+ * Compatibility facade.
+ * Canonical semantic ownership lives in:
+ * @aoc/protocol/contracts
+ */
+export type {
+  AgentScope,
+  ResourceRef,
+  ScopedAccessRequest,
+  PolicyDecision,
+} from '@aoc/protocol/contracts';
+
 export type ScopeEffect = 'allow' | 'deny';
 
 export interface ScopeSegmentRule {
