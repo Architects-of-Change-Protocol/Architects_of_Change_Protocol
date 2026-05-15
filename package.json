@@ -14,12 +14,16 @@
     "lint": "npm run typecheck && npm run lint:semantic-ownership",
     "validate:publishability": "node scripts/validate-publishability.mjs",
     "lint:semantic-ownership": "node scripts/lint-semantic-ownership.mjs",
-    "validate:release": "npm run typecheck && npm run build && npm run lint:semantic-ownership && npm test && npm run validate:publishability"
+    "validate:release": "npm run typecheck && npm run build && npm run lint && npm test && npm run lint:semantic-ownership && npm run validate:publishability && npm pack ./packages/protocol"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "jest": "^29.7.0",
     "ts-jest": "^29.2.5",
     "typescript": "^5.5.4"
+  },
+  "packageManager": "npm@11.4.2",
+  "engines": {
+    "node": ">=20"
   }
 }
