@@ -1,4 +1,4 @@
-import { CapabilityRef, ConsentGrant, GovernanceSignature, SignedConsentGrant } from "@aoc-runtime/shared-types";
+import { CapabilityRef, ConsentGrant, ConsentDecisionReason, ContractEvaluationEnvelope, GovernanceSignature, SignedConsentGrant } from "@aoc-runtime/shared-types";
 import { ConsentProvider } from "@aoc-runtime/provider-interfaces";
 export interface ConsentQuery {
     actorId: string;
@@ -6,9 +6,7 @@ export interface ConsentQuery {
     at?: string;
     machineActorId?: string;
 }
-export interface ConsentDecision {
-    allowed: boolean;
-    reason: "allowed" | "denied" | "no_grant" | "expired" | "revoked";
+export interface ConsentDecision extends ContractEvaluationEnvelope<ConsentDecisionReason> {
     grant?: ConsentGrant;
     reasons: string[];
 }

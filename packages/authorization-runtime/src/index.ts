@@ -2,7 +2,7 @@ import { AuditRuntime } from "@aoc-runtime/audit-runtime";
 import { CapabilityRuntime } from "@aoc-runtime/capability-runtime";
 import { ConsentRuntime } from "@aoc-runtime/consent-runtime";
 import { GovernanceRuntime } from "@aoc-runtime/governance-runtime";
-import { ActorRef, GovernanceScope, NamespaceRef, GovernanceSignature, TrustBoundaryScope } from "@aoc-runtime/shared-types";
+import { ActorRef, AuthorizationDecisionEnvelope, AuthorizationFailedStage, GovernanceScope, NamespaceRef, GovernanceSignature, TrustBoundaryScope } from "@aoc-runtime/shared-types";
 import { TrustRegistryRuntime } from "@aoc-runtime/trust-registry-runtime";
 
 export type PolicyValue = string | number | boolean | null | string[] | number[] | boolean[];
@@ -200,14 +200,9 @@ export interface AuthorizationInput extends PolicyRuntimeContext {
   federatedAuthority?: FederatedAuthorityInput;
 }
 
-export interface AuthorizationDecision {
-  decision: "allow" | "deny";
-  allowed: boolean;
-  failedStage?: "policy" | "governance" | "capability" | "consent";
-  reasoningChain: string[];
+export interface AuthorizationDecision extends Omit<AuthorizationDecisionEnvelope, "obligations"> {
+  failedStage?: AuthorizationFailedStage;
   obligations: PolicyObligation[];
-  provenance: Record<string, unknown>;
-  explainability: Record<string, unknown>;
 }
 
 const asArray = (value: PolicyOperand): unknown[] => Array.isArray(value) ? value : [];
