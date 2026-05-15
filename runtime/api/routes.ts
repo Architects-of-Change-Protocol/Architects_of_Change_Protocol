@@ -1,3 +1,4 @@
+// Canonical identity note: runtime APIs preserve legacy wire fields while mapping to principal semantics.
 import { authorizeExecution, type ExecutionAuthorizationResult } from '../../protocol/execution';
 import { evaluateEnforcement, type EnforcementDecision } from '../../protocol/enforcement';
 import { mintCapability, type ProtocolCapability } from '../../protocol/capability';
