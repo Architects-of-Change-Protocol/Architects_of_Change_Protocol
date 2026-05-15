@@ -1,4 +1,4 @@
-import { ActorRef, CapabilityRef, NamespaceRef } from "@aoc-runtime/shared-types";
+import { ActorRef, CapabilityRef, NamespaceRef, CapabilityDecisionReason, ContractEvaluationEnvelope } from "@aoc-runtime/shared-types";
 import { CapabilityProvider } from "@aoc-runtime/provider-interfaces";
 export interface CapabilityEvaluationInput {
     actor: ActorRef;
@@ -7,10 +7,7 @@ export interface CapabilityEvaluationInput {
     resource: string;
     now?: string;
 }
-export type CapabilityDecisionReason = "allowed" | "denied" | "missing_capability" | "expired_capability";
-export interface CapabilityDecision {
-    allowed: boolean;
-    reason: CapabilityDecisionReason;
+export interface CapabilityDecision extends ContractEvaluationEnvelope<CapabilityDecisionReason> {
     matchedCapability?: CapabilityRef;
     inheritedFromNamespace?: string;
     reasons: string[];

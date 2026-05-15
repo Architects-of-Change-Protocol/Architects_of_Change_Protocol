@@ -206,3 +206,5 @@ export interface PortableCognitionIntegrity {
   federationHash?: string;
   authorityProfilesHash?: string;
 }
+
+export * from "./contracts";
