@@ -13,6 +13,9 @@
     },
     {
       "path": "../provider-interfaces"
+    },
+    {
+      "path": "../../crypto"
     }
   ]
 }

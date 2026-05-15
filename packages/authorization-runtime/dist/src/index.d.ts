@@ -132,6 +132,7 @@ export interface PolicyRuntimeContext {
         now?: string;
         [key: string]: unknown;
     };
+    at?: string;
 }
 export interface FederatedAuthorityInput {
     signature: GovernanceSignature;

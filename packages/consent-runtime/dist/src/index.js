@@ -4,7 +4,7 @@ exports.ConsentRuntime = void 0;
 exports.isGrantActive = isGrantActive;
 exports.isDelegatedGrant = isDelegatedGrant;
 exports.isMachineConsent = isMachineConsent;
-const crypto_1 = require("../../../crypto");
+const crypto_1 = require("@aoc-runtime/crypto");
 function isGrantActive(grant, atIso) {
     if (grant.revokedAt && grant.revokedAt <= atIso)
         return false;

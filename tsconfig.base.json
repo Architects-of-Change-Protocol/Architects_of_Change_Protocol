@@ -67,6 +67,9 @@
       ],
       "@aoc/protocol/claims": [
         "packages/protocol/src/claims"
+      ],
+      "@aoc-runtime/crypto": [
+        "crypto"
       ]
     },
     "ignoreDeprecations": "6.0"

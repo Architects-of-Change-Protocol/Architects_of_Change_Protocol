@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.signAuditEvent = exports.AuditRuntime = void 0;
-const crypto_1 = require("../../../crypto");
+const crypto_1 = require("@aoc-runtime/crypto");
 class AuditRuntime {
     finalizeDecision(decision) {
         return {

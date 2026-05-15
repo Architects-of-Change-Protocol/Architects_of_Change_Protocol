@@ -1,5 +1,5 @@
 import { AuditContinuity, CognitionTopology, GovernanceSnapshot, PortableCognitionIntegrity, PortableCognitionPackage, SignedAuditEvent, SignedAuthorizationDecision, SignedConsentGrant } from "@aoc-runtime/shared-types";
-import { stableHash, verifyPayloadSignature } from "../../../crypto";
+import { stableHash, verifyPayloadSignature } from "@aoc-runtime/crypto";
 
 export interface ImportValidationResult {
   valid: boolean;
