@@ -1,52 +1,83 @@
 export type WorkspaceId = string;
 export type ProjectId = string;
 
+/**
+ * Protocol-scoped capability actions grouped by semantic domain.
+ * These are protocol contracts, not implementation rules.
+ */
 export type CapabilityPermission =
-  | "read"
-  | "write"
-  | "approve"
-  | "manage"
-  | "execute"
-  | "delegate"
-  | "delete"
-  | "write_memory"
-  | "delete_memory"
-  | "manage_members"
-  | "manage_projects"
-  | "manage_workspace"
-  | "manage_ai"
-  | "manage_billing"
-  | "execute_ai_action"
-  | "view_executive"
-  | "upload_documents";
+  | "resource:read"
+  | "resource:create"
+  | "resource:update"
+  | "resource:delete"
+  | "resource:execute"
+  | "governance:approve"
+  | "governance:manage"
+  | "identity:delegate"
+  | "workspace:manage"
+  | "project:manage"
+  | "membership:manage"
+  | "billing:manage"
+  | "agent:manage"
+  | "agent:execute"
+  | "document:upload"
+  | "memory:read"
+  | "memory:write"
+  | "memory:delete"
+  | "audit:read"
+  | "audit:export";
 
 export type CapabilityResourceType =
   | "workspace"
   | "project"
-  | "operational_memory"
-  | "governance_object"
-  | "ai_coprocess"
-  | "copilot";
+  | "document"
+  | "dataset"
+  | "policy"
+  | "consent"
+  | "delegation"
+  | "audit_log"
+  | "agent"
+  | "memory"
+  | "execution"
+  | "integration";
+
+export type CapabilityRequestStatus =
+  | "pending"
+  | "approved"
+  | "denied"
+  | "revoked"
+  | "expired"
+  | "consumed";
+
+export type CapabilityGrantStatus = "active" | "revoked" | "expired" | "consumed";
 
 export type CapabilityRequest = {
   id: string;
-  workspace_id: WorkspaceId;
-  target_resource_type: CapabilityResourceType;
-  target_resource_id: string;
-  requested_permission: CapabilityPermission;
-  status: "pending" | "approved" | "denied" | "revoked";
-  requester_user_id: string;
+  workspaceId: WorkspaceId;
+  resourceType: CapabilityResourceType;
+  resourceId: string;
+  permission: CapabilityPermission;
+  status: CapabilityRequestStatus;
+  requesterPrincipalId: string;
   justification: string | null;
-  created_at: string;
+  createdAt: string;
+  expiresAt?: string | null;
+  metadata?: Record<string, unknown> | null;
 };
 
 export type CapabilityGrant = {
   id: string;
-  workspace_id: WorkspaceId;
-  capability_request_id: string;
+  workspaceId: WorkspaceId;
+  capabilityRequestId: string;
+  resourceType: CapabilityResourceType;
+  resourceId: string;
   permission: CapabilityPermission;
-  target_resource_type: CapabilityResourceType;
-  target_resource_id: string;
-  status: "active" | "revoked" | "expired";
-  expires_at: string | null;
+  status: CapabilityGrantStatus;
+  grantedByPrincipalId?: string | null;
+  activatedAt?: string | null;
+  expiresAt: string | null;
+  revokedAt?: string | null;
+  revokedReason?: string | null;
+  consumedAt?: string | null;
+  metadata?: Record<string, unknown> | null;
 };

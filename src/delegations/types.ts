@@ -1,25 +1,43 @@
 import type { CapabilityPermission, CapabilityResourceType, WorkspaceId } from "../capabilities/types";
 
+export type PrincipalType = "human" | "agent" | "service";
+
+export type DelegationStatus = "active" | "expired" | "revoked" | "consumed";
+
+export type DelegationPrincipal = {
+  principalType: PrincipalType;
+  principalId: string;
+};
+
+export type DelegationLineage = {
+  rootDelegationId: string;
+  parentDelegationId: string | null;
+  ancestorDelegationIds: string[];
+  depth: number;
+};
+
+export type DelegationRevocation = {
+  revokedAt: string;
+  revokedByPrincipalId: string;
+  reason?: string | null;
+  propagationMode?: "none" | "downstream" | "chain";
+  propagatedFromDelegationId?: string | null;
+};
+
 export type Delegation = {
   id: string;
-  workspace_id: WorkspaceId;
-  delegator_actor_type: "human" | "ai_agent";
-  delegator_user_id: string | null;
-  delegator_agent_id: string | null;
-  delegate_actor_type: "human" | "ai_agent";
-  delegatee_user_id: string | null;
-  delegatee_agent_id: string | null;
-  source_capability_grant_id: string | null;
-  parent_delegation_id?: string | null;
-  resource_type: CapabilityResourceType | null;
-  resource_id: string | null;
+  workspaceId: WorkspaceId;
+  delegator: DelegationPrincipal;
+  delegatee: DelegationPrincipal;
+  sourceCapabilityGrantId: string | null;
+  lineage: DelegationLineage;
+  resourceType: CapabilityResourceType | null;
+  resourceId: string | null;
   permission: CapabilityPermission;
-  delegated_scope: Record<string, unknown>;
-  status: "active" | "expired" | "revoked" | "consumed";
-  delegation_depth: number;
-  expires_at: string;
-  created_at: string;
-  revoked_at: string | null;
-  revoked_reason?: string | null;
+  scope: Record<string, unknown>;
+  status: DelegationStatus;
+  createdAt: string;
+  expiresAt: string | null;
+  revocation?: DelegationRevocation | null;
   metadata?: Record<string, unknown> | null;
 };

@@ -2,23 +2,31 @@ import type { CapabilityPermission, CapabilityResourceType, WorkspaceId } from "
 
 export type AgentId = string;
 
+export type AgentRiskLevel = "low" | "medium" | "high" | "critical";
+
 export type Agent = {
   id: AgentId;
-  workspace_id: WorkspaceId;
+  workspaceId: WorkspaceId;
   name: string;
   status: "active" | "disabled" | "revoked";
-  agent_type: string;
-  risk_level: "low" | "medium" | "high";
-  created_at?: string;
+  agentType: "autonomous" | "assistive" | "system" | "external";
+  riskLevel: AgentRiskLevel;
+  parentAgentId?: AgentId | null;
+  delegationAuthority?: "none" | "limited" | "full";
+  createdAt?: string;
+  metadata?: Record<string, unknown> | null;
 };
 
 export type AgentScope = {
   id: string;
-  agent_id: AgentId;
-  workspace_id: WorkspaceId;
-  resource_type: CapabilityResourceType;
-  resource_id: string;
+  agentId: AgentId;
+  workspaceId: WorkspaceId;
+  resourceType: CapabilityResourceType;
+  resourceId: string;
   permission: CapabilityPermission;
+  executionBoundary?: Record<string, unknown> | null;
+  delegationDepthLimit?: number | null;
   status: "active" | "expired" | "revoked";
-  expires_at: string | null;
+  expiresAt: string | null;
+  grantedByPrincipalId?: string | null;
 };

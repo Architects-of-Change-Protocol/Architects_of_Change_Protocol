@@ -24,7 +24,7 @@ export interface AuditSinkAdapter {
 }
 
 export interface IdentityResolverAdapter {
-  resolveUser(userId: string): Promise<{ id: string; workspace_id: string } | null>;
+  resolveUser(userId: string): Promise<{ id: string; workspaceId: string } | null>;
   resolveAgent(agentId: string): Promise<Agent | null>;
 }
 

@@ -1,9 +1,17 @@
+export type ConsentStatus = "active" | "revoked" | "expired" | "superseded";
+
 export type ConsentGrant = {
   id: string;
-  subject_id: string;
+  workspaceId?: string | null;
+  subjectPrincipalId: string;
+  controllerPrincipalId?: string | null;
+  delegatedByPrincipalId?: string | null;
   scope: string;
-  status: "active" | "revoked" | "expired";
-  granted_at: string;
-  expires_at: string | null;
+  boundaries?: Record<string, unknown> | null;
+  status: ConsentStatus;
+  grantedAt: string;
+  expiresAt: string | null;
+  revokedAt?: string | null;
+  revocationReason?: string | null;
   metadata?: Record<string, unknown> | null;
 };

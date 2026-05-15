@@ -1,8 +1,31 @@
-export type PolicyDecision = "allow" | "deny" | "require_approval" | "expired" | "no_match";
+export type PolicyDecision =
+  | "allow"
+  | "deny"
+  | "conditional_allow"
+  | "require_approval"
+  | "expired"
+  | "delegated"
+  | "inherited"
+  | "unresolved";
+
+export type PolicyReference = {
+  policyId: string;
+  policyVersion?: string | null;
+  ruleId?: string | null;
+};
+
+export type EvaluationSource = {
+  sourceType: "policy_engine" | "delegation_engine" | "consent_engine" | "manual_review" | "system";
+  sourceId?: string | null;
+  sourceVersion?: string | null;
+};
 
 export type DecisionContext = {
-  request_id: string;
-  evaluated_at: string;
+  requestId: string;
+  evaluatedAt: string;
   rationale?: string;
-  metadata?: Record<string, unknown>;
+  conditions?: string[];
+  policyReferences?: PolicyReference[];
+  evaluationSources?: EvaluationSource[];
+  evaluationMetadata?: Record<string, unknown>;
 };
