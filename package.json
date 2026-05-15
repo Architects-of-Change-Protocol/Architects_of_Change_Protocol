@@ -10,7 +10,9 @@
   "scripts": {
     "build": "tsc -b",
     "typecheck": "tsc -b --pretty false",
-    "test": "jest"
+    "test": "jest",
+    "lint": "tsc -b --pretty false --noEmit",
+    "validate:publishability": "node scripts/validate-publishability.mjs"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",

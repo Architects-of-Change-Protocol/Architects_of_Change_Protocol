@@ -48,6 +48,9 @@
     },
     {
       "path": "packages/audit-sdk"
+    },
+    {
+      "path": "packages/protocol"
     }
   ]
 }
