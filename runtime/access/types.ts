@@ -1,3 +1,5 @@
+import type { PrincipalId } from '../identity';
+
 export type DataAccessRequestInput = {
   subject_hash: string;
   consumer_id: string;
@@ -42,3 +44,8 @@ export type AccessTokenRecord = {
   issued_at: string;
   expires_at: string;
 };
+
+
+// Canonical aliases (internal): legacy wire fields remain source-of-truth for compatibility.
+export type SubjectPrincipalId = PrincipalId;
+export type ConsumerPrincipalId = PrincipalId;

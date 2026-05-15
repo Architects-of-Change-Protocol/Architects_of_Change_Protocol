@@ -14,6 +14,8 @@ export type {
   TrustAuditEvent,
 } from './trust/types';
 export type { ApiRequest, ApiResponse, ErrorResponse, RuntimeEndpoint } from './types/api-types';
+export type { PrincipalId, TenantId, ActorKind, RuntimeIdentity, CanonicalPrincipalContext, LegacyPrincipalAliases } from './identity';
+export { normalizePrincipalContext } from './identity';
 
 export type { PayoutCallbackInput, PayoutExecuteResult, PayoutAuditEvent } from './payout/types';
 
@@ -39,7 +41,7 @@ export type {
 } from './usage';
 
 export * from './audit';
-export * from './controlPlane';
+// Internal control-plane API: intentionally not exported from public runtime surface.
 export * from './governance';
 
 export * from './distributed';
@@ -50,8 +52,6 @@ export * from './attestations';
 export * from './execution-fabric';
 
 export * from './sovereign-runtime';
-export * from './runtime-negotiation';
-
-export * from './governance-treaties';
-
+// Compatibility note: runtime negotiation module is not yet stabilized for npm export.
+// Compatibility note: governance treaties module pending extraction; keep internal-only for now.
 export * from './marketplace';

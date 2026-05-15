@@ -1,3 +1,5 @@
+import type { PrincipalId } from '../identity';
+
 import type { RuntimeEndpoint } from '../types/api-types';
 
 export type MeteredRuntimeEndpoint = '/data/access' | '/payout/execute' | '/trust/verify';
@@ -40,3 +42,7 @@ export type UsageSummaryResult = {
 export function isMeteredEndpoint(endpoint: RuntimeEndpoint): endpoint is MeteredRuntimeEndpoint {
   return endpoint === '/data/access' || endpoint === '/payout/execute' || endpoint === '/trust/verify';
 }
+
+
+// Canonical aliases for semantic consistency with legacy compatibility.
+export type ConsumerPrincipalId = PrincipalId;

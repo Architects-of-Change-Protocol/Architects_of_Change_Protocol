@@ -1,3 +1,5 @@
+import type { PrincipalId } from '../identity';
+
 export type KycLevel = 'basic' | 'enhanced' | 'institutional';
 
 export type IdentityIssuer = {
@@ -68,3 +70,7 @@ export type TrustAuditEvent = {
   credential_ref?: string;
   reason_code?: string;
 };
+
+
+// Canonical alias for credential ownership semantics.
+export type SubjectPrincipalId = PrincipalId;
