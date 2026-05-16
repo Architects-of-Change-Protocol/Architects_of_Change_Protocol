@@ -21,6 +21,7 @@ import { InMemoryUsageService, isMeteredEndpoint } from '../usage';
 import { InMemoryMonetizationService, InMemoryPricingRegistry, type PricingRule } from '../monetization';
 import type { MeteredRuntimeEndpoint, UsageSummaryResult } from '../usage';
 import { ControlPlaneService, type AccessRequest, type ConsentDecision, type GrantedAccess } from '../controlPlane';
+import { normalizePolicyDecision } from '../policy';
 
 export type RuntimeCore = {
   evaluateEnforcement: typeof evaluateEnforcement;
@@ -127,19 +128,23 @@ function parseOptionalMeteredEndpoint(input: unknown): MeteredRuntimeEndpoint | 
   return input;
 }
 
+function fromBooleanDecision(allowed: boolean, reasonCode: string): { decision: 'allow' | 'deny'; reasonCode: string } {
+  return { decision: normalizePolicyDecision(allowed ? 'allowed' : 'denied'), reasonCode };
+}
+
 export function deriveDecision(endpoint: RuntimeEndpoint, data: unknown): { decision: 'allow' | 'deny'; reasonCode: string } {
   if (endpoint === '/enforcement/evaluate') {
     const enforcement = data as EnforcementDecision;
-    return { decision: enforcement.allowed ? 'allow' : 'deny', reasonCode: enforcement.reason_code };
+    return fromBooleanDecision(enforcement.allowed, enforcement.reason_code);
   }
 
   if (endpoint === '/execution/authorize') {
     const execution = data as ExecutionAuthorizationResult;
-    return { decision: execution.authorized ? 'allow' : 'deny', reasonCode: execution.reason_code };
+    return fromBooleanDecision(execution.authorized, execution.reason_code);
   }
   if (endpoint === '/trust/verify') {
     const verification = data as IdentityVerificationResult;
-    return { decision: verification.valid ? 'allow' : 'deny', reasonCode: verification.reason_code };
+    return fromBooleanDecision(verification.valid, verification.reason_code);
   }
   if (endpoint === '/trust/credential/register') {
     return { decision: 'allow', reasonCode: 'CREDENTIAL_REGISTERED' };
@@ -149,15 +154,15 @@ export function deriveDecision(endpoint: RuntimeEndpoint, data: unknown): { deci
   }
   if (endpoint === '/payout/execute') {
     const payout = data as { allowed: boolean; reason_code: string };
-    return { decision: payout.allowed ? 'allow' : 'deny', reasonCode: payout.reason_code };
+    return fromBooleanDecision(payout.allowed, payout.reason_code);
   }
   if (endpoint === '/payout/callback') {
     const callback = data as { received: true; reason_code: string };
-    return { decision: callback.received ? 'allow' : 'deny', reasonCode: callback.reason_code };
+    return fromBooleanDecision(callback.received, callback.reason_code);
   }
   if (endpoint === '/data/access') {
     const access = data as { allowed: boolean; reason_code: string };
-    return { decision: access.allowed ? 'allow' : 'deny', reasonCode: access.reason_code };
+    return fromBooleanDecision(access.allowed, access.reason_code);
   }
   if (endpoint === '/capability/mint') {
     return { decision: 'allow', reasonCode: 'CAPABILITY_MINTED' };
