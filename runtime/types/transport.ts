@@ -1,6 +1,6 @@
 import type { RuntimeEndpoint, RuntimeMode } from './api-types';
 
-export const RUNTIME_TRANSPORT_VERSION = '1.0.0' as const;
+import { PLATFORM_VERSION, RUNTIME_TRANSPORT_VERSION } from '../versioning';
 export const RUNTIME_HANDSHAKE_PATH = '/runtime/handshake' as const;
 
 export type RuntimeTransportMetadata = {
@@ -45,6 +45,9 @@ export type RuntimeResponseEnvelope<TPayload> =
 export type RuntimeHandshakeEnvelope = {
   transportVersion: string;
   runtimeVersion: string;
+  contractsVersion: string;
+  sdkCompatibilityVersion: string;
+  minimumSupportedTransportVersion: string;
   supportedModes: RuntimeMode[];
   supportedEndpoints: string[];
 };
@@ -58,7 +61,7 @@ export function buildMetadata(input: {
 }): RuntimeTransportMetadata {
   return {
     transportVersion: RUNTIME_TRANSPORT_VERSION,
-    runtimeVersion: '1.0.0',
+    runtimeVersion: PLATFORM_VERSION,
     mode: input.mode,
     endpoint: input.endpoint,
     requestId: input.requestId,

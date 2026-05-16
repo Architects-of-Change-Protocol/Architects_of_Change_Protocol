@@ -5,6 +5,7 @@ import { InMemoryRateLimiter } from '../limits/rateLimiter';
 import { RuntimeLogger } from '../logging/logger';
 import type { ApiResponse, RuntimeEndpoint } from '../types/api-types';
 import { RUNTIME_HANDSHAKE_PATH, buildMetadata, toErrorEnvelope, type RuntimeResponseEnvelope, type RuntimeHandshakeEnvelope } from '../types/transport';
+import { CONTRACTS_VERSION, MINIMUM_SUPPORTED_TRANSPORT_VERSION, PLATFORM_VERSION, RUNTIME_TRANSPORT_VERSION, SDK_COMPATIBILITY_VERSION } from '../versioning';
 import { authAndLimit } from './middleware';
 import { DEFAULT_RUNTIME_CORE, deriveDecision, executeRoute, maybeResolveUsageConsumerId, type RuntimeCore } from './routes';
 import { isMeteredEndpoint } from '../usage';
@@ -91,8 +92,11 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
       const requestId = 'runtime_handshake';
       const correlationId = request.headers['x-correlation-id'];
       const handshake: RuntimeHandshakeEnvelope = {
-        transportVersion: '1.0.0',
-        runtimeVersion: '1.0.0',
+        transportVersion: RUNTIME_TRANSPORT_VERSION,
+        runtimeVersion: PLATFORM_VERSION,
+        contractsVersion: CONTRACTS_VERSION,
+        sdkCompatibilityVersion: SDK_COMPATIBILITY_VERSION,
+        minimumSupportedTransportVersion: MINIMUM_SUPPORTED_TRANSPORT_VERSION,
         supportedModes: ['remote', 'local'],
         supportedEndpoints: [...POST_ENDPOINTS, ...GET_ENDPOINTS],
       };
