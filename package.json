@@ -37,7 +37,8 @@
     "check:sdk-exports": "node scripts/check-sdk-exports.mjs",
     "check:sdk-examples": "node scripts/check-sdk-examples-compile.mjs",
     "check:persistence-boundaries": "node scripts/check-runtime-boundaries.mjs",
-    "check:release-governance": "node scripts/check-release-governance.mjs"
+    "check:release-governance": "node scripts/check-release-governance.mjs",
+    "check:observability-governance": "node scripts/check-observability-governance.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
