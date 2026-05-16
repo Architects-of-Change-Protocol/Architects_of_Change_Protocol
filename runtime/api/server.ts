@@ -8,6 +8,7 @@ import { authAndLimit } from './middleware';
 import { DEFAULT_RUNTIME_CORE, deriveDecision, executeRoute, maybeResolveUsageConsumerId, type RuntimeCore } from './routes';
 import { isMeteredEndpoint } from '../usage';
 import { enforceCapabilityAccess, type EnforcementMode } from '../enforcement';
+import { assertRuntimeStartupSafety } from '../startupSafety';
 
 const POST_ENDPOINTS: RuntimeEndpoint[] = [
   '/enforcement/evaluate',
@@ -70,6 +71,31 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
   const core = deps.core ?? DEFAULT_RUNTIME_CORE;
   const capabilitySecret = deps.capabilitySecret ?? process.env.AOC_CAPABILITY_SECRET ?? 'aoc_runtime_capability_secret';
   const enforcementMode = deps.enforcementMode ?? (process.env.ENFORCEMENT_MODE === 'strict' ? 'strict' : 'soft');
+
+  const startupSafety = assertRuntimeStartupSafety({
+    nodeEnv: process.env.NODE_ENV,
+    runtimeEnvironment: process.env.AOC_RUNTIME_ENV,
+    capabilitySecret,
+    enforcementMode,
+    apiKeySeededWithDefaults: deps.apiKeyStore === undefined,
+    apiKeys: apiKeyStore.list(),
+  });
+
+  logger.log({
+    requestId: 'startup',
+    endpoint: '/runtime/startup',
+    decision: startupSafety.strictMode ? 'allow' : 'deny',
+    reason_code: `SAFETY_POSTURE_${startupSafety.environment.toUpperCase()}_${enforcementMode.toUpperCase()}`,
+  });
+
+  startupSafety.warnings.forEach((warning, index) => {
+    logger.log({
+      requestId: `startup-warning-${index + 1}`,
+      endpoint: '/runtime/startup',
+      decision: 'deny',
+      reason_code: warning,
+    });
+  });
 
   return createServer(async (request, response) => {
     if (request.url === undefined) {

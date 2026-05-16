@@ -55,3 +55,7 @@ export * from './sovereign-runtime';
 // Compatibility note: runtime negotiation module is not yet stabilized for npm export.
 // Compatibility note: governance treaties module pending extraction; keep internal-only for now.
 export * from './marketplace';
+
+export type { ApiKeyRepository, TrustStateRepository, DataAccessRepository, PayoutStateRepository, UsageRepository, ProtocolAuditRepository } from './storage';
+
+export { createInMemoryTrustStateRepository, createInMemoryDataAccessRepository, createInMemoryPayoutStateRepository, createInMemoryUsageRepository, createInMemoryProtocolAuditRepository } from './storage';

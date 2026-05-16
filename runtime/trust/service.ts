@@ -6,6 +6,7 @@ import {
   type RlusdWithdrawalRequest,
   type TrustAuditEvent,
 } from './types';
+import { createInMemoryTrustStateRepository, type TrustStateRepository } from '../storage';
 
 export type RegisterCredentialInput = {
   credential_ref: string;
@@ -35,23 +36,21 @@ export type VerifyIdentityInput = {
 };
 
 export class InMemoryTrustService {
-  private readonly issuers = new Map<string, AocIdentityIssuerRecord>();
-  private readonly credentials = new Map<string, AocIdentityCredentialRecord>();
-  private readonly consents = new Map<string, AocIdentityConsentRecord>();
-  private readonly auditEvents: TrustAuditEvent[] = [];
+  private readonly repo: TrustStateRepository;
 
-  constructor(initialIssuers: readonly AocIdentityIssuerRecord[] = []) {
+  constructor(initialIssuers: readonly AocIdentityIssuerRecord[] = [], repo?: TrustStateRepository) {
+    this.repo = repo ?? createInMemoryTrustStateRepository();
     for (const issuer of initialIssuers) {
-      this.issuers.set(issuer.issuer_id, issuer);
+      this.repo.setIssuer(issuer);
     }
   }
 
   getAuditEvents(): readonly TrustAuditEvent[] {
-    return [...this.auditEvents];
+    return this.repo.listAuditEvents();
   }
 
   registerCredential(input: RegisterCredentialInput): AocIdentityCredentialRecord {
-    const issuer = this.issuers.get(input.issuer_id);
+    const issuer = this.repo.getIssuer(input.issuer_id);
     if (issuer === undefined || !issuer.active) {
       throw new Error(`Issuer is invalid or inactive: ${input.issuer_id}`);
     }
@@ -70,8 +69,8 @@ export class InMemoryTrustService {
       issued_at: input.issued_at,
       expires_at: input.expires_at,
     };
-    this.credentials.set(record.credential_ref, record);
-    this.auditEvents.push({
+    this.repo.setCredential(record);
+    this.repo.appendAuditEvent({
       event_type: 'CREDENTIAL_REGISTERED',
       at: input.issued_at,
       subject_hash: input.subject_hash,
@@ -79,7 +78,7 @@ export class InMemoryTrustService {
       credential_ref: input.credential_ref,
     });
     if (input.wallet_address !== undefined) {
-      this.auditEvents.push({
+      this.repo.appendAuditEvent({
         event_type: 'WALLET_LINKED',
         at: input.issued_at,
         subject_hash: input.subject_hash,
@@ -91,7 +90,7 @@ export class InMemoryTrustService {
   }
 
   grantConsent(input: GrantConsentInput): AocIdentityConsentRecord {
-    const issuer = this.issuers.get(input.issuer_id);
+    const issuer = this.repo.getIssuer(input.issuer_id);
     if (issuer === undefined || !issuer.active) {
       throw new Error(`Issuer is invalid or inactive: ${input.issuer_id}`);
     }
@@ -102,8 +101,8 @@ export class InMemoryTrustService {
       issuer_id: input.issuer_id,
       granted_at: input.granted_at,
     };
-    this.consents.set(input.consent_id, consent);
-    this.auditEvents.push({
+    this.repo.setConsent(consent);
+    this.repo.appendAuditEvent({
       event_type: 'CONSENT_GRANTED',
       at: input.granted_at,
       subject_hash: input.subject_hash,
@@ -115,7 +114,7 @@ export class InMemoryTrustService {
 
   verifyIdentity(input: VerifyIdentityInput): IdentityVerificationResult {
     const now = input.now ?? new Date();
-    const candidates = [...this.credentials.values()].filter(
+    const candidates = this.repo.listCredentials().filter(
       (credential) =>
         credential.subject_hash === input.subject_hash &&
         (input.issuer_id === undefined || credential.issuer_id === input.issuer_id)
@@ -126,7 +125,7 @@ export class InMemoryTrustService {
       return result;
     }
     const latest = candidates.sort((a, b) => Date.parse(b.issued_at) - Date.parse(a.issued_at))[0];
-    const issuer = this.issuers.get(latest.issuer_id);
+    const issuer = this.repo.getIssuer(latest.issuer_id);
     if (issuer === undefined || !issuer.active) {
       const result: IdentityVerificationResult = { valid: false, reason_code: 'ISSUER_INACTIVE' };
       this.pushVerificationAudit(input, result, latest);
@@ -143,7 +142,7 @@ export class InMemoryTrustService {
       return result;
     }
     if (input.consumer_id !== undefined) {
-      const consentExists = [...this.consents.values()].some(
+      const consentExists = this.repo.listConsents().some(
         (consent) =>
           consent.subject_hash === input.subject_hash &&
           consent.consumer_id === input.consumer_id &&
@@ -175,7 +174,7 @@ export class InMemoryTrustService {
       now,
     });
     if (!verification.valid) {
-      this.auditEvents.push({
+      this.repo.appendAuditEvent({
         event_type: 'PAYOUT_BLOCKED',
         at: now.toISOString(),
         subject_hash: request.subject_hash,
@@ -186,7 +185,7 @@ export class InMemoryTrustService {
       });
       return { allowed: false, reason_code: `PAYOUT_BLOCKED_${verification.reason_code}` };
     }
-    this.auditEvents.push({
+    this.repo.appendAuditEvent({
       event_type: 'PAYOUT_ALLOWED',
       at: now.toISOString(),
       subject_hash: request.subject_hash,
@@ -203,7 +202,7 @@ export class InMemoryTrustService {
     result: IdentityVerificationResult,
     credential?: AocIdentityCredentialRecord
   ): void {
-    this.auditEvents.push({
+    this.repo.appendAuditEvent({
       event_type: 'VERIFICATION_PERFORMED',
       at: (input.now ?? new Date()).toISOString(),
       subject_hash: input.subject_hash,
@@ -214,6 +213,8 @@ export class InMemoryTrustService {
     });
   }
 }
+
+
 
 export const DEFAULT_TRUST_ISSUERS: readonly AocIdentityIssuerRecord[] = [
   {

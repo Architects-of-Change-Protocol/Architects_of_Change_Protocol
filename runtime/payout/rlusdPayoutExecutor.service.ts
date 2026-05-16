@@ -2,27 +2,28 @@ import type { InMemoryTrustService } from '../trust/service';
 import type { PayoutAdapter } from './types';
 import type { PayoutAuditEvent, PayoutCallbackInput, PayoutExecuteResult } from './types';
 import type { RlusdWithdrawalRequest } from '../trust/types';
+import { createInMemoryPayoutStateRepository, type PayoutStateRepository } from '../storage';
 
 export class RlusdPayoutExecutorService {
-  private readonly auditEvents: PayoutAuditEvent[] = [];
-  private readonly idempotentResults = new Map<string, PayoutExecuteResult>();
+  private readonly repo: PayoutStateRepository;
 
   constructor(
     private readonly trustService: InMemoryTrustService,
-    private readonly adapter: PayoutAdapter
-  ) {}
+    private readonly adapter: PayoutAdapter,
+    repo?: PayoutStateRepository
+  ) { this.repo = repo ?? createInMemoryPayoutStateRepository(); }
 
   getAuditEvents(): readonly PayoutAuditEvent[] {
-    return [...this.auditEvents];
+    return this.repo.listAuditEvents();
   }
 
   execute(request: RlusdWithdrawalRequest, now: Date = new Date()): PayoutExecuteResult {
-    const cached = this.idempotentResults.get(request.withdrawal_id);
+    const cached = this.repo.getIdempotentResult(request.withdrawal_id);
     if (cached !== undefined) {
       return cached;
     }
 
-    this.auditEvents.push({
+    this.repo.appendAuditEvent({
       event_type: 'PAYOUT_EXECUTION_REQUESTED',
       at: now.toISOString(),
       withdrawal_id: request.withdrawal_id,
@@ -35,8 +36,8 @@ export class RlusdPayoutExecutorService {
         allowed: false,
         reason_code: kycDecision.reason_code,
       };
-      this.idempotentResults.set(request.withdrawal_id, blocked);
-      this.auditEvents.push({
+      this.repo.setIdempotentResult(request.withdrawal_id, blocked);
+      this.repo.appendAuditEvent({
         event_type: 'PAYOUT_EXECUTION_RESULT',
         at: now.toISOString(),
         withdrawal_id: request.withdrawal_id,
@@ -53,8 +54,8 @@ export class RlusdPayoutExecutorService {
       payout_id: adapterResult.payout_id,
       provider_status: adapterResult.provider_status,
     };
-    this.idempotentResults.set(request.withdrawal_id, allowed);
-    this.auditEvents.push({
+    this.repo.setIdempotentResult(request.withdrawal_id, allowed);
+    this.repo.appendAuditEvent({
       event_type: 'PAYOUT_EXECUTION_RESULT',
       at: now.toISOString(),
       withdrawal_id: request.withdrawal_id,
@@ -67,7 +68,7 @@ export class RlusdPayoutExecutorService {
   }
 
   callback(input: PayoutCallbackInput, now: Date = new Date()): { received: true; reason_code: string } {
-    this.auditEvents.push({
+    this.repo.appendAuditEvent({
       event_type: 'PAYOUT_CALLBACK_RECEIVED',
       at: input.occurred_at ?? now.toISOString(),
       payout_id: input.payout_id,
@@ -81,3 +82,5 @@ export class RlusdPayoutExecutorService {
     };
   }
 }
+
+
