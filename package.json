@@ -20,8 +20,20 @@
     "validate:release": "npm run typecheck && npm run build && npm run lint:semantic-ownership && npm test && npm run validate:publishability",
     "check:persistence-boundaries": "node scripts/check-persistence-boundaries.mjs",
     "test:repository-parity": "jest runtime/__tests__/repositoryParity.test.ts"
+    "changeset": "changeset",
+    "version:packages": "changeset version",
+    "release:status": "changeset status --verbose",
+    "release:dry-run": "npm run validate:release && changeset status --verbose",
+    "check:version-graph": "node scripts/check-version-graph.mjs",
+    "check:runtime-boundaries": "node scripts/check-runtime-boundaries.mjs",
+    "check:identity-vocabulary": "node scripts/check-identity-vocabulary.mjs",
+    "check:contract-drift": "node scripts/check-contract-drift.mjs",
+    "validate:publishability": "node scripts/validate-publishability.mjs",
+    "lint:semantic-ownership": "node scripts/lint-semantic-ownership.mjs",
+    "validate:release": "npm run typecheck && npm run build && npm run lint && npm test && npm run lint:semantic-ownership && npm run check:version-graph && npm run validate:publishability && npm pack ./packages/protocol"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.28.1",
     "@types/jest": "^29.5.14",
     "jest": "^29.7.0",
     "ts-jest": "^29.2.5",
