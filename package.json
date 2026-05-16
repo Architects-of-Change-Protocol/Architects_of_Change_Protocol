@@ -23,7 +23,8 @@
     "check:identity-vocabulary": "node scripts/check-identity-vocabulary.mjs",
     "check:contract-drift": "node scripts/check-contract-drift.mjs",
     "validate:release": "npm run typecheck && npm run build && npm run lint && npm test && npm run lint:semantic-ownership && npm run check:version-graph && npm run validate:publishability && npm pack ./packages/protocol",
-    "check:policy-governance": "node scripts/check-policy-governance.mjs"
+    "check:policy-governance": "node scripts/check-policy-governance.mjs",
+    "check:reason-code-governance": "node scripts/check-reason-code-governance.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",

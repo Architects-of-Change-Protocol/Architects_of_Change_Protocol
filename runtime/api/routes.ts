@@ -129,7 +129,7 @@ function parseOptionalMeteredEndpoint(input: unknown): MeteredRuntimeEndpoint | 
 }
 
 function fromBooleanDecision(allowed: boolean, reasonCode: string): { decision: 'allow' | 'deny'; reasonCode: string } {
-  return { decision: normalizePolicyDecision(allowed ? 'allowed' : 'denied'), reasonCode };
+  return { decision: normalizePolicyDecision(allowed ? 'allowed' : 'denied'), reasonCode: normalizeReasonCode(reasonCode) };
 }
 
 export function deriveDecision(endpoint: RuntimeEndpoint, data: unknown): { decision: 'allow' | 'deny'; reasonCode: string } {
