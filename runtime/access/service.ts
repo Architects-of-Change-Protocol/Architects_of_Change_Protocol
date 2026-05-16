@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from 'crypto';
 import type { InMemoryTrustService } from '../trust/service';
 import type { DataAccessAuditEvent, DataAccessDecision, DataAccessRequestInput, AccessTokenRecord } from './types';
+import { normalizeReasonCode } from '../governance/reason-codes';
 
 const DEFAULT_TOKEN_TTL_MS = 5 * 60 * 1000;
 
@@ -43,7 +44,7 @@ export class DataAccessService {
       now,
     });
 
-    const reasonCode = TRUST_REASON_TO_ACCESS_REASON[verification.reason_code] ?? 'ACCESS_DENIED_NOT_FOUND';
+    const reasonCode = normalizeReasonCode(TRUST_REASON_TO_ACCESS_REASON[verification.reason_code] ?? 'ACCESS_DENIED_NOT_FOUND') as DataAccessDecision['reason_code'];
 
     if (!verification.valid) {
       const deniedRef = randomUUID();
