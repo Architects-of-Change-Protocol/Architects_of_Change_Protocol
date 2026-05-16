@@ -1,3 +1,11 @@
+/**
+ * Public Runtime Surface (stable)
+ *
+ * This module is the stable entrypoint intended for SDK/application consumers.
+ * Internal and experimental runtime modules are intentionally excluded and are
+ * available only through dedicated entrypoints.
+ */
+
 export { createRuntimeServer } from './api/server';
 export { HostedRuntimeClient } from './sdk/client';
 export type { HostedRuntimeSdk, HostedRuntimeClientOptions, PayoutCallbackResult } from './sdk/client';
@@ -5,6 +13,7 @@ export { InMemoryApiKeyStore, DEFAULT_API_KEYS } from './auth/apiKeys';
 export { InMemoryRateLimiter } from './limits/rateLimiter';
 export { RuntimeLogger } from './logging/logger';
 export { InMemoryTrustService, DEFAULT_TRUST_ISSUERS } from './trust/service';
+
 export type {
   AocIdentityConsentRecord,
   AocIdentityCredentialRecord,
@@ -13,16 +22,18 @@ export type {
   RlusdWithdrawalRequest,
   TrustAuditEvent,
 } from './trust/types';
+
 export type { ApiRequest, ApiResponse, ErrorResponse, RuntimeEndpoint } from './types/api-types';
 export type { PrincipalId, TenantId, ActorKind, RuntimeIdentity, CanonicalPrincipalContext, LegacyPrincipalAliases } from './identity';
 export { normalizePrincipalContext } from './identity';
 
 export type { PayoutCallbackInput, PayoutExecuteResult, PayoutAuditEvent } from './payout/types';
-
 export type { DataAccessAuditEvent, DataAccessDecision, DataAccessRequestInput, AccessTokenRecord } from './access/types';
 export type { GetUsageSummaryInput, ListAuditEventsInput } from './sdk/client';
+
 export { InMemoryUsageService, UNIT_PRICES } from './usage';
 export { InMemoryMonetizationService, InMemoryPricingRegistry } from './monetization';
+
 export type {
   PricingRule,
   BillableEvent,
@@ -41,17 +52,7 @@ export type {
 } from './usage';
 
 export * from './audit';
-// Internal control-plane API: intentionally not exported from public runtime surface.
-export * from './governance';
+export * from './enforcement';
 
-export * from './distributed';
-
-export * from './capabilities';
-
-export * from './attestations';
-export * from './execution-fabric';
-
-export * from './sovereign-runtime';
-// Compatibility note: runtime negotiation module is not yet stabilized for npm export.
-// Compatibility note: governance treaties module pending extraction; keep internal-only for now.
-export * from './marketplace';
+export { RUNTIME_TRANSPORT_VERSION, RUNTIME_HANDSHAKE_PATH, buildMetadata, toErrorEnvelope } from './types/transport';
+export type { RuntimeTransportMetadata, RuntimeRequestEnvelope, RuntimeResponseEnvelope, RuntimeErrorEnvelope, RuntimeHandshakeEnvelope, RuntimeErrorCode } from './types/transport';

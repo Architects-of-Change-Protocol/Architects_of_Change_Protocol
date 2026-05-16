@@ -1,16 +1,24 @@
 import { execSync } from 'node:child_process';
-import { mkdtempSync, cpSync, rmSync, readFileSync } from 'node:fs';
+import { mkdtempSync, cpSync, rmSync, readFileSync, existsSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
 const repo=resolve('.');
 execSync('npm run build --workspace @aoc/protocol',{stdio:'inherit'});
 const packJson=execSync('npm pack --json ./packages/protocol',{encoding:'utf8'});
-const tar=JSON.parse(packJson)[0].filename;
+const packMeta=JSON.parse(packJson)[0];
+let tar = packMeta.filename;
+if (!existsSync(join(repo, tar))) {
+  const candidates = readdirSync(repo).filter((file) => file.endsWith('.tgz') && file.includes('aoc') && file.includes('protocol'));
+  if (candidates.length !== 1) {
+    throw new Error(`Expected exactly one protocol tarball, found: ${candidates.join(', ')}`);
+  }
+  tar = candidates[0];
+}
 const fixture=join(repo,'tests/fixtures/external-consumer');
 const temp=mkdtempSync(join(tmpdir(),'aoc-protocol-consumer-'));
 cpSync(fixture,temp,{recursive:true});
-execSync(`npm install ${join(repo,tar)}`,{cwd:temp,stdio:'inherit'});
+execSync(`npm install ${JSON.stringify(join(repo, tar))}`,{cwd:temp,stdio:'inherit'});
 execSync('tsc -p tsconfig.json --noEmit',{cwd:temp,stdio:'inherit'});
 execSync('node scripts/assert-invalid-imports.mjs',{cwd:repo,stdio:'inherit'});
 execSync('node scripts/check-declaration-leaks.mjs',{cwd:repo,stdio:'inherit'});

@@ -112,7 +112,7 @@ export const signPayload = (
     algorithm: 'ed25519',
     keyId: signer.keyId,
     signer,
-    signature: signatureBytes.toString('base64url'),
+    signature: Buffer.from(signatureBytes).toString('base64url'),
     signedAt,
     payloadHash,
     provenance

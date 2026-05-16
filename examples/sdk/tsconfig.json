@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "paths": {
+      "@aoc/sdk": [
+        "../../packages/aoc-sdk/src"
+      ],
+      "@aoc/sdk/*": [
+        "../../packages/aoc-sdk/src/*"
+      ]
+    }
+  },
+  "include": [
+    "./*.ts"
+  ]
+}

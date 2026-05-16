@@ -33,3 +33,13 @@ export type ApiResponse<T> = {
 };
 
 export type RuntimeMode = 'remote' | 'local';
+
+
+export type {
+  RuntimeTransportMetadata,
+  RuntimeRequestEnvelope,
+  RuntimeResponseEnvelope,
+  RuntimeErrorEnvelope,
+  RuntimeHandshakeEnvelope,
+  RuntimeErrorCode,
+} from './transport';
