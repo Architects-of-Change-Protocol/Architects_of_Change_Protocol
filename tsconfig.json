@@ -54,6 +54,9 @@
     },
     {
       "path": "packages/protocol"
+    },
+    {
+      "path": "packages/aoc-sdk"
     }
   ]
 }
