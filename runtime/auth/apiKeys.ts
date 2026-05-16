@@ -20,6 +20,10 @@ export class InMemoryApiKeyStore {
   add(record: ApiKeyRecord): void {
     this.keys.set(record.apiKey, record);
   }
+
+  list(): ApiKeyRecord[] {
+    return [...this.keys.values()];
+  }
 }
 
 export const DEFAULT_API_KEYS: ApiKeyRecord[] = [

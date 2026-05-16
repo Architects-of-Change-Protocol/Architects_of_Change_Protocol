@@ -6,6 +6,7 @@ import type {
   UsageSummaryQuery,
   UsageSummaryResult,
 } from './types';
+import { createInMemoryUsageRepository, type UsageRepository } from '../storage';
 
 const UNIT_PRICES: Record<MeteredRuntimeEndpoint, number> = {
   '/data/access': 0.05,
@@ -22,10 +23,10 @@ type RecordUsageInput = {
 };
 
 export class InMemoryUsageService {
-  private readonly records: UsageRecord[] = [];
+  constructor(private readonly repo: UsageRepository = createInMemoryUsageRepository()) {}
 
   recordUsage(input: RecordUsageInput): void {
-    this.records.push({
+    this.repo.appendUsageRecord({
       consumer_id: input.consumer_id,
       endpoint: input.endpoint,
       decision: input.decision,
@@ -35,7 +36,7 @@ export class InMemoryUsageService {
   }
 
   getSummary(query: UsageSummaryQuery): UsageSummaryResult {
-    const filtered = this.records.filter((record) => {
+    const filtered = this.repo.listUsageRecords().filter((record) => {
       if (record.consumer_id !== query.consumer_id) {
         return false;
       }
@@ -90,3 +91,5 @@ export class InMemoryUsageService {
 }
 
 export { UNIT_PRICES };
+
+

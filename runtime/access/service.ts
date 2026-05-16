@@ -1,6 +1,7 @@
 import { createHash, randomUUID } from 'crypto';
 import type { InMemoryTrustService } from '../trust/service';
 import type { DataAccessAuditEvent, DataAccessDecision, DataAccessRequestInput, AccessTokenRecord } from './types';
+import { createInMemoryDataAccessRepository, type DataAccessRepository } from '../storage';
 
 const DEFAULT_TOKEN_TTL_MS = 5 * 60 * 1000;
 
@@ -14,20 +15,20 @@ const TRUST_REASON_TO_ACCESS_REASON: Record<string, DataAccessDecision['reason_c
 };
 
 export class DataAccessService {
-  private readonly auditEvents: DataAccessAuditEvent[] = [];
-  private readonly tokens = new Map<string, AccessTokenRecord>();
+  private readonly repo: DataAccessRepository;
 
   constructor(
     private readonly trustService: InMemoryTrustService,
-    private readonly tokenTtlMs: number = DEFAULT_TOKEN_TTL_MS
-  ) {}
+    private readonly tokenTtlMs: number = DEFAULT_TOKEN_TTL_MS,
+    repo?: DataAccessRepository
+  ) { this.repo = repo ?? createInMemoryDataAccessRepository(); }
 
   requestAccess(input: DataAccessRequestInput): DataAccessDecision {
     const now = input.now ?? new Date();
     const requestedAt = now.toISOString();
     const requestRef = randomUUID();
 
-    this.auditEvents.push({
+    this.repo.appendAuditEvent({
       event_type: 'DATA_ACCESS_REQUESTED',
       at: requestedAt,
       subject_hash: input.subject_hash,
@@ -47,7 +48,7 @@ export class DataAccessService {
 
     if (!verification.valid) {
       const deniedRef = randomUUID();
-      this.auditEvents.push({
+      this.repo.appendAuditEvent({
         event_type: 'DATA_ACCESS_DENIED',
         at: requestedAt,
         subject_hash: input.subject_hash,
@@ -67,7 +68,7 @@ export class DataAccessService {
     const expiresAt = new Date(now.getTime() + this.tokenTtlMs).toISOString();
     const token = this.generateToken(auditRef, input, requestedAt, expiresAt);
 
-    this.tokens.set(token, {
+    this.repo.setToken(token, {
       token,
       audit_ref: auditRef,
       subject_hash: input.subject_hash,
@@ -79,7 +80,7 @@ export class DataAccessService {
       expires_at: expiresAt,
     });
 
-    this.auditEvents.push({
+    this.repo.appendAuditEvent({
       event_type: 'DATA_ACCESS_ALLOWED',
       at: requestedAt,
       subject_hash: input.subject_hash,
@@ -99,7 +100,7 @@ export class DataAccessService {
   }
 
   getAuditEvents(): readonly DataAccessAuditEvent[] {
-    return [...this.auditEvents];
+    return this.repo.listAuditEvents();
   }
 
   private generateToken(auditRef: string, input: DataAccessRequestInput, issuedAt: string, expiresAt: string): string {
@@ -110,3 +111,5 @@ export class DataAccessService {
     return `aoc_access_${digest}`;
   }
 }
+
+
