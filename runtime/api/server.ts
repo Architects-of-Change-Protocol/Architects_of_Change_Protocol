@@ -4,6 +4,7 @@ import { DEFAULT_API_KEYS, InMemoryApiKeyStore } from '../auth/apiKeys';
 import { InMemoryRateLimiter } from '../limits/rateLimiter';
 import { RuntimeLogger } from '../logging/logger';
 import type { ApiResponse, RuntimeEndpoint } from '../types/api-types';
+import { RUNTIME_HANDSHAKE_PATH, buildMetadata, toErrorEnvelope, type RuntimeResponseEnvelope, type RuntimeHandshakeEnvelope } from '../types/transport';
 import { authAndLimit } from './middleware';
 import { DEFAULT_RUNTIME_CORE, deriveDecision, executeRoute, maybeResolveUsageConsumerId, type RuntimeCore } from './routes';
 import { isMeteredEndpoint } from '../usage';
@@ -35,10 +36,16 @@ export type RuntimeServerDeps = {
   enforcementMode?: EnforcementMode;
 };
 
-function sendJson(response: ServerResponse, statusCode: number, body: ApiResponse<unknown>): void {
+function sendJson(response: ServerResponse, statusCode: number, body: RuntimeResponseEnvelope<unknown>): void {
   response.statusCode = statusCode;
   response.setHeader('content-type', 'application/json');
   response.end(JSON.stringify(body));
+}
+
+function asEnvelope(requestId: string, correlationId: string, mode: 'remote' | 'local', endpoint: RuntimeEndpoint | typeof RUNTIME_HANDSHAKE_PATH, body: ApiResponse<unknown>): RuntimeResponseEnvelope<unknown> {
+  const metadata = buildMetadata({ mode, requestId, correlationId, endpoint });
+  if (body.success && body.data !== undefined) return { success: true, metadata, data: body.data };
+  return { success: false, metadata, error: toErrorEnvelope(body.error?.code ?? 'UNKNOWN_API_ERROR', body.error?.message ?? 'Unknown API error.') };
 }
 
 async function parseJson(request: IncomingMessage): Promise<unknown> {
@@ -73,23 +80,30 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
 
   return createServer(async (request, response) => {
     if (request.url === undefined) {
-      return sendJson(response, 404, {
-        success: false,
-        error: { code: 'ROUTE_NOT_FOUND', message: 'Unknown endpoint.' },
-      });
+      return sendJson(response, 404, asEnvelope('runtime_unknown','runtime_unknown','remote','/audit/events',{ success: false, error: { code: 'ROUTE_NOT_FOUND', message: 'Unknown endpoint.' } }));
     }
 
     const url = new URL(request.url, 'http://localhost');
     const pathname = url.pathname as RuntimeEndpoint;
     const method = request.method ?? 'GET';
 
+    if (method === 'GET' && pathname === RUNTIME_HANDSHAKE_PATH) {
+      const requestId = 'runtime_handshake';
+      const correlationId = request.headers['x-correlation-id'];
+      const handshake: RuntimeHandshakeEnvelope = {
+        transportVersion: '1.0.0',
+        runtimeVersion: '1.0.0',
+        supportedModes: ['remote', 'local'],
+        supportedEndpoints: [...POST_ENDPOINTS, ...GET_ENDPOINTS],
+      };
+      const envelope = asEnvelope(requestId, typeof correlationId === 'string' ? correlationId : requestId, 'remote', RUNTIME_HANDSHAKE_PATH, { success: true, data: handshake });
+      return sendJson(response, 200, envelope);
+    }
+
     const isPost = method === 'POST' && POST_ENDPOINTS.includes(pathname);
     const isGet = method === 'GET' && GET_ENDPOINTS.includes(pathname);
     if (!isPost && !isGet) {
-      return sendJson(response, 404, {
-        success: false,
-        error: { code: 'ROUTE_NOT_FOUND', message: `Unknown endpoint: ${pathname}` },
-      });
+      return sendJson(response, 404, asEnvelope('runtime_unknown','runtime_unknown','remote', pathname, { success: false, error: { code: 'ROUTE_NOT_FOUND', message: `Unknown endpoint: ${pathname}` } }));
     }
 
     const authResult = authAndLimit(request.headers, apiKeyStore, rateLimiter);
@@ -100,7 +114,7 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
         decision: 'deny',
         reason_code: authResult.error?.code ?? 'AUTH_UNKNOWN',
       });
-      return sendJson(response, 401, authResult);
+      return sendJson(response, 401, asEnvelope('unauthenticated','unauthenticated','remote',pathname,authResult));
     }
 
     const { requestId } = authResult.data;
@@ -113,13 +127,7 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
         payload = await parseJson(request);
       } catch (error) {
         logger.log({ requestId, endpoint: pathname, decision: 'deny', reason_code: 'REQUEST_PARSE_ERROR' });
-        return sendJson(response, 400, {
-          success: false,
-          error: {
-            code: 'REQUEST_PARSE_ERROR',
-            message: error instanceof Error ? error.message : 'Invalid JSON payload.',
-          },
-        });
+        return sendJson(response, 400, asEnvelope(requestId, requestId, 'remote', pathname, { success: false, error: { code: 'REQUEST_PARSE_ERROR', message: error instanceof Error ? error.message : 'Invalid JSON payload.' } }));
       }
     }
 
@@ -155,13 +163,7 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
             decision: 'deny',
             reason_code: capabilityResult.authorization?.reason_code ?? capabilityResult.reason_code,
           });
-          return sendJson(response, 403, {
-            success: false,
-            error: {
-              code: 'CAPABILITY_ACCESS_DENIED',
-              message: `Capability enforcement denied access (${capabilityResult.reason_code}).`,
-            },
-          });
+          return sendJson(response, 403, asEnvelope(requestId, requestId, 'remote', pathname, { success: false, error: { code: 'CAPABILITY_ACCESS_DENIED', message: `Capability enforcement denied access (${capabilityResult.reason_code}).` } }));
         }
       }
     }
@@ -174,7 +176,7 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
         decision: 'deny',
         reason_code: routeResult.error?.code ?? 'PROTOCOL_ERROR',
       });
-      return sendJson(response, 400, routeResult);
+      return sendJson(response, 400, asEnvelope(requestId, requestId, 'remote', pathname, routeResult));
     }
 
     const decisionInfo = deriveDecision(pathname, routeResult.data);
@@ -218,6 +220,6 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
       }
     }
 
-    return sendJson(response, 200, routeResult);
+    return sendJson(response, 200, asEnvelope(requestId, requestId, 'remote', pathname, routeResult));
   });
 }
