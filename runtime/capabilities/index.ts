@@ -4,3 +4,4 @@ export * from './capability-lifecycle';
 export * from './capability-runtime';
 export * from './capability-session';
 export * from './capability-revocation';
+export * from './governance';
