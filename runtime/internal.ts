@@ -10,3 +10,5 @@ export * from './distributed';
 export * from './capabilities';
 export * from './attestations';
 export * from './execution-fabric';
+
+export * from './policy';

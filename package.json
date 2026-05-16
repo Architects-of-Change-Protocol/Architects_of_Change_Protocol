@@ -22,23 +22,8 @@
     "check:runtime-boundaries": "node scripts/check-runtime-boundaries.mjs",
     "check:identity-vocabulary": "node scripts/check-identity-vocabulary.mjs",
     "check:contract-drift": "node scripts/check-contract-drift.mjs",
-    "validate:release": "npm run typecheck && npm run build && npm run lint && npm test && npm run lint:semantic-ownership && npm run check:version-graph && npm run validate:publishability && npm pack ./packages/protocol"
-  },
-  "devDependencies": {
-    "@changesets/cli": "^2.28.1",
-    "check:runtime-boundaries": "node scripts/check-runtime-boundaries.mjs",
-    "check:identity-vocabulary": "node scripts/check-identity-vocabulary.mjs",
-    "check:contract-drift": "node scripts/check-contract-drift.mjs",
-    "validate:publishability": "node scripts/validate-publishability.mjs",
-    "lint:semantic-ownership": "node scripts/lint-semantic-ownership.mjs",
     "validate:release": "npm run typecheck && npm run build && npm run lint && npm test && npm run lint:semantic-ownership && npm run check:version-graph && npm run validate:publishability && npm pack ./packages/protocol",
-    "check:runtime-exports": "node scripts/check-runtime-export-governance.mjs",
-    "check:sdk-boundaries": "node scripts/check-sdk-import-boundary.mjs",
-    "check:sdk-exports": "node scripts/check-sdk-exports.mjs",
-    "check:sdk-examples": "node scripts/check-sdk-examples-compile.mjs",
-    "check:persistence-boundaries": "node scripts/check-runtime-boundaries.mjs",
-    "check:release-governance": "node scripts/check-release-governance.mjs",
-    "check:observability-governance": "node scripts/check-observability-governance.mjs"
+    "check:policy-governance": "node scripts/check-policy-governance.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
