@@ -146,3 +146,176 @@ export interface AIConnectorAttestation {
   policyScoped: boolean;
   tokenUsage?: { input: number; output: number };
 }
+
+export type RuntimeId = string;
+export type RuntimeDomain = string;
+export type RuntimeFederationCategory =
+  | 'trust'
+  | 'delegation'
+  | 'replay'
+  | 'attestation'
+  | 'compatibility'
+  | 'lineage'
+  | 'transport'
+  | 'execution'
+  | 'governance'
+  | 'tenant'
+  | 'sdk'
+  | 'orchestration';
+
+export type RuntimeFederationState =
+  | 'trusted'
+  | 'untrusted'
+  | 'suspended'
+  | 'revoked'
+  | 'degraded'
+  | 'incompatible'
+  | 'delegated'
+  | 'attested'
+  | 'replay-authorized'
+  | 'replay-denied';
+
+export type RuntimeFederationTrustLevel =
+  | 'trusted'
+  | 'partially-trusted'
+  | 'capability-limited'
+  | 'replay-authorized'
+  | 'degraded-trust'
+  | 'revoked';
+
+export interface RuntimeFederationIdentity {
+  runtimeId: RuntimeId;
+  runtimeDomain: RuntimeDomain;
+  tenantId: TenantId;
+  sovereign: boolean;
+  delegatedFromRuntimeId?: RuntimeId;
+  attestationIdentityRef?: string;
+}
+
+export interface RuntimeFederationBoundary {
+  sourceRuntimeId: RuntimeId;
+  targetRuntimeId: RuntimeId;
+  policyIsolation: 'strict' | 'shared';
+  delegation: 'none' | 'attenuated' | 'scoped';
+  replay: 'deny-by-default' | 'allow-with-attestation';
+  visibility: 'internal' | 'audit-safe' | 'sdk-safe' | 'operator' | 'federation-partner' | 'user-facing';
+}
+
+export interface RuntimeTrustAssertion {
+  runtimeId: RuntimeId;
+  state: RuntimeFederationState;
+  trustLevel: RuntimeFederationTrustLevel;
+  allowedCapabilities: string[];
+  maxDelegationDepth: number;
+  replayAuthorized: boolean;
+}
+
+export interface RuntimeAttestation {
+  attestationId: string;
+  runtimeId: RuntimeId;
+  attestedByRuntimeId: RuntimeId;
+  checksum: string;
+  issuedAt: string;
+}
+
+export interface RuntimeFederationCapability {
+  capabilityId: string;
+  sourceRuntimeId: RuntimeId;
+  targetRuntimeId: RuntimeId;
+  allowedScopes: string[];
+  delegationDepth: number;
+  tenantBound: boolean;
+  replayBound: boolean;
+}
+
+export interface FederatedExecutionReference {
+  executionId: string;
+  runtimeId: RuntimeId;
+  parentExecutionId?: string;
+  checkpointRef?: string;
+}
+
+export interface FederatedExecutionLineage {
+  lineageId: string;
+  ancestry: FederatedExecutionReference[];
+  attestationChain: RuntimeAttestation[];
+}
+
+export interface RuntimeCompatibilityAssertion {
+  sourceRuntimeId: RuntimeId;
+  targetRuntimeId: RuntimeId;
+  compatible: boolean;
+  reasons: string[];
+}
+
+export interface RuntimeFederationRelationship {
+  relationshipId: string;
+  sourceRuntimeId: RuntimeId;
+  targetRuntimeId: RuntimeId;
+  state: RuntimeFederationState;
+}
+
+export interface RuntimeFederationConstraint {
+  constraintId: string;
+  category: RuntimeFederationCategory;
+  reasonCode: string;
+  enforcement: 'warn' | 'deny';
+}
+
+export interface RuntimeFederationPolicy {
+  policyId: string;
+  categories: RuntimeFederationCategory[];
+  constraints: RuntimeFederationConstraint[];
+}
+
+export interface RuntimeFederationDecision {
+  decisionId: string;
+  category: RuntimeFederationCategory;
+  state: RuntimeFederationState;
+  decision: 'allow' | 'deny' | 'conditional';
+  reasons: string[];
+  trustLevel?: RuntimeFederationTrustLevel;
+  explainabilityRef?: string;
+}
+
+export interface RuntimeFederationReplay {
+  replayId: string;
+  lineageId: string;
+  authorized: boolean;
+  attestationRefs: string[];
+}
+
+export interface RuntimeFederationTrace {
+  traceId: string;
+  runtimeOrigin: RuntimeId;
+  decisionId: string;
+  visibility: RuntimeFederationBoundary['visibility'];
+  redactedFields: string[];
+}
+
+export type RuntimeFederationVisibility = RuntimeFederationBoundary['visibility'];
+
+export interface RuntimeFederationVersionAssertion {
+  federationVersion: string;
+  runtimeProtocolVersion: string;
+  transportProfile: string;
+}
+
+export interface RuntimeFederationCompatibilityMatrix {
+  supportedFederationVersions: string[];
+  runtimeProtocolVersion: string;
+  supportedTransportProfiles: string[];
+}
+
+export interface RuntimeFederationHandshake {
+  handshakeId: string;
+  sourceIdentity: RuntimeFederationIdentity;
+  targetIdentity: RuntimeFederationIdentity;
+  trust: RuntimeTrustAssertion;
+  version: RuntimeFederationVersionAssertion;
+}
+
+export interface RuntimeFederationHandshakeEnvelope extends RuntimeFederationHandshake {
+  compatibilityMatrix: RuntimeFederationCompatibilityMatrix;
+  constraints: RuntimeFederationConstraint[];
+}
