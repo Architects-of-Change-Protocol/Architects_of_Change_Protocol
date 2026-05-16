@@ -53,3 +53,6 @@ export type {
 
 export * from './audit';
 export * from './enforcement';
+
+export { RUNTIME_TRANSPORT_VERSION, RUNTIME_HANDSHAKE_PATH, buildMetadata, toErrorEnvelope } from './types/transport';
+export type { RuntimeTransportMetadata, RuntimeRequestEnvelope, RuntimeResponseEnvelope, RuntimeErrorEnvelope, RuntimeHandshakeEnvelope, RuntimeErrorCode } from './types/transport';

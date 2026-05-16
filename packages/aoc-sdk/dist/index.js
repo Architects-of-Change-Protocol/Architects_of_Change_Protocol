@@ -17,9 +17,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.normalizeIdentity = void 0;
 exports.createRuntimeClient = createRuntimeClient;
 exports.createSafeRuntimeClient = createSafeRuntimeClient;
-function createRuntimeClient(client) {
-    return client;
-}
+function createRuntimeClient(client) { return client; }
 function createSafeRuntimeClient(client, options) {
     if ((options.mode ?? 'remote') !== 'local' && (!options.apiKey || options.apiKey.trim() === '')) {
         return { ok: false, error: { code: 'SDK_CONFIG_ERROR', message: 'Remote mode requires a non-empty apiKey.' } };
