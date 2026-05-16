@@ -3,6 +3,7 @@ import { URL } from 'url';
 import { DEFAULT_API_KEYS, InMemoryApiKeyStore } from '../auth/apiKeys';
 import { InMemoryRateLimiter } from '../limits/rateLimiter';
 import { RuntimeLogger } from '../logging/logger';
+import { DefaultRuntimeHealthReporter, DefaultTraceContextProvider, NoopRuntimeMetricsSink, NoopTelemetrySink, type RuntimeMetricsSink, type RuntimeHealthReporter, type TelemetrySink, type TraceContextProvider } from '../observability';
 import type { ApiResponse, RuntimeEndpoint } from '../types/api-types';
 import { RUNTIME_HANDSHAKE_PATH, buildMetadata, toErrorEnvelope, type RuntimeResponseEnvelope, type RuntimeHandshakeEnvelope } from '../types/transport';
 import { CONTRACTS_VERSION, MINIMUM_SUPPORTED_TRANSPORT_VERSION, PLATFORM_VERSION, RUNTIME_TRANSPORT_VERSION, SDK_COMPATIBILITY_VERSION } from '../versioning';
@@ -27,6 +28,7 @@ const POST_ENDPOINTS: RuntimeEndpoint[] = [
 ];
 
 const GET_ENDPOINTS: RuntimeEndpoint[] = ['/access/requests', '/access/grants/active', '/audit/events', '/usage/summary'];
+const RUNTIME_HEALTH_PATH = '/runtime/health' as const;
 
 export type RuntimeServerDeps = {
   apiKeyStore?: InMemoryApiKeyStore;
@@ -35,6 +37,10 @@ export type RuntimeServerDeps = {
   core?: RuntimeCore;
   capabilitySecret?: string;
   enforcementMode?: EnforcementMode;
+  telemetrySink?: TelemetrySink;
+  metricsSink?: RuntimeMetricsSink;
+  healthReporter?: RuntimeHealthReporter;
+  traceContextProvider?: TraceContextProvider;
 };
 
 function sendJson(response: ServerResponse, statusCode: number, body: RuntimeResponseEnvelope<unknown>): void {
@@ -78,6 +84,10 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
   const core = deps.core ?? DEFAULT_RUNTIME_CORE;
   const capabilitySecret = deps.capabilitySecret ?? process.env.AOC_CAPABILITY_SECRET ?? 'aoc_runtime_capability_secret';
   const enforcementMode = deps.enforcementMode ?? (process.env.ENFORCEMENT_MODE === 'strict' ? 'strict' : 'soft');
+  const telemetrySink = deps.telemetrySink ?? new NoopTelemetrySink();
+  const metricsSink = deps.metricsSink ?? new NoopRuntimeMetricsSink();
+  const traceContextProvider = deps.traceContextProvider ?? new DefaultTraceContextProvider();
+  const healthReporter = deps.healthReporter ?? new DefaultRuntimeHealthReporter(enforcementMode);
 
   return createServer(async (request, response) => {
     if (request.url === undefined) {
@@ -104,6 +114,13 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
       return sendJson(response, 200, envelope);
     }
 
+    if (method === 'GET' && pathname === RUNTIME_HEALTH_PATH) {
+      const requestId = 'runtime_health';
+      const correlationId = typeof request.headers['x-correlation-id'] === 'string' ? request.headers['x-correlation-id'] : requestId;
+      const health = healthReporter.snapshot();
+      return sendJson(response, 200, asEnvelope(requestId, correlationId, 'remote', RUNTIME_HEALTH_PATH, { success: true, data: health }));
+    }
+
     const isPost = method === 'POST' && POST_ENDPOINTS.includes(pathname);
     const isGet = method === 'GET' && GET_ENDPOINTS.includes(pathname);
     if (!isPost && !isGet) {
@@ -122,6 +139,9 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
     }
 
     const { requestId } = authResult.data;
+    const correlationId = typeof request.headers['x-correlation-id'] === 'string' ? request.headers['x-correlation-id'] : requestId;
+    const trace = traceContextProvider.create({ requestId, correlationId, endpoint: pathname });
+    telemetrySink.emit({ eventType: 'request.received', category: 'request', severity: 'info', message: 'Runtime request received.', trace, metadata: { method, endpoint: pathname } });
 
     let payload: unknown;
     if (method === 'GET') {
@@ -131,6 +151,7 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
         payload = await parseJson(request);
       } catch (error) {
         logger.log({ requestId, endpoint: pathname, decision: 'deny', reason_code: 'REQUEST_PARSE_ERROR' });
+        telemetrySink.emit({ eventType: 'request.payload_validation.failed', category: 'request', severity: 'warn', message: 'Request payload parsing failed.', trace, metadata: { endpoint: pathname } });
         return sendJson(response, 400, asEnvelope(requestId, requestId, 'remote', pathname, { success: false, error: { code: 'REQUEST_PARSE_ERROR', message: error instanceof Error ? error.message : 'Invalid JSON payload.' } }));
       }
     }
@@ -167,7 +188,8 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
             decision: 'deny',
             reason_code: capabilityResult.authorization?.reason_code ?? capabilityResult.reason_code,
           });
-          return sendJson(response, 403, asEnvelope(requestId, requestId, 'remote', pathname, { success: false, error: { code: 'CAPABILITY_ACCESS_DENIED', message: `Capability enforcement denied access (${capabilityResult.reason_code}).` } }));
+          telemetrySink.emit({ eventType: 'request.capability.denied', category: 'capability', severity: 'warn', message: 'Capability access denied.', trace, metadata: { reason_code: capabilityResult.reason_code } });
+          return sendJson(response, 403, asEnvelope(requestId, correlationId, 'remote', pathname, { success: false, error: { code: 'CAPABILITY_ACCESS_DENIED', message: `Capability enforcement denied access (${capabilityResult.reason_code}).` } }));
         }
       }
     }
@@ -180,7 +202,8 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
         decision: 'deny',
         reason_code: routeResult.error?.code ?? 'PROTOCOL_ERROR',
       });
-      return sendJson(response, 400, asEnvelope(requestId, requestId, 'remote', pathname, routeResult));
+      telemetrySink.emit({ eventType: 'request.route.denied', category: 'request', severity: 'warn', message: 'Route execution denied or failed validation.', trace, metadata: { code: routeResult.error?.code ?? 'PROTOCOL_ERROR' } });
+      return sendJson(response, 400, asEnvelope(requestId, correlationId, 'remote', pathname, routeResult));
     }
 
     const decisionInfo = deriveDecision(pathname, routeResult.data);
@@ -190,6 +213,8 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
       decision: decisionInfo.decision,
       reason_code: decisionInfo.reasonCode,
     });
+
+    telemetrySink.emit({ eventType: 'request.route.allowed', category: 'request', severity: 'info', message: 'Route execution succeeded.', trace, metadata: { decision: decisionInfo.decision, reason_code: decisionInfo.reasonCode } });
 
     if (isMeteredEndpoint(pathname)) {
       const consumerId = maybeResolveUsageConsumerId(pathname, payload);
@@ -213,6 +238,10 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
               occurred_at: occurredAt,
             });
           })
+          .then(() => {
+            telemetrySink.emit({ eventType: 'metering.recorded', category: 'metering', severity: 'info', message: 'Usage metering recorded.', trace, metadata: { endpoint: pathname } });
+            metricsSink.emitMetric({ metric: 'runtime.metering.success', value: 1, unit: 'count', category: 'metering', trace, tags: { endpoint: pathname } });
+          })
           .catch(() => {
             logger.log({
               requestId,
@@ -220,10 +249,13 @@ export function createRuntimeServer(deps: RuntimeServerDeps = {}) {
               decision: 'deny',
               reason_code: 'USAGE_METERING_ERROR',
             });
+            telemetrySink.emit({ eventType: 'metering.failed', category: 'metering', severity: 'error', message: 'Usage metering failed.', trace, metadata: { endpoint: pathname } });
+            metricsSink.emitMetric({ metric: 'runtime.metering.failure', value: 1, unit: 'count', category: 'metering', trace, tags: { endpoint: pathname } });
           });
       }
     }
 
-    return sendJson(response, 200, asEnvelope(requestId, requestId, 'remote', pathname, routeResult));
+    telemetrySink.emit({ eventType: 'transport.response.emitted', category: 'transport', severity: 'info', message: 'Response envelope emitted.', trace, metadata: { statusCode: 200 } });
+    return sendJson(response, 200, asEnvelope(requestId, correlationId, 'remote', pathname, routeResult));
   });
 }
