@@ -26,7 +26,8 @@
     "check:policy-governance": "node scripts/check-policy-governance.mjs",
     "check:reason-code-governance": "node scripts/check-reason-code-governance.mjs",
     "check:capability-governance": "node scripts/check-capability-governance.mjs",
-    "check:execution-governance": "node scripts/check-execution-governance.mjs"
+    "check:execution-governance": "node scripts/check-execution-governance.mjs",
+    "check:federation-governance": "node scripts/check-federation-governance.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",

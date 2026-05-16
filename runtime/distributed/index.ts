@@ -8,3 +8,5 @@ export * from './distributed-capabilities';
 export * from './distributed-revocation';
 export * from './remote-audit';
 export * from './governance-isolation';
+
+export * from './federation-semantics';
