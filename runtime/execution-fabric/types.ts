@@ -1,12 +1,21 @@
 export type GovernanceExecutionPlanStatus =
   | 'planned'
+  | 'authorized'
+  | 'pending'
   | 'running'
+  | 'executing'
+  | 'checkpointed'
+  | 'suspended'
+  | 'resumed'
+  | 'replayed'
   | 'paused'
   | 'waiting_remote_runtime'
   | 'waiting_human_review'
   | 'failed'
   | 'completed'
-  | 'cancelled';
+  | 'revoked'
+  | 'cancelled'
+  | 'invalid';
 
 export type GovernanceExecutionStepType =
   | 'evaluate_policy'
@@ -149,4 +158,48 @@ export interface ExecutionFabricAdapters {
   attestationLayer?: AttestationLayerAdapter;
   humanReview?: HumanReviewAdapter;
   aiGovernanceFlags?: AIGovernanceFlags;
+}
+
+
+export type ExecutionCategory =
+  | 'authorization'
+  | 'payout'
+  | 'access'
+  | 'governance'
+  | 'runtime'
+  | 'orchestration'
+  | 'transport'
+  | 'policy'
+  | 'capability'
+  | 'agent'
+  | 'workflow'
+  | 'sdk'
+  | 'tenant';
+
+export interface ExecutionCheckpointRecord {
+  executionPlanId: string;
+  checkpointId: string;
+  stage: string;
+  sequence: number;
+  deterministicHash: string;
+  createdAt: string;
+}
+
+export interface ExecutionReplayRecord {
+  executionPlanId: string;
+  replayId: string;
+  replayedFromPlanId: string;
+  checkpointId?: string;
+  reasonCode: string;
+  requestedBy: string;
+  createdAt: string;
+}
+
+export interface ExecutionAttestationRecord {
+  executionPlanId: string;
+  attestationId: string;
+  decision: 'execution_authorized' | 'execution_completed' | 'execution_failed' | 'execution_replayed' | 'execution_revoked' | 'execution_suspended' | 'execution_resumed';
+  reasonCodes: string[];
+  visibilityTier: 'internal' | 'audit-safe' | 'sdk-safe' | 'operator' | 'user-facing';
+  createdAt: string;
 }

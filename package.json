@@ -25,7 +25,8 @@
     "validate:release": "npm run typecheck && npm run build && npm run lint && npm test && npm run lint:semantic-ownership && npm run check:version-graph && npm run validate:publishability && npm pack ./packages/protocol",
     "check:policy-governance": "node scripts/check-policy-governance.mjs",
     "check:reason-code-governance": "node scripts/check-reason-code-governance.mjs",
-    "check:capability-governance": "node scripts/check-capability-governance.mjs"
+    "check:capability-governance": "node scripts/check-capability-governance.mjs",
+    "check:execution-governance": "node scripts/check-execution-governance.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
