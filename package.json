@@ -23,7 +23,11 @@
     "validate:publishability": "node scripts/validate-publishability.mjs",
     "lint:semantic-ownership": "node scripts/lint-semantic-ownership.mjs",
     "validate:release": "npm run typecheck && npm run build && npm run lint && npm test && npm run lint:semantic-ownership && npm run check:version-graph && npm run validate:publishability && npm pack ./packages/protocol",
-    "check:runtime-exports": "node scripts/check-runtime-export-governance.mjs"
+    "check:runtime-exports": "node scripts/check-runtime-export-governance.mjs",
+    "check:sdk-boundaries": "node scripts/check-sdk-import-boundary.mjs",
+    "check:sdk-exports": "node scripts/check-sdk-exports.mjs",
+    "check:sdk-examples": "node scripts/check-sdk-examples-compile.mjs",
+    "check:persistence-boundaries": "node scripts/check-runtime-boundaries.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.28.1",
