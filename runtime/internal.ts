@@ -12,3 +12,5 @@ export * from './attestations';
 export * from './execution-fabric';
 
 export * from './policy';
+
+export * from './memory';
