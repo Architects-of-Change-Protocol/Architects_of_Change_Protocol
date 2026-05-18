@@ -54,6 +54,7 @@ export type MemoryMutation = {
 
 export type MemoryAttestation = { attestedBy: string; attestedAt: string; reasonCode: string };
 export type MemoryReplayConstraint = { preserveAncestry: true; constrainMutation: true };
+export type MemoryReplay = { replayId: string; replayExecutionId: string; replayedAt: string; sourceMemoryId: MemoryId };
 export type MemoryContextWindow = { continuityRef: string; executionIds: readonly string[]; intentIds: readonly string[] };
 export type MemoryContinuityReference = { continuityRef: string; previousContinuityRef?: string; replayLocked: boolean };
 export type MemoryFederationReference = { partnerRuntimeId: string; federationEpoch: string; trustPosture: MemoryTrustPosture };
@@ -67,18 +68,33 @@ export type MemoryLifecycle = { retention: MemoryRetentionClass; expiresAt?: str
 export type MemoryAssertion = {
   declaration: MemoryDeclaration;
   lineage: MemoryLineage;
+  provenance: {
+    originatingRuntimeId: string;
+    originatingActorId: string;
+    originatingExecutionId: string;
+    originatingIntentId: string;
+    replayAncestry: readonly string[];
+    federationAncestry: readonly string[];
+    delegatedAncestry: readonly string[];
+    coordinationAncestry: readonly string[];
+  };
   mutation?: MemoryMutation;
   mutationConstraints: readonly MemoryMutationConstraint[];
   visibility: MemoryVisibility;
   trustPosture: MemoryTrustPosture;
   lifecycle: MemoryLifecycle;
   attestation?: MemoryAttestation;
+  replay?: MemoryReplay;
+  delegation?: MemoryDelegation;
+  federation?: MemoryFederationReference;
   replayConstraint: MemoryReplayConstraint;
   continuity: MemoryContinuityReference;
 };
 
 export function declareMemory(assertion: MemoryAssertion): MemoryAssertion {
   if (!assertion.declaration.memoryId || !assertion.declaration.executionId || !assertion.declaration.intentId) throw new Error("Invalid memory declaration");
+  if (assertion.provenance.originatingExecutionId !== assertion.declaration.executionId) throw new Error("Provenance execution mismatch");
+  if (assertion.provenance.originatingIntentId !== assertion.declaration.intentId) throw new Error("Provenance intent mismatch");
   validateMemoryLineage(assertion.lineage, assertion.declaration.memoryId);
   validateMemoryContinuity(assertion.continuity, assertion.lineage);
   validateMemoryTrust(assertion.trustPosture, assertion.visibility);
@@ -100,8 +116,12 @@ export function normalizeMemoryAssertion(assertion: MemoryAssertion): MemoryAsse
 
 export function classifyMemoryConflict(left: MemoryAssertion, right: MemoryAssertion): MemoryConflict | null {
   if (left.lineage.immutableHash !== right.lineage.immutableHash) return { code: "lineage_conflict", detail: "Lineage hash mismatch" };
+  if (left.provenance.originatingRuntimeId !== right.provenance.originatingRuntimeId && !right.federation) {
+    return { code: "lineage_conflict", detail: "Cross-runtime lineage requires federation reference" };
+  }
   if (left.declaration.immutable && right.mutation?.mode && right.mutation.mode !== "append-only") return { code: "mutation_conflict", detail: "Immutable memory cannot mutate" };
   if (left.trustPosture === "revoked" || right.trustPosture === "revoked") return { code: "trust_conflict", detail: "Revoked memory cannot be reused" };
+  if (right.delegation && right.delegation.delegatedVisibility !== right.visibility) return { code: "visibility_conflict", detail: "Delegated visibility mismatch" };
   if (left.continuity.replayLocked && right.mutation?.mode === "mutable") return { code: "continuity_conflict", detail: "Replay locked continuity cannot accept mutable mutations" };
   return null;
 }
@@ -124,6 +144,7 @@ export function classifyMemoryVisibility(assertion: MemoryAssertion): MemoryVisi
 }
 
 export function normalizeMemoryRetention(retention: MemoryRetentionClass): MemoryRetentionClass {
+  if (retention === "ephemeral") return "ephemeral";
   return retention;
 }
 
