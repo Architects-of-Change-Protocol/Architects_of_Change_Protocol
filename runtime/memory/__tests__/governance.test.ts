@@ -6,6 +6,16 @@ const baseAssertion = (): MemoryAssertion => ({
     executionId: 'exec-1', intentId: 'intent-1', continuityRef: 'cont-1', contextWindowRef: 'ctx-1', immutable: false
   },
   lineage: { ancestry: [], immutableHash: 'hash-1' },
+  provenance: {
+    originatingRuntimeId: 'runtime-a',
+    originatingActorId: 'actor-1',
+    originatingExecutionId: 'exec-1',
+    originatingIntentId: 'intent-1',
+    replayAncestry: [],
+    federationAncestry: [],
+    delegatedAncestry: [],
+    coordinationAncestry: []
+  },
   mutationConstraints: [{ key: 'scope', operator: 'eq', value: 'tenant:a' }],
   visibility: 'internal',
   trustPosture: 'trusted',
@@ -29,4 +39,13 @@ test('replay continuity remains deterministic', () => {
   const left = baseAssertion();
   const right = { ...baseAssertion(), continuity: { continuityRef: 'cont-2', previousContinuityRef: 'cont-1', replayLocked: true } };
   expect(() => validateCognitiveContinuity(left, right)).not.toThrow();
+});
+
+test('cross-runtime lineage requires federation reference', () => {
+  const left = baseAssertion();
+  const right = {
+    ...baseAssertion(),
+    provenance: { ...baseAssertion().provenance, originatingRuntimeId: 'runtime-b' }
+  };
+  expect(classifyMemoryConflict(left, right)?.code).toBe('lineage_conflict');
 });
