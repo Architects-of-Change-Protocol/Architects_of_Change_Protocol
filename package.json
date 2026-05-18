@@ -36,7 +36,8 @@
     "check:release-governance": "node scripts/check-release-governance.mjs",
     "check:observability-governance": "node scripts/check-observability-governance.mjs",
     "check:memory-governance": "node scripts/check-memory-governance.mjs",
-    "check:sdk-exports": "node scripts/check-sdk-exports.mjs"
+    "check:sdk-exports": "node scripts/check-sdk-exports.mjs",
+    "check:temporal-governance": "node scripts/check-temporal-governance.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
