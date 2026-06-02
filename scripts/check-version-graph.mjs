@@ -4,7 +4,7 @@ import path from 'node:path';
 import { execSync } from 'node:child_process';
 
 const root = process.cwd();
-const packageFiles = execSync("rg --files -g 'package.json'", { cwd: root, encoding: 'utf8' })
+const packageFiles = execSync("git ls-files '**/package.json'", { cwd: root, encoding: 'utf8' })
   .trim()
   .split('\n')
   .filter(Boolean)
