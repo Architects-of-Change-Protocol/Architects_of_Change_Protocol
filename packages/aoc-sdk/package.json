@@ -23,7 +23,5 @@
   "scripts": {
     "build": "tsc -b"
   },
-  "dependencies": {
-    "@aoc-runtime/shared-types": "0.1.0"
-  }
+  "dependencies": {}
 }
