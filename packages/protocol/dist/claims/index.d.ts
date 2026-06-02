@@ -1,5 +1,12 @@
-export interface Claim {
-    readonly type: string;
-    readonly value: string | number | boolean;
-}
+export type * from './primitives';
+export * from './claim-enums';
+export type * from './evidence';
+export type * from './assertion';
+export type * from './claim';
+export type * from './attestation';
+export type * from './verification';
+export type * from './standing';
+export type * from './capability';
+export type * from './authority';
+export type * from './decision';
 //# sourceMappingURL=index.d.ts.map
