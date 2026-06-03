@@ -398,7 +398,7 @@ AuthorityConstraints MAY include:
 | Policy constraints | Authority MUST comply with applicable policy versions, eligibility rules, recognition criteria, conflict rules, escalation rules, and revocation rules. |
 | Risk constraints | Authority MAY be limited by risk tier, safety class, criticality, exposure, impact, confidence threshold, assurance level, or required review. |
 | Governance constraints | Authority MAY require governance approval, governance review, separation of duties, quorum, appeal availability, public notice, or registry inclusion. |
-| Capability constraints | Authority MUST NOT exceed the capabilities or capability eligibility consumed by recognition. Capability degradation SHOULD trigger authority review. |
+| Capability constraints | Authority MUST NOT exceed the active CapabilityGrant consumed by recognition. Capability eligibility alone MUST NOT be treated as recognized capability for authority. Capability degradation, restriction, suspension, revocation, or challenge SHOULD trigger authority review. |
 | Standing constraints | Authority MAY require standing thresholds, standing types, current standing snapshots, absence of negative standing, or standing freshness. |
 | Jurisdiction constraints | Authority MAY be limited by legal, regulatory, organizational, contractual, market, federation, or protocol jurisdiction. |
 
@@ -417,7 +417,7 @@ Eligibility requirements MAY include:
 | Requirement | Description |
 |---|---|
 | Standing requirements | The subject MUST hold required standing states, standing thresholds, standing freshness, or standing history under applicable StandingContext. |
-| Capability requirements | The subject MUST hold required capabilities or capability eligibility, and those capabilities MUST be current, scoped, and unconstrained for the requested authority. |
+| Capability requirements | The subject MUST hold the required active CapabilityGrant. Eligibility alone MUST NOT satisfy authority requirements, and the grant MUST be current, scoped, and unconstrained for the requested authority. |
 | Governance approval | A recognized governance authority MAY be required to approve authority eligibility or recognition. |
 | Recognition process | The subject MUST complete the recognition process defined by authority policy. |
 | Delegation approval | If authority is delegated, the delegation MUST be policy-permitted, bounded, accepted where required, and recognized. |
@@ -463,7 +463,7 @@ Every authority MUST answer:
 - When was it proposed, reviewed, recognized, restricted, suspended, expired, revoked, or superseded?
 - What scope applies?
 - What constraints apply?
-- What capability or capability eligibility does it consume?
+- What active CapabilityGrant does it consume, and what eligibility findings supported that grant?
 - What standing states support the capability or eligibility?
 - What claims and evidence support those standing states?
 - What delegation basis exists, if any?
@@ -801,7 +801,7 @@ A subject may have Voting Capability but lack recognized Governance Authority fo
 
 An AI system may have Claim Issuance Capability but lack Issuance Authority. In that case the AI system may produce a claim-like artifact, but the claim MUST NOT be accepted as authoritative.
 
-Capability MUST NOT directly grant authority. Authority recognition MUST consume capability and apply recognition, governance, scope, constraints, and policy.
+Capability MUST NOT directly grant authority. Authority recognition MUST consume an active, traceable, in-scope capability grant and apply recognition, governance, scope, constraints, and policy. Eligibility alone MUST NOT produce authority.
 
 ---
 
