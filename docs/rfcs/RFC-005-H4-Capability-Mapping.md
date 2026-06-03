@@ -10,13 +10,13 @@
 | Created | 2026-06-03 |
 | Last Updated | 2026-06-03 |
 | Supersedes | — |
-| Related | RFC-004 Evidence Layer v1.0, RFC-005 AOC Claims Framework, RFC-005-H1 Standing Traceability, RFC-005-H2 Standing Engine |
+| Related | RFC-004 Evidence Layer v1.0, RFC-005 AOC Claims Framework, RFC-005-H1 Standing Traceability, RFC-005-H2 Standing Engine, RFC-005-H3 Standing Governance, RFC-005-H5 Delegated Standing, RFC-005-H8 Authority Model, RFC-005-H9 Decision Framework |
 
 ---
 
 ## Abstract
 
-This document defines Capability Mapping for the AOC Protocol. Capability Mapping specifies how standing is consumed by a Capability Engine to produce bounded, policy-governed, traceable, and revocable capability decisions. It extends RFC-004, RFC-005, RFC-005-H1, and RFC-005-H2 by establishing Capability as the layer between Standing and Authority in the canonical constitutional chain.
+This document defines Capability Mapping for the AOC Protocol. Capability Mapping specifies how standing and delegation context are consumed by a Capability Engine to produce bounded, policy-governed, traceable, and revocable capability decisions. It extends RFC-004, RFC-005, RFC-005-H1, RFC-005-H2, RFC-005-H3, RFC-005-H5, RFC-005-H8, and RFC-005-H9 by establishing Capability as the bridge between Delegation and Authority in the canonical constitutional chain.
 
 Capability Mapping does not define a runtime engine, database schema, API shape, credential format, user interface, or scoring product. It defines the protocol requirements that any conformant capability implementation must satisfy.
 
@@ -42,17 +42,19 @@ Capability Mapping does not define a runtime engine, database schema, API shape,
 16. [Capability Simulation](#16-capability-simulation)
 17. [Authority Relationship](#17-authority-relationship)
 18. [Decision Relationship](#18-decision-relationship)
-19. [Capability Guarantees](#19-capability-guarantees)
-20. [Security Implications](#20-security-implications)
-21. [Implementation Guidance](#21-implementation-guidance)
-22. [Future RFC Dependencies](#22-future-rfc-dependencies)
-23. [Acceptance Criteria](#23-acceptance-criteria)
+19. [Capability Governance](#19-capability-governance)
+20. [Capability Guarantees](#20-capability-guarantees)
+21. [Security Implications](#21-security-implications)
+22. [Implementation Guidance](#22-implementation-guidance)
+23. [Future RFC Dependencies](#23-future-rfc-dependencies)
+24. [Acceptance Criteria](#24-acceptance-criteria)
+25. [Conclusion](#25-conclusion)
 
 ---
 
 ## 1. Executive Summary
 
-Capability Mapping defines the Capability Layer that sits between Standing and Authority in the AOC constitutional chain.
+Capability Mapping defines the Capability Layer that sits between Delegation and Authority in the AOC constitutional chain.
 
 The AOC constitutional chain is:
 
@@ -68,6 +70,8 @@ Attestation
 Verification
   ↓
 Standing
+  ↓
+Delegation
   ↓
 Capability        ← This RFC
   ↓
@@ -86,6 +90,7 @@ Each layer answers a distinct protocol question:
 | Attestation | Who has endorsed the claim and on what basis? |
 | Verification | Has the claim been evaluated and confirmed current? |
 | Standing | What is the current protocol state of the subject in this context? |
+| Delegation | Has bounded standing-derived influence or permission context been extended to another subject? |
 | Capability | What may this subject do under policy in this scope? |
 | Authority | What decisions are recognized by governance? |
 | Decision | What consequential action has been taken under authority? |
@@ -96,9 +101,9 @@ Capability answers: *What may this subject do?*
 
 Authority answers: *What decisions are recognized?*
 
-Capabilities are the bridge between standing and authority. Standing is evidence-derived interpretation. Capability is policy-governed permission. Authority is governance recognition. These are separate concepts and MUST be treated as separate layers.
+Capabilities are the bridge from standing and delegation context to authority. Standing is evidence-derived interpretation. Delegation is bounded extension of eligibility or permission context. Capability is policy-governed permission surface. Authority is governance recognition. These are separate concepts and MUST be treated as separate layers.
 
-Standing MUST NOT directly grant capability. Capability MUST NOT directly grant authority. A conformant implementation MUST require capability decisions to be produced through a policy-governed evaluation that consumes standing, and MUST require authority recognition to consume capability.
+Standing MUST NOT directly grant capability. Delegation MUST NOT directly grant capability outside policy. Capability MUST NOT directly grant authority. A conformant implementation MUST require capability decisions to be produced through a policy-governed evaluation that consumes standing and any applicable delegation basis, and MUST require authority recognition to consume capability.
 
 ---
 
@@ -136,7 +141,7 @@ When standing degrades, expires, or is revoked, dependent capabilities must be r
 
 ## 3. Capability Definition
 
-A Capability is a bounded permission, action surface, privilege, role, authority precursor, or operational entitlement derived through policy by a Capability Engine consuming standing, context, and applicable policy constraints.
+A Capability is a bounded, scoped, policy-governed action surface or permission precursor derived through policy by a Capability Engine consuming standing, delegation context when applicable, operational context, and applicable constraints.
 
 Capabilities are:
 
@@ -156,17 +161,35 @@ Capabilities are NOT:
 
 The boundary between standing and capability MUST be preserved. A standing state is not equivalent to a permission. Converting standing states directly to permissions without a policy-governed capability layer is not conformant.
 
+### 3.1 Why capability exists
+
+Capability exists to prevent evidence-derived standing from becoming operational permission without an explicit policy, scope, and constraint evaluation. Standing may establish that a subject currently satisfies a status or trust interpretation, but standing does not answer what actions the subject may perform, where those actions are valid, under which risk limits, or whether governance must recognize the action. Capability provides that bounded action surface before Authority determines recognized legitimacy.
+
+### 3.2 Capability boundaries
+
+A capability is not evidence, a claim, standing, delegation, authority, or a decision. A conformant implementation MUST preserve the following boundaries:
+
+| Boundary | Requirement |
+|---|---|
+| Capability vs evidence | Capability MUST NOT be treated as observed fact or proof. It depends on evidence only through claims, standing, and traceable policy evaluation. |
+| Capability vs claim | Capability MUST NOT assert a proposition about the world. It records a permission precursor or action surface. |
+| Capability vs standing | Capability MUST NOT be inferred directly from standing. Standing establishes eligibility inputs; capability requires policy-governed grant evaluation. |
+| Capability vs delegation | Delegation MAY affect eligibility or scope, but delegation alone MUST NOT activate a capability grant. |
+| Capability vs authority | Capability enables possible action. Authority recognizes legitimacy of an action. Authority MAY consume capability but is not automatically produced by capability. |
+| Capability vs decision | Capability does not alter protocol reality as a decision. Decision consumes authority and produces recognized outcomes. |
+
 ---
 
 ## 4. Capability Mapping Model
 
-Capability Mapping is the process by which a Capability Engine transforms standing, policy, and context into capability decisions.
+Capability Mapping is the process by which a Capability Engine transforms standing, policy, delegation context when applicable, and operational context into capability decisions.
 
 The formal model is:
 
 ```text
 Capability = f(
   Standing,
+  DelegationContext,
   Policy,
   Context
 )
@@ -175,20 +198,21 @@ Capability = f(
 Where:
 
 - `Standing` is the current standing state of the CapabilitySubject, as produced by a conformant Standing Engine under RFC-005-H2. Standing is an input to capability derivation, not the result. A high-standing subject may receive no capabilities in an inapplicable context. A subject with limited standing may receive restricted capabilities if policy provides for them.
+- `DelegationContext` is the optional but traceable delegation basis that may constrain eligibility, scope, or exercise. If no delegation applies, the Capability Engine MUST explicitly evaluate the request as a direct capability request rather than assuming implicit delegation.
 - `Policy` is the versioned capability policy that defines eligibility rules, standing thresholds, required evidence or claim categories, scope rules, constraint definitions, delegation rules, revocation triggers, and output mapping. Policy is mandatory. A capability derived without policy is not conformant.
 - `Context` is the explicit operational context in which the capability is evaluated. Context includes the capability type being requested, the organizational or project scope, jurisdiction, risk tier, temporal parameters, requestor identity, purpose, and any additional situational constraints.
 
-The function is deterministic. Given the same standing inputs, policy version, and context, a conformant Capability Engine MUST produce the same capability decision and the same explanation.
+The function is deterministic. Given the same standing inputs, delegation context, policy version, and operational context, a conformant Capability Engine MUST produce the same capability decision and the same explanation.
 
 ### 4.1 Standing as input, not result
 
 Standing answers what is currently true about a subject under evidence and policy. Capability derivation answers what a subject may do under a separate policy evaluation. The directional flow is:
 
 ```text
-Evidence → Claims → Standing → [Capability Engine] → Capability
+Evidence → Claims → Standing → Delegation → [Capability Engine] → Capability
 ```
 
-Standing informs the Capability Engine. It does not determine capability output on its own. The Capability Engine must also evaluate policy rules, scope constraints, temporal validity, risk limits, subject eligibility, and delegation state.
+Standing informs the Capability Engine. It does not determine capability output on its own. The Capability Engine must also evaluate policy rules, scope constraints, temporal validity, risk limits, subject eligibility, and delegation state. Delegation context is a constraining input, not a shortcut around standing or policy.
 
 ### 4.2 Policy as authorization layer
 
@@ -346,21 +370,24 @@ A capability exists in one of the following lifecycle states. Transitions betwee
 | State | Meaning |
 |---|---|
 | Requested | A subject or authorized requestor has submitted a capability request that has not yet been evaluated. |
-| Granted | A Capability Engine or authorized governance process has evaluated the request and determined the capability may be issued under applicable policy and standing. |
+| Eligible | The CapabilitySubject satisfies standing-based and delegation-based preconditions for consideration, but no active capability exists. Eligibility alone MUST NOT be treated as an active capability. |
+| Granted | A Capability Engine or authorized governance process has evaluated the request and determined the capability may be issued under applicable policy, standing, scope, constraints, and governance requirements. |
 | Active | The capability is valid, within scope, within constraints, and may be exercised by the CapabilitySubject. |
 | Restricted | The capability exists but policy, standing, risk, challenge, or governance conditions restrict its exercise. Specific actions may be suspended or require escalation. |
 | Suspended | The capability is temporarily disabled pending review, standing recomputation, evidence resolution, governance process, appeal, or remediation. |
 | Expired | The capability is no longer valid because its temporal validity window has passed, the underlying policy has changed, or the supporting standing has expired. |
 | Revoked | The capability has been permanently withdrawn due to standing degradation, policy violation, governance action, fraud, evidence invalidation, or other revocation trigger. Revocation is not expiry; it is a deliberate termination event. |
-| Delegated | The capability has been formally delegated to another CapabilitySubject under policy-defined delegation rules. The delegating subject may retain constrained exercise rights. |
 | Superseded | The capability has been replaced by a new grant with modified scope, constraints, or terms. The superseded capability is retired and must not be exercised. |
+| Denied | The request has been evaluated and the capability was not granted because eligibility, standing, policy, scope, constraints, governance, evidence, claim, or delegation requirements were not satisfied. |
 
 ### 9.1 State transitions
 
 State transitions MUST be traceable events. Examples:
 
-- `Requested → Granted`: Capability Engine evaluation completes successfully.
-- `Requested → Denied`: Capability Engine evaluation finds insufficient standing, policy ineligibility, or scope mismatch.
+- `Requested → Eligible`: Standing, delegation, or baseline preconditions are satisfied, but grant evaluation is not complete.
+- `Eligible → Granted`: Capability Engine evaluation completes successfully across standing, policy, scope, constraints, context, and governance requirements.
+- `Requested → Denied`: Capability Engine evaluation finds insufficient standing, policy ineligibility, scope mismatch, missing evidence or claims, unresolved challenge, delegation defect, or governance block.
+- `Eligible → Denied`: Eligibility preconditions are satisfied, but grant requirements fail during policy, scope, constraint, risk, or governance evaluation.
 - `Granted → Active`: Temporal validity window opens.
 - `Active → Restricted`: Standing falls below minimum threshold or challenge is raised.
 - `Active → Suspended`: Governance process or policy trigger suspends the capability pending review.
@@ -369,16 +396,69 @@ State transitions MUST be traceable events. Examples:
 - `Restricted → Active`: Restriction condition is resolved, standing is restored, or challenge is closed.
 - `Suspended → Active`: Review completes without finding cause for revocation.
 - `Suspended → Revoked`: Review finds cause for revocation.
-- `Active → Delegated`: Delegation event is issued under authorized delegation policy.
 - `Active → Superseded`: New capability grant replaces the existing grant.
+
+Delegation MAY produce CapabilityLifecycleEvents and dependent DelegationRecords, but the capability lifecycle state remains governed by the canonical states in this section. Complete delegation semantics are defined in [Capability Delegation](#14-capability-delegation).
+
+### 9.2 CapabilityGrant model
+
+A CapabilityGrant is the traceable record that a CapabilitySubject has been recognized as holding a bounded capability under policy. It is the grant record, not the abstract capability type, that determines whether a subject may exercise a capability in a particular scope.
+
+A conformant CapabilityGrant MUST record or reference:
+
+- the CapabilitySubject;
+- the CapabilityType;
+- the CapabilityScope;
+- the CapabilityConstraints;
+- the standing basis, including StandingSnapshot, StandingType, StandingState, confidence, and provenance references;
+- the policy basis, including PolicyVersion and applicable eligibility, scope, constraint, revocation, and challenge rules;
+- the governance basis when governance review, approval, quorum, or oversight is required;
+- the delegation basis when the grant depends on delegated standing, delegated capability, or delegated authority context;
+- the lifecycle state;
+- the effective period, including activation and expiry conditions;
+- the revocation rules and propagation requirements;
+- the current challenge state and references to open or resolved challenges.
+
+A CapabilityGrant MUST NOT be considered Active merely because the subject is eligible. Grant activation requires completion of the policy-governed grant process and satisfaction of any effective-period conditions.
+
+### 9.3 CapabilityDenial model
+
+Capability denial is a first-class protocol result. A denial is not the absence of a record; it is an explainable result of capability evaluation.
+
+A CapabilityDenial SHOULD answer:
+
+- why the capability was denied;
+- which eligibility, standing, policy, scope, constraint, governance, evidence, claim, or delegation requirement failed;
+- which evidence, claim, standing, policy, or delegation input was missing, stale, invalid, challenged, insufficient, or out of scope;
+- whether the denial MAY be appealed, challenged, remediated, or resubmitted under policy.
+
+A denied capability MUST NOT be exercised. A denial MAY be superseded by a later grant only through a new traceable evaluation or recognized governance process.
+
+### 9.4 CapabilityExercise
+
+CapabilityGrant and CapabilityExercise are distinct.
+
+A CapabilityGrant means the CapabilitySubject holds a bounded action surface or permission precursor under defined policy, scope, constraints, standing basis, and lifecycle state.
+
+A CapabilityExercise is an attempt by the CapabilitySubject to use the granted capability in a specific operational context. Exercise MUST be validated at the time of use. A granted capability MAY still fail exercise if:
+
+- the exercise context is outside CapabilityScope;
+- the grant is not Active, has expired, has been revoked, has been superseded, or is suspended;
+- applicable restrictions or risk thresholds are not satisfied;
+- required authority recognition is missing;
+- a policy change requires revalidation before exercise;
+- an open challenge suspends or restricts exercise;
+- delegation basis has expired, been revoked, or become out of scope.
+
+Capability exercise is not itself a decision. Exercise MAY be an input to Authority recognition or may lead toward a Decision, but the recognized outcome is produced only at the Authority and Decision layers.
 
 ---
 
 ## 10. Capability Eligibility
 
-Capability eligibility is the determination of whether a CapabilitySubject's current standing satisfies the preconditions defined by policy for a capability to be considered for grant.
+Capability eligibility is the determination of whether a CapabilitySubject's current standing, applicable delegation basis, and baseline policy preconditions satisfy the requirements for a capability to be considered for grant.
 
-Eligibility is distinct from granting. Eligibility means the subject meets the standing-based preconditions that permit the Capability Engine to evaluate whether a capability should be granted. Granting occurs when the full capability evaluation — including standing, policy, scope, context, constraints, governance rules, and any required review or approval — is completed and the capability is formally issued.
+Eligibility is distinct from granting. Eligibility means the subject may qualify for a capability because standing-based, delegation-based when applicable, and baseline policy preconditions permit further evaluation. Grant means the capability has been recognized and activated under policy after the full capability evaluation is complete. The full evaluation includes standing, policy, scope, context, constraints, governance rules, delegation basis when applicable, and any required review or approval.
 
 A subject may be eligible but not granted a capability because:
 
@@ -389,7 +469,7 @@ A subject may be eligible but not granted a capability because:
 - a delegation limit prevents further issuance;
 - the risk tier requires additional review.
 
-A subject may hold a capability without continuous eligibility if the capability has already been granted and remains Active under its defined constraints. When standing subsequently degrades below required thresholds, the capability MUST be restricted, suspended, or revoked per policy.
+Eligibility alone MUST NOT be treated as an active capability. A subject MAY be eligible and still receive no grant. A subject MAY hold a capability without continuous eligibility if the capability has already been granted and remains Active under its defined constraints. When standing subsequently degrades below required thresholds, when delegation basis changes, or when policy changes materially, the capability MUST be reviewed and MUST be restricted, suspended, or revoked when policy requires.
 
 ### 10.1 Eligibility examples
 
@@ -405,11 +485,23 @@ The following examples illustrate standing-based eligibility. These are mappings
 
 These examples express eligibility. The Capability Engine must still evaluate policy, scope, constraints, and any required approvals before issuing a grant.
 
+### 10.2 Eligibility, grant, and active state
+
+The Capability Layer MUST distinguish three related states:
+
+| Concept | Meaning | Consequence |
+|---|---|---|
+| Eligibility | The subject may qualify for consideration because prerequisite standing, delegation, or policy conditions are met. | No capability may be exercised solely from eligibility. |
+| Grant | The protocol has recognized a bounded capability for the subject under policy, scope, constraints, and traceable basis. | The subject holds a CapabilityGrant, but exercise still depends on lifecycle state and context validation. |
+| Active | The grant is currently valid and exercisable within scope and constraints. | Exercise may proceed only if Authority recognition requirements are also satisfied when required. |
+
+A conformant implementation MUST NOT collapse Eligible, Granted, and Active into a single boolean permission.
+
 ---
 
 ## 11. Capability Evaluation Engine
 
-The Capability Engine is the policy-governed evaluation system that consumes standing outputs and produces capability decisions.
+The Capability Engine is the policy-governed evaluation system that consumes standing outputs, applicable delegation context, policy, and operational context to produce capability decisions.
 
 A conformant Capability Engine MUST evaluate capabilities as a function of explicit inputs:
 
@@ -417,6 +509,7 @@ A conformant Capability Engine MUST evaluate capabilities as a function of expli
 CapabilityDecision = f(
   CapabilityRequest,
   Standing,
+  DelegationContext,
   Policy,
   Context
 )
@@ -426,6 +519,7 @@ Where:
 
 - `CapabilityRequest` identifies the requested capability type, the CapabilitySubject, the requested scope, and any contextual parameters relevant to the evaluation.
 - `Standing` is the current standing output produced by a conformant Standing Engine for the CapabilitySubject under the relevant StandingType and StandingContext. Standing MUST be consumed as a StandingSnapshot with traceable provenance per RFC-005-H1 and RFC-005-H2.
+- `DelegationContext` is the optional but traceable delegation basis that may constrain eligibility, scope, or exercise, including delegator, delegatee, delegated scope, constraints, effective period, revocation state, and challenge state when applicable. If no delegation applies, the Capability Engine MUST explicitly evaluate the request as a direct capability request rather than assuming implicit delegation.
 - `Policy` is the versioned capability policy governing the requested capability type, subject type, and scope.
 - `Context` is the operational context at evaluation time, including organizational scope, jurisdiction, risk tier, temporal parameters, and purpose.
 
@@ -436,7 +530,7 @@ A conformant Capability Engine SHOULD perform the following stages:
 | Stage | Required behavior |
 |---|---|
 | Resolve Standing | Obtain current StandingSnapshot for the CapabilitySubject under the relevant StandingType. Validate that the snapshot is current, non-expired, and traceable per RFC-005-H1. |
-| Evaluate Eligibility | Determine whether the subject's standing state and confidence satisfy the minimum preconditions defined by policy for the requested capability. |
+| Evaluate Eligibility | Determine whether the subject's standing state, confidence, delegation basis when applicable, and baseline policy preconditions satisfy the minimum requirements for the requested capability. |
 | Evaluate Policy | Apply versioned capability policy rules to the standing inputs, capability type, scope, constraints, jurisdiction, risk tier, and any delegation conditions. |
 | Evaluate Context | Validate that the operational context at request time is within the scope defined by the requested capability and the applicable policy. |
 | Evaluate Constraints | Confirm that time, monetary, risk, role, jurisdiction, and policy constraints are satisfied at evaluation time. |
@@ -484,6 +578,41 @@ Capability traceability MUST support both forward and reverse directions:
 
 A CapabilityGrant without a reference to a traceable StandingSnapshot is not conformant for consequential use.
 
+
+### 12.1 Capability challenges
+
+Capabilities MUST be challengeable through policy-recognized review paths. A challenge is a traceable objection to a capability evaluation, grant, denial, lifecycle event, exercise attempt, scope, constraint, or delegation basis.
+
+A conformant challenge process SHOULD support challenges against:
+
+- CapabilityGrant issuance;
+- CapabilityDenial outcomes;
+- CapabilityScope definitions or scope interpretation;
+- CapabilityConstraints, including temporal, monetary, risk, role, jurisdiction, policy, and standing constraints;
+- CapabilityExercise attempts or exercise validation failures;
+- CapabilityRevocation events;
+- CapabilityRestriction or CapabilitySuspension events;
+- capability delegation basis, delegation chain, or delegation revocation;
+- policy version or governance basis used to produce the capability result.
+
+A CapabilityChallenge MUST record the challenged object, challenger or authorized challenge process, challenge reason, supporting evidence or claim references when applicable, current challenge state, effect on capability exercise, and resolution outcome. Policy MUST define whether a challenge suspends exercise, restricts exercise, allows exercise pending review, or triggers immediate revocation.
+
+### 12.2 Capability Registry
+
+A Capability Registry is introduced as a future protocol concept or RFC dependency. This RFC does not prescribe implementation details, storage design, credential format, or API shape.
+
+The purpose of a Capability Registry is to preserve canonical traceability for capability state. A registry SHOULD be capable of recording or referencing:
+
+- CapabilityGrant records;
+- CapabilityDenial records;
+- lifecycle state and lifecycle events;
+- restrictions, suspensions, expirations, revocations, supersessions, and denials;
+- CapabilityChallenge records and challenge outcomes;
+- delegation basis and delegation effects;
+- traceability links to standing, policy, governance, authority, and dependent decisions.
+
+A future Capability Registry RFC SHOULD define registry responsibilities, conformance requirements, interoperability expectations, and audit semantics without collapsing registry records into evidence, standing, authority, or decision records.
+
 ---
 
 ## 13. Capability Dependency Graph
@@ -500,7 +629,10 @@ A conformant capability implementation SHOULD represent explicit dependencies am
     | evaluated_for
     v
 [Standing Snapshot]
-    | produced_by
+    | informs
+    v
+[Delegation Context]
+    | produced_by / constrained_by
     v
 [Algorithm Version]         [Policy Context]
     |                             |
@@ -532,9 +664,9 @@ A conformant capability implementation SHOULD represent explicit dependencies am
 Full dependency graph with governance nodes:
 
 ```text
-[Evidence] → [Claim] → [Standing Snapshot]
-    ↓              ↓          ↓
-[Authority]   [Policy]   [Algorithm Version]
+[Evidence] → [Claim] → [Standing Snapshot] → [Delegation Context]
+    ↓              ↓          ↓                    ↓
+[Authority]   [Policy]   [Algorithm Version]  [Delegation Policy]
                   ↓
            [Capability Policy]
                   ↓
@@ -551,7 +683,7 @@ Full dependency graph with governance nodes:
                                     [Policy Review]
 ```
 
-A CapabilityGrant without graph edges to StandingSnapshot, PolicyVersion, CapabilityScope, and CapabilityConstraint is an orphan capability and is not conformant.
+A CapabilityGrant without graph edges to StandingSnapshot, PolicyVersion, CapabilityScope, and CapabilityConstraint is an orphan capability and is not conformant. If a capability depends on delegation, the graph MUST also include the DelegationRecord, delegation scope, delegation constraints, and delegation lifecycle state.
 
 ---
 
@@ -580,6 +712,19 @@ A conformant delegation MUST:
 - define revocation conditions;
 - prohibit further sub-delegation unless explicitly permitted by policy.
 
+### 14.3 Delegation effects on capability
+
+Delegation affects capability by modifying eligibility, scope, constraints, or permitted exercise path under policy. Delegation MUST NOT rewrite standing, bypass eligibility, or create authority by itself.
+
+When a CapabilityGrant depends on delegation, the grant MUST identify the delegation basis and MUST remain bounded by the narrower of:
+
+- the delegator's capability scope and constraints;
+- the delegatee's own qualifying standing, if required by policy;
+- the delegation scope, constraints, effective period, and revocation rules;
+- the capability policy governing the requested capability type and exercise context.
+
+Delegation expiration, suspension, restriction, revocation, or successful challenge MUST trigger review of dependent CapabilityGrants and MAY require restriction, suspension, revocation, supersession, or denial according to policy.
+
 ---
 
 ## 15. Capability Revocation
@@ -593,12 +738,15 @@ Revocation is mandatory when conditions that justified the grant no longer hold.
 | Trigger | Description |
 |---|---|
 | Evidence Invalidation | Evidence contributing to the standing that supported the capability has been invalidated, revoked, or corrected in a way that changes standing below required thresholds. |
+| Claim Revocation | A claim supporting the standing, delegation basis, policy eligibility, or capability scope is revoked, superseded, invalidated, or successfully challenged. |
 | Standing Degradation | The CapabilitySubject's standing falls below the minimum state or confidence threshold required by capability policy. |
-| Policy Change | A material policy change removes eligibility for the capability type or scope. |
+| Policy Change | A material policy change removes eligibility for the capability type or scope, changes exercise constraints, or requires revalidation. |
 | Governance Action | An authorized governance body, reviewer, or administrator issues a revocation through a recognized governance process. |
+| Authority Challenge | A challenge to authority recognition reveals that a dependent capability grant, exercise, scope, or delegation basis was invalid or no longer supportable. |
 | Fraud or Violation | Evidence of policy violation, fraudulent claim, unauthorized use, or protocol breach triggers mandatory revocation. |
 | Delegation Revocation | A delegated capability is revoked when the originating capability is revoked, the delegation period expires, or the delegation terms are violated. |
-| Expiry Cascade | The expiry of a dependent standing or upstream capability triggers revocation of downstream dependent capabilities. |
+| Expiry Cascade | The expiry of a dependent standing, delegation, policy basis, or upstream capability triggers revocation of downstream dependent capabilities. |
+| Risk Escalation | Operational, security, compliance, financial, or AI risk rises beyond the threshold allowed by the CapabilityGrant or governing policy. |
 
 ### 15.2 Revocation propagation
 
@@ -613,7 +761,7 @@ Revocation propagation MUST be traceable. A CapabilityRevocationEvent MUST recor
 
 ### 15.3 Revocation is not erasure
 
-Revocation terminates a capability's Active or Delegated state. It does not erase the historical record that the capability was granted. Prior CapabilityGrant records MUST remain available for audit, impact analysis, and standing history review.
+Revocation terminates a capability's Active state and any associated delegation exercise rights. It does not erase the historical record that the capability was granted. Prior CapabilityGrant records MUST remain available for audit, impact analysis, and standing history review.
 
 ---
 
@@ -666,7 +814,7 @@ The relationship is directional:
 Capability → Authority → Decision
 ```
 
-A capability is an authority precursor. It establishes that a subject is eligible to act in a defined scope. Authority is the formal recognition by a governance body, protocol process, or institutional actor that an action taken under the capability is a valid exercise of power within the protocol.
+A capability is an authority precursor. It establishes that a subject has a bounded ability or permission surface in a defined scope. Authority is the formal recognition by a governance body, protocol process, or institutional actor that an action taken under the capability is a valid exercise of power within the protocol. Capability enables possible action; authority recognizes legitimacy of action. Authority consumes capability but is not automatically produced by capability.
 
 ### 17.1 Examples
 
@@ -685,11 +833,11 @@ In each example:
 - The **capability** establishes that the subject is permitted to perform the action within the defined scope and constraints.
 - The **authority** establishes that the action, when performed, is recognized as a legitimate exercise of protocol power.
 
-A subject holding a capability but without recognized authority cannot make decisions that bind the protocol. A subject exercising authority without a traceable capability is not conformant.
+A subject holding a capability but without recognized authority cannot make decisions that bind the protocol. A subject exercising authority without a traceable, active, in-scope capability is not conformant.
 
 ### 17.2 Authority does not flow backward
 
-Authority recognition does not retroactively create capability. If a subject performed an action without a valid capability grant, that action lacks protocol legitimacy regardless of whether governance subsequently recognized it. Conformant implementations MUST validate capability before recognizing authority.
+Authority recognition does not retroactively create capability. If a subject performed an action without a valid capability grant, that action lacks protocol legitimacy regardless of whether governance subsequently recognized it. Conformant implementations MUST validate capability before recognizing authority, including grant state, exercise context, scope, constraints, policy version, challenge state, revocation state, and delegation basis when applicable.
 
 ---
 
@@ -712,6 +860,8 @@ Verification
   ↓
 Standing
   ↓
+Delegation
+  ↓
 Capability
   ↓
 Authority
@@ -719,7 +869,7 @@ Authority
 Decision
 ```
 
-A decision is a consequential action taken under recognized authority that was derived from capability that was granted based on eligible standing that was computed from verified evidence.
+A decision is a consequential action taken under recognized authority that consumed capability that was granted based on eligible standing, applicable delegation context, policy, scope, and constraints that trace back to verified evidence and claims.
 
 Every layer is required. Omitting or collapsing layers creates protocol vulnerabilities:
 
@@ -731,9 +881,33 @@ Every layer is required. Omitting or collapsing layers creates protocol vulnerab
 
 A decision that cannot be traced back through the capability, standing, and evidence chain is not a conformant AOC decision. Decision traceability is the culmination of Standing Traceability (RFC-005-H1), Standing Engine provenance (RFC-005-H2), and Capability Traceability (this RFC).
 
+### 18.2 Capability is not decision
+
+Capability does not create a recognized outcome. A CapabilityGrant may allow a subject to attempt an action, and a CapabilityExercise may be part of the path toward recognition, but only a Decision consumes Authority to alter recognized protocol state.
+
+Capability MUST NOT be recorded as a substitute for a Decision. Decision processes MAY consume capability records, exercise events, authority recognitions, and challenge state, but the Decision layer remains responsible for the recognized outcome.
+
 ---
 
-## 19. Capability Guarantees
+## 19. Capability Governance
+
+Capability Governance defines who may define, approve, apply, review, challenge, restrict, suspend, revoke, supersede, or delegate capability policy and capability records. Capability Governance is informed by RFC-005-H3 Standing Governance but remains distinct from standing computation governance, authority recognition governance, and decision governance.
+
+A conformant capability governance process MUST define:
+
+- who may author and approve Capability Policy;
+- who may request, grant, deny, restrict, suspend, revoke, supersede, or delegate capabilities;
+- who may review CapabilityChallenges and under what scope;
+- when governance review is required before grant, exercise, delegation, or revocation;
+- how policy changes are versioned, made effective, and applied to existing grants;
+- how conflicts of interest, risk escalations, and emergency suspensions are handled;
+- how governance actions are traced to authority, standing, policy, and evidence lineage.
+
+Policy change MUST NOT silently expand active capability exercise. Material policy changes SHOULD trigger impact analysis and MAY require revalidation, restriction, suspension, supersession, or revocation of affected CapabilityGrants.
+
+---
+
+## 20. Capability Guarantees
 
 The following guarantees are normative for conformant capability implementations.
 
@@ -750,67 +924,67 @@ The following guarantees are normative for conformant capability implementations
 
 ---
 
-## 20. Security Implications
+## 21. Security Implications
 
 Conformant implementations MUST address the following capability-layer security risks.
 
-### 20.1 Privilege escalation
+### 21.1 Privilege escalation
 
 An attacker or insider may attempt to obtain capabilities beyond their standing eligibility by submitting false evidence, manipulating standing computation, abusing policy gaps, or exploiting scope definitions. Capability Engines MUST validate standing against current, traceable snapshots and MUST reject requests where standing does not satisfy policy preconditions.
 
-### 20.2 Capability laundering
+### 21.2 Capability laundering
 
 A subject may obtain a capability in one scope and attempt to exercise it in another scope. CapabilityScope MUST be validated at exercise time, not only at grant time. Scope laundering MUST be detected and rejected.
 
-### 20.3 Standing manipulation
+### 21.3 Standing manipulation
 
 If standing computation can be manipulated — through fabricated evidence, authority inflation, Sybil attacks, or standing override — dependent capabilities may be improperly granted. The Standing Engine guarantees defined in RFC-005-H2 and the traceability requirements of RFC-005-H1 are the primary defenses. Capability Engines MUST consume only traceable, current StandingSnapshots.
 
-### 20.4 Delegation abuse
+### 21.4 Delegation abuse
 
 A subject with a delegated capability may attempt to sub-delegate beyond policy limits, exercise capabilities in scope beyond what was delegated, or delegate to an unauthorized subject. Delegation chains MUST be validated against policy delegation rules at each delegation step.
 
-### 20.5 Scope abuse
+### 21.5 Scope abuse
 
 Capabilities that define overly broad scopes create large attack surfaces. Capability policies SHOULD apply the principle of least privilege: scopes SHOULD be as narrow as the operational purpose requires.
 
-### 20.6 Policy abuse
+### 21.6 Policy abuse
 
 Policy authors or administrators may insert policies that grant excessive capabilities, remove eligibility requirements, or bypass standing thresholds. Capability policies MUST be versioned, authorized, and subject to governance review. Material policy changes SHOULD trigger impact analysis.
 
-### 20.7 Zombie permissions
+### 21.7 Zombie permissions
 
 Capabilities that have been granted but not revoked after standing degradation or evidence invalidation create zombie permissions — grants that persist beyond their legitimate basis. Standing constraint monitoring, decay-triggered revalidation, and evidence lifecycle event propagation MUST prevent zombie permissions.
 
-### 20.8 Orphan authorities
+### 21.8 Orphan authorities
 
 Authority recognized from a capability that has since been revoked creates an orphan authority — a decision basis that is no longer supported. Authority consumers MUST validate that the underlying CapabilityGrant remains Active at the time authority is exercised.
 
-### 20.9 AI overreach
+### 21.9 AI overreach
 
 AI agents holding AI Agent Capabilities may attempt to perform actions beyond their defined scope, risk tier, or supervision policy. Capability constraints MUST be validated by the runtime environment at execution time. AI Agent Capabilities MUST define supervision requirements as non-negotiable constraints.
 
 ---
 
-## 21. Implementation Guidance
+## 22. Implementation Guidance
 
 This section introduces canonical capability concepts for implementation. This RFC is implementation-neutral and does not prescribe a database, API, runtime engine, serialization format, or user interface.
 
 | Concept | Definition |
 |---|---|
-| Capability | A bounded, scoped, policy-governed permission or operational entitlement derived from standing by a Capability Engine. |
+| Capability | A bounded, scoped, policy-governed action surface or permission precursor derived through policy by a Capability Engine consuming standing, delegation context when applicable, operational context, and applicable constraints. |
 | CapabilityType | The canonical classification of a capability such as Claim Issuance, Verification, Execution, Voting, or AI Agent. |
 | CapabilitySubject | The protocol-recognized entity that holds or requests a capability. |
 | CapabilityScope | The mandatory bounded operational domain within which a capability is valid. |
 | CapabilityConstraint | The set of time, monetary, risk, role, jurisdiction, policy, and standing conditions that further restrict exercise of a capability within its scope. |
 | CapabilityDecision | The output of Capability Engine evaluation, including Grant, Deny, Restrict, Escalate, or Defer. |
-| CapabilityGrant | The immutable record of a capability grant, including subject, type, scope, constraints, standing reference, policy reference, context, and effective period. |
+| CapabilityGrant | The immutable record of a capability grant, including subject, type, scope, constraints, standing basis, policy basis, governance basis when required, delegation basis when applicable, lifecycle state, effective period, revocation rules, and challenge state. |
 | CapabilityRevocation | The event record of a capability revocation, including subject, capability, revocation trigger, prior state, propagation targets, and timestamp. |
 | CapabilitySimulation | A non-canonical what-if analysis of hypothetical capability outcomes under altered inputs. Must not affect canonical state. |
 | CapabilityEngine | The policy-governed evaluation system that consumes standing and produces capability decisions. |
 | CapabilityLifecycleEvent | Any traceable state transition event in the capability lifecycle, including grant, activation, restriction, suspension, revocation, delegation, expiry, and supersession. |
 
-### 21.1 Implementation notes
+### 22.1 Implementation notes
 
 1. Capability grants SHOULD be immutable records. State changes SHOULD be represented as new lifecycle events referencing the original grant.
 2. Capability Engines SHOULD consume current StandingSnapshots, not raw standing fields.
@@ -826,7 +1000,7 @@ This section introduces canonical capability concepts for implementation. This R
 
 ---
 
-## 22. Future RFC Dependencies
+## 23. Future RFC Dependencies
 
 RFC-005-H4 creates the following future RFC dependencies:
 
@@ -835,35 +1009,36 @@ RFC-005-H4 creates the following future RFC dependencies:
 | RFC-005-H3 Standing Governance | Defines governance roles, algorithm approval, policy approval, standing type registration, challenge review, and standing oversight. The governance structures defined in RFC-005-H3 directly inform the authorized governance processes that capability policies reference. |
 | RFC-005-H5 Delegated Standing | Defines how standing may be delegated, inherited, constrained, scoped, and revoked. RFC-005-H5 provides the standing delegation semantics that underlie the Delegation Capability and the rules for delegated capability subjects holding qualifying standing. |
 | RFC-005-H6 Standing Algorithms | Defines algorithm requirements, versioning, decay functions, and aggregation models that produce the StandingSnapshots consumed by the Capability Engine. |
-| RFC-005-H7 Capability Engine (proposed) | Would define the Capability Engine specification in full: evaluation stages, decision algorithms, policy language, constraint validation, delegation chains, and runtime requirements. |
+| RFC-005-H7 Capability Engine (proposed) | Would define the Capability Engine specification in full: evaluation stages, decision algorithms, policy language, constraint validation, delegation chains, exercise validation, challenge handling, and runtime requirements. |
+| RFC-005-H10 Capability Registry (proposed) | Would define registry responsibilities for grants, denials, lifecycle events, revocations, supersessions, challenges, delegation links, authority links, and audit semantics. |
 | RFC-005-H8 Authority Model (proposed) | Would define how authority is recognized from capabilities, how authority chains are formed, how governance bodies recognize authority, and how authority is consumed by decisions. |
 | RFC-005-H9 Decision Framework (proposed) | Would define the Decision layer: how decisions are made under recognized authority, how decisions are recorded, audited, and challenged, and how decisions bind protocol participants. |
 
 ---
 
-## 23. Acceptance Criteria
+## 24. Acceptance Criteria
 
 A complete implementation or document alignment for RFC-005-H4 satisfies the following checklist:
 
 - [ ] RFC-005-H4 exists in the correct repo location.
 - [ ] It follows existing RFC formatting and metadata conventions.
 - [ ] It defines Capability clearly and distinguishes it from evidence, claims, standing, and authority.
-- [ ] It defines the Capability Mapping model: `Capability = f(Standing, Policy, Context)`.
+- [ ] It defines the Capability Mapping model: `Capability = f(Standing, DelegationContext, Policy, Context)`.
 - [ ] It establishes that standing is an input to capability derivation, not the result.
 - [ ] It defines canonical CapabilityTypes.
 - [ ] It defines CapabilitySubject with canonical subject types.
 - [ ] It defines CapabilityScope as mandatory and bounded.
 - [ ] It defines CapabilityConstraint categories: time, jurisdiction, monetary, risk, role, policy, and standing constraints.
-- [ ] It defines the capability lifecycle and canonical state transitions.
-- [ ] It defines capability eligibility as distinct from granting.
+- [ ] It defines the capability lifecycle and canonical state transitions, including Requested, Eligible, Granted, Active, Restricted, Suspended, Expired, Revoked, Superseded, and Denied.
+- [ ] It defines capability eligibility as distinct from granting and active exercise.
 - [ ] It defines the Capability Evaluation Engine and the CapabilityDecision formula.
-- [ ] It defines Capability Traceability requirements and mandatory audit questions.
+- [ ] It defines Capability Traceability requirements, mandatory audit questions, challenges, and Capability Registry dependency.
 - [ ] It defines the Capability Dependency Graph expanding the RFC-005-H2 StandingGraph.
-- [ ] It introduces delegation as a concept and defers full semantics to RFC-005-H5.
+- [ ] It introduces delegation as a concept, defines delegation effects on capability, and defers full delegation semantics to RFC-005-H5.
 - [ ] It defines capability revocation triggers and propagation requirements.
 - [ ] It defines CapabilitySimulation and prohibits simulation from affecting canonical state.
-- [ ] It defines the Authority relationship: capability is consumed by authority, not equivalent to authority.
-- [ ] It defines the Decision relationship and the complete constitutional chain.
+- [ ] It defines the Authority relationship: capability enables possible action and is consumed by authority, but is not equivalent to authority.
+- [ ] It defines the Decision relationship, the capability-to-decision boundary, and the complete constitutional chain.
 - [ ] It defines protocol guarantees for the Capability Layer.
 - [ ] It covers security implications: privilege escalation, capability laundering, standing manipulation, delegation abuse, scope abuse, policy abuse, zombie permissions, orphan authorities, and AI overreach.
 - [ ] It introduces canonical implementation concepts.
@@ -871,18 +1046,19 @@ A complete implementation or document alignment for RFC-005-H4 satisfies the fol
 
 ---
 
-## Conclusion
+## 25. Conclusion
 
 RFC-005-H4 establishes Capability Mapping as a required layer in the AOC constitutional chain. The chain cannot be correctly implemented without it.
 
-Evidence records observed facts. Claims formalize assertions. Standing interprets evidence and claims under context and policy. Capability translates standing eligibility into bounded, scoped, policy-governed permissions. Authority recognizes those permissions as the basis for legitimate decisions.
+Evidence records observed facts. Claims formalize assertions. Standing interprets evidence and claims under context and policy. Delegation may extend bounded standing-derived influence or permission context without rewriting standing. Capability translates standing eligibility and applicable delegation basis into bounded, scoped, policy-governed permissions. Authority recognizes actions under those permissions as legitimate bases for decisions.
 
 Each layer is necessary. Collapsing standing and capability conflates interpretation with authorization. Collapsing capability and authority removes the governance step between permission and recognition. Collapsing any layer produces a system where decisions cannot be fully justified, cannot be fully audited, and cannot be safely challenged.
 
 Standing MUST NOT grant capability.
+Delegation MUST NOT activate capability outside policy.
 Capability MUST NOT grant authority.
 Authority MUST NOT exist without capability.
 Capability MUST NOT exist without standing.
 Standing MUST NOT exist without evidence.
 
-Capability = Function(Standing, Policy, Context).
+Capability = Function(Standing, DelegationContext, Policy, Context).

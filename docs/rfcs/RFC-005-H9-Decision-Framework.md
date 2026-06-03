@@ -279,7 +279,7 @@ A decision MAY require the DecisionSubject or decision-making actor to hold spec
 
 ### 8.4 Capability Preconditions
 
-A decision MAY require the decision-making actor to hold recognized capability as defined by RFC-005-H4. Capability not held, not current, or outside recognized scope disqualifies the decision from recognition.
+A decision MAY require the decision-making actor to hold an active, traceable, in-scope CapabilityGrant as defined by RFC-005-H4. Capability eligibility alone is not sufficient. Capability not granted, not active, expired, revoked, suspended, challenged in a way that blocks exercise, or outside recognized scope disqualifies the decision from recognition.
 
 ### 8.5 Authority Preconditions
 
