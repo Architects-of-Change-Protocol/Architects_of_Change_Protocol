@@ -1,4 +1,5 @@
 import type { EvidenceType } from './claim-enums';
+import type { CanonicalProofRef } from './proofs';
 import type {
   CanonicalEvidenceId,
   CanonicalIssuer,
@@ -16,5 +17,6 @@ export interface CanonicalEvidence {
   readonly source: CanonicalSource;
   readonly description: string;
   readonly createdAt: CanonicalTimestamp;
+  readonly proofRefs?: readonly CanonicalProofRef[];
   readonly metadata?: CanonicalMetadata;
 }

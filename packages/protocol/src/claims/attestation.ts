@@ -1,4 +1,5 @@
 import type { AttestationType } from './claim-enums';
+import type { CanonicalProofRef } from './proofs';
 import type {
   CanonicalAttestationId,
   CanonicalAttester,
@@ -14,5 +15,6 @@ export interface CanonicalAttestation {
   readonly claimRef: CanonicalClaimId;
   readonly statement: string;
   readonly issuedAt: CanonicalTimestamp;
+  readonly proofRefs?: readonly CanonicalProofRef[];
   readonly metadata?: CanonicalMetadata;
 }
