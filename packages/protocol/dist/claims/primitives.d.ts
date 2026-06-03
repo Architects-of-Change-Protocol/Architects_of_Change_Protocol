@@ -1,4 +1,5 @@
 import type { CanonicalId, UtcDateTime } from '../contracts';
+import type { CanonicalPrincipalRef, CanonicalReferenceSource, CanonicalScopeRef } from './references';
 export type CanonicalClaimId = CanonicalId;
 export type CanonicalEvidenceId = CanonicalId;
 export type CanonicalAssertionId = CanonicalId;
@@ -10,11 +11,11 @@ export type CanonicalAuthorityId = CanonicalId;
 export type CanonicalDecisionId = CanonicalId;
 export type CanonicalTimestamp = UtcDateTime;
 export type CanonicalMetadata = Readonly<Record<string, unknown>>;
-export type CanonicalSubject = string;
-export type CanonicalIssuer = string;
-export type CanonicalSource = string;
-export type CanonicalAttester = string;
-export type CanonicalVerifier = string;
-export type CanonicalDecisionMaker = string;
-export type CanonicalScope = Readonly<Record<string, unknown>>;
+export type CanonicalSubject = string | CanonicalPrincipalRef;
+export type CanonicalIssuer = string | CanonicalPrincipalRef;
+export type CanonicalSource = string | CanonicalReferenceSource;
+export type CanonicalAttester = string | CanonicalPrincipalRef;
+export type CanonicalVerifier = string | CanonicalPrincipalRef;
+export type CanonicalDecisionMaker = string | CanonicalPrincipalRef;
+export type CanonicalScope = Readonly<Record<string, unknown>> | CanonicalScopeRef;
 //# sourceMappingURL=primitives.d.ts.map

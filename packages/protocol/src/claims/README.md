@@ -88,3 +88,17 @@ import type {
 ```
 
 Runtime packages may translate their own operational records into these contracts, but these contracts must not import runtime package types.
+
+## Canonical References
+
+Canonical references identify and describe the principals, sources, and scopes that appear across the RFC-005 trust chain. They are contract-level references, not runtime identity records, registry entries, storage rows, or lookup results.
+
+A `CanonicalPrincipalRef` may describe a human, organization, system, AI agent, runtime, governance body, market maker, credential issuer, or unknown principal. A `CanonicalReferenceSource` records the source namespace or locator used for that reference, such as a URI, DID, wallet, email address, domain, registry key, document, audit trace, runtime trace, internal identifier, or external identifier. A `CanonicalScopeRef` gives authority contracts a structured scope descriptor while preserving compatibility with existing open record scopes.
+
+References do not imply verification. A principal reference can identify or describe a principal even when no verifier has evaluated it. Verification remains represented by `CanonicalVerification`.
+
+References do not imply standing. Standing remains a separate lifecycle conclusion represented by `CanonicalStanding`.
+
+References do not imply authority. Authority remains derived from standing and capabilities and is represented by `CanonicalAuthority`.
+
+References exist to preserve explainability across Evidence → Assertion → Claim → Attestation → Verification → Standing → Capability → Authority → Decision without coupling the canonical schema layer to identity services, registries, runtime resolvers, or product-specific systems.
