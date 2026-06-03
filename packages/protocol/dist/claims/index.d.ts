@@ -2,6 +2,7 @@ export type * from './primitives';
 export * from './claim-enums';
 export * from './references';
 export * from './proofs';
+export * from './registries';
 export type * from './evidence';
 export type * from './assertion';
 export type * from './claim';

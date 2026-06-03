@@ -1,5 +1,6 @@
 import type { AttestationType } from './claim-enums';
 import type { CanonicalProofRef } from './proofs';
+import type { CanonicalRegistryEntryRef } from './registries/registry-entry-reference';
 import type {
   CanonicalAttestationId,
   CanonicalAttester,
@@ -16,5 +17,6 @@ export interface CanonicalAttestation {
   readonly statement: string;
   readonly issuedAt: CanonicalTimestamp;
   readonly proofRefs?: readonly CanonicalProofRef[];
+  readonly registryRefs?: readonly CanonicalRegistryEntryRef[];
   readonly metadata?: CanonicalMetadata;
 }

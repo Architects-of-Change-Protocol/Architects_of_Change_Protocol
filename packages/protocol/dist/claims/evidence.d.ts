@@ -1,5 +1,6 @@
 import type { EvidenceType } from './claim-enums';
 import type { CanonicalProofRef } from './proofs';
+import type { CanonicalRegistryEntryRef } from './registries/registry-entry-reference';
 import type { CanonicalEvidenceId, CanonicalIssuer, CanonicalMetadata, CanonicalSource, CanonicalSubject, CanonicalTimestamp } from './primitives';
 export interface CanonicalEvidence {
     readonly id: CanonicalEvidenceId;
@@ -10,6 +11,7 @@ export interface CanonicalEvidence {
     readonly description: string;
     readonly createdAt: CanonicalTimestamp;
     readonly proofRefs?: readonly CanonicalProofRef[];
+    readonly registryRefs?: readonly CanonicalRegistryEntryRef[];
     readonly metadata?: CanonicalMetadata;
 }
 //# sourceMappingURL=evidence.d.ts.map
