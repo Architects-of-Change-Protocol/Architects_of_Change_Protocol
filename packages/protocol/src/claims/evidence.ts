@@ -1,5 +1,6 @@
 import type { EvidenceType } from './claim-enums';
 import type { CanonicalProofRef } from './proofs';
+import type { CanonicalRegistryEntryRef } from './registries/registry-entry-reference';
 import type {
   CanonicalEvidenceId,
   CanonicalIssuer,
@@ -18,5 +19,6 @@ export interface CanonicalEvidence {
   readonly description: string;
   readonly createdAt: CanonicalTimestamp;
   readonly proofRefs?: readonly CanonicalProofRef[];
+  readonly registryRefs?: readonly CanonicalRegistryEntryRef[];
   readonly metadata?: CanonicalMetadata;
 }

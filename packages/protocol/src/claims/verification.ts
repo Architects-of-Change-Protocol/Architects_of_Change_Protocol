@@ -1,5 +1,6 @@
 import type { VerificationStatus } from './claim-enums';
 import type { CanonicalProofRef } from './proofs';
+import type { CanonicalRegistryEntryRef } from './registries/registry-entry-reference';
 import type {
   CanonicalClaimId,
   CanonicalTimestamp,
@@ -15,5 +16,6 @@ export interface CanonicalVerification {
   readonly verifiedAt: CanonicalTimestamp;
   readonly findings: readonly string[];
   readonly proofRefs?: readonly CanonicalProofRef[];
+  readonly registryRefs?: readonly CanonicalRegistryEntryRef[];
   readonly confidence?: number;
 }

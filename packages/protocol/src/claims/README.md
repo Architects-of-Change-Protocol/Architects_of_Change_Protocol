@@ -57,7 +57,7 @@ Contracts in this package should remain portable, implementation-neutral, and du
 
 This package must not contain:
 
-- claim registries;
+- registry storage, lookup clients, sync engines, or registry scoring logic;
 - storage schemas or database adapters;
 - APIs or route handlers;
 - lifecycle engines;
@@ -102,3 +102,9 @@ References do not imply standing. Standing remains a separate lifecycle conclusi
 References do not imply authority. Authority remains derived from standing and capabilities and is represented by `CanonicalAuthority`.
 
 References exist to preserve explainability across Evidence → Assertion → Claim → Attestation → Verification → Standing → Capability → Authority → Decision without coupling the canonical schema layer to identity services, registries, runtime resolvers, or product-specific systems.
+
+## Canonical registry interfaces
+
+Registry contracts identify where trust-chain objects may be located without coupling the claims surface to storage, lookup clients, verification engines, standing evaluators, authority resolvers, or decision authorization. They cover registry references, registry entry references, entry descriptors, lookup request/result contracts, registry attestations, and registry manifests.
+
+Registry references are optional portability and explainability aids for evidence, claims, attestations, verifications, and proof envelopes. They do not make registry use mandatory and do not alter RFC-005 trust-chain semantics.
