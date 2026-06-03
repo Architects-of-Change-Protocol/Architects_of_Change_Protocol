@@ -1,4 +1,5 @@
 import type { CanonicalId } from '../../contracts';
+import type { CanonicalCredentialRef } from '../credentials/credential-reference';
 import type { CanonicalIssuer, CanonicalMetadata, CanonicalSubject, CanonicalTimestamp } from '../primitives';
 import type { CanonicalRegistryEntryRef } from '../registries/registry-entry-reference';
 import type { ProofType } from './proof-enums';
@@ -12,6 +13,7 @@ export interface CanonicalProofEnvelope {
   readonly id: CanonicalId;
   readonly proofType: ProofType;
   readonly proofRefs: readonly CanonicalProofRef[];
+  readonly credentialRefs?: readonly CanonicalCredentialRef[];
   readonly registryRefs?: readonly CanonicalRegistryEntryRef[];
   readonly subject: CanonicalSubject;
   readonly issuer: CanonicalIssuer;

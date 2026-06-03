@@ -3,6 +3,7 @@ export * from './claim-enums';
 export * from './references';
 export * from './proofs';
 export * from './registries';
+export * from './credentials';
 export type * from './evidence';
 export type * from './assertion';
 export type * from './claim';
