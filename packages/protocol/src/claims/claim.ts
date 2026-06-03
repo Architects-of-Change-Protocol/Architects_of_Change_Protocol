@@ -2,6 +2,7 @@ import type { ClaimType } from './claim-enums';
 import type { CanonicalCredentialRef } from './credentials/credential-reference';
 import type { CanonicalProofRef } from './proofs';
 import type { CanonicalRegistryEntryRef } from './registries/registry-entry-reference';
+import type { CanonicalSemanticRef } from './vocabulary/semantic-reference';
 import type {
   CanonicalAssertionId,
   CanonicalAttestationId,
@@ -24,6 +25,7 @@ export interface CanonicalClaim {
   readonly credentialRefs?: readonly CanonicalCredentialRef[];
   readonly proofRefs?: readonly CanonicalProofRef[];
   readonly registryRefs?: readonly CanonicalRegistryEntryRef[];
+  readonly semanticRefs?: readonly CanonicalSemanticRef[];
   readonly issuedAt: CanonicalTimestamp;
   readonly expiresAt?: CanonicalTimestamp;
   readonly metadata?: CanonicalMetadata;

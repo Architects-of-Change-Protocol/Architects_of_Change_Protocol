@@ -18,3 +18,4 @@ __exportStar(require("./claim-enums"), exports);
 __exportStar(require("./references"), exports);
 __exportStar(require("./proofs"), exports);
 __exportStar(require("./registries"), exports);
+__exportStar(require("./credentials"), exports);

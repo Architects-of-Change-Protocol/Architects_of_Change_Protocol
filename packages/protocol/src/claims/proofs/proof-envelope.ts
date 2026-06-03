@@ -2,6 +2,7 @@ import type { CanonicalId } from '../../contracts';
 import type { CanonicalCredentialRef } from '../credentials/credential-reference';
 import type { CanonicalIssuer, CanonicalMetadata, CanonicalSubject, CanonicalTimestamp } from '../primitives';
 import type { CanonicalRegistryEntryRef } from '../registries/registry-entry-reference';
+import type { CanonicalSemanticRef } from '../vocabulary/semantic-reference';
 import type { ProofType } from './proof-enums';
 import type { CanonicalProofRef } from './proof-reference';
 
@@ -15,6 +16,7 @@ export interface CanonicalProofEnvelope {
   readonly proofRefs: readonly CanonicalProofRef[];
   readonly credentialRefs?: readonly CanonicalCredentialRef[];
   readonly registryRefs?: readonly CanonicalRegistryEntryRef[];
+  readonly semanticRefs?: readonly CanonicalSemanticRef[];
   readonly subject: CanonicalSubject;
   readonly issuer: CanonicalIssuer;
   readonly issuedAt: CanonicalTimestamp;
