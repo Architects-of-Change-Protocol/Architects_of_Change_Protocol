@@ -1,5 +1,6 @@
 import type { CanonicalProofRef } from '../proofs';
 import type { CanonicalMetadata, CanonicalSubject, CanonicalTimestamp } from '../primitives';
+import type { CanonicalSemanticRef } from '../vocabulary/semantic-reference';
 import type { RegistryEntryStatus, RegistryEntryType } from './registry-enums';
 import type { CanonicalRegistryEntryId, CanonicalRegistryLocator } from './registry-identifiers';
 import type { CanonicalRegistryRef } from './registry-reference';
@@ -17,5 +18,6 @@ export interface CanonicalRegistryEntry {
   readonly createdAt: CanonicalTimestamp;
   readonly updatedAt?: CanonicalTimestamp;
   readonly proofRefs?: readonly CanonicalProofRef[];
+  readonly semanticRefs?: readonly CanonicalSemanticRef[];
   readonly metadata?: CanonicalMetadata;
 }

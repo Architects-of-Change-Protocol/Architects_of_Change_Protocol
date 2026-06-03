@@ -7,6 +7,7 @@ import type {
 } from '../primitives';
 import type { CanonicalProofRef } from '../proofs/proof-reference';
 import type { CanonicalRegistryEntryRef } from '../registries/registry-entry-reference';
+import type { CanonicalSemanticRef } from '../vocabulary/semantic-reference';
 import type { CredentialFormat, CredentialType } from './credential-enums';
 import type { CanonicalCredentialId } from './credential-identifiers';
 import type { CanonicalCredentialIssuer } from './credential-issuer';
@@ -28,6 +29,7 @@ export interface CanonicalCredential {
   readonly attestationRefs?: readonly CanonicalAttestationId[];
   readonly proofRefs?: readonly CanonicalProofRef[];
   readonly registryRefs?: readonly CanonicalRegistryEntryRef[];
+  readonly semanticRefs?: readonly CanonicalSemanticRef[];
   readonly status?: CanonicalCredentialStatusRef;
   readonly issuedAt: CanonicalTimestamp;
   readonly expiresAt?: CanonicalTimestamp;
