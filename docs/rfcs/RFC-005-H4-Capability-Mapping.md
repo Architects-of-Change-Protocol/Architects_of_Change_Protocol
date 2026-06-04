@@ -536,6 +536,7 @@ A conformant Capability Engine SHOULD perform the following stages:
 | Evaluate Constraints | Confirm that time, monetary, risk, role, jurisdiction, and policy constraints are satisfied at evaluation time. |
 | Evaluate Conflicts | Check for conflict-of-interest rules, exclusion policies, delegation limits, simultaneous grant limits, or governance holds. |
 | Produce Decision | Emit the CapabilityDecision using the canonical H7 outcomes: Grant, Deny, Restrict, Suspend, Revoke, or Supersede. Record the decision with full traceability references. |
+| Produce Decision | Emit the capability decision: Grant, Deny, Restrict, Suspend, Revoke, or Supersede. Record decision with full traceability references. |
 | Generate Explanation | Produce human-readable, machine-readable, and audit-ready explanation for the capability decision. |
 | Persist Decision Record | Persist or reference the outcome-specific record, including CapabilityGrant, CapabilityDenial, CapabilityRestriction, CapabilityRevocation, CapabilitySupersession, or a CapabilitySuspension lifecycle event, with references to standing snapshot, policy version, context, constraints, and decision basis. |
 
