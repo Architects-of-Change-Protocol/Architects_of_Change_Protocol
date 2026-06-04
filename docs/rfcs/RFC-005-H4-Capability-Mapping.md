@@ -535,7 +535,7 @@ A conformant Capability Engine SHOULD perform the following stages:
 | Evaluate Context | Validate that the operational context at request time is within the scope defined by the requested capability and the applicable policy. |
 | Evaluate Constraints | Confirm that time, monetary, risk, role, jurisdiction, and policy constraints are satisfied at evaluation time. |
 | Evaluate Conflicts | Check for conflict-of-interest rules, exclusion policies, delegation limits, simultaneous grant limits, or governance holds. |
-| Produce Decision | Emit the capability decision: Grant, Deny, Restrict, Escalate, or Defer. Record decision with full traceability references. |
+| Produce Decision | Emit the capability decision: Grant, Deny, Restrict, Suspend, Revoke, or Supersede. Record decision with full traceability references. |
 | Generate Explanation | Produce human-readable, machine-readable, and audit-ready explanation for the capability decision. |
 | Persist Grant or Denial | Persist the CapabilityGrant or CapabilityDenial record with references to standing snapshot, policy version, context, constraints, and decision basis. |
 
@@ -546,8 +546,9 @@ A conformant Capability Engine SHOULD perform the following stages:
 | Grant | Capability is issued to the subject under the defined scope and constraints. |
 | Deny | Capability is not issued. The subject does not meet eligibility or policy requirements. |
 | Restrict | Capability is issued with reduced scope, additional constraints, or conditional limits. |
-| Escalate | Evaluation cannot be completed without additional approval, review, or evidence. Request is forwarded to a governance process or authorized reviewer. |
-| Defer | Evaluation is postponed pending additional standing inputs, policy resolution, or governance decision. |
+| Suspend | Capability exercise is temporarily disabled pending review, challenge resolution, standing recomputation, or governance process. |
+| Revoke | A CapabilityGrant is terminated before scheduled expiry because the conditions that justified the grant no longer hold or policy or governance requires termination. |
+| Supersede | An existing CapabilityGrant is replaced with a new grant, restriction, denial, or suspension under updated scope, constraints, policy, standing, delegation, risk, or governance context. |
 
 ---
 
@@ -620,48 +621,6 @@ A future Capability Registry RFC SHOULD define registry responsibilities, confor
 The Capability Dependency Graph extends the Standing Dependency Graph defined in RFC-005-H2 by adding the Capability Layer.
 
 A conformant capability implementation SHOULD represent explicit dependencies among the following nodes:
-
-```text
-[Evidence]
-    | supports
-    v
-[Claim]
-    | evaluated_for
-    v
-[Standing Snapshot]
-    | informs
-    v
-[Delegation Context]
-    | produced_by / constrained_by
-    v
-[Algorithm Version]         [Policy Context]
-    |                             |
-    +---------> [Capability Engine] <---------+
-                      |
-                      | produces
-                      v
-              [Capability Decision]
-                      |
-               +------+------+
-               |             |
-               v             v
-        [Capability     [Capability
-           Grant]          Denial]
-               |
-               | consumed_by
-               v
-         [Authority]
-               |
-               | enables
-               v
-          [Decision]
-               |
-               | may trigger
-               v
-          [Challenge]
-```
-
-Full dependency graph with governance nodes:
 
 ```text
 [Evidence] → [Claim] → [Standing Snapshot] → [Delegation Context]
@@ -977,7 +936,7 @@ This section introduces canonical capability concepts for implementation. This R
 | CapabilitySubject | The protocol-recognized entity that holds or requests a capability. |
 | CapabilityScope | The mandatory bounded operational domain within which a capability is valid. |
 | CapabilityConstraint | The set of time, monetary, risk, role, jurisdiction, policy, and standing conditions that further restrict exercise of a capability within its scope. |
-| CapabilityDecision | The output of Capability Engine evaluation, including Grant, Deny, Restrict, Escalate, or Defer. |
+| CapabilityDecision | The output of Capability Engine evaluation: Grant, Deny, Restrict, Suspend, Revoke, or Supersede. |
 | CapabilityGrant | The immutable record of a capability grant, including subject, type, scope, constraints, standing basis, policy basis, governance basis when required, delegation basis when applicable, lifecycle state, effective period, revocation rules, and challenge state. |
 | CapabilityRevocation | The event record of a capability revocation, including subject, capability, revocation trigger, prior state, propagation targets, and timestamp. |
 | CapabilitySimulation | A non-canonical what-if analysis of hypothetical capability outcomes under altered inputs. Must not affect canonical state. |
@@ -1009,7 +968,7 @@ RFC-005-H4 creates the following future RFC dependencies:
 | RFC-005-H3 Standing Governance | Defines governance roles, algorithm approval, policy approval, standing type registration, challenge review, and standing oversight. The governance structures defined in RFC-005-H3 directly inform the authorized governance processes that capability policies reference. |
 | RFC-005-H5 Delegated Standing | Defines how standing may be delegated, inherited, constrained, scoped, and revoked. RFC-005-H5 provides the standing delegation semantics that underlie the Delegation Capability and the rules for delegated capability subjects holding qualifying standing. |
 | RFC-005-H6 Standing Algorithms | Defines algorithm requirements, versioning, decay functions, and aggregation models that produce the StandingSnapshots consumed by the Capability Engine. |
-| RFC-005-H7 Capability Engine (proposed) | Would define the Capability Engine specification in full: evaluation stages, decision algorithms, policy language, constraint validation, delegation chains, exercise validation, challenge handling, and runtime requirements. |
+| RFC-005-H7 Capability Engine | Defines the Capability Engine specification in full: evaluation stages, decision algorithms, policy language, constraint validation, delegation chains, exercise validation, challenge handling, and runtime requirements. |
 | RFC-005-H10 Capability Registry (proposed) | Would define registry responsibilities for grants, denials, lifecycle events, revocations, supersessions, challenges, delegation links, authority links, and audit semantics. |
 | RFC-005-H8 Authority Model (proposed) | Would define how authority is recognized from capabilities, how authority chains are formed, how governance bodies recognize authority, and how authority is consumed by decisions. |
 | RFC-005-H9 Decision Framework (proposed) | Would define the Decision layer: how decisions are made under recognized authority, how decisions are recorded, audited, and challenged, and how decisions bind protocol participants. |
