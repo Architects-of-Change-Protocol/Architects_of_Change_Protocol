@@ -373,7 +373,7 @@ A capability exists in one of the following lifecycle states. Transitions betwee
 | Eligible | The CapabilitySubject satisfies standing-based and delegation-based preconditions for consideration, but no active capability exists. Eligibility alone MUST NOT be treated as an active capability. |
 | Granted | A Capability Engine or authorized governance process has evaluated the request and determined the capability may be issued under applicable policy, standing, scope, constraints, and governance requirements. |
 | Active | The capability is valid, within scope, within constraints, and may be exercised by the CapabilitySubject. |
-| Restricted | The capability exists but policy, standing, risk, challenge, or governance conditions restrict its exercise. Specific actions may be suspended or require escalation. |
+| Restricted | The capability exists but policy, standing, risk, challenge, or governance conditions restrict its exercise. Specific actions may be suspended or require governance review. |
 | Suspended | The capability is temporarily disabled pending review, standing recomputation, evidence resolution, governance process, appeal, or remediation. |
 | Expired | The capability is no longer valid because its temporal validity window has passed, the underlying policy has changed, or the supporting standing has expired. |
 | Revoked | The capability has been permanently withdrawn due to standing degradation, policy violation, governance action, fraud, evidence invalidation, or other revocation trigger. Revocation is not expiry; it is a deliberate termination event. |
@@ -535,20 +535,36 @@ A conformant Capability Engine SHOULD perform the following stages:
 | Evaluate Context | Validate that the operational context at request time is within the scope defined by the requested capability and the applicable policy. |
 | Evaluate Constraints | Confirm that time, monetary, risk, role, jurisdiction, and policy constraints are satisfied at evaluation time. |
 | Evaluate Conflicts | Check for conflict-of-interest rules, exclusion policies, delegation limits, simultaneous grant limits, or governance holds. |
+| Produce Decision | Emit the CapabilityDecision using the canonical H7 outcomes: Grant, Deny, Restrict, Suspend, Revoke, or Supersede. Record the decision with full traceability references. |
 | Produce Decision | Emit the capability decision: Grant, Deny, Restrict, Suspend, Revoke, or Supersede. Record decision with full traceability references. |
 | Generate Explanation | Produce human-readable, machine-readable, and audit-ready explanation for the capability decision. |
-| Persist Grant or Denial | Persist the CapabilityGrant or CapabilityDenial record with references to standing snapshot, policy version, context, constraints, and decision basis. |
+| Persist Decision Record | Persist or reference the outcome-specific record, including CapabilityGrant, CapabilityDenial, CapabilityRestriction, CapabilityRevocation, CapabilitySupersession, or a CapabilitySuspension lifecycle event, with references to standing snapshot, policy version, context, constraints, and decision basis. |
 
-### 11.2 Decision outcomes
+### 11.2 Canonical CapabilityDecision outcomes
 
-| Decision | Meaning |
+RFC-005-H7 is authoritative for CapabilityDecision semantics. RFC-005-H4 uses the same canonical outcome vocabulary.
+
+| CapabilityDecision outcome | Meaning | Required traceability |
+|---|---|---|
+| Grant | Capability is issued to the subject under the defined scope and constraints. | CapabilityGrant record. |
+| Deny | Capability is not issued. The subject does not meet eligibility or policy requirements. | CapabilityDenial record. |
+| Restrict | Capability is issued or maintained with reduced scope, additional constraints, or conditional limits. | CapabilityRestriction record or restriction lifecycle event tied to the CapabilityDecision. |
+| Suspend | Capability exercise is temporarily disabled pending review, standing recomputation, challenge resolution, risk remediation, policy clarification, governance process, or lifecycle event. | CapabilitySuspension lifecycle event tied to the CapabilityDecision and affected CapabilityGrant. |
+| Revoke | An existing CapabilityGrant is terminated before scheduled expiry because standing, policy, delegation, risk, governance, challenge, or other revocation conditions require termination. | CapabilityRevocation record. |
+| Supersede | An existing CapabilityGrant is replaced by a new grant, restriction, denial, suspension, or revocation state under updated scope, constraints, policy, standing, delegation, risk, or governance context. | CapabilitySupersession record preserving superseded and superseding records. |
+
+### 11.3 Evaluation workflow and governance review states
+
+Governance review and evaluation workflow states are not CapabilityDecision outcomes. When evaluation cannot complete without additional approval, review, evidence, standing inputs, policy resolution, or governance action, the request MAY enter one of the following non-decision states according to policy:
+
+| Workflow or review state | Meaning |
 |---|---|
-| Grant | Capability is issued to the subject under the defined scope and constraints. |
-| Deny | Capability is not issued. The subject does not meet eligibility or policy requirements. |
-| Restrict | Capability is issued with reduced scope, additional constraints, or conditional limits. |
-| Suspend | Capability exercise is temporarily disabled pending review, challenge resolution, standing recomputation, or governance process. |
-| Revoke | A CapabilityGrant is terminated before scheduled expiry because the conditions that justified the grant no longer hold or policy or governance requires termination. |
-| Supersede | An existing CapabilityGrant is replaced with a new grant, restriction, denial, or suspension under updated scope, constraints, policy, standing, delegation, risk, or governance context. |
+| Governance Review Required | Evaluation cannot be completed without additional approval, review, or evidence. The request is forwarded to a governance process or authorized reviewer. |
+| Evaluation Deferred | Evaluation is postponed pending additional standing inputs, policy resolution, or governance decision. |
+| Pending Evaluation | The request remains in evaluation workflow and has not yet produced a CapabilityDecision. |
+| Pending Review | The request is awaiting recognized reviewer or governance action. |
+
+A workflow or review state MUST NOT be recorded as a canonical CapabilityDecision outcome. Once the required workflow or review condition is resolved, the CapabilityEngine MUST produce one of the canonical CapabilityDecision outcomes: Grant, Deny, Restrict, Suspend, Revoke, or Supersede.
 
 ---
 
@@ -592,7 +608,7 @@ A conformant challenge process SHOULD support challenges against:
 - CapabilityConstraints, including temporal, monetary, risk, role, jurisdiction, policy, and standing constraints;
 - CapabilityExercise attempts or exercise validation failures;
 - CapabilityRevocation events;
-- CapabilityRestriction or CapabilitySuspension events;
+- CapabilityRestriction, CapabilitySuspension, CapabilityRevocation, or CapabilitySupersession events;
 - capability delegation basis, delegation chain, or delegation revocation;
 - policy version or governance basis used to produce the capability result.
 
@@ -604,8 +620,13 @@ A Capability Registry is introduced as a future protocol concept or RFC dependen
 
 The purpose of a Capability Registry is to preserve canonical traceability for capability state. A registry SHOULD be capable of recording or referencing:
 
+- CapabilityDecision records;
 - CapabilityGrant records;
 - CapabilityDenial records;
+- CapabilityRestriction records or restriction lifecycle events;
+- CapabilityRevocation records;
+- CapabilitySupersession records;
+- CapabilitySuspension lifecycle events;
 - lifecycle state and lifecycle events;
 - restrictions, suspensions, expirations, revocations, supersessions, and denials;
 - CapabilityChallenge records and challenge outcomes;
@@ -623,6 +644,47 @@ The Capability Dependency Graph extends the Standing Dependency Graph defined in
 A conformant capability implementation SHOULD represent explicit dependencies among the following nodes:
 
 ```text
+[Evidence]
+    | supports
+    v
+[Claim]
+    | evaluated_for
+    v
+[Standing Snapshot]
+    | informs
+    v
+[Delegation Context]
+    | produced_by / constrained_by
+    v
+[Algorithm Version]         [Policy Context]
+    |                             |
+    +---------> [Capability Engine] <---------+
+                      |
+                      | produces
+                      v
+              [Capability Decision]
+                      |
+       +--------------+---------------+
+       |      |       |       |       |
+       v      v       v       v       v
+ [Capability Grant / Denial / Restriction / Suspension / Revocation / Supersession]
+               |
+               | consumed_by
+               v
+         [Authority]
+               |
+               | enables
+               v
+          [Decision]
+               |
+               | may trigger
+               v
+          [Challenge]
+```
+
+Full dependency graph with governance nodes:
+
+```text
 [Evidence] → [Claim] → [Standing Snapshot] → [Delegation Context]
     ↓              ↓          ↓                    ↓
 [Authority]   [Policy]   [Algorithm Version]  [Delegation Policy]
@@ -631,7 +693,7 @@ A conformant capability implementation SHOULD represent explicit dependencies am
                   ↓
           [Capability Engine]
                   ↓
-        [Capability Decision] → [Capability Grant]
+        [Capability Decision] → [Capability Grant / Denial / Restriction / Suspension / Revocation / Supersession]
                                          ↓
                                [Authority Recognition]
                                          ↓
@@ -742,7 +804,7 @@ Examples of capability simulation:
 
 Simulation MUST NOT affect canonical state. A simulation MUST NOT:
 
-- modify CapabilityGrant, CapabilityDenial, or CapabilityRevocationEvent records;
+- modify CapabilityGrant, CapabilityDenial, CapabilityRestriction, CapabilityRevocation, CapabilitySupersession, or suspension lifecycle records;
 - modify StandingSnapshots or StandingDeltas;
 - modify evidence lifecycle state;
 - modify claim state;
@@ -875,7 +937,7 @@ The following guarantees are normative for conformant capability implementations
 | No capability without standing | A capability MUST NOT be granted unless the CapabilitySubject's current standing satisfies the eligibility preconditions defined by policy. |
 | No capability without policy | A capability MUST NOT be granted without a versioned, traceable capability policy that defines eligibility, scope, constraints, and revocation conditions. |
 | No capability without scope | A capability MUST be bounded to a defined CapabilityScope. Unbounded, global, or scope-free capabilities are not conformant. |
-| No capability without traceability | Every CapabilityGrant, CapabilityDenial, and CapabilityRevocationEvent MUST reference traceable standing, policy, context, and decision basis records. |
+| No capability without traceability | Every CapabilityDecision and its outcome-specific record or lifecycle event, including CapabilityGrant, CapabilityDenial, CapabilityRestriction, CapabilityRevocation, CapabilitySupersession, and CapabilitySuspension lifecycle events, MUST reference traceable standing, policy, context, and decision basis records. |
 | No hidden capabilities | Capabilities MUST NOT be created, activated, modified, or revoked without producing a traceable event. Silent privilege grants are not conformant. |
 | No orphan capabilities | A CapabilityGrant that cannot be traced to a valid StandingSnapshot and PolicyVersion is an orphan capability and MUST NOT be used to support authority or decisions. |
 | No authority without capability | Authority recognition MUST reference a valid, traceable CapabilityGrant. Authority recognized without a traceable capability is not conformant. |
@@ -931,16 +993,20 @@ This section introduces canonical capability concepts for implementation. This R
 
 | Concept | Definition |
 |---|---|
-| Capability | A bounded, scoped, policy-governed action surface or permission precursor derived through policy by a Capability Engine consuming standing, delegation context when applicable, operational context, and applicable constraints. |
+| Capability | A bounded, scoped, policy-governed action surface or permission precursor derived through policy by a CapabilityEngine consuming standing, delegation context when applicable, operational context, and applicable constraints. |
 | CapabilityType | The canonical classification of a capability such as Claim Issuance, Verification, Execution, Voting, or AI Agent. |
 | CapabilitySubject | The protocol-recognized entity that holds or requests a capability. |
 | CapabilityScope | The mandatory bounded operational domain within which a capability is valid. |
-| CapabilityConstraint | The set of time, monetary, risk, role, jurisdiction, policy, and standing conditions that further restrict exercise of a capability within its scope. |
-| CapabilityDecision | The output of Capability Engine evaluation: Grant, Deny, Restrict, Suspend, Revoke, or Supersede. |
-| CapabilityGrant | The immutable record of a capability grant, including subject, type, scope, constraints, standing basis, policy basis, governance basis when required, delegation basis when applicable, lifecycle state, effective period, revocation rules, and challenge state. |
-| CapabilityRevocation | The event record of a capability revocation, including subject, capability, revocation trigger, prior state, propagation targets, and timestamp. |
+| CapabilityConstraint | A policy-governed condition that limits capability existence or exercise, including temporal, monetary, risk, jurisdictional, role, policy, standing, delegation, governance, challenge, or operational constraints. |
+| CapabilityDecision | The output of CapabilityEngine evaluation using the canonical H7 outcomes Grant, Deny, Restrict, Suspend, Revoke, or Supersede. Governance review and evaluation workflow states are not CapabilityDecision outcomes. |
+| CapabilityGrant | The traceable record that a CapabilitySubject holds a bounded capability under defined scope, constraints, standing basis, policy basis, delegation basis when applicable, governance basis, lifecycle state, and revocation rules. |
+| CapabilityDenial | The traceable record that a requested capability was not granted because required eligibility, standing, policy, scope, constraints, delegation, risk, governance, challenge, evidence, claim, or context requirements failed or could not be proven. |
+| CapabilityRestriction | A traceable narrowing of a requested or existing capability through reduced scope, additional constraints, supervision requirements, shorter duration, lower thresholds, or other policy-governed limits. |
+| CapabilityRevocation | A traceable termination of a CapabilityGrant before scheduled expiry, including subject, capability, revocation trigger, prior state, propagation targets, policy basis, governance basis when applicable, and timestamp. |
+| CapabilitySupersession | A traceable replacement of an existing CapabilityGrant with a superseding grant, restriction, denial, suspension, or revocation state while preserving both superseded and superseding records. |
 | CapabilitySimulation | A non-canonical what-if analysis of hypothetical capability outcomes under altered inputs. Must not affect canonical state. |
-| CapabilityEngine | The policy-governed evaluation system that consumes standing and produces capability decisions. |
+| CapabilityEngine | The deterministic policy-governed evaluation function that consumes Standing, Policy, Delegation, and Context and produces CapabilityDecisions. |
+| CapabilityEligibility | The finding that a CapabilitySubject satisfies or fails baseline standing, policy, subject, delegation, and governance preconditions for a requested CapabilityType. |
 | CapabilityLifecycleEvent | Any traceable state transition event in the capability lifecycle, including grant, activation, restriction, suspension, revocation, delegation, expiry, and supersession. |
 
 ### 22.1 Implementation notes
@@ -968,7 +1034,7 @@ RFC-005-H4 creates the following future RFC dependencies:
 | RFC-005-H3 Standing Governance | Defines governance roles, algorithm approval, policy approval, standing type registration, challenge review, and standing oversight. The governance structures defined in RFC-005-H3 directly inform the authorized governance processes that capability policies reference. |
 | RFC-005-H5 Delegated Standing | Defines how standing may be delegated, inherited, constrained, scoped, and revoked. RFC-005-H5 provides the standing delegation semantics that underlie the Delegation Capability and the rules for delegated capability subjects holding qualifying standing. |
 | RFC-005-H6 Standing Algorithms | Defines algorithm requirements, versioning, decay functions, and aggregation models that produce the StandingSnapshots consumed by the Capability Engine. |
-| RFC-005-H7 Capability Engine | Defines the Capability Engine specification in full: evaluation stages, decision algorithms, policy language, constraint validation, delegation chains, exercise validation, challenge handling, and runtime requirements. |
+| RFC-005-H7 Capability Engine | Defines the authoritative CapabilityEngine specification, including canonical CapabilityDecision outcomes, evaluation stages, decision model, policy evaluation, constraint validation, delegation chains, exercise validation, challenge handling, and runtime requirements. |
 | RFC-005-H10 Capability Registry (proposed) | Would define registry responsibilities for grants, denials, lifecycle events, revocations, supersessions, challenges, delegation links, authority links, and audit semantics. |
 | RFC-005-H8 Authority Model (proposed) | Would define how authority is recognized from capabilities, how authority chains are formed, how governance bodies recognize authority, and how authority is consumed by decisions. |
 | RFC-005-H9 Decision Framework (proposed) | Would define the Decision layer: how decisions are made under recognized authority, how decisions are recorded, audited, and challenged, and how decisions bind protocol participants. |
