@@ -851,6 +851,14 @@ A traceable narrowing of a requested or existing capability through reduced scop
 
 A traceable termination of a CapabilityGrant before scheduled expiry due to standing degradation, policy change, governance action, delegation revocation, evidence invalidation, claim revocation, successful challenge, risk escalation, fraud, violation, or expiry cascade.
 
+### 25.11 CapabilitySupersession
+
+A traceable replacement of an existing CapabilityGrant with a superseding grant, restriction, denial, suspension, or revocation state under updated scope, constraints, policy, standing, delegation, risk, or governance context. Supersession preserves both the superseded record and the superseding record.
+
+### 25.12 CapabilitySuspension
+
+A traceable lifecycle event that temporarily disables exercise of an existing CapabilityGrant pending review, standing recomputation, challenge resolution, risk remediation, policy clarification, governance process, or other policy-governed lifecycle event. Suspension preserves historical capability state and is not revocation.
+
 ---
 
 ## 26. Implementation Guidance
