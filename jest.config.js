@@ -11,6 +11,10 @@ module.exports = {
     '^@aoc/capability-tokens$': '<rootDir>/packages/capability-tokens/src',
     '^@aoc/consent-engine$': '<rootDir>/packages/consent-engine/src',
     '^@aoc/scoped-access$': '<rootDir>/packages/scoped-access/src',
-    '^@aoc/audit-sdk$': '<rootDir>/packages/audit-sdk/src'
+    '^@aoc/audit-sdk$': '<rootDir>/packages/audit-sdk/src',
+    '^@aoc-runtime/governance-runtime$': '<rootDir>/packages/governance-runtime/src/index.ts',
+    '^@aoc-runtime/provider-interfaces$': '<rootDir>/packages/provider-interfaces/src/index.ts',
+    '^@aoc-runtime/shared-types$': '<rootDir>/packages/shared-types/src/index.ts',
+    '^@aoc-runtime/crypto$': '<rootDir>/crypto/index.ts'
   }
 };
