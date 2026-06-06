@@ -76,6 +76,24 @@
       ],
       "@aoc/protocol/adapters": [
         "packages/protocol/src/adapters"
+      ],
+      "@aoc/enterprise": [
+        "enterprise/src"
+      ],
+      "@aoc/enterprise/assurance": [
+        "enterprise/src/assurance"
+      ],
+      "@aoc/enterprise/assurance/audit": [
+        "enterprise/src/assurance/audit"
+      ],
+      "@aoc/enterprise/assurance/verification": [
+        "enterprise/src/assurance/verification"
+      ],
+      "@aoc/enterprise/assurance/trust": [
+        "enterprise/src/assurance/trust"
+      ],
+      "@aoc/enterprise/assurance/observability": [
+        "enterprise/src/assurance/observability"
       ]
     },
     "ignoreDeprecations": "5.0"

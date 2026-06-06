@@ -1,0 +1,41 @@
+{
+  "name": "@aoc/enterprise",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./assurance": {
+      "types": "./dist/assurance/index.d.ts",
+      "default": "./dist/assurance/index.js"
+    },
+    "./assurance/audit": {
+      "types": "./dist/assurance/audit/index.d.ts",
+      "default": "./dist/assurance/audit/index.js"
+    },
+    "./assurance/verification": {
+      "types": "./dist/assurance/verification/index.d.ts",
+      "default": "./dist/assurance/verification/index.js"
+    },
+    "./assurance/trust": {
+      "types": "./dist/assurance/trust/index.d.ts",
+      "default": "./dist/assurance/trust/index.js"
+    },
+    "./assurance/observability": {
+      "types": "./dist/assurance/observability/index.d.ts",
+      "default": "./dist/assurance/observability/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b --pretty false"
+  }
+}
