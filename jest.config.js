@@ -4,10 +4,11 @@ module.exports = {
   transform: {
     '^.+\\.tsx?$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.base.json' }]
   },
-  testMatch: ['<rootDir>/tests/contracts/**/*.test.ts', '<rootDir>/__tests__/contracts/**/*.test.ts'],
+  testMatch: ['<rootDir>/tests/contracts/**/*.test.ts', '<rootDir>/__tests__/contracts/**/*.test.ts', '<rootDir>/__tests__/architecture/**/*.test.ts'],
   moduleNameMapper: {
     '^@aoc/protocol/contracts$': '<rootDir>/packages/protocol/src/contracts',
     '^@aoc/protocol/claims$': '<rootDir>/packages/protocol/src/claims',
+    '^@aoc/protocol/adapters$': '<rootDir>/packages/protocol/src/adapters',
     '^@aoc/capability-tokens$': '<rootDir>/packages/capability-tokens/src',
     '^@aoc/consent-engine$': '<rootDir>/packages/consent-engine/src',
     '^@aoc/scoped-access$': '<rootDir>/packages/scoped-access/src',
