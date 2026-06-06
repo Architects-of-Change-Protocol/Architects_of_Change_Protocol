@@ -20,6 +20,9 @@
       "path": "packages/consent-runtime"
     },
     {
+      "path": "enterprise"
+    },
+    {
       "path": "packages/audit-runtime"
     },
     {

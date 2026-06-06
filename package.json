@@ -5,7 +5,8 @@
   "type": "commonjs",
   "workspaces": [
     "packages/*",
-    "examples/*"
+    "examples/*",
+    "enterprise"
   ],
   "scripts": {
     "build": "tsc -b",

@@ -1,40 +1,21 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.signAuditEvent = exports.AuditRuntime = void 0;
-const crypto_1 = require("@aoc-runtime/crypto");
-class AuditRuntime {
-    finalizeDecision(decision) {
-        return {
-            ...decision,
-            provenance: {
-                runtimeAttribution: "aoc-runtime",
-                policySourceAttribution: decision.provenance.policySource,
-                machineAttribution: decision.explainability.governance?.effectiveActor?.actorType === "machine",
-                ...decision.provenance
-            }
-        };
-    }
-    createSignedEvent(event, chainId, signature, previous) {
-        const previousEventHash = previous?.eventHash;
-        const chainPosition = previous ? previous.chainPosition + 1 : 0;
-        const eventHash = (0, crypto_1.stableHash)({ chainId, chainPosition, previousEventHash, event });
-        return { event, eventHash, previousEventHash, chainPosition, chainId, signature };
-    }
-    verifyChain(events) {
-        for (let i = 0; i < events.length; i += 1) {
-            const current = events[i];
-            const expectedPrev = i === 0 ? undefined : events[i - 1].eventHash;
-            if (current.previousEventHash !== expectedPrev || current.chainPosition !== i)
-                return false;
-            const hash = (0, crypto_1.stableHash)({ chainId: current.chainId, chainPosition: current.chainPosition, previousEventHash: current.previousEventHash, event: current.event });
-            if (hash !== current.eventHash)
-                return false;
-            if (!(0, crypto_1.verifyPayloadSignature)({ eventHash: current.eventHash, event: current.event }, current.signature))
-                return false;
-        }
-        return true;
-    }
-}
-exports.AuditRuntime = AuditRuntime;
-const signAuditEvent = (payload, privateKey, signer, provenance) => (0, crypto_1.signPayload)(payload, privateKey, signer, provenance);
-exports.signAuditEvent = signAuditEvent;
+/**
+ * Compatibility shim for the pre-extraction package path.
+ * Runtime ownership lives in @aoc/enterprise Assurance.
+ */
+__exportStar(require("@aoc/enterprise/assurance/audit"), exports);
