@@ -17,6 +17,10 @@
     "./claims": {
       "types": "./dist/claims/index.d.ts",
       "default": "./dist/claims/index.js"
+    },
+    "./adapters": {
+      "types": "./dist/adapters/index.d.ts",
+      "default": "./dist/adapters/index.js"
     }
   },
   "files": [

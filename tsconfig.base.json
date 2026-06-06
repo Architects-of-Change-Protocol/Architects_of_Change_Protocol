@@ -73,6 +73,9 @@
       ],
       "@aoc/sdk": [
         "packages/aoc-sdk/src"
+      ],
+      "@aoc/protocol/adapters": [
+        "packages/protocol/src/adapters"
       ]
     },
     "ignoreDeprecations": "5.0"
