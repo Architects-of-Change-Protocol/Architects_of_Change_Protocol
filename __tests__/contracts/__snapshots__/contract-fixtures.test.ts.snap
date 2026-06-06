@@ -1,0 +1,509 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`protocol contract drift fixtures keeps serialized JSON snapshots for every stable canonical fixture 1`] = `
+"{
+  "principalRef": {
+    "id": "principal-human-1",
+    "kind": "Human",
+    "displayName": "Protocol Fixture Principal",
+    "source": {
+      "kind": "DID",
+      "value": "did:aoc:principal-human-1",
+      "label": "Fixture DID"
+    },
+    "metadata": {
+      "fixture": "identity-principal-reference"
+    }
+  },
+  "authority": {
+    "id": "authority-1",
+    "capabilityRefs": [
+      "capability-governance-approve"
+    ],
+    "scope": {
+      "kind": "Workspace",
+      "value": "workspace-1",
+      "description": "Workspace governance approvals"
+    },
+    "status": "Granted",
+    "issuedAt": "2026-06-05T00:00:00.000Z"
+  },
+  "capabilityClaim": {
+    "version": "aoc-capability-claim-v1",
+    "issuer": {
+      "app": "aoc-runtime",
+      "workspaceId": "workspace-1",
+      "issuerType": "system",
+      "trustDomain": "protocol-fixtures",
+      "issuerId": "issuer-system-1"
+    },
+    "subject": {
+      "subjectType": "agent",
+      "agentId": "agent-1"
+    },
+    "authority": {
+      "action": "approve",
+      "requestedPermission": "governance:approve",
+      "resourceType": "project",
+      "resourceId": "project-1",
+      "workspaceId": "workspace-1",
+      "projectId": "project-1"
+    },
+    "constraints": {
+      "maxUses": 1,
+      "allowedUntil": "2026-06-06T00:00:00.000Z",
+      "canDelegate": false,
+      "delegationDepth": 0,
+      "allowedActions": [
+        "approve"
+      ],
+      "allowedProjectIds": [
+        "project-1"
+      ],
+      "allowedResourceTypes": [
+        "project"
+      ]
+    },
+    "lineage": {
+      "parentDecisionId": "decision-1",
+      "parentGrantId": "grant-1",
+      "rootApprovalRequestId": "approval-request-1",
+      "issuedAt": "2026-06-05T00:00:00.000Z"
+    },
+    "proof": {
+      "algorithm": "ed25519",
+      "keyId": "key-1",
+      "signature": "fixture-signature",
+      "trustDomain": "protocol-fixtures",
+      "issuedAt": "2026-06-05T00:00:00.000Z"
+    }
+  },
+  "capabilityToken": {
+    "schemaVersion": "1.0.0",
+    "tokenId": "capability-token-1",
+    "issuer": "issuer-system-1",
+    "subject": "agent-1",
+    "resource": {
+      "kind": "project",
+      "id": "project-1",
+      "tenantId": "workspace-1",
+      "attributes": {
+        "environment": "fixture"
+      }
+    },
+    "scope": [
+      "governance:approve"
+    ],
+    "constraints": [
+      {
+        "name": "projectId",
+        "operator": "eq",
+        "value": "project-1"
+      }
+    ],
+    "delegation": {
+      "delegator": "principal-human-1",
+      "chainDepth": 0,
+      "maxDepth": 1,
+      "allowedReDelegation": false
+    },
+    "expiresAt": "2026-06-06T00:00:00.000Z",
+    "notBefore": "2026-06-05T00:00:00.000Z",
+    "revocationRefs": [
+      "revocation-list-1"
+    ],
+    "proof": {
+      "proofType": "detached-signature",
+      "proofRef": "proof-ref-1",
+      "issuedAt": "2026-06-05T00:00:00.000Z"
+    }
+  },
+  "capabilityGrant": {
+    "schemaVersion": "1.0.0",
+    "tokenId": "capability-grant-1",
+    "issuer": "issuer-system-1",
+    "subject": "agent-1",
+    "resource": {
+      "kind": "project",
+      "id": "project-1",
+      "tenantId": "workspace-1",
+      "attributes": {
+        "environment": "fixture"
+      }
+    },
+    "scope": [
+      "governance:approve"
+    ],
+    "constraints": [
+      {
+        "name": "projectId",
+        "operator": "eq",
+        "value": "project-1"
+      }
+    ],
+    "delegation": {
+      "delegator": "principal-human-1",
+      "chainDepth": 0,
+      "maxDepth": 1,
+      "allowedReDelegation": false
+    },
+    "expiresAt": "2026-06-06T00:00:00.000Z",
+    "notBefore": "2026-06-05T00:00:00.000Z",
+    "revocationRefs": [
+      "revocation-list-1"
+    ],
+    "proof": {
+      "proofType": "detached-signature",
+      "proofRef": "proof-ref-1",
+      "issuedAt": "2026-06-05T00:00:00.000Z"
+    }
+  },
+  "consentGrant": {
+    "schemaVersion": "1.0.0",
+    "grantId": "consent-grant-1",
+    "grantor": "principal-human-1",
+    "grantee": "agent-1",
+    "purpose": "Protocol fixture extraction baseline",
+    "allowedOperations": [
+      "read",
+      "summarize"
+    ],
+    "issuedAt": "2026-06-05T00:00:00.000Z",
+    "legalBasis": {
+      "basisType": "consent"
+    },
+    "contextualConditions": [
+      {
+        "key": "workspaceId",
+        "operator": "eq",
+        "value": "workspace-1"
+      }
+    ]
+  },
+  "auditEventEnvelope": {
+    "eventId": "audit-event-1",
+    "eventType": "protocol.fixture.created",
+    "emittedAt": "2026-06-05T00:00:00.000Z",
+    "actorId": "principal-human-1",
+    "payload": {
+      "fixture": "audit-event-envelope",
+      "contract": "AuditEventEnvelope"
+    }
+  },
+  "attestation": {
+    "id": "attestation-1",
+    "type": "Governance",
+    "attester": {
+      "id": "principal-human-1",
+      "kind": "Human",
+      "displayName": "Protocol Fixture Principal",
+      "source": {
+        "kind": "DID",
+        "value": "did:aoc:principal-human-1",
+        "label": "Fixture DID"
+      },
+      "metadata": {
+        "fixture": "identity-principal-reference"
+      }
+    },
+    "claimRef": "claim-1",
+    "statement": "Fixture claim is attested for contract drift baselining.",
+    "issuedAt": "2026-06-05T00:00:00.000Z",
+    "proofRefs": [
+      {
+        "id": "proof-ref-1",
+        "type": "SignatureProof",
+        "source": {
+          "kind": "URI",
+          "value": "aoc://proofs/proof-ref-1"
+        },
+        "description": "Fixture proof artifact reference",
+        "metadata": {
+          "fixture": "proof-ref"
+        }
+      }
+    ],
+    "metadata": {
+      "fixture": "attestation-envelope-current-canonical"
+    }
+  },
+  "proofEnvelope": {
+    "id": "proof-envelope-1",
+    "proofType": "SignatureProof",
+    "proofRefs": [
+      {
+        "id": "proof-ref-1",
+        "type": "SignatureProof",
+        "source": {
+          "kind": "URI",
+          "value": "aoc://proofs/proof-ref-1"
+        },
+        "description": "Fixture proof artifact reference",
+        "metadata": {
+          "fixture": "proof-ref"
+        }
+      }
+    ],
+    "subject": {
+      "id": "principal-human-1",
+      "kind": "Human",
+      "displayName": "Protocol Fixture Principal",
+      "source": {
+        "kind": "DID",
+        "value": "did:aoc:principal-human-1",
+        "label": "Fixture DID"
+      },
+      "metadata": {
+        "fixture": "identity-principal-reference"
+      }
+    },
+    "issuer": "issuer-system-1",
+    "issuedAt": "2026-06-05T00:00:00.000Z",
+    "metadata": {
+      "fixture": "proof-envelope"
+    }
+  },
+  "verification": {
+    "id": "verification-1",
+    "claimRef": "claim-1",
+    "status": "Verified",
+    "verifier": "verifier-1",
+    "verifiedAt": "2026-06-05T00:00:00.000Z",
+    "findings": [
+      "fixture-verification-passed"
+    ],
+    "proofRefs": [
+      {
+        "id": "proof-ref-1",
+        "type": "SignatureProof",
+        "source": {
+          "kind": "URI",
+          "value": "aoc://proofs/proof-ref-1"
+        },
+        "description": "Fixture proof artifact reference",
+        "metadata": {
+          "fixture": "proof-ref"
+        }
+      }
+    ],
+    "registryRefs": [],
+    "confidence": 0.99
+  },
+  "registryReference": {
+    "id": "registry-1",
+    "type": "PrincipalRegistry",
+    "namespace": "aoc.protocol.fixtures",
+    "authorityLevel": "ProtocolRecognized",
+    "source": {
+      "kind": "URI",
+      "value": "aoc://registries/registry-1"
+    },
+    "metadata": {
+      "fixture": "registry-reference"
+    }
+  },
+  "policyDecision": "allow",
+  "decision": {
+    "id": "decision-1",
+    "authorityRef": "authority-1",
+    "status": "Approved",
+    "decisionMaker": {
+      "id": "principal-human-1",
+      "kind": "Human",
+      "displayName": "Protocol Fixture Principal",
+      "source": {
+        "kind": "DID",
+        "value": "did:aoc:principal-human-1",
+        "label": "Fixture DID"
+      },
+      "metadata": {
+        "fixture": "identity-principal-reference"
+      }
+    },
+    "decisionDate": "2026-06-05T00:00:00.000Z",
+    "reason": "Fixture policy decision approved."
+  },
+  "reasonCode": {
+    "code": "ACCESS_ALLOWED",
+    "category": "auth",
+    "severity": "info",
+    "audience": "sdk",
+    "lifecycle": "stable",
+    "visibility": "public",
+    "owner": "runtime",
+    "classification": "allow",
+    "summary": "Access approved.",
+    "machineMeaning": "Authorization approved.",
+    "explainabilityHint": "The request satisfied all active authorization checks.",
+    "compatibilityNotes": "Canonical allow outcome.",
+    "telemetryClassification": "decision",
+    "sdkExposurePolicy": "public-stable",
+    "auditSafe": true,
+    "telemetryOnly": false
+  },
+  "executionRequest": {
+    "capability": {
+      "capability_hash": "capability-hash-1",
+      "parent_consent_hash": "consent-hash-1",
+      "subject": "principal-human-1",
+      "grantee": "agent-1",
+      "scope": [
+        {
+          "type": "content",
+          "ref": "dataset-1"
+        }
+      ],
+      "permissions": [
+        "read"
+      ],
+      "issued_at": "2026-06-05T00:00:00.000Z",
+      "expires_at": "2026-06-06T00:00:00.000Z"
+    },
+    "requested_scope": [
+      {
+        "type": "content",
+        "ref": "dataset-1"
+      }
+    ],
+    "requested_permissions": [
+      "read"
+    ],
+    "subject": "principal-human-1",
+    "grantee": "agent-1",
+    "resource": {
+      "type": "content",
+      "ref": "dataset-1"
+    },
+    "execution_target": {
+      "adapter": "fixture-adapter",
+      "operation": "summarize"
+    },
+    "action_context": {
+      "workspaceId": "workspace-1"
+    },
+    "payload": {
+      "prompt": "Summarize fixture content."
+    },
+    "now": "2026-06-05T00:00:00.000Z"
+  }
+}"
+`;
+
+exports[`protocol contract drift fixtures validates execution requests through the existing parser and normalizer 1`] = `
+"{
+  "parsed": {
+    "capability": {
+      "capability_hash": "capability-hash-1",
+      "parent_consent_hash": "consent-hash-1",
+      "subject": "principal-human-1",
+      "grantee": "agent-1",
+      "scope": [
+        {
+          "type": "content",
+          "ref": "dataset-1"
+        }
+      ],
+      "permissions": [
+        "read"
+      ],
+      "issued_at": "2026-06-05T00:00:00.000Z",
+      "expires_at": "2026-06-06T00:00:00.000Z"
+    },
+    "requested_scope": [
+      {
+        "type": "content",
+        "ref": "dataset-1"
+      }
+    ],
+    "requested_permissions": [
+      "read"
+    ],
+    "subject": "principal-human-1",
+    "grantee": "agent-1",
+    "resource": {
+      "type": "content",
+      "ref": "dataset-1"
+    },
+    "action_context": {
+      "workspaceId": "workspace-1"
+    },
+    "now": "2026-06-05T00:00:00.000Z",
+    "execution_target": {
+      "adapter": "fixture-adapter",
+      "operation": "summarize"
+    },
+    "payload": {
+      "prompt": "Summarize fixture content."
+    }
+  },
+  "normalized": {
+    "capability": {
+      "capability_hash": "capability-hash-1",
+      "parent_consent_hash": "consent-hash-1",
+      "subject": "principal-human-1",
+      "grantee": "agent-1",
+      "scope": [
+        {
+          "type": "content",
+          "ref": "dataset-1"
+        }
+      ],
+      "permissions": [
+        "read"
+      ],
+      "issued_at": "2026-06-05T00:00:00.000Z",
+      "expires_at": "2026-06-06T00:00:00.000Z"
+    },
+    "requested_scope": [
+      {
+        "type": "content",
+        "ref": "dataset-1"
+      }
+    ],
+    "requested_permissions": [
+      "read"
+    ],
+    "subject": "principal-human-1",
+    "grantee": "agent-1",
+    "resource": {
+      "type": "content",
+      "ref": "dataset-1"
+    },
+    "action_context": {
+      "workspaceId": "workspace-1"
+    },
+    "now": "2026-06-05T00:00:00.000Z",
+    "execution_target": {
+      "adapter": "fixture-adapter",
+      "operation": "summarize"
+    },
+    "payload": {
+      "prompt": "Summarize fixture content."
+    }
+  }
+}"
+`;
+
+exports[`protocol contract drift fixtures validates reason-code fixtures through the existing registry helpers 1`] = `
+"{
+  "valid": {
+    "code": "ACCESS_ALLOWED",
+    "category": "auth",
+    "severity": "info",
+    "audience": "sdk",
+    "lifecycle": "stable",
+    "visibility": "public",
+    "owner": "runtime",
+    "classification": "allow",
+    "summary": "Access approved.",
+    "machineMeaning": "Authorization approved.",
+    "explainabilityHint": "The request satisfied all active authorization checks.",
+    "compatibilityNotes": "Canonical allow outcome.",
+    "telemetryClassification": "decision",
+    "sdkExposurePolicy": "public-stable",
+    "auditSafe": true,
+    "telemetryOnly": false
+  },
+  "invalid": "DOES_NOT_EXIST"
+}"
+`;
