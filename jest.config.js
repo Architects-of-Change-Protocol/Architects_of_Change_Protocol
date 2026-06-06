@@ -4,7 +4,7 @@ module.exports = {
   transform: {
     '^.+\\.tsx?$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.base.json' }]
   },
-  testMatch: ['<rootDir>/tests/contracts/**/*.test.ts'],
+  testMatch: ['<rootDir>/tests/contracts/**/*.test.ts', '<rootDir>/__tests__/contracts/**/*.test.ts'],
   moduleNameMapper: {
     '^@aoc/protocol/contracts$': '<rootDir>/packages/protocol/src/contracts',
     '^@aoc/protocol/claims$': '<rootDir>/packages/protocol/src/claims',
