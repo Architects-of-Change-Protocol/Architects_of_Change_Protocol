@@ -11,7 +11,6 @@ import type {
 import {
   AdapterRegistry,
   AdapterTokens,
-  type AdapterToken,
 } from '@aoc/protocol/runtime-registry';
 
 export interface VerificationRuntimeAdapters {
@@ -34,17 +33,6 @@ export interface EventSinkRuntimeAdapters {
 export type AssuranceRuntimeAdapters = VerificationRuntimeAdapters &
   TrustRuntimeAdapters &
   EventSinkRuntimeAdapters;
-
-export const AssuranceRuntimeAdapterTokens: readonly AdapterToken[] = Object.freeze([
-  AdapterTokens.VerificationProvider,
-  AdapterTokens.VerificationKeyResolver,
-  AdapterTokens.RegistryLookup,
-  AdapterTokens.TrustRegistryProvider,
-  AdapterTokens.AuditEventSink,
-  AdapterTokens.SecurityEventSink,
-  AdapterTokens.ProtocolEventSink,
-  AdapterTokens.ObservabilityEventSink,
-]);
 
 export const resolveVerificationRuntimeAdapters = (
   registry: AdapterRegistry,

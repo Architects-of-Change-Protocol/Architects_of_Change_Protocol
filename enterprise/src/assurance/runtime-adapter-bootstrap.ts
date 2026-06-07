@@ -19,18 +19,25 @@ import {
   AdapterRegistry,
   AdapterTokens,
   RuntimeAdapterBootstrap,
+  RuntimeBootstrapEngine,
   type AdapterRegistration,
   type AdapterRegistryLogger,
   type AdapterToken,
   type RuntimeAdapterStartupReport,
+  type RuntimeCompositionOptions,
+  type RuntimeCompositionResult,
+  type RuntimeCompositionRoot,
 } from '@aoc/protocol/runtime-registry';
 import { InMemoryAssuranceEventSink } from './observability';
 import { InMemoryCanonicalTrustRegistry } from './trust';
 import {
-  AssuranceRuntimeAdapterTokens,
   resolveAssuranceRuntimeAdapters,
   type AssuranceRuntimeAdapters,
 } from './runtime-adapter-resolver';
+import {
+  AssuranceRuntimeAdapterTokens,
+  EnterpriseAssuranceRuntimeProfile,
+} from './runtime-profile';
 
 export interface EnterpriseRuntimeAdapters {
   readonly verificationProvider?: VerificationProvider;
@@ -68,10 +75,9 @@ const registration = <TAdapter>(
 
 const present = <T>(value: T | undefined): value is T => value !== undefined;
 
-export const createEnterpriseRuntimeAdapterBootstrap = (
-  registry: AdapterRegistry,
+const createEnterpriseRuntimeAdapterRegistrations = (
   options: EnterpriseRuntimeAdapterBootstrapOptions = {},
-): RuntimeAdapterBootstrap => {
+): readonly AdapterRegistration[] => {
   const source = options.source ?? '@aoc/enterprise/assurance';
   const version = options.version ?? '0.1.0';
   const eventSink = new InMemoryAssuranceEventSink();
@@ -104,6 +110,14 @@ export const createEnterpriseRuntimeAdapterBootstrap = (
     registration(AdapterTokens.ProtocolEventSink, adapters.protocolEventSink, source, version),
   ].filter(present) as AdapterRegistration[];
 
+  return registrations;
+};
+
+export const createEnterpriseRuntimeAdapterBootstrap = (
+  registry: AdapterRegistry,
+  options: EnterpriseRuntimeAdapterBootstrapOptions = {},
+): RuntimeAdapterBootstrap => {
+  const registrations = createEnterpriseRuntimeAdapterRegistrations(options);
   return new RuntimeAdapterBootstrap(
     registry,
     registrations,
@@ -117,31 +131,52 @@ export const bootstrapEnterpriseRuntimeAdapters = (
   options: EnterpriseRuntimeAdapterBootstrapOptions = {},
 ): RuntimeAdapterStartupReport => createEnterpriseRuntimeAdapterBootstrap(registry, options).bootstrap();
 
-export interface EnterpriseAssuranceRuntime {
-  readonly registry: AdapterRegistry;
+export interface EnterpriseAssuranceRuntime extends RuntimeCompositionResult<AssuranceRuntimeAdapters> {
+  /** Backward-compatible alias for resolvedContext. */
   readonly adapters: AssuranceRuntimeAdapters;
-  readonly startupReport: RuntimeAdapterStartupReport;
+}
+
+export interface EnterpriseAssuranceCompositionOptions extends RuntimeCompositionOptions {
+  readonly adapters?: EnterpriseRuntimeAdapters;
+  readonly source?: string;
+  readonly version?: string;
+}
+
+/** Enterprise-owned composition root: constructs defaults/overrides and resolves typed dependencies. */
+export class EnterpriseAssuranceRuntimeCompositionRoot implements RuntimeCompositionRoot<
+  EnterpriseAssuranceCompositionOptions,
+  AssuranceRuntimeAdapters
+> {
+  readonly profile = EnterpriseAssuranceRuntimeProfile;
+
+  compose(options: EnterpriseAssuranceCompositionOptions = {}): EnterpriseAssuranceRuntime {
+    const registry = options.registry ?? new AdapterRegistry(options.logger);
+    const bootstrapResult = new RuntimeBootstrapEngine().bootstrap({
+      profile: this.profile,
+      registry,
+      registrations: createEnterpriseRuntimeAdapterRegistrations(options),
+      logger: options.logger,
+    });
+    const resolvedContext = resolveAssuranceRuntimeAdapters(registry);
+
+    return Object.freeze({
+      ...bootstrapResult,
+      resolvedContext,
+      adapters: resolvedContext,
+    });
+  }
 }
 
 /** Bootstrap the complete assurance profile and resolve its dependencies at the composition boundary. */
 export const bootstrapEnterpriseAssuranceRuntime = (
   registry: AdapterRegistry,
   options: Omit<EnterpriseRuntimeAdapterBootstrapOptions, 'required'> = {},
-): EnterpriseAssuranceRuntime => {
-  const startupReport = bootstrapEnterpriseRuntimeAdapters(registry, {
-    ...options,
-    required: AssuranceRuntimeAdapterTokens,
-  });
-
-  return {
-    registry,
-    adapters: resolveAssuranceRuntimeAdapters(registry),
-    startupReport,
-  };
-};
+): EnterpriseAssuranceRuntime => new EnterpriseAssuranceRuntimeCompositionRoot().compose({
+  ...options,
+  registry,
+});
 
 export {
-  AssuranceRuntimeAdapterTokens,
   resolveAssuranceRuntimeAdapters,
   resolveEventSinkRuntimeAdapters,
   resolveTrustRuntimeAdapters,
@@ -151,3 +186,7 @@ export {
   type TrustRuntimeAdapters,
   type VerificationRuntimeAdapters,
 } from './runtime-adapter-resolver';
+export {
+  AssuranceRuntimeAdapterTokens,
+  EnterpriseAssuranceRuntimeProfile,
+} from './runtime-profile';

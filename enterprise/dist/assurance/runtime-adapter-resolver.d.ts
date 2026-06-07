@@ -1,5 +1,5 @@
 import type { AuditEventSink, ObservabilityEventSink, ProtocolEventSink, RegistryLookup, SecurityEventSink, TrustRegistryProvider, VerificationKeyResolver, VerificationProvider } from '@aoc/protocol/adapters';
-import { AdapterRegistry, type AdapterToken } from '@aoc/protocol/runtime-registry';
+import { AdapterRegistry } from '@aoc/protocol/runtime-registry';
 export interface VerificationRuntimeAdapters {
     readonly verificationProvider: VerificationProvider;
     readonly verificationKeyResolver: VerificationKeyResolver;
@@ -15,7 +15,6 @@ export interface EventSinkRuntimeAdapters {
     readonly observabilityEventSink: ObservabilityEventSink;
 }
 export type AssuranceRuntimeAdapters = VerificationRuntimeAdapters & TrustRuntimeAdapters & EventSinkRuntimeAdapters;
-export declare const AssuranceRuntimeAdapterTokens: readonly AdapterToken[];
 export declare const resolveVerificationRuntimeAdapters: (registry: AdapterRegistry) => VerificationRuntimeAdapters;
 export declare const resolveTrustRuntimeAdapters: (registry: AdapterRegistry) => TrustRuntimeAdapters;
 export declare const resolveEventSinkRuntimeAdapters: (registry: AdapterRegistry) => EventSinkRuntimeAdapters;

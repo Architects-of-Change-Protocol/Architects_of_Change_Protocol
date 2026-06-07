@@ -63,7 +63,9 @@ describe('runtime adapter direct-wiring boundary', () => {
       .map((file) => readFileSync(resolve(process.cwd(), file), 'utf8'))
       .join('\n');
 
-    expect(registrySources).not.toMatch(/new\s+(?:Runtime|Enterprise|InMemory)[A-Z][A-Za-z0-9_]*/);
+    expect(registrySources).not.toMatch(
+      /new\s+(?:Runtime(?!AdapterBootstrap)|Enterprise|InMemory)[A-Z][A-Za-z0-9_]*/,
+    );
   });
 
   it('classifies canonical implementation construction and rejects runtime-consumer wiring', () => {

@@ -19,3 +19,6 @@ __exportStar(require("./errors"), exports);
 __exportStar(require("./runtime-adapter-bootstrap"), exports);
 __exportStar(require("./tokens"), exports);
 __exportStar(require("./types"), exports);
+__exportStar(require("./runtime-profile"), exports);
+__exportStar(require("./runtime-bootstrap-engine"), exports);
+__exportStar(require("./runtime-composition-root"), exports);
