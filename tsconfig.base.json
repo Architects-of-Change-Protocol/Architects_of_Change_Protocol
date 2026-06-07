@@ -97,6 +97,12 @@
       ],
       "@aoc/enterprise/assurance/observability": [
         "enterprise/src/assurance/observability"
+      ],
+      "@aoc/enterprise/assurance/runtime-adapters": [
+        "enterprise/src/assurance/runtime-adapters"
+      ],
+      "@aoc/enterprise/assurance/runtime-profile": [
+        "enterprise/src/assurance/runtime-profile"
       ]
     },
     "ignoreDeprecations": "5.0"

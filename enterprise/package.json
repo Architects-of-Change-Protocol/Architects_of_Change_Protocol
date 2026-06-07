@@ -31,8 +31,12 @@
       "default": "./dist/assurance/observability/index.js"
     },
     "./assurance/runtime-adapters": {
-      "types": "./dist/assurance/runtime-adapter-bootstrap.d.ts",
-      "default": "./dist/assurance/runtime-adapter-bootstrap.js"
+      "types": "./dist/assurance/runtime-adapters/index.d.ts",
+      "default": "./dist/assurance/runtime-adapters/index.js"
+    },
+    "./assurance/runtime-profile": {
+      "types": "./dist/assurance/runtime-profile.d.ts",
+      "default": "./dist/assurance/runtime-profile.js"
     }
   },
   "files": [
@@ -40,6 +44,7 @@
   ],
   "scripts": {
     "build": "tsc -b",
-    "typecheck": "tsc -b --pretty false"
+    "typecheck": "tsc -b --pretty false",
+    "check:boundary": "node ../scripts/check-enterprise-package-boundary.mjs"
   }
 }
