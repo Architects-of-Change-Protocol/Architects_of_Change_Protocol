@@ -14,9 +14,6 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-__exportStar(require("./audit"), exports);
-__exportStar(require("./verification"), exports);
-__exportStar(require("./trust"), exports);
-__exportStar(require("./observability"), exports);
-__exportStar(require("./runtime-adapters"), exports);
-__exportStar(require("./runtime-profile"), exports);
+/** Public Enterprise Assurance runtime composition and typed-resolution surface. */
+__exportStar(require("../runtime-adapter-bootstrap"), exports);
+__exportStar(require("../runtime-adapter-resolver"), exports);

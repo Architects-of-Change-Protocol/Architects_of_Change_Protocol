@@ -40,7 +40,8 @@
     "check:sdk-exports": "node scripts/check-sdk-exports.mjs",
     "check:temporal-governance": "node scripts/check-temporal-governance.mjs",
     "check:symbol-parity": "node scripts/check-symbol-parity.mjs",
-    "check:aoc-boundaries": "npm run lint:semantic-ownership && npm run check:runtime-boundaries && npm run check:symbol-parity"
+    "check:aoc-boundaries": "npm run lint:semantic-ownership && npm run check:runtime-boundaries && npm run check:symbol-parity && npm run check:enterprise-package-boundary",
+    "check:enterprise-package-boundary": "node scripts/check-enterprise-package-boundary.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
