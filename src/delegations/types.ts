@@ -1,4 +1,4 @@
-import type { CapabilityPermission, CapabilityResourceType, WorkspaceId } from "../capabilities/types";
+import type { CapabilityPermission, CapabilityResourceType, WorkspaceId } from '@aoc/protocol/contracts';
 
 export type PrincipalType = "human" | "agent" | "service";
 

@@ -4,7 +4,7 @@ import type {
   AgentScope as CanonicalAgentScope,
   AuditEventEnvelope as CanonicalAuditEventEnvelope,
   PolicyDecision as CanonicalPolicyDecision,
-} from '../../packages/protocol/src/contracts';
+} from '@aoc/protocol/contracts';
 
 import type { CapabilityToken as FacadeCapabilityToken } from '../../packages/capability-tokens/src';
 import type { ConsentGrant as FacadeConsentGrant } from '../../packages/consent-engine/src';

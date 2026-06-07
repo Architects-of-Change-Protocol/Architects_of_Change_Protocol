@@ -24,7 +24,7 @@ import type {
   ConsentGrant,
   PolicyDecision,
 } from '@aoc/protocol/contracts';
-import { CAPABILITY_CLAIM_VERSION, type CapabilityClaim } from '../../src/contracts/capability-claims';
+import { CAPABILITY_CLAIM_VERSION, type CapabilityClaim } from '@aoc/protocol/claims';
 import type { ReasonCodeRegistryEntry } from '../../runtime/governance/reason-codes';
 import type { ExecutionRequest } from '../../protocol/execution';
 
