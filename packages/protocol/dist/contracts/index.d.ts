@@ -71,4 +71,5 @@ export interface AuditEventEnvelope {
     readonly payload: Readonly<Record<string, unknown>>;
 }
 export type TrustDomainIdentifier = string;
+export type * from './legacy-contracts';
 //# sourceMappingURL=index.d.ts.map

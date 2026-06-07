@@ -1,6 +1,3 @@
-export interface ProtocolError {
-    readonly code: string;
-    readonly message: string;
-    readonly details?: Readonly<Record<string, unknown>>;
-}
+export type * from './protocol-error';
+export type * from './legacy-errors';
 //# sourceMappingURL=index.d.ts.map

@@ -29,4 +29,5 @@ export interface LegacyClaim {
  * It is not RFC-005 canonical.
  */
 export type Claim = LegacyClaim;
+export * from './legacy-claims';
 //# sourceMappingURL=index.d.ts.map

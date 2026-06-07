@@ -19,3 +19,4 @@ __exportStar(require("./references"), exports);
 __exportStar(require("./proofs"), exports);
 __exportStar(require("./registries"), exports);
 __exportStar(require("./credentials"), exports);
+__exportStar(require("./legacy-claims"), exports);

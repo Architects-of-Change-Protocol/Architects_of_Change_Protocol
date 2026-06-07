@@ -170,3 +170,12 @@ export interface VerificationProvider {
 export interface ObservabilityEventSink {
   recordObservation(event: ProtocolEvent | SecurityEvent | AuditEventEnvelope, context?: AdapterLookupContext): AdapterResult<void>;
 }
+
+/** @deprecated Use ExecutionAuthorizationProvider. */
+export type AccessVerificationPort = ExecutionAuthorizationProvider;
+/** @deprecated Use PolicyDecisionProvider. */
+export type PolicyEvaluatorPort = PolicyDecisionProvider;
+/** @deprecated Use RevocationLookup. */
+export type TrustCoordinationPort = RevocationLookup;
+/** @deprecated Use TrustRegistryProvider. */
+export type TrustDomainPort = TrustRegistryProvider;
