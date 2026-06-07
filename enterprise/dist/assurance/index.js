@@ -19,3 +19,4 @@ __exportStar(require("./verification"), exports);
 __exportStar(require("./trust"), exports);
 __exportStar(require("./observability"), exports);
 __exportStar(require("./runtime-adapter-bootstrap"), exports);
+__exportStar(require("./runtime-profile"), exports);
