@@ -122,3 +122,19 @@ Forbidden in Protocol:
 ## Performance contract
 
 Registry resolution is a single `Map.get` and is tested at less than 1 ms average per resolution. Validation is linear in the required-token count and is tested at less than 100 ms for the canonical startup set. No network, persistence, reflection, or scanning occurs on the resolution path.
+
+## Registry Usage Policy
+
+The registry is a runtime composition mechanism, not an ambient service locator.
+
+- Use `AdapterRegistry` only in an explicit runtime composition root or resolver module.
+- Resolve each runtime profile once, then inject the returned canonical contract dependencies into services.
+- Do not call `registry.resolve(...)` repeatedly from domain services or business workflows.
+- Do not store a process-global registry or hide registry access behind mutable singleton state.
+- Validate every required adapter profile during startup and fail closed with `RegistryValidationError` when the profile is incomplete.
+- A direct resolution of an unregistered token must surface `AdapterNotRegisteredError`; consumers must not silently construct a fallback.
+- Optional adapters may be omitted only when the composition profile explicitly declares them optional.
+- Default implementations are permitted only when the Enterprise bootstrap profile owns and documents that choice.
+- Duplicate registration remains an error so startup cannot select an implementation by registration order.
+
+The Enterprise assurance profile follows this policy through `bootstrapEnterpriseAssuranceRuntime`. The composition helper bootstraps the required profile, validates all eight assurance tokens, resolves them into `AssuranceRuntimeAdapters`, and returns typed dependencies for injection. Focused verification, trust, and event-sink resolvers support narrower composition profiles without placing registry access in implementation classes.

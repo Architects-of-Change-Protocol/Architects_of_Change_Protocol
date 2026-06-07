@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.bootstrapEnterpriseRuntimeAdapters = exports.createEnterpriseRuntimeAdapterBootstrap = void 0;
+exports.resolveVerificationRuntimeAdapters = exports.resolveTrustRuntimeAdapters = exports.resolveEventSinkRuntimeAdapters = exports.resolveAssuranceRuntimeAdapters = exports.AssuranceRuntimeAdapterTokens = exports.bootstrapEnterpriseAssuranceRuntime = exports.bootstrapEnterpriseRuntimeAdapters = exports.createEnterpriseRuntimeAdapterBootstrap = void 0;
 const runtime_registry_1 = require("@aoc/protocol/runtime-registry");
 const observability_1 = require("./observability");
 const trust_1 = require("./trust");
+const runtime_adapter_resolver_1 = require("./runtime-adapter-resolver");
 const registration = (token, adapter, source, version) => adapter === undefined ? undefined : { token, adapter, metadata: { source, version } };
 const present = (value) => value !== undefined;
 const createEnterpriseRuntimeAdapterBootstrap = (registry, options = {}) => {
@@ -42,3 +43,22 @@ const createEnterpriseRuntimeAdapterBootstrap = (registry, options = {}) => {
 exports.createEnterpriseRuntimeAdapterBootstrap = createEnterpriseRuntimeAdapterBootstrap;
 const bootstrapEnterpriseRuntimeAdapters = (registry, options = {}) => (0, exports.createEnterpriseRuntimeAdapterBootstrap)(registry, options).bootstrap();
 exports.bootstrapEnterpriseRuntimeAdapters = bootstrapEnterpriseRuntimeAdapters;
+/** Bootstrap the complete assurance profile and resolve its dependencies at the composition boundary. */
+const bootstrapEnterpriseAssuranceRuntime = (registry, options = {}) => {
+    const startupReport = (0, exports.bootstrapEnterpriseRuntimeAdapters)(registry, {
+        ...options,
+        required: runtime_adapter_resolver_1.AssuranceRuntimeAdapterTokens,
+    });
+    return {
+        registry,
+        adapters: (0, runtime_adapter_resolver_1.resolveAssuranceRuntimeAdapters)(registry),
+        startupReport,
+    };
+};
+exports.bootstrapEnterpriseAssuranceRuntime = bootstrapEnterpriseAssuranceRuntime;
+var runtime_adapter_resolver_2 = require("./runtime-adapter-resolver");
+Object.defineProperty(exports, "AssuranceRuntimeAdapterTokens", { enumerable: true, get: function () { return runtime_adapter_resolver_2.AssuranceRuntimeAdapterTokens; } });
+Object.defineProperty(exports, "resolveAssuranceRuntimeAdapters", { enumerable: true, get: function () { return runtime_adapter_resolver_2.resolveAssuranceRuntimeAdapters; } });
+Object.defineProperty(exports, "resolveEventSinkRuntimeAdapters", { enumerable: true, get: function () { return runtime_adapter_resolver_2.resolveEventSinkRuntimeAdapters; } });
+Object.defineProperty(exports, "resolveTrustRuntimeAdapters", { enumerable: true, get: function () { return runtime_adapter_resolver_2.resolveTrustRuntimeAdapters; } });
+Object.defineProperty(exports, "resolveVerificationRuntimeAdapters", { enumerable: true, get: function () { return runtime_adapter_resolver_2.resolveVerificationRuntimeAdapters; } });

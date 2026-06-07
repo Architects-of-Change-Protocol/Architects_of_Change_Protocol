@@ -30,7 +30,12 @@ import {
 import type { CanonicalClaim, CanonicalRegistryEntry, CanonicalRegistryRef } from '@aoc/protocol/claims';
 import type { AuditEventEnvelope } from '@aoc/protocol/contracts';
 import { AdapterRegistry, AdapterTokens } from '@aoc/protocol/runtime-registry';
-import { createEnterpriseRuntimeAdapterBootstrap } from '../../enterprise/src/assurance/runtime-adapter-bootstrap';
+import {
+  createEnterpriseRuntimeAdapterBootstrap,
+  resolveEventSinkRuntimeAdapters,
+  resolveTrustRuntimeAdapters,
+  resolveVerificationRuntimeAdapters,
+} from '../../enterprise/src/assurance/runtime-adapter-bootstrap';
 
 describe('PR-04 Assurance extraction parity', () => {
   it('keeps package compatibility exports bound to Enterprise implementations', () => {
@@ -95,7 +100,7 @@ describe('PR-04 Assurance extraction parity', () => {
       adapters: { verificationKeyResolver: keys, verificationProvider: implementation },
       required: [AdapterTokens.VerificationKeyResolver, AdapterTokens.VerificationProvider],
     }).bootstrap();
-    const provider = adapters.resolve(AdapterTokens.VerificationProvider);
+    const { verificationProvider: provider } = resolveVerificationRuntimeAdapters(adapters);
     const claim = {
       id: 'claim:1', type: 'Identity', subject: 'subject:1', issuer: 'issuer:1', assertionRef: 'assertion:1',
       evidenceRefs: [], attestationRefs: [], issuedAt: '2026-01-01T00:00:00.000Z',
@@ -118,8 +123,7 @@ describe('PR-04 Assurance extraction parity', () => {
       adapters: { registryLookup: implementation, trustRegistryProvider: implementation },
       required: [AdapterTokens.RegistryLookup, AdapterTokens.TrustRegistryProvider],
     }).bootstrap();
-    const trustRegistry = adapters.resolve(AdapterTokens.TrustRegistryProvider);
-    const registryLookup = adapters.resolve(AdapterTokens.RegistryLookup);
+    const { trustRegistryProvider: trustRegistry, registryLookup } = resolveTrustRuntimeAdapters(adapters);
 
     expect(trustRegistry.getRegistry(registryRef)).toEqual(registryRef);
     expect(registryLookup.lookupRegistry({ registryRef, subject: 'subject:1' }, { requestedAt: '2026-06-06T00:00:00.000Z' }))
@@ -138,9 +142,11 @@ describe('PR-04 Assurance extraction parity', () => {
       },
       required: [AdapterTokens.AuditEventSink, AdapterTokens.SecurityEventSink, AdapterTokens.ProtocolEventSink],
     }).bootstrap();
-    const auditSink = adapters.resolve(AdapterTokens.AuditEventSink);
-    const securitySink = adapters.resolve(AdapterTokens.SecurityEventSink);
-    const protocolSink = adapters.resolve(AdapterTokens.ProtocolEventSink);
+    const {
+      auditEventSink: auditSink,
+      securityEventSink: securitySink,
+      protocolEventSink: protocolSink,
+    } = resolveEventSinkRuntimeAdapters(adapters);
     const event: AuditEventEnvelope = {
       eventId: 'audit:1', eventType: 'verification.completed', emittedAt: '2026-06-06T00:00:00.000Z', payload: { result: 'verified' },
     };
