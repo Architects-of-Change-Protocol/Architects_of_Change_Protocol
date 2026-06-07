@@ -9,6 +9,7 @@ module.exports = {
     '^@aoc/protocol/contracts$': '<rootDir>/packages/protocol/src/contracts',
     '^@aoc/protocol/claims$': '<rootDir>/packages/protocol/src/claims',
     '^@aoc/protocol/adapters$': '<rootDir>/packages/protocol/src/adapters',
+    '^@aoc/protocol/runtime-registry$': '<rootDir>/packages/protocol/src/runtime-registry',
     '^@aoc/enterprise/assurance/(.*)$': '<rootDir>/enterprise/src/assurance/$1',
     '^@aoc/enterprise/assurance$': '<rootDir>/enterprise/src/assurance',
     '^@aoc/enterprise$': '<rootDir>/enterprise/src',

@@ -8,6 +8,7 @@ const approvedProtocolImports = new Set([
   '@aoc/protocol/claims',
   '@aoc/protocol/contracts',
   '@aoc/protocol/errors',
+  '@aoc/protocol/runtime-registry',
 ]);
 const ignoredDirectories = new Set(['.git', 'coverage', 'dist', 'node_modules']);
 const sourceExtensions = /\.(?:[cm]?[jt]sx?)$/;

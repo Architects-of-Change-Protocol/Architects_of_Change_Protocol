@@ -29,6 +29,10 @@
     "./assurance/observability": {
       "types": "./dist/assurance/observability/index.d.ts",
       "default": "./dist/assurance/observability/index.js"
+    },
+    "./assurance/runtime-adapters": {
+      "types": "./dist/assurance/runtime-adapter-bootstrap.d.ts",
+      "default": "./dist/assurance/runtime-adapter-bootstrap.js"
     }
   },
   "files": [
