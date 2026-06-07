@@ -26,6 +26,11 @@ import {
 } from '@aoc/protocol/runtime-registry';
 import { InMemoryAssuranceEventSink } from './observability';
 import { InMemoryCanonicalTrustRegistry } from './trust';
+import {
+  AssuranceRuntimeAdapterTokens,
+  resolveAssuranceRuntimeAdapters,
+  type AssuranceRuntimeAdapters,
+} from './runtime-adapter-resolver';
 
 export interface EnterpriseRuntimeAdapters {
   readonly verificationProvider?: VerificationProvider;
@@ -111,3 +116,38 @@ export const bootstrapEnterpriseRuntimeAdapters = (
   registry: AdapterRegistry,
   options: EnterpriseRuntimeAdapterBootstrapOptions = {},
 ): RuntimeAdapterStartupReport => createEnterpriseRuntimeAdapterBootstrap(registry, options).bootstrap();
+
+export interface EnterpriseAssuranceRuntime {
+  readonly registry: AdapterRegistry;
+  readonly adapters: AssuranceRuntimeAdapters;
+  readonly startupReport: RuntimeAdapterStartupReport;
+}
+
+/** Bootstrap the complete assurance profile and resolve its dependencies at the composition boundary. */
+export const bootstrapEnterpriseAssuranceRuntime = (
+  registry: AdapterRegistry,
+  options: Omit<EnterpriseRuntimeAdapterBootstrapOptions, 'required'> = {},
+): EnterpriseAssuranceRuntime => {
+  const startupReport = bootstrapEnterpriseRuntimeAdapters(registry, {
+    ...options,
+    required: AssuranceRuntimeAdapterTokens,
+  });
+
+  return {
+    registry,
+    adapters: resolveAssuranceRuntimeAdapters(registry),
+    startupReport,
+  };
+};
+
+export {
+  AssuranceRuntimeAdapterTokens,
+  resolveAssuranceRuntimeAdapters,
+  resolveEventSinkRuntimeAdapters,
+  resolveTrustRuntimeAdapters,
+  resolveVerificationRuntimeAdapters,
+  type AssuranceRuntimeAdapters,
+  type EventSinkRuntimeAdapters,
+  type TrustRuntimeAdapters,
+  type VerificationRuntimeAdapters,
+} from './runtime-adapter-resolver';
