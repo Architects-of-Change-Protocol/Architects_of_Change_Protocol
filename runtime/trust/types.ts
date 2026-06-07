@@ -1,4 +1,9 @@
-/** Compatibility shim for Enterprise Assurance trust runtime types. */
+/**
+ * Compatibility bridge for Enterprise Assurance trust runtime types.
+ *
+ * @deprecated Use `@aoc/enterprise/assurance/trust` instead.
+ * Migrate to Enterprise Assurance; no contract ownership lives here.
+ */
 export type {
   AocIdentityConsentRecord,
   AocIdentityCredentialRecord,

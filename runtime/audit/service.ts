@@ -1,10 +1,17 @@
+/**
+ * Compatibility facades for the historical hosted audit runtime.
+ *
+ * @deprecated Use `@aoc/enterprise/assurance/audit` instead.
+ * Migrate to Enterprise Assurance; only signature translation is retained here.
+ */
 import {
   InMemoryAuditService as EnterpriseInMemoryAuditService,
   RuntimeAuditService as EnterpriseRuntimeAuditService,
   type AuditEventSource,
   type LegacyAuditEvent,
+  type HostedAuditEventQuery,
+  type HostedProtocolAuditEvent,
 } from '../../enterprise/src/assurance/audit';
-import type { AuditEventQuery, AuditEvent as ProtocolAuditEvent } from '../../protocol/audit';
 import type { DataAccessService } from '../access/service';
 import type { DataAccessAuditEvent } from '../access/types';
 import type { RlusdPayoutExecutorService } from '../payout/rlusdPayoutExecutor.service';
@@ -22,7 +29,10 @@ export type ListAuditEventsInput = {
   to?: Date;
 };
 
-/** Compatibility facade preserving the historical Protocol audit signatures. */
+/**
+ * @deprecated Use `InMemoryAuditService` from `@aoc/enterprise/assurance/audit`.
+ * Compatibility facade preserving the historical audit signatures.
+ */
 export class InMemoryAuditService {
   private readonly implementation: EnterpriseInMemoryAuditService;
 
@@ -30,16 +40,19 @@ export class InMemoryAuditService {
     this.implementation = new EnterpriseInMemoryAuditService(maxEvents);
   }
 
-  recordEvent(event: ProtocolAuditEvent): void {
+  recordEvent(event: HostedProtocolAuditEvent): void {
     this.implementation.recordEvent(event as unknown as LegacyAuditEvent);
   }
 
-  listEvents(query: AuditEventQuery = {}): ProtocolAuditEvent[] {
-    return this.implementation.listEvents(query) as unknown as ProtocolAuditEvent[];
+  listEvents(query: HostedAuditEventQuery = {}): HostedProtocolAuditEvent[] {
+    return this.implementation.listEvents(query) as unknown as HostedProtocolAuditEvent[];
   }
 }
 
-/** Compatibility facade preserving the historical three-source constructor. */
+/**
+ * @deprecated Use `RuntimeAuditService` from `@aoc/enterprise/assurance/audit`.
+ * Compatibility facade preserving the historical three-source constructor.
+ */
 export class RuntimeAuditService {
   private readonly implementation: EnterpriseRuntimeAuditService<RuntimeAuditEvent>;
 
