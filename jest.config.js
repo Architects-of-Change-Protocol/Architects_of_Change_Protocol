@@ -17,6 +17,8 @@ module.exports = {
     '^@aoc/consent-engine$': '<rootDir>/packages/consent-engine/src',
     '^@aoc/scoped-access$': '<rootDir>/packages/scoped-access/src',
     '^@aoc/audit-sdk$': '<rootDir>/packages/audit-sdk/src',
+    '^@aoc-runtime/audit-runtime$': '<rootDir>/packages/audit-runtime/src/index.ts',
+    '^@aoc-runtime/trust-registry-runtime$': '<rootDir>/packages/trust-registry-runtime/src/index.ts',
     '^@aoc-runtime/governance-runtime$': '<rootDir>/packages/governance-runtime/src/index.ts',
     '^@aoc-runtime/provider-interfaces$': '<rootDir>/packages/provider-interfaces/src/index.ts',
     '^@aoc-runtime/shared-types$': '<rootDir>/packages/shared-types/src/index.ts',

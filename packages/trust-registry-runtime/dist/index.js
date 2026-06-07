@@ -15,7 +15,9 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 /**
- * Compatibility shim for the pre-extraction package path.
- * Runtime ownership lives in @aoc/enterprise Assurance.
+ * Compatibility wrapper for the pre-extraction trust registry runtime package.
+ *
+ * @deprecated Use `@aoc/enterprise/assurance/trust` instead.
+ * Migrate to the Enterprise Assurance trust surface; this wrapper is frozen and will be retired.
  */
 __exportStar(require("@aoc/enterprise/assurance/trust"), exports);

@@ -1,6 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RuntimeAuditService = exports.InMemoryAuditEventSink = exports.InMemoryAuditService = void 0;
+exports.RuntimeAuditService = exports.InMemoryAuditEventSink = exports.InMemoryAuditService = exports.LEGACY_AUDIT_EVENT_TYPES = void 0;
+exports.LEGACY_AUDIT_EVENT_TYPES = [
+    'CONSENT_EVALUATED',
+    'CAPABILITY_ISSUED',
+    'CAPABILITY_VALIDATED',
+    'CAPABILITY_AUTHORIZED',
+    'CAPABILITY_DENIED',
+];
 const DEFAULT_MAX_AUDIT_EVENTS = 10000;
 const cloneLegacyEvent = (event) => ({
     ...event,
