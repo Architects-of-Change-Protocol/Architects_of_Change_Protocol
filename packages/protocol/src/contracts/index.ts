@@ -83,3 +83,6 @@ export interface AuditEventEnvelope {
 }
 
 export type TrustDomainIdentifier = string;
+
+// Compatibility-only type surface for mechanical migration from legacy Protocol imports.
+export type * from './legacy-contracts';

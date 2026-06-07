@@ -38,7 +38,9 @@
     "check:observability-governance": "node scripts/check-observability-governance.mjs",
     "check:memory-governance": "node scripts/check-memory-governance.mjs",
     "check:sdk-exports": "node scripts/check-sdk-exports.mjs",
-    "check:temporal-governance": "node scripts/check-temporal-governance.mjs"
+    "check:temporal-governance": "node scripts/check-temporal-governance.mjs",
+    "check:symbol-parity": "node scripts/check-symbol-parity.mjs",
+    "check:aoc-boundaries": "npm run lint:semantic-ownership && npm run check:runtime-boundaries && npm run check:symbol-parity"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
