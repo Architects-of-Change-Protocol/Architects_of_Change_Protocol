@@ -1,8 +1,13 @@
-import type { Agent, AgentScope } from "../agents/types";
-import type { AuditTimelineItem } from "../audit/types";
-import type { CapabilityGrant, CapabilityRequest } from "../capabilities/types";
-import type { Delegation } from "../delegations/types";
-import type { DecisionContext, PolicyDecision } from "../decisions/types";
+import type {
+  Agent,
+  AgentScope,
+  AuditTimelineItem,
+  CapabilityGrant,
+  CapabilityRequest,
+  DecisionContext,
+  Delegation,
+  PolicyDecision,
+} from '@aoc/protocol/contracts';
 
 // Protocol boundary: implementations of these interfaces belong in Enterprise/runtime repos.
 export interface PolicyDecisionAdapter {

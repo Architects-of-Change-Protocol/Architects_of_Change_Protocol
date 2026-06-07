@@ -1,4 +1,4 @@
-import type { CapabilityPermission, CapabilityResourceType, WorkspaceId } from "../capabilities/types";
+import type { CapabilityPermission, CapabilityResourceType, WorkspaceId } from '@aoc/protocol/contracts';
 
 export type PolicyEffect = "allow" | "deny" | "require_approval" | "conditional_allow";
 
