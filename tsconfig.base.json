@@ -77,6 +77,9 @@
       "@aoc/protocol/adapters": [
         "packages/protocol/src/adapters"
       ],
+      "@aoc/protocol/runtime-registry": [
+        "packages/protocol/src/runtime-registry"
+      ],
       "@aoc/enterprise": [
         "enterprise/src"
       ],

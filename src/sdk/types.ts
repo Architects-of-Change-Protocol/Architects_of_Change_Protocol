@@ -1,9 +1,35 @@
-export type { WorkspaceId, ProjectId, CapabilityPermission, CapabilityResourceType, CapabilityRequestStatus, CapabilityGrantStatus, CapabilityRequest, CapabilityGrant } from "../capabilities/types";
-export type { AgentId, AgentRiskLevel, Agent, AgentScope } from "../agents/types";
-export type { Policy, PolicyEffect } from "../policies/types";
-export type { PolicyDecision, DecisionContext, PolicyReference, EvaluationSource } from "../decisions/types";
-export type { Delegation, DelegationStatus, DelegationPrincipal, DelegationLineage, DelegationRevocation, PrincipalType } from "../delegations/types";
-export type { AuditTimelineItem, AuditActor, AuditSubject, AuditEventCategory, AuditEventType, AuditSeverity } from "../audit/types";
+export type {
+  Agent,
+  AgentId,
+  AgentRiskLevel,
+  AgentScope,
+  AuditActor,
+  AuditEventCategory,
+  AuditEventType,
+  AuditSeverity,
+  AuditSubject,
+  AuditTimelineItem,
+  CapabilityGrant,
+  CapabilityGrantStatus,
+  CapabilityPermission,
+  CapabilityRequest,
+  CapabilityRequestStatus,
+  CapabilityResourceType,
+  DecisionContext,
+  Delegation,
+  DelegationLineage,
+  DelegationPrincipal,
+  DelegationRevocation,
+  DelegationStatus,
+  EvaluationSource,
+  Policy,
+  PolicyDecision,
+  PolicyEffect,
+  PolicyReference,
+  PrincipalType,
+  ProjectId,
+  WorkspaceId,
+} from '@aoc/protocol/contracts';
 
 export type AocClientConfig = {
   baseUrl: string;

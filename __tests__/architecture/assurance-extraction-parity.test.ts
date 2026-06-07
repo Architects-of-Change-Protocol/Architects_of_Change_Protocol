@@ -29,6 +29,8 @@ import {
 } from '../../runtime/observability';
 import type { CanonicalClaim, CanonicalRegistryEntry, CanonicalRegistryRef } from '@aoc/protocol/claims';
 import type { AuditEventEnvelope } from '@aoc/protocol/contracts';
+import { AdapterRegistry, AdapterTokens } from '@aoc/protocol/runtime-registry';
+import { createEnterpriseRuntimeAdapterBootstrap } from '../../enterprise/src/assurance/runtime-adapter-bootstrap';
 
 describe('PR-04 Assurance extraction parity', () => {
   it('keeps package compatibility exports bound to Enterprise implementations', () => {
@@ -85,9 +87,15 @@ describe('PR-04 Assurance extraction parity', () => {
   it('implements VerificationProvider through VerificationKeyResolver', async () => {
     const keys = new InMemoryVerificationKeyResolver();
     keys.register({ keyId: 'key:1', issuer: 'issuer:1', algorithm: 'ed25519' });
-    const provider = new EnterpriseVerificationProvider(keys, {
+    const implementation = new EnterpriseVerificationProvider(keys, {
       verify: (_claim, key) => key === undefined ? ['Missing verification key.'] : true,
     });
+    const adapters = new AdapterRegistry();
+    createEnterpriseRuntimeAdapterBootstrap(adapters, {
+      adapters: { verificationKeyResolver: keys, verificationProvider: implementation },
+      required: [AdapterTokens.VerificationKeyResolver, AdapterTokens.VerificationProvider],
+    }).bootstrap();
+    const provider = adapters.resolve(AdapterTokens.VerificationProvider);
     const claim = {
       id: 'claim:1', type: 'Identity', subject: 'subject:1', issuer: 'issuer:1', assertionRef: 'assertion:1',
       evidenceRefs: [], attestationRefs: [], issuedAt: '2026-01-01T00:00:00.000Z',
@@ -103,24 +111,44 @@ describe('PR-04 Assurance extraction parity', () => {
       id: 'entry:1', registryRef, entryType: 'Credential', subject: 'subject:1', locator: 'credential:1',
       status: 'Active', createdAt: '2026-01-01T00:00:00.000Z',
     } as CanonicalRegistryEntry;
-    const registry = new InMemoryCanonicalTrustRegistry();
-    registry.registerEntry(entry);
+    const implementation = new InMemoryCanonicalTrustRegistry();
+    implementation.registerEntry(entry);
+    const adapters = new AdapterRegistry();
+    createEnterpriseRuntimeAdapterBootstrap(adapters, {
+      adapters: { registryLookup: implementation, trustRegistryProvider: implementation },
+      required: [AdapterTokens.RegistryLookup, AdapterTokens.TrustRegistryProvider],
+    }).bootstrap();
+    const trustRegistry = adapters.resolve(AdapterTokens.TrustRegistryProvider);
+    const registryLookup = adapters.resolve(AdapterTokens.RegistryLookup);
 
-    expect(registry.getRegistry(registryRef)).toEqual(registryRef);
-    expect(registry.lookupRegistry({ registryRef, subject: 'subject:1' }, { requestedAt: '2026-06-06T00:00:00.000Z' }))
+    expect(trustRegistry.getRegistry(registryRef)).toEqual(registryRef);
+    expect(registryLookup.lookupRegistry({ registryRef, subject: 'subject:1' }, { requestedAt: '2026-06-06T00:00:00.000Z' }))
       .toEqual({ status: 'Found', registryRef, entries: [entry], observedAt: '2026-06-06T00:00:00.000Z' });
   });
 
   it('implements all Protocol observability sink seams without mutating events', () => {
-    const sink = new InMemoryAssuranceEventSink();
+    const implementation = new InMemoryAssuranceEventSink();
+    const adapters = new AdapterRegistry();
+    createEnterpriseRuntimeAdapterBootstrap(adapters, {
+      adapters: {
+        auditEventSink: implementation,
+        securityEventSink: implementation,
+        protocolEventSink: implementation,
+        observabilityEventSink: implementation,
+      },
+      required: [AdapterTokens.AuditEventSink, AdapterTokens.SecurityEventSink, AdapterTokens.ProtocolEventSink],
+    }).bootstrap();
+    const auditSink = adapters.resolve(AdapterTokens.AuditEventSink);
+    const securitySink = adapters.resolve(AdapterTokens.SecurityEventSink);
+    const protocolSink = adapters.resolve(AdapterTokens.ProtocolEventSink);
     const event: AuditEventEnvelope = {
       eventId: 'audit:1', eventType: 'verification.completed', emittedAt: '2026-06-06T00:00:00.000Z', payload: { result: 'verified' },
     };
-    sink.recordAuditEvent(event);
-    sink.recordSecurityEvent({ eventId: 'security:1', eventType: 'key.checked', occurredAt: event.emittedAt, payload: {} });
-    sink.emitProtocolEvent({ eventId: 'protocol:1', eventType: 'claim.checked', emittedAt: event.emittedAt, payload: {} });
+    auditSink.recordAuditEvent(event);
+    securitySink.recordSecurityEvent({ eventId: 'security:1', eventType: 'key.checked', occurredAt: event.emittedAt, payload: {} });
+    protocolSink.emitProtocolEvent({ eventId: 'protocol:1', eventType: 'claim.checked', emittedAt: event.emittedAt, payload: {} });
 
-    expect(sink.listObservations()).toHaveLength(3);
-    expect(sink.listObservations()[0]).toEqual(event);
+    expect(implementation.listObservations()).toHaveLength(3);
+    expect(implementation.listObservations()[0]).toEqual(event);
   });
 });

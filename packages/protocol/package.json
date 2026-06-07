@@ -21,6 +21,10 @@
     "./adapters": {
       "types": "./dist/adapters/index.d.ts",
       "default": "./dist/adapters/index.js"
+    },
+    "./runtime-registry": {
+      "types": "./dist/runtime-registry/index.d.ts",
+      "default": "./dist/runtime-registry/index.js"
     }
   },
   "files": [
