@@ -1,6 +1,6 @@
 # Capability Violation Catalog
 
-**Constitution Version:** v6.0
+**Constitution Version:** v7.0
 
 | Violation ID | Name | Severity | Constitutional rule |
 |---|---|---|---|

@@ -1,6 +1,6 @@
 # Claim Violation Catalog
 
-**Constitution Version:** v6.0
+**Constitution Version:** v7.0
 
 ## Violations
 

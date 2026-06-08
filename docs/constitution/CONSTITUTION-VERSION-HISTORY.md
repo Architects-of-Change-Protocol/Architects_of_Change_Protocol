@@ -4,6 +4,7 @@
 
 | Version | Date | Amendments | Summary | Breaking Changes |
 |---|---|---|---|---|
+| v7.0 | 2026-06-08 | AOC-AMD-0007 | Establishes constitutional trust authority, evidence, issuance, lifecycle, decay, revocation, violations, and enforcement. | Accepted claims no longer carry equal confidence; decision influence requires governed trust evaluation. |
 | v5.0 | 2026-06-08 | AOC-AMD-0005 | Establishes constitutional standing authority, eligibility, lifecycle, delegation, representation, revocation, violations, and enforcement. | Participation requires applicable active, eligibility-validated standing. |
 | v4.0 | 2026-06-08 | AOC-AMD-0004 | Establishes constitutional decision authority, lifecycle, evidence, explainability, appeals, revocation, violations, and enforcement. | Actions require traceable, evidence-supported, policy-covered decisions. |
 | v3.0 | 2026-06-08 | AOC-AMD-0003 | Establishes constitutional policy authority, lifecycle, hierarchy, exceptions, conflict resolution, violations, and enforcement. | Capability exercise becomes explicitly policy-constrained and deny-by-default. |
@@ -61,3 +62,12 @@
 - **Summary:** Establishes Constitutional, Governance, Runtime, and Operational claim classes; catalogs claim authorities and evidence policies; governs lifecycle, disputes, supersession, withdrawal, violations, and traceability; and adds fail-closed CI and release scanners.
 - **Breaking Changes:** Participant standing no longer makes an assertion constitutionally influential. Governed decisions may rely only on cataloged claims that reach `Accepted` through standing-backed submission and evidence validation.
 - **Migration Notes:** Repository governance changes only. No claims, trust, identity, verification, voting, federation, reputation, or governance runtime is introduced. Future claim governance changes require Type B or Type C amendments.
+
+
+## v7.0
+
+- **Date:** 2026-06-08
+- **Amendments:** AOC-AMD-0007
+- **Summary:** Establishes Constitutional, Governance, Runtime, and Operational trust classes; catalogs trust authorities and evidence policies; governs issuance, lifecycle, suspension, decay, revocation, retirement, violations, decision influence, and traceability; and adds fail-closed CI and release scanners.
+- **Breaking Changes:** Accepted claims no longer carry constitutionally identical confidence. Governed decisions may assign confidence only through an active, evidence-evaluated, standing-backed, claim-backed, authorized, traceable trust signal.
+- **Migration Notes:** Repository governance changes only. No trust, reputation, voting, federation, identity, verification, governance, authentication, authorization, claims, or decision runtime is introduced. Future trust governance changes require Type B or Type C amendments.

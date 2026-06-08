@@ -1,6 +1,6 @@
 # AOC Constitution
 
-**Constitution Version:** v6.0
+**Constitution Version:** v7.0
 
 **Status:** Ratified
 
@@ -59,6 +59,15 @@ The following documents are incorporated into the Constitution by reference:
 - `docs/constitution/CLAIM-SUPERSESSION-POLICY.md`
 - `docs/constitution/CLAIM-WITHDRAWAL-POLICY.md`
 - `docs/constitution/CLAIM-VIOLATION-CATALOG.md`
+
+- `TRUST-CONSTITUTION.md`
+- `TRUST-AUTHORITIES.md`
+- `TRUST-EVIDENCE-POLICY.md`
+- `TRUST-LIFECYCLE.md`
+- `TRUST-ISSUANCE-POLICY.md`
+- `TRUST-DECAY-POLICY.md`
+- `TRUST-REVOCATION-POLICY.md`
+- `TRUST-VIOLATION-CATALOG.md`
 
 ## 3. Constitutional principles
 
@@ -130,6 +139,12 @@ Every standing authority must have a unique identifier, class, owner, eligibilit
 
 Every governed assertion must use a unique cataloged claim type with a constitutional owner, evidence policy, dispute posture, withdrawal posture, supersession posture, creation amendment, retirement amendment, and status. Claim legitimacy is distinct from standing and decision legitimacy. A claim may influence a decision only after a valid standing-backed submission, complete evidence validation, and a valid lifecycle transition to `Accepted`. Disputes, supersessions, withdrawals, and retirements preserve permanent traceability.
 
-## 14. Release governance
+## 14. Trust authority governance
 
-`validate:release` must run constitutional amendment and claim governance validation before publishability validation. The aggregate AOC boundary gate must include amendment, version, authority, capability, policy, decision, standing, and all claim authority, evidence, lifecycle, dispute, supersession, withdrawal, and aggregate governance scanners. Capability, policy, standing, claim, and decision governance validation must complete before publishability validation.
+Trust is a governed confidence signal derived from evidence, behavior, history, and constitutional evaluation. Trust legitimacy is distinct from authority, capability, policy, standing, claim, and decision legitimacy. A trust signal may influence a decision only after valid standing, a valid claim, successful evidence evaluation, authorized issuance, and a valid lifecycle transition to `Active`. Decay affects current confidence without deleting history; suspension disables influence temporarily; revocation disables influence permanently.
+
+The constitutional chain is `Authority → Capability → Policy → Standing → Claim → Trust → Decision → Action`. Trust influences confidence but never directly authorizes action.
+
+## 15. Release governance
+
+`validate:release` must run constitutional amendment and claim governance validation before publishability validation. The aggregate AOC boundary gate must include amendment, version, authority, capability, policy, decision, standing, and all claim authority, evidence, lifecycle, dispute, supersession, withdrawal, and aggregate governance scanners, and all trust authority, evidence, lifecycle, issuance, decay, revocation, and aggregate governance scanners. Capability, policy, standing, claim, trust, and decision governance validation must complete before publishability validation.
