@@ -1,6 +1,6 @@
 # Constitutional Authorities
 
-**Constitution Version:** v5.0
+**Constitution Version:** v6.0
 
 ## Authority lifecycle fields
 
@@ -21,7 +21,7 @@ Valid statuses are `Canonical`, `Transitional`, `Deprecated`, and `Retired`.
 | Protocol | `packages/protocol/src` | Owns canonical contracts, claims, errors, tokens, registry abstractions, adapter contracts, bootstrap contracts, composition contracts, and profile contracts. | AOC-AMD-0001 | Not scheduled | Canonical |
 | Enterprise | `enterprise/src` | Owns extracted runtime implementations, assurance implementations, profiles, composition roots, defaults, and typed resolvers. | AOC-AMD-0001 | Not scheduled | Canonical |
 | Compatibility | `packages/audit-runtime/src`; `packages/trust-registry-runtime/src`; `runtime/audit`; `runtime/trust`; `runtime/observability.ts` | Owns deprecated compatibility facades that may re-export, delegate, or translate signatures without owning new behavior. | AOC-AMD-0001 | Not scheduled | Deprecated |
-| Constitution | `docs/constitution` | Owns constitutional authority, laws, policies, amendment procedure, amendment catalog, authority and capability catalogs, capability lifecycle, delegation and revocation policy, version history, scanners, and release gate obligations. | AOC-AMD-0001 | Not scheduled | Canonical |
+| Constitution | `docs/constitution` | Owns constitutional authority, laws, policies, amendment procedure, amendment catalog, authority and capability catalogs, capability lifecycle, delegation and revocation policy, version history, claim governance, scanners, and release gate obligations. | AOC-AMD-0001 | Not scheduled | Canonical |
 
 ## Transitional authorities
 
