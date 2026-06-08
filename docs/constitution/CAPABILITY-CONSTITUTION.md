@@ -1,6 +1,6 @@
 # Capability Constitution
 
-**Constitution Version:** v2.0
+**Constitution Version:** v3.0
 
 **Status:** Ratified
 

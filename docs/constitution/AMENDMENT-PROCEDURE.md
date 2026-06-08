@@ -1,6 +1,6 @@
 # Constitutional Amendment Procedure
 
-**Constitution Version:** v2.0
+**Constitution Version:** v3.0
 
 ## Purpose
 
@@ -14,21 +14,21 @@ May modify documentation, examples, terminology, and scanner implementation deta
 
 Must not modify laws, ownership models, dependency models, or constitutional authorities.
 
-### Type B — Ownership and Capability Assignment Amendment
+### Type B — Ownership, Capability Assignment, and Policy Administration Amendment
 
-May modify ownership domains, authorized roots, compatibility authorities, transitional authorities, composition authorities, capability ownership, and assignments of delegable Governance, Runtime, or Operational capabilities without changing constitutional semantics.
+May modify ownership domains, authorized roots, compatibility authorities, transitional authorities, composition authorities, capability ownership, and assignments of delegable Governance, Runtime, or Operational capabilities without changing constitutional semantics; and policy ownership, application, delegation, or activation assignments that do not weaken or alter policy meaning.
 
 Requires an impact assessment describing affected packages, scanner behavior, migration risk, and release risk.
 
 ### Type C — Constitutional Amendment
 
-May modify `LAW-001+`, the violation catalog, enforcement matrix, constitutional boundary policy, constitutional versioning, the amendment procedure, capability classes, Constitutional capabilities, capability definitions, lifecycle semantics, delegation semantics, revocation semantics, or capability enforcement obligations.
+May modify `LAW-001+`, the violation catalog, enforcement matrix, constitutional boundary policy, constitutional versioning, the amendment procedure, capability classes, Constitutional capabilities, capability definitions, lifecycle semantics, delegation semantics, revocation semantics, capability enforcement obligations, policy creation or retirement, policy semantics, policy weakening, hierarchy semantics, conflict resolution, or exception authority.
 
 Requires a version increment, migration plan, amendment catalog entry, version history entry, and ratification before release.
 
 ## Amendment record requirements
 
-No capability authority may be created without amendment governance. Capability creation or retirement is Type C; delegable capability ownership or assignment changes are Type B unless they alter constitutional meaning, in which case they are Type C.
+No capability or policy authority may be created outside amendment governance. Capability or policy creation and retirement are Type C. Delegable capability assignments and non-semantic policy ownership, application, delegation, or activation changes are Type B unless they alter constitutional meaning or weaken a constraint, in which case they are Type C.
 
 Every amendment record must contain:
 

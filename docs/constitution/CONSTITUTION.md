@@ -1,6 +1,6 @@
 # AOC Constitution
 
-**Constitution Version:** v2.0
+**Constitution Version:** v3.0
 
 **Status:** Ratified
 
@@ -28,6 +28,13 @@ The following documents are incorporated into the Constitution by reference:
 - `docs/constitution/CAPABILITY-DELEGATION-POLICY.md`
 - `docs/constitution/CAPABILITY-REVOCATION-POLICY.md`
 - `docs/constitution/CAPABILITY-VIOLATION-CATALOG.md`
+- `docs/constitution/POLICY-CONSTITUTION.md`
+- `docs/constitution/POLICY-AUTHORITIES.md`
+- `docs/constitution/POLICY-LIFECYCLE.md`
+- `docs/constitution/POLICY-HIERARCHY.md`
+- `docs/constitution/POLICY-EXCEPTION-POLICY.md`
+- `docs/constitution/POLICY-CONFLICT-RESOLUTION.md`
+- `docs/constitution/POLICY-VIOLATION-CATALOG.md`
 
 ## 3. Constitutional principles
 
@@ -83,6 +90,10 @@ Transitional authorities are temporary and closed. They may not be expanded by c
 
 Every capability authority must have a unique identifier, class, owner, delegation posture, revocation posture, creation amendment, retirement amendment, and status. Capability definitions and assignments may be created or changed only through Type B or Type C amendments as defined by the amendment procedure. Constitutional capabilities are non-delegable. Suspended, revoked, and retired assignments confer no active power.
 
-## 10. Release governance
+## 10. Policy authority governance
 
-`validate:release` must run constitutional amendment validation before publishability validation. The aggregate AOC boundary gate must include amendment, version, authority, capability authority, capability delegation, capability governance, and capability revocation scanners. Capability governance validation must complete before publishability validation.
+Every policy authority must have a unique identifier, class, owner, applicable capability scope, priority, delegation posture, creation amendment, retirement amendment, catalog status, and lifecycle state. Policy creation and semantic change require Type B or Type C amendment governance; creation, weakening, retirement, exception authority, hierarchy semantics, and conflict semantics require Type C. Lower policies may narrow but may not expand higher constraints. Exceptions are bounded and amendment-ratified. Conflicts resolve by constitutional supremacy, priority, restrictiveness, and ratification recency, then fail closed. Every canonical capability requires active applicable policy coverage.
+
+## 11. Release governance
+
+`validate:release` must run constitutional amendment validation before publishability validation. The aggregate AOC boundary gate must include amendment, version, authority, capability authority, capability delegation, capability governance, and capability revocation scanners. Capability and policy governance validation must complete before publishability validation.

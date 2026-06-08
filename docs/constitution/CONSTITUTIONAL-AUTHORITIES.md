@@ -1,6 +1,6 @@
 # Constitutional Authorities
 
-**Constitution Version:** v2.0
+**Constitution Version:** v3.0
 
 ## Authority lifecycle fields
 
