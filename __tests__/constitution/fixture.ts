@@ -149,3 +149,41 @@ export const writeCapabilityGovernance = (fixture: ConstitutionalFixture, option
   ]) fixture.write(document, `# ${document}\n`);
   fixture.write('runtime/capabilities/governance.ts', 'export function validateDelegation() {}\nexport function attenuateCapability() {}\nexport function evaluateCapabilityLineage() {}\n');
 };
+
+export const writePolicyGovernance = (fixture: ConstitutionalFixture, options: {
+  version?: string;
+  amendmentId?: string;
+  policyRows?: string;
+  inheritanceRows?: string;
+  exceptionRows?: string;
+  conflictRows?: string;
+  lifecycleRows?: string;
+} = {}) => {
+  const version = options.version ?? 'v1.0';
+  const amendmentId = options.amendmentId ?? 'AOC-AMD-0001';
+  writeCapabilityGovernance(fixture, { version, amendmentId });
+
+  const policyRows = options.policyRows ?? [
+    `| POL-0001 | Constitutional Baseline | Constitutional | Constitution | CAP-0001–CAP-0004 | Integrity | Require | 10 | 100 | No | ${amendmentId} | Not scheduled | Canonical | Active |`,
+    `| POL-0002 | Governance Control | Governance | Constitution | CAP-0002 | Governance | Require | 20 | 80 | No | ${amendmentId} | Not scheduled | Canonical | Active |`,
+    `| POL-0003 | Runtime Evidence | Runtime | Protocol | CAP-0003 | Evidence | Require | 20 | 70 | No | ${amendmentId} | Not scheduled | Canonical | Active |`,
+    `| POL-0004 | Operational Audit | Operational | Enterprise | CAP-0004 | Audit | Require | 20 | 60 | Yes | ${amendmentId} | Not scheduled | Canonical | Active |`,
+  ].join('\n');
+  const inheritanceRows = options.inheritanceRows ?? [
+    `| PIN-0001 | POL-0001 | POL-0002 | Narrows | ${amendmentId} | Active |`,
+    `| PIN-0002 | POL-0001 | POL-0003 | Narrows | ${amendmentId} | Active |`,
+    `| PIN-0003 | POL-0001 | POL-0004 | Narrows | ${amendmentId} | Active |`,
+  ].join('\n');
+  const lifecycleRows = options.lifecycleRows ?? [1, 2, 3, 4].flatMap((id) => [
+    `| PLT-${String(id * 2 - 1).padStart(4, '0')} | POL-${String(id).padStart(4, '0')} | Proposed | Ratified | ${amendmentId} | 2026-06-08 |`,
+    `| PLT-${String(id * 2).padStart(4, '0')} | POL-${String(id).padStart(4, '0')} | Ratified | Active | ${amendmentId} | 2026-06-08 |`,
+  ]).join('\n');
+
+  fixture.write('docs/constitution/POLICY-CONSTITUTION.md', `# Policy Constitution\n\n**Constitution Version:** ${version}\n`);
+  fixture.write('docs/constitution/POLICY-VIOLATION-CATALOG.md', `# Policy Violations\n\n**Constitution Version:** ${version}\n`);
+  fixture.write('docs/constitution/POLICY-AUTHORITIES.md', `# Policy Authorities\n\n**Constitution Version:** ${version}\n\n## Policy catalog\n\n| Policy ID | Policy Name | Policy Class | Owner | Applies To Capability IDs | Rule Domain | Effect | Constraint Strength | Priority | Delegable | Creation Amendment | Retirement Amendment | Status | Lifecycle State |\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n${policyRows}\n\n## Policy delegation records\n\n| Delegation ID | Policy ID | Grantor | Delegate | Scope | Expiration | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/POLICY-HIERARCHY.md', `# Policy Hierarchy\n\n**Constitution Version:** ${version}\n\n## Inheritance registry\n\n| Inheritance ID | Parent Policy | Child Policy | Relationship | Amendment | Status |\n|---|---|---|---|---|---|\n${inheritanceRows}\n`);
+  fixture.write('docs/constitution/POLICY-EXCEPTION-POLICY.md', `# Policy Exceptions\n\n**Constitution Version:** ${version}\n\n## Exception registry\n\n| Exception ID | Type | Owner | Duration | Affected Policy | Replacement Constraint | Ratified Amendment | Effective Date | Expiration | Status |\n|---|---|---|---|---|---|---|---|---|---|\n${options.exceptionRows ?? ''}\n`);
+  fixture.write('docs/constitution/POLICY-CONFLICT-RESOLUTION.md', `# Policy Conflicts\n\n**Constitution Version:** ${version}\n\n## Conflict registry\n\n| Conflict ID | Policy IDs | Capability IDs | Rule Domain | Winner | Resolution Basis | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${options.conflictRows ?? ''}\n`);
+  fixture.write('docs/constitution/POLICY-LIFECYCLE.md', `# Policy Lifecycle\n\n**Constitution Version:** ${version}\n\n## Lifecycle transition ledger\n\n| Transition ID | Policy ID | From | To | Amendment | Effective Date |\n|---|---|---|---|---|---|\n${lifecycleRows}\n`);
+};
