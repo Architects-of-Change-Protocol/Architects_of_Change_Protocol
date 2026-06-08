@@ -1,6 +1,6 @@
 # Decision Revocation Policy
 
-**Constitution Version:** v4.0
+**Constitution Version:** v5.0
 
 ## Revocation authority
 
@@ -22,7 +22,7 @@ Revocation requires a unique record, known decision, valid cause, traceable evid
 | Revocation ID | Decision ID | Cause | Evidence | Revoked By | Amendment | Effective Date | Status |
 |---|---|---|---|---|---|---|---|
 
-No decision revocations are recorded at v4.0.
+No decision revocations are recorded at v5.0.
 
 ## Effects
 

@@ -1,6 +1,6 @@
 # Policy Violation Catalog
 
-**Constitution Version:** v4.0
+**Constitution Version:** v5.0
 
 | Violation ID | Name | Trigger | Required response |
 |---|---|---|---|

@@ -4,6 +4,7 @@
 
 | Version | Date | Amendments | Summary | Breaking Changes |
 |---|---|---|---|---|
+| v5.0 | 2026-06-08 | AOC-AMD-0005 | Establishes constitutional standing authority, eligibility, lifecycle, delegation, representation, revocation, violations, and enforcement. | Participation requires applicable active, eligibility-validated standing. |
 | v4.0 | 2026-06-08 | AOC-AMD-0004 | Establishes constitutional decision authority, lifecycle, evidence, explainability, appeals, revocation, violations, and enforcement. | Actions require traceable, evidence-supported, policy-covered decisions. |
 | v3.0 | 2026-06-08 | AOC-AMD-0003 | Establishes constitutional policy authority, lifecycle, hierarchy, exceptions, conflict resolution, violations, and enforcement. | Capability exercise becomes explicitly policy-constrained and deny-by-default. |
 | v2.0 | 2026-06-08 | AOC-AMD-0002 | Establishes constitutional capability classes, authority catalog, lifecycle, delegation, revocation, violations, and enforcement. | Capability authority becomes explicit and deny-by-default. |
@@ -43,3 +44,12 @@
 - **Summary:** Establishes Constitutional, Governance, Runtime, and Operational decision classes; catalogs decision authorities; governs lifecycle, evidence requirements, explainability, appeals, revocation, violations, and evolution; and adds fail-closed CI and release scanners.
 - **Breaking Changes:** Policy coverage no longer directly authorizes action. Action authorization now requires a valid, evidence-supported, explainable, appealable/revocable where applicable, traceable decision.
 - **Migration Notes:** Repository governance changes only. No runtime decision, authorization, policy, execution, standing, AI, or governance engine is introduced. Future decision governance changes require Type B or Type C amendments.
+
+
+## v5.0
+
+- **Date:** 2026-06-08
+- **Amendments:** AOC-AMD-0005
+- **Summary:** Establishes Constitutional, Governance, Runtime, and Operational standing classes; catalogs standing authorities; governs eligibility, lifecycle, delegation, representation, revocation, violations, and evolution; and adds fail-closed CI and release scanners.
+- **Breaking Changes:** A valid decision no longer makes every actor legitimate. Participation in governed processes requires applicable active standing backed by successful eligibility validation.
+- **Migration Notes:** Repository governance changes only. No identity, voting, trust, claims, federation, governance, authentication, authorization, or standing runtime is introduced. Future standing governance changes require Type B or Type C amendments.

@@ -1,6 +1,6 @@
 # Decision Appeals Policy
 
-**Constitution Version:** v4.0
+**Constitution Version:** v5.0
 
 ## Appeal right
 
@@ -25,7 +25,7 @@ Valid grounds include evidence error, evidence omission, policy misapplication, 
 | Appeal ID | Decision ID | Grounds | Evidence | Resolution | Amendment | Status |
 |---|---|---|---|---|---|---|
 
-No decision appeals are recorded at v4.0.
+No decision appeals are recorded at v5.0.
 
 ## Independence and traceability
 
