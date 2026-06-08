@@ -187,3 +187,46 @@ export const writePolicyGovernance = (fixture: ConstitutionalFixture, options: {
   fixture.write('docs/constitution/POLICY-CONFLICT-RESOLUTION.md', `# Policy Conflicts\n\n**Constitution Version:** ${version}\n\n## Conflict registry\n\n| Conflict ID | Policy IDs | Capability IDs | Rule Domain | Winner | Resolution Basis | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${options.conflictRows ?? ''}\n`);
   fixture.write('docs/constitution/POLICY-LIFECYCLE.md', `# Policy Lifecycle\n\n**Constitution Version:** ${version}\n\n## Lifecycle transition ledger\n\n| Transition ID | Policy ID | From | To | Amendment | Effective Date |\n|---|---|---|---|---|---|\n${lifecycleRows}\n`);
 };
+
+export const writeDecisionGovernance = (fixture: ConstitutionalFixture, options: {
+  version?: string;
+  amendmentId?: string;
+  decisionRows?: string;
+  lifecycleRows?: string;
+  evidenceRows?: string;
+  explanationRows?: string;
+  appealRows?: string;
+  revocationRows?: string;
+} = {}) => {
+  const version = options.version ?? 'v1.0';
+  const amendmentId = options.amendmentId ?? 'AOC-AMD-0001';
+  writePolicyGovernance(fixture, { version, amendmentId });
+
+  const decisionRows = options.decisionRows ?? [
+    `| DEC-0001 | Ratify Amendment | Constitutional | Constitution | EVID-0001 | POL-0001 | No | Yes | ${amendmentId} | Not scheduled | Canonical | Approved |`,
+    `| DEC-0002 | Assign Capability | Governance | Constitution | EVID-0002 | POL-0002 | Yes | Yes | ${amendmentId} | Not scheduled | Canonical | Approved |`,
+    `| DEC-0003 | Accept Claim | Runtime | Protocol | EVID-0003 | POL-0003 | Yes | Yes | ${amendmentId} | Not scheduled | Canonical | Approved |`,
+    `| DEC-0004 | Audit Passed | Operational | Enterprise | EVID-0004 | POL-0004 | Yes | Yes | ${amendmentId} | Not scheduled | Canonical | Approved |`,
+  ].join('\n');
+  const lifecycleRows = options.lifecycleRows ?? [1, 2, 3, 4].flatMap((id) => [
+    `| DLT-${String(id * 3 - 2).padStart(4, '0')} | DEC-${String(id).padStart(4, '0')} | Proposed | Pending Evidence | ${amendmentId} | 2026-06-08 |`,
+    `| DLT-${String(id * 3 - 1).padStart(4, '0')} | DEC-${String(id).padStart(4, '0')} | Pending Evidence | Pending Review | ${amendmentId} | 2026-06-08 |`,
+    `| DLT-${String(id * 3).padStart(4, '0')} | DEC-${String(id).padStart(4, '0')} | Pending Review | Approved | ${amendmentId} | 2026-06-08 |`,
+  ]).join('\n');
+  const evidenceRows = options.evidenceRows ?? [1, 2, 3, 4].map((id) => `| EVID-${String(id).padStart(4, '0')} | DEC-${String(id).padStart(4, '0')} | 1 verified record | Fixture source | Fixture traceability | Fixture integrity | ${amendmentId} | Active |`).join('\n');
+  const explanationRows = options.explanationRows ?? [
+    `| DEX-0001 | DEC-0001 | EVID-0001 | POL-0001 | CAP-0001 | Constitution → CAP-0001 | Approved | Fixture constitutional explanation. | ${amendmentId} | Complete |`,
+    `| DEX-0002 | DEC-0002 | EVID-0002 | POL-0002 | CAP-0002 | Constitution → CAP-0002 | Approved | Fixture governance explanation. | ${amendmentId} | Complete |`,
+    `| DEX-0003 | DEC-0003 | EVID-0003 | POL-0003 | CAP-0003 | Protocol → CAP-0003 | Approved | Fixture runtime explanation. | ${amendmentId} | Complete |`,
+    `| DEX-0004 | DEC-0004 | EVID-0004 | POL-0004 | CAP-0004 | Enterprise → CAP-0004 | Approved | Fixture operational explanation. | ${amendmentId} | Complete |`,
+  ].join('\n');
+
+  fixture.write('docs/constitution/DECISION-CONSTITUTION.md', `# Decision Constitution\n\n**Constitution Version:** ${version}\n`);
+  fixture.write('docs/constitution/DECISION-AUTHORITIES.md', `# Decision Authorities\n\n**Constitution Version:** ${version}\n\n## Decision catalog\n\n| Decision ID | Decision Name | Decision Class | Owner | Required Evidence | Required Policy Coverage | Appealable | Revocable | Creation Amendment | Retirement Amendment | Status | Lifecycle State |\n|---|---|---|---|---|---|---|---|---|---|---|---|\n${decisionRows}\n`);
+  fixture.write('docs/constitution/DECISION-LIFECYCLE.md', `# Decision Lifecycle\n\n**Constitution Version:** ${version}\n\n## Lifecycle transition ledger\n\n| Transition ID | Decision ID | From | To | Amendment | Effective Date |\n|---|---|---|---|---|---|\n${lifecycleRows}\n`);
+  fixture.write('docs/constitution/DECISION-EVIDENCE-POLICY.md', `# Decision Evidence\n\n**Constitution Version:** ${version}\n\n## Evidence requirements registry\n\n| Evidence ID | Decision ID | Evidence Minimums | Evidence Sources | Evidence Traceability | Evidence Integrity | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${evidenceRows}\n`);
+  fixture.write('docs/constitution/DECISION-EXPLAINABILITY-POLICY.md', `# Decision Explainability\n\n**Constitution Version:** ${version}\n\n## Explanation registry\n\n| Explanation ID | Decision ID | Evidence Used | Policies Applied | Capabilities Used | Authority Chain | Outcome | Reasoning Summary | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|\n${explanationRows}\n`);
+  fixture.write('docs/constitution/DECISION-APPEALS-POLICY.md', `# Decision Appeals\n\n**Constitution Version:** ${version}\n\n## Appeal registry\n\n| Appeal ID | Decision ID | Grounds | Evidence | Resolution | Amendment | Status |\n|---|---|---|---|---|---|---|\n${options.appealRows ?? ''}\n`);
+  fixture.write('docs/constitution/DECISION-REVOCATION-POLICY.md', `# Decision Revocation\n\n**Constitution Version:** ${version}\n\n## Revocation registry\n\n| Revocation ID | Decision ID | Cause | Evidence | Revoked By | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|\n${options.revocationRows ?? ''}\n`);
+  fixture.write('docs/constitution/DECISION-VIOLATION-CATALOG.md', `# Decision Violations\n\n**Constitution Version:** ${version}\n`);
+};

@@ -1,6 +1,6 @@
 # AOC Constitution
 
-**Constitution Version:** v3.0
+**Constitution Version:** v4.0
 
 **Status:** Ratified
 
@@ -35,6 +35,14 @@ The following documents are incorporated into the Constitution by reference:
 - `docs/constitution/POLICY-EXCEPTION-POLICY.md`
 - `docs/constitution/POLICY-CONFLICT-RESOLUTION.md`
 - `docs/constitution/POLICY-VIOLATION-CATALOG.md`
+- `docs/constitution/DECISION-CONSTITUTION.md`
+- `docs/constitution/DECISION-AUTHORITIES.md`
+- `docs/constitution/DECISION-LIFECYCLE.md`
+- `docs/constitution/DECISION-EVIDENCE-POLICY.md`
+- `docs/constitution/DECISION-EXPLAINABILITY-POLICY.md`
+- `docs/constitution/DECISION-APPEALS-POLICY.md`
+- `docs/constitution/DECISION-REVOCATION-POLICY.md`
+- `docs/constitution/DECISION-VIOLATION-CATALOG.md`
 
 ## 3. Constitutional principles
 
@@ -42,8 +50,8 @@ The following documents are incorporated into the Constitution by reference:
 2. The Constitution is versioned with explicit major and minor version semantics.
 3. The Constitution is auditable through an amendment catalog and version history.
 4. The Constitution is amendable only through the amendment procedure.
-5. The Constitution is traceable from law, authority, ownership, policy, and capability changes to ratified amendment records.
-6. Authority existence and capability possession are distinct; all runtime power is deny-by-default unless constitutionally cataloged and assigned.
+5. The Constitution is traceable from law, authority, ownership, policy, capability, and decision changes to ratified amendment records.
+6. Authority existence, capability possession, policy coverage, and decision legitimacy are distinct; all runtime power is deny-by-default unless constitutionally cataloged, assigned, constrained, decided, and traceable.
 
 ## 4. Versioning model
 
@@ -94,6 +102,10 @@ Every capability authority must have a unique identifier, class, owner, delegati
 
 Every policy authority must have a unique identifier, class, owner, applicable capability scope, priority, delegation posture, creation amendment, retirement amendment, catalog status, and lifecycle state. Policy creation and semantic change require Type B or Type C amendment governance; creation, weakening, retirement, exception authority, hierarchy semantics, and conflict semantics require Type C. Lower policies may narrow but may not expand higher constraints. Exceptions are bounded and amendment-ratified. Conflicts resolve by constitutional supremacy, priority, restrictiveness, and ratification recency, then fail closed. Every canonical capability requires active applicable policy coverage.
 
-## 11. Release governance
+## 11. Decision authority governance
 
-`validate:release` must run constitutional amendment validation before publishability validation. The aggregate AOC boundary gate must include amendment, version, authority, capability authority, capability delegation, capability governance, and capability revocation scanners. Capability and policy governance validation must complete before publishability validation.
+Every decision authority must have a unique identifier, class, owner, required evidence, required policy coverage, appealability posture, revocability posture, creation amendment, retirement amendment, catalog status, and lifecycle state. Policy constrains capability; valid decisions authorize action. Decision creation and semantic change require Type B or Type C amendment governance; lifecycle semantics, evidence minimums, explainability obligations, appeal rights, revocation causes, and enforcement obligations require Type C. Approved decisions require evidence and explainability. Appeals and revocations are bounded, auditable, amendment-traceable, and fail closed. Revoked and retired decisions authorize no new action and may not be reactivated.
+
+## 12. Release governance
+
+`validate:release` must run constitutional amendment validation before publishability validation. The aggregate AOC boundary gate must include amendment, version, authority, capability authority, capability delegation, capability governance, and capability revocation scanners. Capability, policy, and decision governance validation must complete before publishability validation.
