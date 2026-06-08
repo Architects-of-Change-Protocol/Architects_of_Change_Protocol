@@ -1,6 +1,6 @@
 # Constitutional Amendment Catalog
 
-**Constitution Version:** v5.0
+**Constitution Version:** v6.0
 
 ## Amendment index
 
@@ -86,4 +86,19 @@
 - **Rationale:** Close the constitutional gap between governed policy and governed decisions by making participant legitimacy explicit, eligibility-validated, lifecycle-controlled, delegable and representable only where authorized, revocable, versioned, and traceable.
 - **Risk Assessment:** Moderate governance risk and low runtime risk. The amendment adds fail-closed repository governance without implementing identity, voting, trust, claims, federation, governance, authentication, authorization, or standing runtimes.
 - **Migration Impact:** Future standing creation, retirement, semantic changes, eligibility rules, lifecycle semantics, delegation and representation permissions, revocation causes, and enforcement obligations require Type B or Type C amendment governance. CI and release validation execute standing governance scanners before publishability.
+- **Ratification Status:** Ratified
+
+## AOC-AMD-0006 — Establish Constitutional Claims Governance Framework
+
+- **Amendment ID:** AOC-AMD-0006
+- **Title:** Establish Constitutional Claims Governance Framework
+- **Author:** Constitutional Program
+- **Date:** 2026-06-08
+- **Type:** Type C
+- **Version:** v6.0
+- **Affected Laws:** Constitution; constitutional claim legitimacy and traceability
+- **Affected Authorities:** Constitution; Claim Authorities; Claim Evidence; Claim Lifecycle; Claim Dispute; Claim Supersession; Claim Withdrawal
+- **Rationale:** Govern assertions between standing and decisions so that only cataloged, standing-backed, evidence-complete, traceable claims may influence governed decisions.
+- **Risk Assessment:** The framework is fail-closed and documentation/scanner only. It may reject incomplete future claim records, but it introduces no claims runtime or adjacent trust, identity, verification, voting, federation, reputation, or governance engine.
+- **Migration Impact:** Constitutional governance advances from v5.0 to v6.0. Claim types, evidence policies, lifecycle transitions, disputes, supersessions, and withdrawals must use the new catalogs and pass claim-governance scanners.
 - **Ratification Status:** Ratified

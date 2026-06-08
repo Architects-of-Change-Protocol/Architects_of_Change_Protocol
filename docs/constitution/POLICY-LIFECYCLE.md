@@ -1,6 +1,6 @@
 # Policy Lifecycle
 
-**Constitution Version:** v5.0
+**Constitution Version:** v6.0
 
 ## Lifecycle states
 

@@ -1,6 +1,6 @@
 # AOC Constitution
 
-**Constitution Version:** v5.0
+**Constitution Version:** v6.0
 
 **Status:** Ratified
 
@@ -51,6 +51,14 @@ The following documents are incorporated into the Constitution by reference:
 - `docs/constitution/STANDING-REPRESENTATION-POLICY.md`
 - `docs/constitution/STANDING-REVOCATION-POLICY.md`
 - `docs/constitution/STANDING-VIOLATION-CATALOG.md`
+- `docs/constitution/CLAIM-CONSTITUTION.md`
+- `docs/constitution/CLAIM-AUTHORITIES.md`
+- `docs/constitution/CLAIM-LIFECYCLE.md`
+- `docs/constitution/CLAIM-EVIDENCE-POLICY.md`
+- `docs/constitution/CLAIM-DISPUTE-POLICY.md`
+- `docs/constitution/CLAIM-SUPERSESSION-POLICY.md`
+- `docs/constitution/CLAIM-WITHDRAWAL-POLICY.md`
+- `docs/constitution/CLAIM-VIOLATION-CATALOG.md`
 
 ## 3. Constitutional principles
 
@@ -58,8 +66,8 @@ The following documents are incorporated into the Constitution by reference:
 2. The Constitution is versioned with explicit major and minor version semantics.
 3. The Constitution is auditable through an amendment catalog and version history.
 4. The Constitution is amendable only through the amendment procedure.
-5. The Constitution is traceable from law, authority, ownership, policy, capability, standing, and decision changes to ratified amendment records.
-6. Authority existence, capability possession, policy coverage, participant standing, and decision legitimacy are distinct; all participation and runtime power are deny-by-default unless constitutionally cataloged, assigned, constrained, validated, decided, and traceable.
+5. The Constitution is traceable from law, authority, ownership, policy, capability, standing, claim, and decision changes to ratified amendment records.
+6. Authority existence, capability possession, policy coverage, participant standing, claim legitimacy, and decision legitimacy are distinct; all participation and runtime power are deny-by-default unless constitutionally cataloged, assigned, constrained, validated, decided, and traceable.
 
 ## 4. Versioning model
 
@@ -118,6 +126,10 @@ Every decision authority must have a unique identifier, class, owner, required e
 
 Every standing authority must have a unique identifier, class, owner, eligibility policy, delegation posture, representation posture, revocation posture, creation amendment, retirement amendment, catalog status, and lifecycle lineage. Standing is the constitutional right to participate and is distinct from authority, capability, policy, and decision. The governing chain is `Authority → Capability → Policy → Standing → Decision → Action`. No standing becomes active without eligibility validation. Delegation and representation are bounded, expiring, auditable, and do not transfer ownership or authority. Suspended, revoked, and retired standing confers no participation right; revoked and retired standing cannot be reactivated. Standing creation and semantic change require Type B or Type C amendment governance; lifecycle semantics, eligibility requirements, delegation or representation expansion, revocation causes, and enforcement obligations require Type C.
 
-## 13. Release governance
+## 13. Claim authority governance
 
-`validate:release` must run constitutional amendment validation before publishability validation. The aggregate AOC boundary gate must include amendment, version, authority, capability, policy, decision, and all standing authority, eligibility, lifecycle, delegation, representation, revocation, and aggregate governance scanners. Capability, policy, standing, and decision governance validation must complete before publishability validation.
+Every governed assertion must use a unique cataloged claim type with a constitutional owner, evidence policy, dispute posture, withdrawal posture, supersession posture, creation amendment, retirement amendment, and status. Claim legitimacy is distinct from standing and decision legitimacy. A claim may influence a decision only after a valid standing-backed submission, complete evidence validation, and a valid lifecycle transition to `Accepted`. Disputes, supersessions, withdrawals, and retirements preserve permanent traceability.
+
+## 14. Release governance
+
+`validate:release` must run constitutional amendment and claim governance validation before publishability validation. The aggregate AOC boundary gate must include amendment, version, authority, capability, policy, decision, standing, and all claim authority, evidence, lifecycle, dispute, supersession, withdrawal, and aggregate governance scanners. Capability, policy, standing, claim, and decision governance validation must complete before publishability validation.

@@ -276,3 +276,39 @@ export const writeStandingGovernance = (fixture: ConstitutionalFixture, options:
   fixture.write('docs/constitution/STANDING-REVOCATION-POLICY.md', `# Revocation\n\n**Constitution Version:** ${version}\n\n## Revocation registry\n\n| Revocation ID | Standing ID | Participant | Cause | Evidence | Revoked By | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|\n${options.revocationRows ?? ''}\n`);
   fixture.write('docs/constitution/STANDING-VIOLATION-CATALOG.md', `# Violations\n\n**Constitution Version:** ${version}\n`);
 };
+
+export const writeClaimGovernance = (fixture: ConstitutionalFixture, options: {
+  version?: string;
+  amendmentId?: string;
+  claimRows?: string;
+  evidenceRows?: string;
+  lifecycleRows?: string;
+  disputeRows?: string;
+  supersessionRows?: string;
+  withdrawalRows?: string;
+} = {}) => {
+  const version = options.version ?? 'v1.0';
+  const amendmentId = options.amendmentId ?? 'AOC-AMD-0001';
+  writeStandingGovernance(fixture, { version, amendmentId });
+  writeConstitutionalGovernance(fixture, { version, amendmentId, affectedAuthorities: 'Constitution; Claim Authorities; Claim Evidence; Claim Lifecycle' });
+  const claimRows = options.claimRows ?? [
+    `| CLM-0001 | Amendment Claim | Constitutional | Constitution | CEP-0001 | Yes | Yes | Yes | ${amendmentId} | Not scheduled | Canonical |`,
+    `| CLM-0002 | Policy Violation Claim | Governance | Constitution | CEP-0002 | Yes | Yes | Yes | ${amendmentId} | Not scheduled | Canonical |`,
+    `| CLM-0003 | Identity Claim | Runtime | Protocol | CEP-0003 | Yes | Yes | Yes | ${amendmentId} | Not scheduled | Canonical |`,
+    `| CLM-0004 | Audit Claim | Operational | Enterprise | CEP-0004 | Yes | Yes | Yes | ${amendmentId} | Not scheduled | Canonical |`,
+  ].join('\n');
+  const evidenceRows = options.evidenceRows ?? [1,2,3,4].map((id) => `| CEP-${String(id).padStart(4,'0')} | CLM-${String(id).padStart(4,'0')} | Required fixture evidence | One fixture record | Fixture source | Fixture integrity | Fixture traceability | ${amendmentId} | Active |`).join('\n');
+  const lifecycleRows = options.lifecycleRows ?? [1,2,3,4].flatMap((id) => [
+    `| CLT-${String(id*3-2).padStart(4,'0')} | CLM-${String(id).padStart(4,'0')} | Draft | Submitted | Constitution | ${amendmentId} | 2026-06-08 |`,
+    `| CLT-${String(id*3-1).padStart(4,'0')} | CLM-${String(id).padStart(4,'0')} | Submitted | Pending Review | Constitution | ${amendmentId} | 2026-06-08 |`,
+    `| CLT-${String(id*3).padStart(4,'0')} | CLM-${String(id).padStart(4,'0')} | Pending Review | Accepted | Constitution | ${amendmentId} | 2026-06-08 |`,
+  ]).join('\n');
+  fixture.write('docs/constitution/CLAIM-CONSTITUTION.md', `# Claim Constitution\n\n**Constitution Version:** ${version}\n`);
+  fixture.write('docs/constitution/CLAIM-AUTHORITIES.md', `# Claim Authorities\n\n**Constitution Version:** ${version}\n\n## Claim authority catalog\n\n| Claim ID | Claim Name | Claim Class | Owner | Evidence Policy | Disputable | Withdrawable | Supersedable | Creation Amendment | Retirement Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|---|\n${claimRows}\n`);
+  fixture.write('docs/constitution/CLAIM-EVIDENCE-POLICY.md', `# Claim Evidence\n\n**Constitution Version:** ${version}\n\n## Evidence requirements registry\n\n| Evidence Policy ID | Claim ID | Required Evidence | Minimum Evidence | Allowed Sources | Integrity Rules | Traceability Rules | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n${evidenceRows}\n`);
+  fixture.write('docs/constitution/CLAIM-LIFECYCLE.md', `# Claim Lifecycle\n\n**Constitution Version:** ${version}\n\n## Claim lifecycle transition ledger\n\n| Transition ID | Claim ID | From | To | Authorized By | Amendment | Effective Date |\n|---|---|---|---|---|---|---|\n${lifecycleRows}\n`);
+  fixture.write('docs/constitution/CLAIM-DISPUTE-POLICY.md', `# Claim Disputes\n\n**Constitution Version:** ${version}\n\n## Dispute registry\n\n| Dispute ID | Claim ID | Grounds | Evidence | Initiator | Resolution | Decision Reference | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n${options.disputeRows ?? ''}\n`);
+  fixture.write('docs/constitution/CLAIM-SUPERSESSION-POLICY.md', `# Claim Supersession\n\n**Constitution Version:** ${version}\n\n## Supersession registry\n\n| Supersession ID | Old Claim | New Claim | Same Subject | Reason | Evidence | Decision Reference | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n${options.supersessionRows ?? ''}\n`);
+  fixture.write('docs/constitution/CLAIM-WITHDRAWAL-POLICY.md', `# Claim Withdrawal\n\n**Constitution Version:** ${version}\n\n## Withdrawal registry\n\n| Withdrawal ID | Claim ID | Requested By | Authority Basis | Authority Evidence | Reason | Decision Reference | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n${options.withdrawalRows ?? ''}\n`);
+  fixture.write('docs/constitution/CLAIM-VIOLATION-CATALOG.md', `# Claim Violations\n\n**Constitution Version:** ${version}\n`);
+};

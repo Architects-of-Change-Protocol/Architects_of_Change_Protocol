@@ -53,3 +53,11 @@
 - **Summary:** Establishes Constitutional, Governance, Runtime, and Operational standing classes; catalogs standing authorities; governs eligibility, lifecycle, delegation, representation, revocation, violations, and evolution; and adds fail-closed CI and release scanners.
 - **Breaking Changes:** A valid decision no longer makes every actor legitimate. Participation in governed processes requires applicable active standing backed by successful eligibility validation.
 - **Migration Notes:** Repository governance changes only. No identity, voting, trust, claims, federation, governance, authentication, authorization, or standing runtime is introduced. Future standing governance changes require Type B or Type C amendments.
+
+## v6.0
+
+- **Date:** 2026-06-08
+- **Amendments:** AOC-AMD-0006
+- **Summary:** Establishes Constitutional, Governance, Runtime, and Operational claim classes; catalogs claim authorities and evidence policies; governs lifecycle, disputes, supersession, withdrawal, violations, and traceability; and adds fail-closed CI and release scanners.
+- **Breaking Changes:** Participant standing no longer makes an assertion constitutionally influential. Governed decisions may rely only on cataloged claims that reach `Accepted` through standing-backed submission and evidence validation.
+- **Migration Notes:** Repository governance changes only. No claims, trust, identity, verification, voting, federation, reputation, or governance runtime is introduced. Future claim governance changes require Type B or Type C amendments.
