@@ -1,6 +1,6 @@
 # AOC Constitution
 
-**Constitution Version:** v1.0
+**Constitution Version:** v2.0
 
 **Status:** Ratified
 
@@ -22,6 +22,12 @@ The following documents are incorporated into the Constitution by reference:
 - `docs/constitution/AMENDMENT-CATALOG.md`
 - `docs/constitution/CONSTITUTIONAL-AUTHORITIES.md`
 - `docs/constitution/CONSTITUTION-VERSION-HISTORY.md`
+- `docs/constitution/CAPABILITY-CONSTITUTION.md`
+- `docs/constitution/CAPABILITY-AUTHORITIES.md`
+- `docs/constitution/CAPABILITY-LIFECYCLE.md`
+- `docs/constitution/CAPABILITY-DELEGATION-POLICY.md`
+- `docs/constitution/CAPABILITY-REVOCATION-POLICY.md`
+- `docs/constitution/CAPABILITY-VIOLATION-CATALOG.md`
 
 ## 3. Constitutional principles
 
@@ -29,7 +35,8 @@ The following documents are incorporated into the Constitution by reference:
 2. The Constitution is versioned with explicit major and minor version semantics.
 3. The Constitution is auditable through an amendment catalog and version history.
 4. The Constitution is amendable only through the amendment procedure.
-5. The Constitution is traceable from law, authority, ownership, and policy changes to ratified amendment records.
+5. The Constitution is traceable from law, authority, ownership, policy, and capability changes to ratified amendment records.
+6. Authority existence and capability possession are distinct; all runtime power is deny-by-default unless constitutionally cataloged and assigned.
 
 ## 4. Versioning model
 
@@ -72,6 +79,10 @@ Every constitutional authority must have an owner, purpose, creation amendment, 
 
 Transitional authorities are temporary and closed. They may not be expanded by convention, code placement, scanner allowlists, package creation, or institutional memory. Creating or removing a transitional authority requires a ratified constitutional amendment.
 
-## 9. Release governance
+## 9. Capability authority governance
 
-`validate:release` must run constitutional amendment validation before publishability validation. The aggregate AOC boundary gate must include amendment, version, and authority governance scanners.
+Every capability authority must have a unique identifier, class, owner, delegation posture, revocation posture, creation amendment, retirement amendment, and status. Capability definitions and assignments may be created or changed only through Type B or Type C amendments as defined by the amendment procedure. Constitutional capabilities are non-delegable. Suspended, revoked, and retired assignments confer no active power.
+
+## 10. Release governance
+
+`validate:release` must run constitutional amendment validation before publishability validation. The aggregate AOC boundary gate must include amendment, version, authority, capability authority, capability delegation, capability governance, and capability revocation scanners. Capability governance validation must complete before publishability validation.

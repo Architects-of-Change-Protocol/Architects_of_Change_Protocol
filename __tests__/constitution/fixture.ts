@@ -98,3 +98,54 @@ export const writeConstitutionalGovernance = (fixture: ConstitutionalFixture, op
   const rows = canonicalRows.map(([authority, owner, purpose, authorityStatus]) => `| ${authority} | \`${owner}\` | ${purpose} | ${amendmentId} | Not scheduled | ${authorityStatus} |`).join('\n');
   fixture.write('docs/constitution/CONSTITUTIONAL-AUTHORITIES.md', `# Authorities\n\n**Constitution Version:** ${version}\n\n| Authority | Owner | Purpose | Creation Amendment | Retirement Amendment | Status |\n|---|---|---|---|---|---|\n${rows}\n`);
 };
+
+export const writeCapabilityGovernance = (fixture: ConstitutionalFixture, options: {
+  version?: string;
+  amendmentId?: string;
+  capabilityRows?: string;
+  assignmentRows?: string;
+  transitionRows?: string;
+} = {}) => {
+  const version = options.version ?? 'v1.0';
+  const amendmentId = options.amendmentId ?? 'AOC-AMD-0001';
+  writeConstitutionalGovernance(fixture, {
+    version,
+    amendmentId,
+    affectedAuthorities: 'Capability Authorities CAP-0001 through CAP-0004',
+  });
+
+  const capabilityRows = options.capabilityRows ?? [
+    `| CAP-0001 | Amend Constitution | Constitutional | Constitution | No | No | ${amendmentId} | Not scheduled | Canonical |`,
+    `| CAP-0002 | Create Policy | Governance | Constitution | Yes | Yes | ${amendmentId} | Not scheduled | Canonical |`,
+    `| CAP-0003 | Issue Claims | Runtime | Protocol | Yes | Yes | ${amendmentId} | Not scheduled | Canonical |`,
+    `| CAP-0004 | Read | Operational | Enterprise | Yes | Yes | ${amendmentId} | Not scheduled | Canonical |`,
+  ].join('\n');
+  const assignmentRows = options.assignmentRows ?? [
+    `| CAA-0001 | CAP-0001 | Constitution | Constitution | Root | Ratified | ${amendmentId} |`,
+    `| CAA-0002 | CAP-0002 | Constitution | Constitution | Root | Ratified | ${amendmentId} |`,
+    `| CAA-0003 | CAP-0003 | Protocol | Constitution | Root | Ratified | ${amendmentId} |`,
+    `| CAA-0004 | CAP-0004 | Enterprise | Constitution | Root | Ratified | ${amendmentId} |`,
+  ].join('\n');
+  const transitionRows = options.transitionRows ?? `| CAT-0001 | CAA-0001 | Proposed | Ratified | Constitution | ${amendmentId} |`;
+
+  fixture.write('docs/constitution/CAPABILITY-CONSTITUTION.md', `# Capability Constitution\n\n**Constitution Version:** ${version}\n`);
+  fixture.write('docs/constitution/CAPABILITY-LIFECYCLE.md', `# Capability Lifecycle\n\n**Constitution Version:** ${version}\n`);
+  fixture.write('docs/constitution/CAPABILITY-DELEGATION-POLICY.md', `# Capability Delegation Policy\n\n**Constitution Version:** ${version}\n`);
+  fixture.write('docs/constitution/CAPABILITY-REVOCATION-POLICY.md', `# Capability Revocation Policy\n\n**Constitution Version:** ${version}\n`);
+  fixture.write('docs/constitution/CAPABILITY-VIOLATION-CATALOG.md', `# Capability Violations\n\n**Constitution Version:** ${version}\n`);
+  fixture.write('docs/constitution/CAPABILITY-AUTHORITIES.md', `# Capability Authorities\n\n**Constitution Version:** ${version}\n\n## Capability catalog\n\n| Capability ID | Name | Capability Class | Owner | Delegable | Revocable | Creation Amendment | Retirement Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n${capabilityRows}\n\n## Capability authority assignments\n\n| Assignment ID | Capability ID | Holder | Granted By | Parent Assignment | Lifecycle State | Amendment |\n|---|---|---|---|---|---|---|\n${assignmentRows}\n\n## Capability lifecycle transition ledger\n\n| Transition ID | Assignment ID | From | To | Authorized By | Amendment |\n|---|---|---|---|---|---|\n${transitionRows}\n`);
+
+  for (const document of [
+    'CAPABILITY_RUNTIME_ARCHITECTURE.md',
+    'CAPABILITY_DELEGATION_MODEL.md',
+    'CAPABILITY_ATTENUATION_MODEL.md',
+    'CAPABILITY_LINEAGE_MODEL.md',
+    'CAPABILITY_REVOCATION_MODEL.md',
+    'CAPABILITY_EXPLAINABILITY_TRACE.md',
+    'CAPABILITY_CONSTRAINT_MODEL.md',
+    'CAPABILITY_PUBLIC_INTERNAL_BOUNDARIES.md',
+    'SOVEREIGN_EXECUTION_SEMANTICS.md',
+    'CAPABILITY_EVOLUTION_ROADMAP.md',
+  ]) fixture.write(document, `# ${document}\n`);
+  fixture.write('runtime/capabilities/governance.ts', 'export function validateDelegation() {}\nexport function attenuateCapability() {}\nexport function evaluateCapabilityLineage() {}\n');
+};
