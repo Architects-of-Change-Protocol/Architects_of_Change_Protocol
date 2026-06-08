@@ -1,6 +1,6 @@
 # Constitutional Amendment Catalog
 
-**Constitution Version:** v3.0
+**Constitution Version:** v4.0
 
 ## Amendment index
 
@@ -8,6 +8,8 @@
 |---|---|---|---|---|
 | AOC-AMD-0001 | Establish Constitutional Amendment System | Type C | v1.0 | Ratified |
 | AOC-AMD-0002 | Establish Constitutional Runtime Capability Governance | Type C | v2.0 | Ratified |
+| AOC-AMD-0003 | Establish Constitutional Policy Governance | Type C | v3.0 | Ratified |
+| AOC-AMD-0004 | Establish Constitutional Decision Governance Framework | Type C | v4.0 | Ratified |
 
 ## AOC-AMD-0001 — Establish Constitutional Amendment System
 
@@ -53,4 +55,19 @@
 - **Rationale:** Close the constitutional gap between governed capability possession and governed capability exercise by making applicable constraints explicit, versioned, inherited, conflict-resolved, exception-controlled, and deny-by-default.
 - **Risk Assessment:** Moderate governance risk and low runtime risk. The amendment adds fail-closed repository governance without implementing a runtime policy, authorization, decision, standing, governance, execution, or federation engine.
 - **Migration Impact:** Future policy creation, retirement, semantic changes, hierarchy changes, priority changes, exceptions, and conflict decisions require Type B or Type C amendment governance. CI and release validation execute the policy governance scanners before publishability.
+- **Ratification Status:** Ratified
+
+## AOC-AMD-0004 — Establish Constitutional Decision Governance Framework
+
+- **Amendment ID:** AOC-AMD-0004
+- **Title:** Establish Constitutional Decision Governance Framework and Sovereign Decision Authority System
+- **Author:** Architects of Change maintainers
+- **Date:** 2026-06-08
+- **Type:** Type C
+- **Version:** v4.0
+- **Affected Laws:** LAW-008; decision ownership, authority, lifecycle, evidence, explainability, appeals, revocation, evolution, and enforcement obligations
+- **Affected Authorities:** Constitution; Protocol; Enterprise; Decision Authorities DEC-0001 through DEC-0014
+- **Rationale:** Close the constitutional gap between governed policy constraints and action authorization by making decision legitimacy explicit, evidence-supported, explainable, appealable, revocable, versioned, and traceable.
+- **Risk Assessment:** Moderate governance risk and low runtime risk. The amendment adds fail-closed repository governance without implementing a decision engine, policy engine, execution engine, standing engine, runtime authorization, runtime governance runtime, or AI decision runtime.
+- **Migration Impact:** Future decision creation, retirement, semantic changes, lifecycle semantics, evidence minimums, explainability obligations, appeal rights, revocation causes, and enforcement obligations require Type B or Type C amendment governance. CI and release validation execute decision governance scanners before publishability.
 - **Ratification Status:** Ratified
