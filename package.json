@@ -23,7 +23,7 @@
     "check:runtime-boundaries": "node scripts/check-runtime-boundaries.mjs",
     "check:identity-vocabulary": "node scripts/check-identity-vocabulary.mjs",
     "check:contract-drift": "node scripts/check-contract-drift.mjs",
-    "validate:release": "npm run typecheck && npm run build && npm run lint && npm test && npm run lint:semantic-ownership && npm run check:version-graph && npm run validate:publishability && npm pack ./packages/protocol",
+    "validate:release": "npm run check:aoc-boundaries && npm run typecheck && npm run build && npm run lint && npm test && npm run lint:semantic-ownership && npm run check:version-graph && npm run validate:publishability && npm pack ./packages/protocol",
     "check:policy-governance": "node scripts/check-policy-governance.mjs",
     "check:reason-code-governance": "node scripts/check-reason-code-governance.mjs",
     "check:capability-governance": "node scripts/check-capability-governance.mjs",
@@ -40,9 +40,13 @@
     "check:sdk-exports": "node scripts/check-sdk-exports.mjs",
     "check:temporal-governance": "node scripts/check-temporal-governance.mjs",
     "check:symbol-parity": "node scripts/check-symbol-parity.mjs",
-    "check:aoc-boundaries": "npm run lint:semantic-ownership && npm run check:runtime-boundaries && npm run check:symbol-parity && npm run check:enterprise-package-boundary && npm run check:legacy-runtime-compatibility",
+    "check:aoc-boundaries": "npm run check:constitutional-boundaries && npm run check:ownership-boundaries && npm run check:public-export-governance && npm run check:composition-boundaries && npm run lint:semantic-ownership && npm run check:runtime-boundaries && npm run check:symbol-parity && npm run check:enterprise-package-boundary && npm run check:legacy-runtime-compatibility",
     "check:enterprise-package-boundary": "node scripts/check-enterprise-package-boundary.mjs",
-    "check:legacy-runtime-compatibility": "node scripts/check-legacy-runtime-compatibility.mjs"
+    "check:legacy-runtime-compatibility": "node scripts/check-legacy-runtime-compatibility.mjs",
+    "check:constitutional-boundaries": "node scripts/check-constitutional-boundaries.mjs",
+    "check:ownership-boundaries": "node scripts/check-ownership-boundaries.mjs",
+    "check:public-export-governance": "node scripts/check-public-export-governance.mjs",
+    "check:composition-boundaries": "node scripts/check-composition-boundaries.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
