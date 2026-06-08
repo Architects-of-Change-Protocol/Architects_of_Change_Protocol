@@ -230,3 +230,49 @@ export const writeDecisionGovernance = (fixture: ConstitutionalFixture, options:
   fixture.write('docs/constitution/DECISION-REVOCATION-POLICY.md', `# Decision Revocation\n\n**Constitution Version:** ${version}\n\n## Revocation registry\n\n| Revocation ID | Decision ID | Cause | Evidence | Revoked By | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|\n${options.revocationRows ?? ''}\n`);
   fixture.write('docs/constitution/DECISION-VIOLATION-CATALOG.md', `# Decision Violations\n\n**Constitution Version:** ${version}\n`);
 };
+
+export const writeStandingGovernance = (fixture: ConstitutionalFixture, options: {
+  version?: string;
+  amendmentId?: string;
+  standingRows?: string;
+  eligibilityRows?: string;
+  lifecycleRows?: string;
+  delegationRows?: string;
+  representationRows?: string;
+  revocationRows?: string;
+} = {}) => {
+  const version = options.version ?? 'v1.0';
+  const amendmentId = options.amendmentId ?? 'AOC-AMD-0001';
+  writeDecisionGovernance(fixture, { version, amendmentId });
+  const standingRows = options.standingRows ?? [
+    `| STD-0001 | Constitution | Constitutional | Constitution | SEP-0001 | No | No | Yes | ${amendmentId} | Not scheduled | Canonical |`,
+    `| STD-0002 | Decision Reviewer | Governance | Constitution | SEP-0002 | Yes | Yes | Yes | ${amendmentId} | Not scheduled | Canonical |`,
+    `| STD-0003 | Claimant | Runtime | Protocol | SEP-0003 | No | Yes | Yes | ${amendmentId} | Not scheduled | Canonical |`,
+    `| STD-0004 | Auditor | Operational | Enterprise | SEP-0004 | Yes | Yes | Yes | ${amendmentId} | Not scheduled | Canonical |`,
+  ].join('\n');
+  const eligibilityRows = options.eligibilityRows ?? [1, 2, 3, 4].map((id) => `| SEP-${String(id).padStart(4, '0')} | STD-${String(id).padStart(4, '0')} | Fixture requirements | Fixture disqualifiers | Fixture evidence | Fixture validation | Fixture renewal | ${amendmentId} | Active |`).join('\n');
+  const lifecycleRows = options.lifecycleRows ?? [1, 2, 3, 4].flatMap((id) => [
+    `| SLT-${String(id * 2 - 1).padStart(4, '0')} | STD-${String(id).padStart(4, '0')} | Proposed | Pending Validation | Constitution | ${amendmentId} | 2026-06-08 |`,
+    `| SLT-${String(id * 2).padStart(4, '0')} | STD-${String(id).padStart(4, '0')} | Pending Validation | Active | Constitution | ${amendmentId} | 2026-06-08 |`,
+  ]).join('\n');
+  const delegationPermissions = [
+    `| STD-0001 | Constitution | No | Prohibited | ${amendmentId} |`,
+    `| STD-0002 | Decision Reviewer | Yes | Bounded | ${amendmentId} |`,
+    `| STD-0003 | Claimant | No | Prohibited | ${amendmentId} |`,
+    `| STD-0004 | Auditor | Yes | Bounded | ${amendmentId} |`,
+  ].join('\n');
+  const representationPermissions = [
+    `| STD-0001 | Constitution | No | Prohibited | ${amendmentId} |`,
+    `| STD-0002 | Decision Reviewer | Yes | Bounded | ${amendmentId} |`,
+    `| STD-0003 | Claimant | Yes | Bounded | ${amendmentId} |`,
+    `| STD-0004 | Auditor | Yes | Bounded | ${amendmentId} |`,
+  ].join('\n');
+  fixture.write('docs/constitution/STANDING-CONSTITUTION.md', `# Standing Constitution\n\n**Constitution Version:** ${version}\n`);
+  fixture.write('docs/constitution/STANDING-AUTHORITIES.md', `# Standing Authorities\n\n**Constitution Version:** ${version}\n\n## Standing authority catalog\n\n| Standing ID | Standing Name | Standing Class | Owner | Eligibility Policy | Delegable | Representable | Revocable | Creation Amendment | Retirement Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|---|\n${standingRows}\n`);
+  fixture.write('docs/constitution/STANDING-ELIGIBILITY-POLICY.md', `# Eligibility\n\n**Constitution Version:** ${version}\n\n## Eligibility policy registry\n\n| Eligibility Policy ID | Standing ID | Eligibility Requirements | Disqualifiers | Evidence Requirements | Validation Requirements | Renewal Requirements | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n${eligibilityRows}\n`);
+  fixture.write('docs/constitution/STANDING-LIFECYCLE.md', `# Lifecycle\n\n**Constitution Version:** ${version}\n\n## Standing lifecycle transition ledger\n\n| Transition ID | Standing ID | From | To | Authorized By | Amendment | Effective Date |\n|---|---|---|---|---|---|---|\n${lifecycleRows}\n`);
+  fixture.write('docs/constitution/STANDING-DELEGATION-POLICY.md', `# Delegation\n\n**Constitution Version:** ${version}\n\n## Delegation permissions\n\n| Standing ID | Standing Name | Delegable | Maximum Scope | Amendment |\n|---|---|---|---|---|\n${delegationPermissions}\n\n## Delegation registry\n\n| Delegation ID | Standing ID | Delegator | Delegate | Scope | Starts | Expires | Evidence | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|\n${options.delegationRows ?? ''}\n`);
+  fixture.write('docs/constitution/STANDING-REPRESENTATION-POLICY.md', `# Representation\n\n**Constitution Version:** ${version}\n\n## Representation permissions\n\n| Standing ID | Standing Name | Representable | Permitted Form and Scope | Amendment |\n|---|---|---|---|---|\n${representationPermissions}\n\n## Representation registry\n\n| Representation ID | Standing ID | Principal | Representative | Form | Scope | Starts | Expires | Evidence | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|---|\n${options.representationRows ?? ''}\n`);
+  fixture.write('docs/constitution/STANDING-REVOCATION-POLICY.md', `# Revocation\n\n**Constitution Version:** ${version}\n\n## Revocation registry\n\n| Revocation ID | Standing ID | Participant | Cause | Evidence | Revoked By | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|\n${options.revocationRows ?? ''}\n`);
+  fixture.write('docs/constitution/STANDING-VIOLATION-CATALOG.md', `# Violations\n\n**Constitution Version:** ${version}\n`);
+};

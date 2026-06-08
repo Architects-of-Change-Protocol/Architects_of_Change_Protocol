@@ -1,6 +1,6 @@
 # Constitutional Amendment Catalog
 
-**Constitution Version:** v4.0
+**Constitution Version:** v5.0
 
 ## Amendment index
 
@@ -10,6 +10,7 @@
 | AOC-AMD-0002 | Establish Constitutional Runtime Capability Governance | Type C | v2.0 | Ratified |
 | AOC-AMD-0003 | Establish Constitutional Policy Governance | Type C | v3.0 | Ratified |
 | AOC-AMD-0004 | Establish Constitutional Decision Governance Framework | Type C | v4.0 | Ratified |
+| AOC-AMD-0005 | Establish Constitutional Standing Governance Framework | Type C | v5.0 | Ratified |
 
 ## AOC-AMD-0001 — Establish Constitutional Amendment System
 
@@ -70,4 +71,19 @@
 - **Rationale:** Close the constitutional gap between governed policy constraints and action authorization by making decision legitimacy explicit, evidence-supported, explainable, appealable, revocable, versioned, and traceable.
 - **Risk Assessment:** Moderate governance risk and low runtime risk. The amendment adds fail-closed repository governance without implementing a decision engine, policy engine, execution engine, standing engine, runtime authorization, runtime governance runtime, or AI decision runtime.
 - **Migration Impact:** Future decision creation, retirement, semantic changes, lifecycle semantics, evidence minimums, explainability obligations, appeal rights, revocation causes, and enforcement obligations require Type B or Type C amendment governance. CI and release validation execute decision governance scanners before publishability.
+- **Ratification Status:** Ratified
+
+## AOC-AMD-0005 — Establish Constitutional Standing Governance Framework
+
+- **Amendment ID:** AOC-AMD-0005
+- **Title:** Establish Constitutional Standing Governance Framework
+- **Author:** Architects of Change maintainers
+- **Date:** 2026-06-08
+- **Type:** Type C
+- **Version:** v5.0
+- **Affected Laws:** LAW-008; standing ownership, authority, eligibility, lifecycle, delegation, representation, revocation, evolution, and enforcement obligations
+- **Affected Authorities:** Constitution; Protocol; Enterprise; Standing Authorities STD-0001 through STD-0017
+- **Rationale:** Close the constitutional gap between governed policy and governed decisions by making participant legitimacy explicit, eligibility-validated, lifecycle-controlled, delegable and representable only where authorized, revocable, versioned, and traceable.
+- **Risk Assessment:** Moderate governance risk and low runtime risk. The amendment adds fail-closed repository governance without implementing identity, voting, trust, claims, federation, governance, authentication, authorization, or standing runtimes.
+- **Migration Impact:** Future standing creation, retirement, semantic changes, eligibility rules, lifecycle semantics, delegation and representation permissions, revocation causes, and enforcement obligations require Type B or Type C amendment governance. CI and release validation execute standing governance scanners before publishability.
 - **Ratification Status:** Ratified
