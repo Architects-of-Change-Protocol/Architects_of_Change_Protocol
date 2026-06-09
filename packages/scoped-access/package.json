@@ -15,6 +15,6 @@
     "typecheck": "tsc -b --pretty false"
   },
   "dependencies": {
-    "@aoc/protocol": "file:../protocol"
+    "@aoc/protocol": "0.1.0"
   }
 }
