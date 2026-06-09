@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+import { consensusRecords, consensusLifecycleRecords, consensusAmendments, consensusViolation, CONSENSUS_TRANSITIONS, CONSENSUS_LIFECYCLE_FILE } from './consensus-governance-lib.mjs';
+import { runScanner } from './constitutional-governance-lib.mjs';
+export function scanConsensusLifecycle(root){const violations=[],consensus=new Map(consensusRecords(root).map(r=>[r['Consensus ID'],r])),amendments=new Set(consensusAmendments(root).map(r=>r.id)),records=consensusLifecycleRecords(root);
+for(const r of records){const id=r['Transition ID'];if(!/^CLT-\d{4}$/.test(id))violations.push(consensusViolation(CONSENSUS_LIFECYCLE_FILE,`invalid transition ID '${id}'`,'CNS-V-006'));if(!consensus.has(r['Consensus ID']))violations.push(consensusViolation(CONSENSUS_LIFECYCLE_FILE,`${id} references unknown consensus '${r['Consensus ID']}'`,'CNS-V-006'));const allowed=CONSENSUS_TRANSITIONS.get(r.From);if(!allowed)violations.push(consensusViolation(CONSENSUS_LIFECYCLE_FILE,`${id} has invalid source state '${r.From}'`,'CNS-V-006'));else if(!allowed.has(r.To))violations.push(consensusViolation(CONSENSUS_LIFECYCLE_FILE,`${id} invalid transition '${r.From}' → '${r.To}'`,'CNS-V-006'));if(!amendments.has(r.Amendment))violations.push(consensusViolation(CONSENSUS_LIFECYCLE_FILE,`${id} lacks a ratified consensus amendment`,'CNS-V-011'));}
+return violations;}
+if(process.argv[1]&&import.meta.url===new URL(`file://${process.argv[1]}`).href)runScanner('Consensus lifecycle scanner',scanConsensusLifecycle);

@@ -1,4 +1,4 @@
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { spawnSync, type SpawnSyncReturns } from 'node:child_process';
@@ -8,6 +8,7 @@ export const repositoryRoot = resolve(__dirname, '../..');
 export type ConstitutionalFixture = {
   root: string;
   write(path: string, contents: string): void;
+  read(path: string): string;
   run(script: string, args?: string[]): SpawnSyncReturns<string>;
   cleanup(): void;
 };
@@ -41,6 +42,7 @@ export const createConstitutionalFixture = (): ConstitutionalFixture => {
   return {
     root,
     write,
+    read: (path: string) => readFileSync(join(root, path), 'utf8'),
     run: (script, args = []) => spawnSync(process.execPath, [join(repositoryRoot, 'scripts', script), '--root', root, ...args], {
       cwd: repositoryRoot,
       encoding: 'utf8',
@@ -530,4 +532,69 @@ export const writeReputationGovernance = (fixture: ConstitutionalFixture, option
   fixture.write('docs/constitution/REPUTATION-CORRECTION-POLICY.md', `# Reputation Correction Policy\n\n**Constitution Version:** ${version}\n\n## Reputation correction registry\n\n| Correction ID | Reputation ID | Correction Cause | Prior Value | Corrected Value | Reason | Evidence | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|---|---|\n`);
   fixture.write('docs/constitution/REPUTATION-REVOCATION-POLICY.md', `# Reputation Revocation Policy\n\n**Constitution Version:** ${version}\n\n## Reputation revocation authority registry\n\n| Reputation ID | Revocable | Valid Causes | Revocation Authority | Evidence Required | Decision Reference Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${revocationAuthorityRows}\n\n## Reputation revocation registry\n\n| Revocation ID | Reputation ID | Subject | Cause | Evidence | Revoked By | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|---|\n`);
   fixture.write('docs/constitution/REPUTATION-VIOLATION-CATALOG.md', `# Reputation Violations\n\n**Constitution Version:** ${version}\n`);
+};
+
+export const writeConsensusGovernance = (fixture: ConstitutionalFixture, options: {
+  version?: string;
+  amendmentId?: string;
+} = {}) => {
+  const version = options.version ?? 'v1.0';
+  const amendmentId = options.amendmentId ?? 'AOC-AMD-0001';
+  writeAttestationGovernance(fixture, { version, amendmentId });
+  writeConstitutionalGovernance(fixture, { version, amendmentId, affectedAuthorities: 'Constitution; Consensus Authorities CNS-0001 through CNS-0004' });
+
+  const cnsDefs = [
+    ['CNS-0001', 'Constitution Consensus', 'Constitutional', 'Constitution', 'CMP-0001', 'CTP-0001', 'CXP-0001'],
+    ['CNS-0002', 'Governance Proposal Consensus', 'Governance', 'Constitution', 'CMP-0002', 'CTP-0002', 'CXP-0002'],
+    ['CNS-0003', 'Claim Consensus', 'Runtime', 'Protocol', 'CMP-0003', 'CTP-0003', 'CXP-0003'],
+    ['CNS-0004', 'Audit Consensus', 'Operational', 'Enterprise', 'CMP-0004', 'CTP-0004', 'CXP-0004'],
+  ] as const;
+
+  const cnsRows = cnsDefs.map(([id, name, cls, owner, model, threshold, expiration]) =>
+    `| ${id} | ${name} | ${cls} | ${owner} | ${model} | ${threshold} | ${expiration} | Yes | Yes | ${amendmentId} | Not scheduled | Canonical |`
+  ).join('\n');
+
+  const modelRows = [
+    `| CMP-0001 | Constitutional | Constitutional Consensus | Unanimous agreement required | Equal weight per eligible actor | All eligible constitutional actors | ${amendmentId} | Active |`,
+    `| CMP-0002 | Governance | Supermajority Consensus | Two-thirds or greater agreement | Equal weight per eligible actor | Minimum three eligible governance actors | ${amendmentId} | Active |`,
+    `| CMP-0003 | Runtime | Simple Majority Consensus | Greater than fifty percent agreement | Reputation-weighted per actor | Minimum two eligible runtime actors | ${amendmentId} | Active |`,
+    `| CMP-0004 | Operational | Weighted Consensus | Weighted aggregate meeting threshold | Trust-weighted per actor | Minimum two eligible operational actors | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const thresholdRows = [
+    `| CTP-0001 | Constitutional | 100% | All eligible constitutional actors | One per eligible actor | Full constitutional standing | Full verification required | Full trust required | Full reputation required | ${amendmentId} | Active |`,
+    `| CTP-0002 | Governance | 66% | Minimum three eligible governance actors | One per participating actor | Governance-level standing | Verification encouraged | Trust required | Reputation required | ${amendmentId} | Active |`,
+    `| CTP-0003 | Runtime | 51% | Minimum two eligible runtime actors | One per participating actor | Active standing required | Verification optional | Trust required | Reputation recommended | ${amendmentId} | Active |`,
+    `| CTP-0004 | Operational | 75% | Minimum two eligible operational actors | One per participating actor | Active standing required | Verification recommended | Trust recommended | Reputation recommended | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const expirationRows = [
+    `| CXP-0001 | Constitutional | Attestation Expiration; Constitutional Override | Consensus becomes Expired | Yes | Preserved permanently | ${amendmentId} | Active |`,
+    `| CXP-0002 | Governance | Attestation Expiration; Standing Revocation; Governance Decision | Consensus becomes Expired | Yes | Preserved permanently | ${amendmentId} | Active |`,
+    `| CXP-0003 | Runtime | Attestation Expiration; Trust Decay; Verification Expiration; Standing Revocation; Threshold Failure | Consensus becomes Expired | Yes | Preserved permanently | ${amendmentId} | Active |`,
+    `| CXP-0004 | Operational | Attestation Expiration; Trust Decay; Governance Decision; Constitutional Override | Consensus becomes Expired | Yes | Preserved permanently | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const causes = 'Fraud; Threshold Failure; Invalid Attestations; Standing Failure; Constitutional Override; Governance Decision';
+  const revocationAuthorityRows = cnsDefs.map(([id,,, owner]) =>
+    `| ${id} | Yes | ${causes} | ${owner} | Required | Required | ${amendmentId} | Active |`
+  ).join('\n');
+
+  const recomputationRows = [
+    `| CRC-0001 | Attestation Change | Runtime | An attestation contributing to consensus has been added, expired, or revoked | Recompute consensus threshold | ${amendmentId} | Active |`,
+    `| CRC-0002 | Verification Change | Runtime | An underlying verification signal has changed or expired | Recompute consensus where verification coverage is required | ${amendmentId} | Active |`,
+    `| CRC-0003 | Trust Change | Runtime | An underlying trust signal has decayed, changed, or been revoked | Recompute consensus where trust coverage is required | ${amendmentId} | Active |`,
+    `| CRC-0004 | Standing Change | Governance | A participating actor standing has changed | Recompute consensus with updated eligible participant set | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  fixture.write('docs/constitution/CONSENSUS-CONSTITUTION.md', `# Consensus Constitution\n\n**Constitution Version:** ${version}\n`);
+  fixture.write('docs/constitution/CONSENSUS-AUTHORITIES.md', `# Consensus Authorities\n\n**Constitution Version:** ${version}\n\n## Consensus authority catalog\n\n| Consensus ID | Consensus Name | Consensus Class | Owner | Consensus Model | Threshold Policy | Expiration Policy | Revocable | Disputable | Creation Amendment | Retirement Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|---|---|\n${cnsRows}\n`);
+  fixture.write('docs/constitution/CONSENSUS-MODELS-POLICY.md', `# Consensus Models Policy\n\n**Constitution Version:** ${version}\n\n## Consensus models registry\n\n| Model Policy ID | Consensus Class | Model Name | Aggregation Method | Weighting | Minimum Participants | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${modelRows}\n`);
+  fixture.write('docs/constitution/CONSENSUS-THRESHOLD-POLICY.md', `# Consensus Threshold Policy\n\n**Constitution Version:** ${version}\n\n## Threshold policy catalog\n\n| Threshold Policy ID | Consensus Class | Minimum Threshold | Minimum Participants | Minimum Attestations | Minimum Standing Coverage | Minimum Verification Coverage | Minimum Trust Coverage | Minimum Reputation Coverage | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|---|\n${thresholdRows}\n`);
+  fixture.write('docs/constitution/CONSENSUS-LIFECYCLE.md', `# Consensus Lifecycle\n\n**Constitution Version:** ${version}\n\n## Consensus lifecycle transition ledger\n\n| Transition ID | Consensus ID | From | To | Authorized By | Evidence | Amendment | Effective Date |\n|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/CONSENSUS-EXPIRATION-POLICY.md', `# Consensus Expiration Policy\n\n**Constitution Version:** ${version}\n\n## Expiration policy catalog\n\n| Expiration Policy ID | Consensus Class | Valid Expiration Triggers | Expiration Semantics | Recomputation Permitted | Historical Preservation | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${expirationRows}\n`);
+  fixture.write('docs/constitution/CONSENSUS-REVOCATION-POLICY.md', `# Consensus Revocation Policy\n\n**Constitution Version:** ${version}\n\n## Revocation authority registry\n\n| Consensus ID | Revocable | Valid Causes | Revocation Authority | Evidence Required | Decision Reference Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${revocationAuthorityRows}\n\n## Revocation registry\n\n| Revocation ID | Consensus ID | Subject | Cause | Evidence | Revoked By | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/CONSENSUS-DISPUTE-POLICY.md', `# Consensus Dispute Policy\n\n**Constitution Version:** ${version}\n\n## Dispute registry\n\n| Dispute ID | Consensus ID | Grounds | Evidence | Initiator | Resolution | Decision Reference | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/CONSENSUS-RECOMPUTATION-POLICY.md', `# Consensus Recomputation Policy\n\n**Constitution Version:** ${version}\n\n## Recomputation trigger catalog\n\n| Trigger ID | Trigger Name | Trigger Class | Description | Required Action | Amendment | Status |\n|---|---|---|---|---|---|---|\n${recomputationRows}\n`);
+  fixture.write('docs/constitution/CONSENSUS-VIOLATION-CATALOG.md', `# Consensus Violations\n\n**Constitution Version:** ${version}\n`);
 };

@@ -4,6 +4,7 @@
 
 | Version | Date | Amendments | Summary | Breaking Changes |
 |---|---|---|---|---|
+| v11.0 | 2026-06-09 | AOC-AMD-0011 | Establishes constitutional consensus authority, models, thresholds, lifecycle, expiration, revocation, disputes, recomputation, violations, and enforcement. | Collective agreement is no longer implicit; decision influence may include governed consensus evaluation. Attestation ≠ Consensus as constitutional doctrine. |
 | v10.0 | 2026-06-09 | AOC-AMD-0010 | Establishes constitutional attestation authority, eligibility, scope, weight, lifecycle, expiration, revocation, disputes, violations, and enforcement. | Endorsement is no longer implicit; decision influence may include governed attestation evaluation. Verified ≠ Attested and Reputable ≠ Attested as constitutional doctrine. |
 | v9.0 | 2026-06-09 | AOC-AMD-0009 | Establishes constitutional reputation authority, sources, calculation, lifecycle, decay, disputes, corrections, revocation, violations, and enforcement. | Historical reliability is no longer implicit; decision influence may include governed reputation evaluation. Trust ≠ Reputation and Verification ≠ Reputation as constitutional doctrine. |
 | v8.0 | 2026-06-09 | AOC-AMD-0008 | Establishes constitutional verification authority, evidence, methods, lifecycle, expiration, revocation, violations, and enforcement. | Active trust signals no longer imply independent validation; decision influence may require governed verification evaluation. |
@@ -100,3 +101,12 @@
 - **Summary:** Establishes Constitutional, Governance, Runtime, and Operational trust classes; catalogs trust authorities and evidence policies; governs issuance, lifecycle, suspension, decay, revocation, retirement, violations, decision influence, and traceability; and adds fail-closed CI and release scanners.
 - **Breaking Changes:** Accepted claims no longer carry constitutionally identical confidence. Governed decisions may assign confidence only through an active, evidence-evaluated, standing-backed, claim-backed, authorized, traceable trust signal.
 - **Migration Notes:** Repository governance changes only. No trust, reputation, voting, federation, identity, verification, governance, authentication, authorization, claims, or decision runtime is introduced. Future trust governance changes require Type B or Type C amendments.
+
+
+## v11.0
+
+- **Date:** 2026-06-09
+- **Amendments:** AOC-AMD-0011
+- **Summary:** Establishes Constitutional, Governance, Runtime, and Operational consensus classes; catalogs consensus authorities, model policies, threshold policies, expiration policies, and revocation authorities; governs lifecycle, expiration, revocation, disputes, recomputation, violations, decision influence, and traceability; establishes Attestation ≠ Consensus as constitutional doctrine; advances the constitutional chain to include Consensus before Decision; and adds fail-closed CI and release scanners.
+- **Breaking Changes:** Collective agreement is no longer implicit. Governed decisions may include consensus only through an Established, model-governed, threshold-satisfying, attestation-aggregating, expiring, disputable, revocable, recomputable, traceable consensus signal. Consensus must be recomputed when underlying signals change.
+- **Migration Notes:** Repository governance changes only. No voting engine, governance engine, federation engine, consensus runtime, blockchain consensus, distributed consensus protocol, or AI consensus engine is introduced. Future consensus governance changes require Type B or Type C amendments.

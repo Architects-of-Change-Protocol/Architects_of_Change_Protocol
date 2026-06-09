@@ -1,6 +1,6 @@
 # AOC Constitution
 
-**Constitution Version:** v10.0
+**Constitution Version:** v11.0
 
 **Status:** Ratified
 
@@ -100,14 +100,25 @@ The following documents are incorporated into the Constitution by reference:
 - `docs/constitution/ATTESTATION-DISPUTE-POLICY.md`
 - `docs/constitution/ATTESTATION-VIOLATION-CATALOG.md`
 
+- `docs/constitution/CONSENSUS-CONSTITUTION.md`
+- `docs/constitution/CONSENSUS-AUTHORITIES.md`
+- `docs/constitution/CONSENSUS-MODELS-POLICY.md`
+- `docs/constitution/CONSENSUS-THRESHOLD-POLICY.md`
+- `docs/constitution/CONSENSUS-LIFECYCLE.md`
+- `docs/constitution/CONSENSUS-EXPIRATION-POLICY.md`
+- `docs/constitution/CONSENSUS-REVOCATION-POLICY.md`
+- `docs/constitution/CONSENSUS-DISPUTE-POLICY.md`
+- `docs/constitution/CONSENSUS-RECOMPUTATION-POLICY.md`
+- `docs/constitution/CONSENSUS-VIOLATION-CATALOG.md`
+
 ## 3. Constitutional principles
 
 1. The Constitution is enforceable through scanners, tests, CI gates, and release gates.
 2. The Constitution is versioned with explicit major and minor version semantics.
 3. The Constitution is auditable through an amendment catalog and version history.
 4. The Constitution is amendable only through the amendment procedure.
-5. The Constitution is traceable from law, authority, ownership, policy, capability, standing, claim, trust, verification, reputation, attestation, and decision changes to ratified amendment records.
-6. Authority existence, capability possession, policy coverage, participant standing, claim legitimacy, trust confidence, verification status, reputation signal, attestation endorsement, and decision legitimacy are distinct; all participation and runtime power are deny-by-default unless constitutionally cataloged, assigned, constrained, validated, decided, and traceable.
+5. The Constitution is traceable from law, authority, ownership, policy, capability, standing, claim, trust, verification, reputation, attestation, consensus, and decision changes to ratified amendment records.
+6. Authority existence, capability possession, policy coverage, participant standing, claim legitimacy, trust confidence, verification status, reputation signal, attestation endorsement, consensus agreement, and decision legitimacy are distinct; all participation and runtime power are deny-by-default unless constitutionally cataloged, assigned, constrained, validated, decided, and traceable.
 
 ## 4. Versioning model
 
@@ -196,4 +207,10 @@ The constitutional chain is `Authority → Capability → Policy → Standing �
 
 ## 18. Release governance
 
-`validate:release` must run constitutional amendment and claim governance validation before publishability validation. The aggregate AOC boundary gate must include amendment, version, authority, capability, policy, decision, standing, and all claim authority, evidence, lifecycle, dispute, supersession, withdrawal, and aggregate governance scanners, and all trust authority, evidence, lifecycle, issuance, decay, revocation, and aggregate governance scanners, and all verification authority, evidence, lifecycle, methods, expiration, revocation, and aggregate governance scanners, and all reputation authority, sources, lifecycle, calculation, decay, disputes, corrections, revocation, and aggregate governance scanners, and all attestation authority, scope, eligibility, lifecycle, weight, expiration, revocation, disputes, and aggregate governance scanners. Capability, policy, standing, claim, trust, verification, reputation, attestation, and decision governance validation must complete before publishability validation.
+`validate:release` must run constitutional amendment and claim governance validation before publishability validation. The aggregate AOC boundary gate must include amendment, version, authority, capability, policy, decision, standing, and all claim authority, evidence, lifecycle, dispute, supersession, withdrawal, and aggregate governance scanners, and all trust authority, evidence, lifecycle, issuance, decay, revocation, and aggregate governance scanners, and all verification authority, evidence, lifecycle, methods, expiration, revocation, and aggregate governance scanners, and all reputation authority, sources, lifecycle, calculation, decay, disputes, corrections, revocation, and aggregate governance scanners, and all attestation authority, scope, eligibility, lifecycle, weight, expiration, revocation, disputes, and aggregate governance scanners, and all consensus authority, models, thresholds, lifecycle, expiration, revocation, disputes, recomputation, and aggregate governance scanners. Capability, policy, standing, claim, trust, verification, reputation, attestation, consensus, and decision governance validation must complete before publishability validation.
+
+## 19. Consensus authority governance
+
+Consensus is a governed determination that sufficient constitutional agreement exists regarding a claim, verification, reputation, attestation, proposal, decision, or constitutional artifact. Consensus legitimacy is distinct from authority, capability, policy, standing, claim, trust, verification, reputation, attestation, and decision legitimacy. A consensus determination may influence a decision only after sufficient attestations satisfy the threshold policy under the governing consensus model, and a valid lifecycle transition to `Established`. Attestation and consensus are constitutionally independent; the existence of attestations does not establish consensus.
+
+The constitutional chain is `Authority → Capability → Policy → Standing → Claim → Trust → Verification → Reputation → Attestation → Consensus → Decision → Action`. Consensus governs whether sufficient constitutional agreement exists, but never directly authorizes action, and never overrides authority, capability, policy, standing, claim evidence, verification requirements, reputation signals, or attestation endorsements. Expiration transitions consensus to non-influencing status without deleting history; revocation disables influence permanently. Consensus must be recomputed when underlying attestations, trust, verification, reputation, standing, or policy signals change.

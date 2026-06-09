@@ -1,6 +1,6 @@
 # Constitutional Amendment Catalog
 
-**Constitution Version:** v10.0
+**Constitution Version:** v11.0
 
 ## Amendment index
 
@@ -16,6 +16,7 @@
 | AOC-AMD-0008 | Establish Constitutional Verification Governance Framework | Type C | v8.0 | Ratified |
 | AOC-AMD-0009 | Establish Constitutional Reputation Governance Framework | Type C | v9.0 | Ratified |
 | AOC-AMD-0010 | Establish Constitutional Attestation Governance Framework | Type C | v10.0 | Ratified |
+| AOC-AMD-0011 | Establish Constitutional Consensus Governance Framework | Type C | v11.0 | Ratified |
 
 ## AOC-AMD-0001 — Establish Constitutional Amendment System
 
@@ -170,4 +171,19 @@
 - **Rationale:** Close the constitutional gap between governed historical reliability and governed public endorsement by making attestation eligibility-validated, scope-bound, weight-governed, expiring, disputable, revocable, versioned, and traceable. Establish that Verified ≠ Attested and Reputable ≠ Attested as constitutional doctrine. Advance the constitutional chain to `Authority → Capability → Policy → Standing → Claim → Trust → Verification → Reputation → Attestation → Decision → Action`.
 - **Risk Assessment:** Moderate governance risk and low runtime risk. The amendment adds fail-closed repository governance without implementing an attestation, consensus, voting, federation, governance, trust, verification, reputation, policy, decision, authentication, or authorization runtime.
 - **Migration Impact:** Constitutional governance advances from v9.0 to v10.0. Future attestation creation, retirement, semantic changes, ownership changes, eligibility policies, scope policies, weight policies, expiration policies, revocation causes, dispute rules, lifecycle semantics, and enforcement obligations require Type B or Type C amendments. CI and release validation execute attestation governance scanners before publishability.
+- **Ratification Status:** Ratified
+
+## AOC-AMD-0011 — Establish Constitutional Consensus Governance Framework
+
+- **Amendment ID:** AOC-AMD-0011
+- **Title:** Establish Constitutional Consensus Governance Framework
+- **Author:** Architects of Change maintainers
+- **Date:** 2026-06-09
+- **Type:** Type C
+- **Version:** v11.0
+- **Affected Laws:** LAW-008; consensus ownership, authority, model, threshold, lifecycle, expiration, revocation, dispute, recomputation, evolution, and enforcement obligations
+- **Affected Authorities:** Constitution; Protocol; Enterprise; Consensus Authorities CNS-0001 through CNS-0014
+- **Rationale:** Close the constitutional gap between individual endorsement and collective constitutional agreement by making consensus legitimacy explicit, model-governed, threshold-bound, attestation-aggregating, lifecycle-controlled, expirable, disputable, revocable, recomputable, versioned, and traceable.
+- **Risk Assessment:** Moderate governance risk and low runtime risk. The amendment adds fail-closed repository governance without implementing a voting engine, governance engine, federation engine, consensus runtime, blockchain consensus, distributed consensus protocol, or AI consensus engine.
+- **Migration Impact:** Future consensus definitions, classes, ownership changes, model changes, threshold changes, lifecycle semantics, expiration rules, revocation causes, dispute grounds, recomputation triggers, and enforcement obligations require Type B or Type C amendment governance. CI and release validation now execute nine consensus governance scanners.
 - **Ratification Status:** Ratified
