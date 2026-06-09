@@ -12,9 +12,6 @@
     "seed:mock": "node scripts/generateAudienceMockData.mjs > supabase/seed_phase2_generated.sql"
   },
   "dependencies": {
-    "@aoc-runtime/crypto": "*",
-    "@aoc-runtime/shared-types": "*",
-    "@aoc/protocol": "*",
     "@tailwindcss/vite": "^4.2.2",
     "react": "^19.2.5",
     "react-dom": "^19.2.5"
