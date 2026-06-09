@@ -4,6 +4,7 @@
 
 | Version | Date | Amendments | Summary | Breaking Changes |
 |---|---|---|---|---|
+| v10.0 | 2026-06-09 | AOC-AMD-0010 | Establishes constitutional attestation authority, eligibility, scope, weight, lifecycle, expiration, revocation, disputes, violations, and enforcement. | Endorsement is no longer implicit; decision influence may include governed attestation evaluation. Verified ≠ Attested and Reputable ≠ Attested as constitutional doctrine. |
 | v9.0 | 2026-06-09 | AOC-AMD-0009 | Establishes constitutional reputation authority, sources, calculation, lifecycle, decay, disputes, corrections, revocation, violations, and enforcement. | Historical reliability is no longer implicit; decision influence may include governed reputation evaluation. Trust ≠ Reputation and Verification ≠ Reputation as constitutional doctrine. |
 | v8.0 | 2026-06-09 | AOC-AMD-0008 | Establishes constitutional verification authority, evidence, methods, lifecycle, expiration, revocation, violations, and enforcement. | Active trust signals no longer imply independent validation; decision influence may require governed verification evaluation. |
 | v7.0 | 2026-06-08 | AOC-AMD-0007 | Establishes constitutional trust authority, evidence, issuance, lifecycle, decay, revocation, violations, and enforcement. | Accepted claims no longer carry equal confidence; decision influence requires governed trust evaluation. |
@@ -64,6 +65,15 @@
 - **Summary:** Establishes Constitutional, Governance, Runtime, and Operational claim classes; catalogs claim authorities and evidence policies; governs lifecycle, disputes, supersession, withdrawal, violations, and traceability; and adds fail-closed CI and release scanners.
 - **Breaking Changes:** Participant standing no longer makes an assertion constitutionally influential. Governed decisions may rely only on cataloged claims that reach `Accepted` through standing-backed submission and evidence validation.
 - **Migration Notes:** Repository governance changes only. No claims, trust, identity, verification, voting, federation, reputation, or governance runtime is introduced. Future claim governance changes require Type B or Type C amendments.
+
+
+## v10.0
+
+- **Date:** 2026-06-09
+- **Amendments:** AOC-AMD-0010
+- **Summary:** Establishes Constitutional, Governance, Runtime, and Operational attestation classes; catalogs attestation authorities, eligibility policies, scope policies, weight policies, expiration policies, and revocation authorities; governs lifecycle, expiration, revocation, disputes, violations, decision influence, and traceability; establishes Verified ≠ Attested and Reputable ≠ Attested as constitutional doctrine; advances the constitutional chain to include Attestation before Decision; and adds fail-closed CI and release scanners.
+- **Breaking Changes:** Endorsement is no longer implicit. Governed decisions may include attestation only through an Active, eligibility-validated, scope-bound, weight-governed, expiring, disputable, revocable, traceable attestation signal. All combinations of (Trust × Verification × Reputation × Attestation) states are constitutionally valid.
+- **Migration Notes:** Repository governance changes only. No attestation, consensus, voting, federation, governance, trust, verification, reputation, policy, decision, authentication, or authorization runtime is introduced. Future attestation governance changes require Type B or Type C amendments.
 
 
 ## v9.0

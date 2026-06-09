@@ -1,6 +1,6 @@
 # Constitutional Amendment Catalog
 
-**Constitution Version:** v9.0
+**Constitution Version:** v10.0
 
 ## Amendment index
 
@@ -15,6 +15,7 @@
 | AOC-AMD-0007 | Establish Constitutional Trust Governance Framework | Type C | v7.0 | Ratified |
 | AOC-AMD-0008 | Establish Constitutional Verification Governance Framework | Type C | v8.0 | Ratified |
 | AOC-AMD-0009 | Establish Constitutional Reputation Governance Framework | Type C | v9.0 | Ratified |
+| AOC-AMD-0010 | Establish Constitutional Attestation Governance Framework | Type C | v10.0 | Ratified |
 
 ## AOC-AMD-0001 — Establish Constitutional Amendment System
 
@@ -153,4 +154,20 @@
 - **Rationale:** Close the constitutional gap between governed truth validation and governed historical reliability by making reputation source-backed, calculation-governed, decaying, disputable, correctable, revocable, versioned, and traceable. Establish that Trust ≠ Reputation and Verification ≠ Reputation as constitutional doctrine. Advance the constitutional chain to `Authority → Capability → Policy → Standing → Claim → Trust → Verification → Reputation → Decision → Action`.
 - **Risk Assessment:** Moderate governance risk and low runtime risk. The amendment adds fail-closed repository governance without implementing a reputation, scoring, trust, verification, voting, federation, identity, governance, policy, decision, authentication, or authorization runtime.
 - **Migration Impact:** Constitutional governance advances from v8.0 to v9.0. Future reputation creation, retirement, semantic changes, ownership changes, source policies, calculation policies, decay policies, dispute rules, correction rules, revocation causes, lifecycle semantics, and enforcement obligations require Type B or Type C amendments. CI and release validation execute reputation governance scanners before publishability.
+- **Ratification Status:** Ratified
+
+
+## AOC-AMD-0010 — Establish Constitutional Attestation Governance Framework
+
+- **Amendment ID:** AOC-AMD-0010
+- **Title:** Establish Constitutional Attestation Governance Framework
+- **Author:** Architects of Change maintainers
+- **Date:** 2026-06-09
+- **Type:** Type C
+- **Version:** v10.0
+- **Affected Laws:** LAW-008; attestation ownership, authority, lifecycle, eligibility, scope, weight, expiration, revocation, disputes, evolution, traceability, and enforcement obligations
+- **Affected Authorities:** Constitution; Protocol; Enterprise; Attestation Authorities ATT-0001 through ATT-0016
+- **Rationale:** Close the constitutional gap between governed historical reliability and governed public endorsement by making attestation eligibility-validated, scope-bound, weight-governed, expiring, disputable, revocable, versioned, and traceable. Establish that Verified ≠ Attested and Reputable ≠ Attested as constitutional doctrine. Advance the constitutional chain to `Authority → Capability → Policy → Standing → Claim → Trust → Verification → Reputation → Attestation → Decision → Action`.
+- **Risk Assessment:** Moderate governance risk and low runtime risk. The amendment adds fail-closed repository governance without implementing an attestation, consensus, voting, federation, governance, trust, verification, reputation, policy, decision, authentication, or authorization runtime.
+- **Migration Impact:** Constitutional governance advances from v9.0 to v10.0. Future attestation creation, retirement, semantic changes, ownership changes, eligibility policies, scope policies, weight policies, expiration policies, revocation causes, dispute rules, lifecycle semantics, and enforcement obligations require Type B or Type C amendments. CI and release validation execute attestation governance scanners before publishability.
 - **Ratification Status:** Ratified

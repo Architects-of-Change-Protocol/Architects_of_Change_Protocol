@@ -1,6 +1,6 @@
 # Reputation Lifecycle
 
-**Constitution Version:** v9.0
+**Constitution Version:** v10.0
 
 ## Constitutional rule
 
