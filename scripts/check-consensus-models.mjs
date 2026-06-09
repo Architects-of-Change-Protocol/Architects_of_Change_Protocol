@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+import { consensusRecords, consensusModelsRecords, consensusAmendments, consensusViolation, VALID_CONSENSUS_CLASSES, CONSENSUS_MODELS_FILE } from './consensus-governance-lib.mjs';
+import { runScanner } from './constitutional-governance-lib.mjs';
+export function scanConsensusModels(root){const violations=[],consensus=new Map(consensusRecords(root).map(r=>[r['Consensus ID'],r])),amendments=new Set(consensusAmendments(root).map(r=>r.id)),records=consensusModelsRecords(root),coveredModels=new Set();
+for(const r of records){const id=r['Model Policy ID'];coveredModels.add(id);if(!/^CMP-\d{4}$/.test(id))violations.push(consensusViolation(CONSENSUS_MODELS_FILE,`invalid model policy ID '${id}'`,'CNS-V-005'));if(!VALID_CONSENSUS_CLASSES.includes(r['Consensus Class']))violations.push(consensusViolation(CONSENSUS_MODELS_FILE,`${id} has invalid consensus class '${r['Consensus Class']}'`,'CNS-V-005'));if(!r['Model Name'])violations.push(consensusViolation(CONSENSUS_MODELS_FILE,`${id} is missing Model Name`,'CNS-V-005'));if(!r['Aggregation Method'])violations.push(consensusViolation(CONSENSUS_MODELS_FILE,`${id} is missing Aggregation Method`,'CNS-V-005'));if(!amendments.has(r.Amendment))violations.push(consensusViolation(CONSENSUS_MODELS_FILE,`${id} lacks a ratified consensus amendment`,'CNS-V-011'));if(r.Status!=='Active')violations.push(consensusViolation(CONSENSUS_MODELS_FILE,`${id} has invalid status '${r.Status}'`,'CNS-V-005'));}
+const referencedModels=new Set([...consensus.values()].map(r=>r['Consensus Model']));
+for(const modelId of referencedModels){if(!coveredModels.has(modelId))violations.push(consensusViolation(CONSENSUS_MODELS_FILE,`consensus references model '${modelId}' that has no model definition`,'CNS-V-005'));}
+return violations;}
+if(process.argv[1]&&import.meta.url===new URL(`file://${process.argv[1]}`).href)runScanner('Consensus models scanner',scanConsensusModels);

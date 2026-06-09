@@ -1,0 +1,7 @@
+import { spawnSync } from 'node:child_process';
+import { createConstitutionalFixture, repositoryRoot, writeConsensusGovernance } from './fixture';
+const run=()=>spawnSync(process.execPath,['scripts/check-consensus-revocation.mjs'],{cwd:repositoryRoot,encoding:'utf8'});
+describe('consensus revocation governance',()=>{
+ it('validates the repository consensus revocation policies',()=>{const r=run();expect(r.status).toBe(0);expect(r.stderr).toBe('');expect(r.stdout).toContain('Consensus revocation scanner passed');});
+ it('rejects revocable consensus without revocation authority',()=>{const f=createConstitutionalFixture();try{writeConsensusGovernance(f);f.write('docs/constitution/CONSENSUS-REVOCATION-POLICY.md',`# Consensus Revocation Policy\n\n**Constitution Version:** v1.0\n\n## Revocation authority registry\n\n| Consensus ID | Revocable | Valid Causes | Revocation Authority | Evidence Required | Decision Reference Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n\n## Revocation registry\n\n| Revocation ID | Consensus ID | Subject | Cause | Evidence | Revoked By | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|---|\n`);const r=f.run('check-consensus-revocation.mjs');expect(r.status).toBe(1);expect(r.stderr).toContain("CNS-V-009 revocable consensus 'CNS-0001' has no revocation authority entry");}finally{f.cleanup();}});
+});

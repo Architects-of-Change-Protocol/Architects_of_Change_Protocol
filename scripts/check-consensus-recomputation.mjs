@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+import { consensusRecomputationRecords, consensusAmendments, consensusViolation, VALID_CONSENSUS_CLASSES, CONSENSUS_RECOMPUTATION_FILE } from './consensus-governance-lib.mjs';
+import { runScanner } from './constitutional-governance-lib.mjs';
+export function scanConsensusRecomputation(root){const violations=[],amendments=new Set(consensusAmendments(root).map(r=>r.id)),records=consensusRecomputationRecords(root);
+for(const r of records){const id=r['Trigger ID'];if(!/^CRC-\d{4}$/.test(id))violations.push(consensusViolation(CONSENSUS_RECOMPUTATION_FILE,`invalid recomputation trigger ID '${id}'`,'CNS-V-007'));if(!r['Trigger Name'])violations.push(consensusViolation(CONSENSUS_RECOMPUTATION_FILE,`${id} is missing Trigger Name`,'CNS-V-007'));if(!VALID_CONSENSUS_CLASSES.includes(r['Trigger Class']))violations.push(consensusViolation(CONSENSUS_RECOMPUTATION_FILE,`${id} has invalid trigger class '${r['Trigger Class']}'`,'CNS-V-007'));if(!r['Required Action'])violations.push(consensusViolation(CONSENSUS_RECOMPUTATION_FILE,`${id} is missing Required Action`,'CNS-V-007'));if(!amendments.has(r.Amendment))violations.push(consensusViolation(CONSENSUS_RECOMPUTATION_FILE,`${id} lacks a ratified consensus amendment`,'CNS-V-011'));if(r.Status!=='Active')violations.push(consensusViolation(CONSENSUS_RECOMPUTATION_FILE,`${id} has invalid status '${r.Status}'`,'CNS-V-007'));}
+return violations;}
+if(process.argv[1]&&import.meta.url===new URL(`file://${process.argv[1]}`).href)runScanner('Consensus recomputation scanner',scanConsensusRecomputation);

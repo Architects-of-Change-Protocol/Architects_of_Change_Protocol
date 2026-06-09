@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+import { consensusRecords, consensusDisputeRecords, consensusAmendments, consensusViolation, CONSENSUS_DISPUTE_FILE } from './consensus-governance-lib.mjs';
+import { runScanner } from './constitutional-governance-lib.mjs';
+export function scanConsensusDisputes(root){const violations=[],consensus=new Map(consensusRecords(root).map(r=>[r['Consensus ID'],r])),records=consensusDisputeRecords(root);
+for(const r of records){const id=r['Dispute ID'];if(!/^CDT-\d{4}$/.test(id))violations.push(consensusViolation(CONSENSUS_DISPUTE_FILE,`invalid dispute ID '${id}'`,'CNS-V-010'));if(!consensus.has(r['Consensus ID']))violations.push(consensusViolation(CONSENSUS_DISPUTE_FILE,`${id} references unknown consensus '${r['Consensus ID']}'`,'CNS-V-010'));if(!r.Grounds)violations.push(consensusViolation(CONSENSUS_DISPUTE_FILE,`${id} is missing Grounds`,'CNS-V-010'));if(!r.Evidence)violations.push(consensusViolation(CONSENSUS_DISPUTE_FILE,`${id} is missing Evidence`,'CNS-V-010'));if(!r.Initiator)violations.push(consensusViolation(CONSENSUS_DISPUTE_FILE,`${id} is missing Initiator`,'CNS-V-010'));if(!['Active','Dismissed','Sustained','Retired'].includes(r.Status))violations.push(consensusViolation(CONSENSUS_DISPUTE_FILE,`${id} has invalid status '${r.Status}'`,'CNS-V-010'));}
+return violations;}
+if(process.argv[1]&&import.meta.url===new URL(`file://${process.argv[1]}`).href)runScanner('Consensus disputes scanner',scanConsensusDisputes);
