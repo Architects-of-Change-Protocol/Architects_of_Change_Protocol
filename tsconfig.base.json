@@ -105,6 +105,6 @@
         "enterprise/src/assurance/runtime-profile"
       ]
     },
-    "ignoreDeprecations": "5.0"
+    "ignoreDeprecations": "6.0"
   }
 }

@@ -1,3 +1,42 @@
 node_modules/
 *.tsbuildinfo
 *.tgz
+
+# ── Stray TypeScript compile outputs in source-only directories ──────────────
+# These directories contain only .ts source; JS is emitted to packages/*/dist/
+# or handled by Vite. If tsc runs without noEmit or a proper outDir these land
+# next to .ts files — they must not be committed.
+
+# Root-level generated files (canonicalize.ts, hash.ts, aocId.ts, index.ts
+# are source; their .js/.d.ts outputs belong in a future /dist step)
+/canonicalize.js
+/canonicalize.d.ts
+/hash.js
+/hash.d.ts
+/aocId.js
+/aocId.d.ts
+/index.js
+/index.d.ts
+/index.d.ts.map
+
+# Runtime source directory – compiled output lives at root via package.json
+# exports but is not yet a proper build step; .js next to .ts = artifact
+/runtime/**/*.js
+/runtime/**/*.d.ts
+!/runtime/**/*.d.ts.map
+
+# Root protocol directory – TypeScript source only; packages/protocol/dist has
+# the real compiled outputs
+/protocol/**/*.js
+/protocol/**/*.d.ts
+
+# Storage directory – TypeScript source only
+/storage/*.js
+/storage/*.d.ts
+
+# Enterprise source directory – outDir is enterprise/dist, not enterprise/src
+/enterprise/src/**/*.js
+/enterprise/src/**/*.d.ts
+
+# Frontend app source directory – Vite bundles; tsc is typecheck-only (noEmit)
+/frontend/app/src/**/*.js
