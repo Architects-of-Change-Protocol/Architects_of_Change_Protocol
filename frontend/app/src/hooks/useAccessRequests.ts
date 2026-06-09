@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { AccessRequest } from '../../../../runtime/controlPlane/types';
+import type { AccessRequest } from '../../../../runtime/controlPlane';
 import { runtimeClient } from '../lib/runtimeClient';
 
 type UseAccessRequestsInput = {

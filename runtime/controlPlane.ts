@@ -35,6 +35,8 @@ function nowIso(): string {
   return new Date().toISOString();
 }
 
+export type CreateAccessRequestInput = Omit<AccessRequest, 'request_id' | 'status' | 'created_at' | 'updated_at'>;
+
 export class ControlPlaneService {
   private readonly requests = new Map<string, AccessRequest>();
   private readonly grants = new Map<string, GrantedAccess>();

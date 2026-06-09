@@ -119,7 +119,7 @@ export function EnterpriseConsolePage() {
   const { grants, loading: grantsLoading } = useGrants({ requesterId: MOCK_REQUESTER_ID });
 
   const loading = requestsLoading || grantsLoading;
-  const activeGrants = grants.filter((grant) => grant.status === 'active').length;
+  const activeGrants = grants.filter((grant) => !grant.revoked_at).length;
 
   return (
     <section className="space-y-6">

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { GrantedAccess } from '../../../../runtime/controlPlane/types';
+import type { GrantedAccess } from '../../../../runtime/controlPlane';
 import { runtimeClient } from '../lib/runtimeClient';
 
 type UseGrantsInput = {

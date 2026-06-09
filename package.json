@@ -6,7 +6,8 @@
   "workspaces": [
     "packages/*",
     "examples/*",
-    "enterprise"
+    "enterprise",
+    "crypto"
   ],
   "scripts": {
     "build": "tsc -b",
@@ -90,7 +91,7 @@
     "@types/jest": "^29.5.14",
     "jest": "^29.7.0",
     "ts-jest": "^29.4.9",
-    "typescript": "^5.9.3"
+    "typescript": "~6.0.2"
   },
   "packageManager": "npm@11.4.2",
   "engines": {
