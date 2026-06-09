@@ -187,3 +187,19 @@
 - **Risk Assessment:** Moderate governance risk and low runtime risk. The amendment adds fail-closed repository governance without implementing a voting engine, governance engine, federation engine, consensus runtime, blockchain consensus, distributed consensus protocol, or AI consensus engine.
 - **Migration Impact:** Future consensus definitions, classes, ownership changes, model changes, threshold changes, lifecycle semantics, expiration rules, revocation causes, dispute grounds, recomputation triggers, and enforcement obligations require Type B or Type C amendment governance. CI and release validation now execute nine consensus governance scanners.
 - **Ratification Status:** Ratified
+
+
+## AOC-AMD-0012 — Constitutional Version Parity Alignment
+
+- **Amendment ID:** AOC-AMD-0012
+- **Title:** Constitutional Version Parity Alignment
+- **Author:** Architects of Change maintainers
+- **Date:** 2026-06-09
+- **Type:** Type A
+- **Version:** v12.0
+- **Affected Laws:** LAW-008; constitutional document version parity across all governed domains
+- **Affected Authorities:** Constitution; Protocol; Enterprise; Capability, Policy, Decision, Standing, Claim, Trust, Verification, Reputation, Attestation, Consensus Authorities
+- **Rationale:** Align all constitutional artifact headers to the current Constitution version following the introduction of Constitutional Consensus Governance in AOC-AMD-0011. All documents that declared v10.0 are advanced to v12.0 to maintain version parity with the supreme Constitution.
+- **Risk Assessment:** Low governance risk and no runtime risk. This amendment makes no semantic changes to any governed domain.
+- **Migration Impact:** Constitutional governance advances from v11.0 to v12.0. No new scanner obligations are introduced; this amendment only corrects header versions across all constitutional artifacts.
+- **Ratification Status:** Ratified

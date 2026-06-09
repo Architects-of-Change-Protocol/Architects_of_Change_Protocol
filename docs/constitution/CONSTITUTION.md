@@ -1,6 +1,6 @@
 # AOC Constitution
 
-**Constitution Version:** v11.0
+**Constitution Version:** v12.0
 
 **Status:** Ratified
 
