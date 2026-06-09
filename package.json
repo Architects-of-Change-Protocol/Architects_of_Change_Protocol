@@ -7,7 +7,8 @@
     "packages/*",
     "examples/*",
     "enterprise",
-    "crypto"
+    "crypto",
+    "frontend/app"
   ],
   "scripts": {
     "build": "tsc -b",
