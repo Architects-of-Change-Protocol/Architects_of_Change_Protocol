@@ -1,6 +1,6 @@
 # Claim Evidence Policy
 
-**Constitution Version:** v7.0
+**Constitution Version:** v8.0
 
 ## Acceptance rule
 

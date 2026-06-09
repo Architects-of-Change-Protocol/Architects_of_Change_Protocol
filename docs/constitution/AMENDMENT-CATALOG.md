@@ -1,6 +1,6 @@
 # Constitutional Amendment Catalog
 
-**Constitution Version:** v7.0
+**Constitution Version:** v8.0
 
 ## Amendment index
 
@@ -13,6 +13,7 @@
 | AOC-AMD-0005 | Establish Constitutional Standing Governance Framework | Type C | v5.0 | Ratified |
 | AOC-AMD-0006 | Establish Constitutional Claims Governance Framework | Type C | v6.0 | Ratified |
 | AOC-AMD-0007 | Establish Constitutional Trust Governance Framework | Type C | v7.0 | Ratified |
+| AOC-AMD-0008 | Establish Constitutional Verification Governance Framework | Type C | v8.0 | Ratified |
 
 ## AOC-AMD-0001 — Establish Constitutional Amendment System
 
@@ -119,4 +120,20 @@
 - **Rationale:** Close the constitutional gap between governed assertions and governed confidence by making trust evidence-backed, purpose-bound, time-aware, decaying, suspendable, revocable, versioned, and traceable before it influences decisions.
 - **Risk Assessment:** Moderate governance risk and low runtime risk. The amendment adds fail-closed repository governance without implementing a trust, reputation, voting, federation, identity, verification, governance, policy, decision, authentication, or authorization runtime.
 - **Migration Impact:** Constitutional governance advances from v6.0 to v7.0. Future trust creation, semantic changes, ownership changes, evidence policies, issuance rules, lifecycle semantics, decay rules, revocation rules, and retirement require Type B or Type C amendments. CI and release validation execute trust governance scanners before publishability.
+- **Ratification Status:** Ratified
+
+
+## AOC-AMD-0008 — Establish Constitutional Verification Governance Framework
+
+- **Amendment ID:** AOC-AMD-0008
+- **Title:** Establish Constitutional Verification Governance Framework
+- **Author:** Architects of Change maintainers
+- **Date:** 2026-06-09
+- **Type:** Type C
+- **Version:** v8.0
+- **Affected Laws:** LAW-008; verification ownership, authority, lifecycle, evidence, methods, expiration, revocation, evolution, and enforcement obligations
+- **Affected Authorities:** Constitution; Protocol; Enterprise; Verification Authorities VER-0001 through VER-0016
+- **Rationale:** Close the constitutional gap between governed trust confidence and governed truth validation by making verification explicit, evidence-backed, method-backed, expiring, revocable, versioned, and traceable. Establish that Trust ≠ Verified as constitutional doctrine.
+- **Risk Assessment:** Moderate governance risk and low runtime risk. The amendment adds fail-closed repository governance without implementing a verification, identity, trust, reputation, voting, federation, or governance runtime.
+- **Migration Impact:** Future verification creation, retirement, semantic changes, lifecycle semantics, evidence minimums, method requirements, expiration causes, revocation causes, and enforcement obligations require Type B or Type C amendment governance. CI and release validation execute verification governance scanners before publishability.
 - **Ratification Status:** Ratified

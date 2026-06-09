@@ -1,6 +1,6 @@
 # AOC Constitution
 
-**Constitution Version:** v7.0
+**Constitution Version:** v8.0
 
 **Status:** Ratified
 
@@ -69,13 +69,22 @@ The following documents are incorporated into the Constitution by reference:
 - `TRUST-REVOCATION-POLICY.md`
 - `TRUST-VIOLATION-CATALOG.md`
 
+- `VERIFICATION-CONSTITUTION.md`
+- `VERIFICATION-AUTHORITIES.md`
+- `VERIFICATION-EVIDENCE-POLICY.md`
+- `VERIFICATION-LIFECYCLE.md`
+- `VERIFICATION-METHOD-POLICY.md`
+- `VERIFICATION-EXPIRATION-POLICY.md`
+- `VERIFICATION-REVOCATION-POLICY.md`
+- `VERIFICATION-VIOLATION-CATALOG.md`
+
 ## 3. Constitutional principles
 
 1. The Constitution is enforceable through scanners, tests, CI gates, and release gates.
 2. The Constitution is versioned with explicit major and minor version semantics.
 3. The Constitution is auditable through an amendment catalog and version history.
 4. The Constitution is amendable only through the amendment procedure.
-5. The Constitution is traceable from law, authority, ownership, policy, capability, standing, claim, and decision changes to ratified amendment records.
+5. The Constitution is traceable from law, authority, ownership, policy, capability, standing, claim, trust, verification, and decision changes to ratified amendment records.
 6. Authority existence, capability possession, policy coverage, participant standing, claim legitimacy, and decision legitimacy are distinct; all participation and runtime power are deny-by-default unless constitutionally cataloged, assigned, constrained, validated, decided, and traceable.
 
 ## 4. Versioning model
@@ -145,6 +154,12 @@ Trust is a governed confidence signal derived from evidence, behavior, history, 
 
 The constitutional chain is `Authority → Capability → Policy → Standing → Claim → Trust → Decision → Action`. Trust influences confidence but never directly authorizes action.
 
-## 15. Release governance
+## 15. Verification authority governance
 
-`validate:release` must run constitutional amendment and claim governance validation before publishability validation. The aggregate AOC boundary gate must include amendment, version, authority, capability, policy, decision, standing, and all claim authority, evidence, lifecycle, dispute, supersession, withdrawal, and aggregate governance scanners, and all trust authority, evidence, lifecycle, issuance, decay, revocation, and aggregate governance scanners. Capability, policy, standing, claim, trust, and decision governance validation must complete before publishability validation.
+Verification is a governed determination that evidence has been evaluated using an authorized method and satisfies the requirements of a verification authority. Verification legitimacy is distinct from authority, capability, policy, standing, claim, trust, and decision legitimacy. A verification may influence a decision only after valid standing, a valid claim, successful evidence evaluation, an authorized method, and a valid lifecycle transition to `Verified`. Trust and verification are constitutionally independent signals; all four combinations of trust and verification state are constitutionally valid.
+
+The constitutional chain is `Authority → Capability → Policy → Standing → Claim → Trust → Verification → Decision → Action`. Verification provides validation input but never directly authorizes action.
+
+## 16. Release governance
+
+`validate:release` must run constitutional amendment and claim governance validation before publishability validation. The aggregate AOC boundary gate must include amendment, version, authority, capability, policy, decision, standing, and all claim authority, evidence, lifecycle, dispute, supersession, withdrawal, and aggregate governance scanners, and all trust authority, evidence, lifecycle, issuance, decay, revocation, and aggregate governance scanners, and all verification authority, evidence, lifecycle, methods, expiration, revocation, and aggregate governance scanners. Capability, policy, standing, claim, trust, verification, and decision governance validation must complete before publishability validation.

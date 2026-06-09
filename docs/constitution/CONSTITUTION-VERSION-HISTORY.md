@@ -4,6 +4,7 @@
 
 | Version | Date | Amendments | Summary | Breaking Changes |
 |---|---|---|---|---|
+| v8.0 | 2026-06-09 | AOC-AMD-0008 | Establishes constitutional verification authority, evidence, methods, lifecycle, expiration, revocation, violations, and enforcement. | Active trust signals no longer imply independent validation; decision influence may require governed verification evaluation. |
 | v7.0 | 2026-06-08 | AOC-AMD-0007 | Establishes constitutional trust authority, evidence, issuance, lifecycle, decay, revocation, violations, and enforcement. | Accepted claims no longer carry equal confidence; decision influence requires governed trust evaluation. |
 | v5.0 | 2026-06-08 | AOC-AMD-0005 | Establishes constitutional standing authority, eligibility, lifecycle, delegation, representation, revocation, violations, and enforcement. | Participation requires applicable active, eligibility-validated standing. |
 | v4.0 | 2026-06-08 | AOC-AMD-0004 | Establishes constitutional decision authority, lifecycle, evidence, explainability, appeals, revocation, violations, and enforcement. | Actions require traceable, evidence-supported, policy-covered decisions. |
@@ -63,6 +64,14 @@
 - **Breaking Changes:** Participant standing no longer makes an assertion constitutionally influential. Governed decisions may rely only on cataloged claims that reach `Accepted` through standing-backed submission and evidence validation.
 - **Migration Notes:** Repository governance changes only. No claims, trust, identity, verification, voting, federation, reputation, or governance runtime is introduced. Future claim governance changes require Type B or Type C amendments.
 
+
+## v8.0
+
+- **Date:** 2026-06-09
+- **Amendments:** AOC-AMD-0008
+- **Summary:** Establishes Constitutional, Governance, Runtime, and Operational verification classes; catalogs verification authorities, evidence policies, methods, expiration policies, and revocation authorities; governs lifecycle, expiration, revocation, retirement, violations, decision influence, and traceability; establishes Trust ≠ Verified as constitutional doctrine; and adds fail-closed CI and release scanners.
+- **Breaking Changes:** Active trust signals no longer imply independent validation. Governed decisions may use verification only through a Verified, evidence-evaluated, method-backed, expiration-governed, revocable, traceable verification signal. All four states of (Trust × Verification) are constitutionally valid.
+- **Migration Notes:** Repository governance changes only. No verification, identity, trust, reputation, voting, federation, governance, authentication, authorization, claims, or decision runtime is introduced. Future verification governance changes require Type B or Type C amendments.
 
 ## v7.0
 
