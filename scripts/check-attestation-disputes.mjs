@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+import { attestationRecords, attestationDisputeRecords, attestationAmendments, attestationViolation, ATTESTATION_DISPUTE_FILE } from './attestation-governance-lib.mjs';
+import { runScanner } from './constitutional-governance-lib.mjs';
+export function scanAttestationDisputes(root){const violations=[],attestations=new Map(attestationRecords(root).map(r=>[r['Attestation ID'],r])),records=attestationDisputeRecords(root);
+for(const r of records){const id=r['Dispute ID'];if(!/^ADT-\d{4}$/.test(id))violations.push(attestationViolation(ATTESTATION_DISPUTE_FILE,`invalid dispute ID '${id}'`,'ATT-V-008'));if(!attestations.has(r['Attestation ID']))violations.push(attestationViolation(ATTESTATION_DISPUTE_FILE,`${id} references unknown attestation '${r['Attestation ID']}'`,'ATT-V-008'));if(!r.Grounds)violations.push(attestationViolation(ATTESTATION_DISPUTE_FILE,`${id} is missing Grounds`,'ATT-V-008'));if(!r.Evidence)violations.push(attestationViolation(ATTESTATION_DISPUTE_FILE,`${id} is missing Evidence`,'ATT-V-008'));if(!r.Initiator)violations.push(attestationViolation(ATTESTATION_DISPUTE_FILE,`${id} is missing Initiator`,'ATT-V-008'));if(!['Active','Dismissed','Sustained','Retired'].includes(r.Status))violations.push(attestationViolation(ATTESTATION_DISPUTE_FILE,`${id} has invalid status '${r.Status}'`,'ATT-V-008'));}
+return violations;}
+if(process.argv[1]&&import.meta.url===new URL(`file://${process.argv[1]}`).href)runScanner('Attestation disputes scanner',scanAttestationDisputes);

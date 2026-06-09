@@ -1,0 +1,7 @@
+import { spawnSync } from 'node:child_process';
+import { createConstitutionalFixture, repositoryRoot, writeAttestationGovernance } from './fixture';
+const run=()=>spawnSync(process.execPath,['scripts/check-attestation-eligibility.mjs'],{cwd:repositoryRoot,encoding:'utf8'});
+describe('attestation eligibility governance',()=>{
+ it('validates the repository attestation eligibility policy',()=>{const r=run();expect(r.status).toBe(0);expect(r.stderr).toBe('');expect(r.stdout).toContain('Attestation eligibility scanner passed');});
+ it('rejects eligibility policy missing standing requirement',()=>{const f=createConstitutionalFixture();try{writeAttestationGovernance(f);f.write('docs/constitution/ATTESTATION-ELIGIBILITY-POLICY.md',`# Attestation Eligibility Policy\n\n**Constitution Version:** v1.0\n\n## Eligibility policy registry\n\n| Eligibility Policy ID | Attestation Class | Standing Requirement | Trust Threshold | Verification Required | Reputation Threshold | Authority Requirement | Constitutional Role | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|\n| AEP-0001 | Constitutional | | None | Optional | None | Required | Steward | AOC-AMD-0001 | Active |\n| AEP-0002 | Governance | Required | None | Optional | None | Required | Participant | AOC-AMD-0001 | Active |\n`);const r=f.run('check-attestation-eligibility.mjs');expect(r.status).toBe(1);expect(r.stderr).toContain('ATT-V-002 AEP-0001 is missing Standing Requirement');}finally{f.cleanup();}});
+});

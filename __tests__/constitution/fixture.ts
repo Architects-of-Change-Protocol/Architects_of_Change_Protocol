@@ -412,6 +412,72 @@ export const writeVerificationGovernance = (fixture: ConstitutionalFixture, opti
   fixture.write('docs/constitution/VERIFICATION-VIOLATION-CATALOG.md', `# Verification Violations\n\n**Constitution Version:** ${version}\n`);
 };
 
+export const writeAttestationGovernance = (fixture: ConstitutionalFixture, options: {
+  version?: string;
+  amendmentId?: string;
+} = {}) => {
+  const version = options.version ?? 'v1.0';
+  const amendmentId = options.amendmentId ?? 'AOC-AMD-0001';
+  writeReputationGovernance(fixture, { version, amendmentId });
+  writeConstitutionalGovernance(fixture, { version, amendmentId, affectedAuthorities: 'Constitution; Attestation Authorities ATT-0001 through ATT-0004' });
+
+  const attDefs = [
+    ['ATT-0001', 'Constitution Validity Attestation', 'Constitutional', 'Constitution', 'AEP-0001', 'AWP-0001', 'AXP-0001'],
+    ['ATT-0002', 'Amendment Attestation', 'Governance', 'Constitution', 'AEP-0002', 'AWP-0002', 'AXP-0002'],
+    ['ATT-0003', 'Identity Attestation', 'Runtime', 'Protocol', 'AEP-0003', 'AWP-0003', 'AXP-0003'],
+    ['ATT-0004', 'Audit Attestation', 'Operational', 'Enterprise', 'AEP-0004', 'AWP-0004', 'AXP-0004'],
+  ] as const;
+
+  const attRows = attDefs.map(([id, name, cls, owner, eligibility, weight, expiration]) =>
+    `| ${id} | ${name} | ${cls} | ${owner} | ${eligibility} | ${weight} | ${expiration} | Yes | Yes | ${amendmentId} | Not scheduled | Canonical |`
+  ).join('\n');
+
+  const eligibilityRows = attDefs.map(([,, cls]) =>
+    `| AEP-${attDefs.findIndex(d => d[2] === cls) + 1 < 10 ? '000' + (attDefs.findIndex(d => d[2] === cls) + 1) : '00' + (attDefs.findIndex(d => d[2] === cls) + 1)} | ${cls} | Active standing required | None | Optional | None | Required | Fixture role | ${amendmentId} | Active |`
+  ).join('\n');
+
+  const scopeRows = [
+    `| ASP-0001 | Constitutional | Constitution Scope | Required | Amendment-bounded | Required | ${amendmentId} | Active |`,
+    `| ASP-0002 | Governance | Policy Scope; Decision Scope | Required | Amendment-bounded | Required | ${amendmentId} | Active |`,
+    `| ASP-0003 | Runtime | Claim Scope; Verification Scope | Required | Time-bounded | Required | ${amendmentId} | Active |`,
+    `| ASP-0004 | Operational | Claim Scope; Decision Scope | Required | Time-bounded | Required | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const weightRows = [
+    `| AWP-0001 | Constitutional | Constitutional Weight | Constitutional Weight | Single attestation | Required for constitutional decisions | ${amendmentId} | Active |`,
+    `| AWP-0002 | Governance | Governance Weight | Governance Weight | Multiple attestations | Required for governance decisions | ${amendmentId} | Active |`,
+    `| AWP-0003 | Runtime | Advisory Weight | Consensus Weight | Aggregation per threshold | Advisory unless required | ${amendmentId} | Active |`,
+    `| AWP-0004 | Operational | Advisory Weight | Advisory Weight | Advisory only | Informational only | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const expirationRows = [
+    `| AXP-0001 | Constitutional | Time Limit; Constitutional Override | Attestation becomes Expired | Yes | Preserved permanently | ${amendmentId} | Active |`,
+    `| AXP-0002 | Governance | Time Limit; Standing Revocation | Attestation becomes Expired | Yes | Preserved permanently | ${amendmentId} | Active |`,
+    `| AXP-0003 | Runtime | Time Limit; Trust Decay; Verification Expiration | Attestation becomes Expired | Yes | Preserved permanently | ${amendmentId} | Active |`,
+    `| AXP-0004 | Operational | Time Limit; Reputation Revocation | Attestation becomes Expired | Yes | Preserved permanently | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const causes = 'Fraud; Standing Failure; Constitutional Override; Governance Decision';
+  const revocationAuthorityRows = attDefs.map(([id,,,owner]) =>
+    `| ${id} | Yes | ${causes} | ${owner} | Required | Required | ${amendmentId} | Active |`
+  ).join('\n');
+
+  const eligibilityRowsIndexed = attDefs.map(([,, cls,], index) =>
+    `| AEP-${String(index + 1).padStart(4, '0')} | ${cls} | Active standing required | None | Optional | None | Required | Fixture role | ${amendmentId} | Active |`
+  ).join('\n');
+
+  fixture.write('docs/constitution/ATTESTATION-CONSTITUTION.md', `# Attestation Constitution\n\n**Constitution Version:** ${version}\n`);
+  fixture.write('docs/constitution/ATTESTATION-AUTHORITIES.md', `# Attestation Authorities\n\n**Constitution Version:** ${version}\n\n## Attestation authority catalog\n\n| Attestation ID | Attestation Name | Attestation Class | Owner | Eligibility Policy | Weight Policy | Expiration Policy | Revocable | Disputable | Creation Amendment | Retirement Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|---|---|\n${attRows}\n`);
+  fixture.write('docs/constitution/ATTESTATION-SCOPE-POLICY.md', `# Attestation Scope Policy\n\n**Constitution Version:** ${version}\n\n## Scope registry\n\n| Scope Policy ID | Attestation Class | Valid Scopes | Subject Requirements | Duration Requirements | Authority Requirements | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${scopeRows}\n`);
+  fixture.write('docs/constitution/ATTESTATION-ELIGIBILITY-POLICY.md', `# Attestation Eligibility Policy\n\n**Constitution Version:** ${version}\n\n## Eligibility policy registry\n\n| Eligibility Policy ID | Attestation Class | Standing Requirement | Trust Threshold | Verification Required | Reputation Threshold | Authority Requirement | Constitutional Role | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|\n${eligibilityRowsIndexed}\n`);
+  fixture.write('docs/constitution/ATTESTATION-LIFECYCLE.md', `# Attestation Lifecycle\n\n**Constitution Version:** ${version}\n\n## Attestation lifecycle transition ledger\n\n| Transition ID | Attestation ID | From | To | Authorized By | Evidence | Amendment | Effective Date |\n|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/ATTESTATION-WEIGHT-POLICY.md', `# Attestation Weight Policy\n\n**Constitution Version:** ${version}\n\n## Weight policy registry\n\n| Weight Policy ID | Attestation Class | Default Weight Level | Maximum Weight Level | Aggregation Rule | Decision Influence Rule | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${weightRows}\n`);
+  fixture.write('docs/constitution/ATTESTATION-EXPIRATION-POLICY.md', `# Attestation Expiration Policy\n\n**Constitution Version:** ${version}\n\n## Expiration policy catalog\n\n| Expiration Policy ID | Attestation Class | Valid Expiration Triggers | Expiration Semantics | Re-attestation Permitted | Historical Preservation | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${expirationRows}\n`);
+  fixture.write('docs/constitution/ATTESTATION-REVOCATION-POLICY.md', `# Attestation Revocation Policy\n\n**Constitution Version:** ${version}\n\n## Revocation authority registry\n\n| Attestation ID | Revocable | Valid Causes | Revocation Authority | Evidence Required | Decision Reference Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${revocationAuthorityRows}\n\n## Revocation registry\n\n| Revocation ID | Attestation ID | Subject | Cause | Evidence | Revoked By | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/ATTESTATION-DISPUTE-POLICY.md', `# Attestation Dispute Policy\n\n**Constitution Version:** ${version}\n\n## Dispute registry\n\n| Dispute ID | Attestation ID | Grounds | Evidence | Initiator | Resolution | Decision Reference | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/ATTESTATION-VIOLATION-CATALOG.md', `# Attestation Violations\n\n**Constitution Version:** ${version}\n`);
+};
+
 export const writeReputationGovernance = (fixture: ConstitutionalFixture, options: {
   version?: string;
   amendmentId?: string;

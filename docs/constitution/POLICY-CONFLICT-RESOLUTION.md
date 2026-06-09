@@ -1,6 +1,6 @@
 # Policy Conflict Resolution
 
-**Constitution Version:** v8.0
+**Constitution Version:** v10.0
 
 ## Resolution order
 

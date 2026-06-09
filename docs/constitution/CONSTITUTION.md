@@ -1,6 +1,6 @@
 # AOC Constitution
 
-**Constitution Version:** v9.0
+**Constitution Version:** v10.0
 
 **Status:** Ratified
 
@@ -89,14 +89,25 @@ The following documents are incorporated into the Constitution by reference:
 - `docs/constitution/REPUTATION-REVOCATION-POLICY.md`
 - `docs/constitution/REPUTATION-VIOLATION-CATALOG.md`
 
+- `docs/constitution/ATTESTATION-CONSTITUTION.md`
+- `docs/constitution/ATTESTATION-AUTHORITIES.md`
+- `docs/constitution/ATTESTATION-SCOPE-POLICY.md`
+- `docs/constitution/ATTESTATION-ELIGIBILITY-POLICY.md`
+- `docs/constitution/ATTESTATION-LIFECYCLE.md`
+- `docs/constitution/ATTESTATION-WEIGHT-POLICY.md`
+- `docs/constitution/ATTESTATION-EXPIRATION-POLICY.md`
+- `docs/constitution/ATTESTATION-REVOCATION-POLICY.md`
+- `docs/constitution/ATTESTATION-DISPUTE-POLICY.md`
+- `docs/constitution/ATTESTATION-VIOLATION-CATALOG.md`
+
 ## 3. Constitutional principles
 
 1. The Constitution is enforceable through scanners, tests, CI gates, and release gates.
 2. The Constitution is versioned with explicit major and minor version semantics.
 3. The Constitution is auditable through an amendment catalog and version history.
 4. The Constitution is amendable only through the amendment procedure.
-5. The Constitution is traceable from law, authority, ownership, policy, capability, standing, claim, trust, verification, reputation, and decision changes to ratified amendment records.
-6. Authority existence, capability possession, policy coverage, participant standing, claim legitimacy, trust confidence, verification status, reputation signal, and decision legitimacy are distinct; all participation and runtime power are deny-by-default unless constitutionally cataloged, assigned, constrained, validated, decided, and traceable.
+5. The Constitution is traceable from law, authority, ownership, policy, capability, standing, claim, trust, verification, reputation, attestation, and decision changes to ratified amendment records.
+6. Authority existence, capability possession, policy coverage, participant standing, claim legitimacy, trust confidence, verification status, reputation signal, attestation endorsement, and decision legitimacy are distinct; all participation and runtime power are deny-by-default unless constitutionally cataloged, assigned, constrained, validated, decided, and traceable.
 
 ## 4. Versioning model
 
@@ -171,6 +182,12 @@ Verification is a governed determination that evidence has been evaluated using 
 
 The constitutional chain is `Authority → Capability → Policy → Standing → Claim → Trust → Verification → Reputation → Decision → Action`. Verification provides validation input but never directly authorizes action.
 
+## 18. Attestation authority governance
+
+Attestation is a governed declaration by an eligible actor accepting constitutional responsibility for endorsing a claim, verification, reputation record, decision, or constitutional artifact. Attestation legitimacy is distinct from authority, capability, policy, standing, claim, trust, verification, reputation, and decision legitimacy. An attestation may influence a decision only after valid standing, eligibility validation, authorized issuance, and a valid lifecycle transition to `Active`. Trust, verification, reputation, and attestation are constitutionally independent signals; all combinations of their states are constitutionally valid.
+
+The constitutional chain is `Authority → Capability → Policy → Standing → Claim → Trust → Verification → Reputation → Attestation → Decision → Action`. Attestation governs who is willing to publicly endorse a position, but never directly authorizes action, and never overrides authority, capability, policy, standing, claim evidence, verification requirements, or reputation signals. Expiration transitions attestations to non-influencing status without deleting history; revocation disables influence permanently.
+
 ## 17. Reputation authority governance
 
 Reputation is a governed historical reliability signal derived from constitutional records, verified behavior, claim outcomes, trust history, decision history, standing history, and dispute history. Reputation legitimacy is distinct from authority, capability, policy, standing, claim, trust, verification, and decision legitimacy. A reputation signal may influence a decision only after valid standing, a valid claim, source evaluation under the governing sources policy, an authorized calculation, and a valid lifecycle transition to `Active`. Trust, verification, and reputation are constitutionally independent signals; all combinations of trust, verification, and reputation state are constitutionally valid.
@@ -179,4 +196,4 @@ The constitutional chain is `Authority → Capability → Policy → Standing �
 
 ## 18. Release governance
 
-`validate:release` must run constitutional amendment and claim governance validation before publishability validation. The aggregate AOC boundary gate must include amendment, version, authority, capability, policy, decision, standing, and all claim authority, evidence, lifecycle, dispute, supersession, withdrawal, and aggregate governance scanners, and all trust authority, evidence, lifecycle, issuance, decay, revocation, and aggregate governance scanners, and all verification authority, evidence, lifecycle, methods, expiration, revocation, and aggregate governance scanners, and all reputation authority, sources, lifecycle, calculation, decay, disputes, corrections, revocation, and aggregate governance scanners. Capability, policy, standing, claim, trust, verification, reputation, and decision governance validation must complete before publishability validation.
+`validate:release` must run constitutional amendment and claim governance validation before publishability validation. The aggregate AOC boundary gate must include amendment, version, authority, capability, policy, decision, standing, and all claim authority, evidence, lifecycle, dispute, supersession, withdrawal, and aggregate governance scanners, and all trust authority, evidence, lifecycle, issuance, decay, revocation, and aggregate governance scanners, and all verification authority, evidence, lifecycle, methods, expiration, revocation, and aggregate governance scanners, and all reputation authority, sources, lifecycle, calculation, decay, disputes, corrections, revocation, and aggregate governance scanners, and all attestation authority, scope, eligibility, lifecycle, weight, expiration, revocation, disputes, and aggregate governance scanners. Capability, policy, standing, claim, trust, verification, reputation, attestation, and decision governance validation must complete before publishability validation.

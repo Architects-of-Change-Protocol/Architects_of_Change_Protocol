@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+import { attestationRecords, attestationLifecycleRecords, attestationAmendments, attestationViolation, ATTESTATION_TRANSITIONS, ATTESTATION_LIFECYCLE_FILE } from './attestation-governance-lib.mjs';
+import { runScanner } from './constitutional-governance-lib.mjs';
+export function scanAttestationLifecycle(root){const violations=[],attestations=new Map(attestationRecords(root).map(r=>[r['Attestation ID'],r])),amendments=new Set(attestationAmendments(root).map(r=>r.id)),records=attestationLifecycleRecords(root);
+for(const r of records){const id=r['Transition ID'];if(!/^ALT-\d{4}$/.test(id))violations.push(attestationViolation(ATTESTATION_LIFECYCLE_FILE,`invalid transition ID '${id}'`,'ATT-V-005'));if(!attestations.has(r['Attestation ID']))violations.push(attestationViolation(ATTESTATION_LIFECYCLE_FILE,`${id} references unknown attestation '${r['Attestation ID']}'`,'ATT-V-005'));const allowed=ATTESTATION_TRANSITIONS.get(r.From);if(!allowed)violations.push(attestationViolation(ATTESTATION_LIFECYCLE_FILE,`${id} has invalid source state '${r.From}'`,'ATT-V-005'));else if(!allowed.has(r.To))violations.push(attestationViolation(ATTESTATION_LIFECYCLE_FILE,`${id} invalid transition '${r.From}' → '${r.To}'`,'ATT-V-005'));if(!amendments.has(r.Amendment))violations.push(attestationViolation(ATTESTATION_LIFECYCLE_FILE,`${id} lacks a ratified attestation amendment`,'ATT-V-010'));}
+return violations;}
+if(process.argv[1]&&import.meta.url===new URL(`file://${process.argv[1]}`).href)runScanner('Attestation lifecycle scanner',scanAttestationLifecycle);

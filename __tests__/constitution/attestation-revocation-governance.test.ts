@@ -1,0 +1,7 @@
+import { spawnSync } from 'node:child_process';
+import { createConstitutionalFixture, repositoryRoot, writeAttestationGovernance } from './fixture';
+const run=()=>spawnSync(process.execPath,['scripts/check-attestation-revocation.mjs'],{cwd:repositoryRoot,encoding:'utf8'});
+describe('attestation revocation governance',()=>{
+ it('validates the repository attestation revocation policy',()=>{const r=run();expect(r.status).toBe(0);expect(r.stderr).toBe('');expect(r.stdout).toContain('Attestation revocation scanner passed');});
+ it('rejects attestation without revocation authority',()=>{const f=createConstitutionalFixture();try{writeAttestationGovernance(f);f.write('docs/constitution/ATTESTATION-REVOCATION-POLICY.md',`# Attestation Revocation Policy\n\n**Constitution Version:** v1.0\n\n## Revocation authority registry\n\n| Attestation ID | Revocable | Valid Causes | Revocation Authority | Evidence Required | Decision Reference Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n\n## Revocation registry\n\n| Revocation ID | Attestation ID | Subject | Cause | Evidence | Revoked By | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|---|\n`);const r=f.run('check-attestation-revocation.mjs');expect(r.status).toBe(1);expect(r.stderr).toContain('ATT-V-006 ATT-0001 has no revocation authority definition');}finally{f.cleanup();}});
+});
