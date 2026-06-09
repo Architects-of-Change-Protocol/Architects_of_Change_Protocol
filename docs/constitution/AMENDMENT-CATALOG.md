@@ -1,6 +1,6 @@
 # Constitutional Amendment Catalog
 
-**Constitution Version:** v6.0
+**Constitution Version:** v7.0
 
 ## Amendment index
 
@@ -11,6 +11,8 @@
 | AOC-AMD-0003 | Establish Constitutional Policy Governance | Type C | v3.0 | Ratified |
 | AOC-AMD-0004 | Establish Constitutional Decision Governance Framework | Type C | v4.0 | Ratified |
 | AOC-AMD-0005 | Establish Constitutional Standing Governance Framework | Type C | v5.0 | Ratified |
+| AOC-AMD-0006 | Establish Constitutional Claims Governance Framework | Type C | v6.0 | Ratified |
+| AOC-AMD-0007 | Establish Constitutional Trust Governance Framework | Type C | v7.0 | Ratified |
 
 ## AOC-AMD-0001 — Establish Constitutional Amendment System
 
@@ -101,4 +103,20 @@
 - **Rationale:** Govern assertions between standing and decisions so that only cataloged, standing-backed, evidence-complete, traceable claims may influence governed decisions.
 - **Risk Assessment:** The framework is fail-closed and documentation/scanner only. It may reject incomplete future claim records, but it introduces no claims runtime or adjacent trust, identity, verification, voting, federation, reputation, or governance engine.
 - **Migration Impact:** Constitutional governance advances from v5.0 to v6.0. Claim types, evidence policies, lifecycle transitions, disputes, supersessions, and withdrawals must use the new catalogs and pass claim-governance scanners.
+- **Ratification Status:** Ratified
+
+
+## AOC-AMD-0007 — Establish Constitutional Trust Governance Framework
+
+- **Amendment ID:** AOC-AMD-0007
+- **Title:** Establish Constitutional Trust Governance Framework
+- **Author:** Architects of Change maintainers
+- **Date:** 2026-06-08
+- **Type:** Type C
+- **Version:** v7.0
+- **Affected Laws:** LAW-008; trust ownership, authority, evidence, issuance, lifecycle, decay, suspension, revocation, evolution, traceability, and enforcement obligations
+- **Affected Authorities:** Constitution; Protocol; Enterprise; Trust Authorities TRS-0001 through TRS-0016
+- **Rationale:** Close the constitutional gap between governed assertions and governed confidence by making trust evidence-backed, purpose-bound, time-aware, decaying, suspendable, revocable, versioned, and traceable before it influences decisions.
+- **Risk Assessment:** Moderate governance risk and low runtime risk. The amendment adds fail-closed repository governance without implementing a trust, reputation, voting, federation, identity, verification, governance, policy, decision, authentication, or authorization runtime.
+- **Migration Impact:** Constitutional governance advances from v6.0 to v7.0. Future trust creation, semantic changes, ownership changes, evidence policies, issuance rules, lifecycle semantics, decay rules, revocation rules, and retirement require Type B or Type C amendments. CI and release validation execute trust governance scanners before publishability.
 - **Ratification Status:** Ratified

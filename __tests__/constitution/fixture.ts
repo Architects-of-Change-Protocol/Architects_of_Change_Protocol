@@ -312,3 +312,44 @@ export const writeClaimGovernance = (fixture: ConstitutionalFixture, options: {
   fixture.write('docs/constitution/CLAIM-WITHDRAWAL-POLICY.md', `# Claim Withdrawal\n\n**Constitution Version:** ${version}\n\n## Withdrawal registry\n\n| Withdrawal ID | Claim ID | Requested By | Authority Basis | Authority Evidence | Reason | Decision Reference | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n${options.withdrawalRows ?? ''}\n`);
   fixture.write('docs/constitution/CLAIM-VIOLATION-CATALOG.md', `# Claim Violations\n\n**Constitution Version:** ${version}\n`);
 };
+
+export const writeTrustGovernance = (fixture: ConstitutionalFixture, options: {
+  version?: string;
+  amendmentId?: string;
+  trustRows?: string;
+  evidenceRows?: string;
+  lifecycleRows?: string;
+  issuanceRows?: string;
+  decayRows?: string;
+  revocationAuthorityRows?: string;
+  revocationRows?: string;
+} = {}) => {
+  const version = options.version ?? 'v1.0';
+  const amendmentId = options.amendmentId ?? 'AOC-AMD-0001';
+  writeClaimGovernance(fixture, { version, amendmentId });
+  writeConstitutionalGovernance(fixture, { version, amendmentId, affectedAuthorities: 'Constitution; Trust Authorities; Trust Evidence; Trust Lifecycle; Trust Confidence' });
+  const definitions = [
+    ['TRS-0001', 'Constitutional Integrity', 'Constitutional', 'Constitution', 'TEP-0001'],
+    ['TRS-0002', 'Reviewer Trust', 'Governance', 'Constitution', 'TEP-0002'],
+    ['TRS-0003', 'Identity Trust', 'Runtime', 'Protocol', 'TEP-0003'],
+    ['TRS-0004', 'Audit Trust', 'Operational', 'Enterprise', 'TEP-0004'],
+  ];
+  const trustRows = options.trustRows ?? definitions.map(([id,name,kind,owner,evidence]) => `| ${id} | ${name} | ${kind} | ${owner} | ${evidence} | Yes | Yes | ${amendmentId} | Not scheduled | Canonical |`).join('\n');
+  const evidenceRows = options.evidenceRows ?? definitions.map(([id,,, ,evidence]) => `| ${evidence} | ${id} | Fixture evidence | Primary 100% | Fixture integrity | Within 90 days | One record | Weighted fixture calculation | ${amendmentId} | Active |`).join('\n');
+  const lifecycleRows = options.lifecycleRows ?? definitions.flatMap(([id,,,owner,evidence], index) => [
+    `| TRT-${String(index * 2 + 1).padStart(4, '0')} | ${id} | Proposed | Pending Evaluation | ${owner} | Evaluation opened | ${amendmentId} | 2026-06-08 |`,
+    `| TRT-${String(index * 2 + 2).padStart(4, '0')} | ${id} | Pending Evaluation | Active | ${owner} | ${evidence} satisfied | ${amendmentId} | 2026-06-08 |`,
+  ]).join('\n');
+  const issuanceRows = options.issuanceRows ?? definitions.map(([id,,,owner]) => `| ${id} | Required | Required | Required | ${owner} | No | Not applicable | Required | ${amendmentId} | Active |`).join('\n');
+  const decayRows = options.decayRows ?? definitions.map(([id]) => `| ${id} | Yes | Time; Inactivity | Recalculate current confidence | Zero | Required | ${amendmentId} | Active |`).join('\n');
+  const causes = 'Fraud; Evidence Failure; Identity Failure; Standing Failure; Constitutional Override; Governance Decision';
+  const revocationAuthorityRows = options.revocationAuthorityRows ?? definitions.map(([id,,,owner]) => `| ${id} | Yes | ${causes} | ${owner} | Required | Required | ${amendmentId} | Active |`).join('\n');
+  fixture.write('docs/constitution/TRUST-CONSTITUTION.md', `# Trust Constitution\n\n**Constitution Version:** ${version}\n`);
+  fixture.write('docs/constitution/TRUST-AUTHORITIES.md', `# Trust Authorities\n\n**Constitution Version:** ${version}\n\n## Trust authority catalog\n\n| Trust ID | Trust Name | Trust Class | Owner | Evidence Policy | Decay Enabled | Revocable | Creation Amendment | Retirement Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|\n${trustRows}\n`);
+  fixture.write('docs/constitution/TRUST-EVIDENCE-POLICY.md', `# Trust Evidence\n\n**Constitution Version:** ${version}\n\n## Trust evidence registry\n\n| Evidence Policy ID | Trust ID | Evidence Sources | Evidence Weight | Integrity Rules | Recency Rules | Minimum Evidence | Trust Calculation Basis | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|\n${evidenceRows}\n`);
+  fixture.write('docs/constitution/TRUST-LIFECYCLE.md', `# Trust Lifecycle\n\n**Constitution Version:** ${version}\n\n## Trust lifecycle transition ledger\n\n| Transition ID | Trust ID | From | To | Authorized By | Evidence Evaluation | Amendment | Effective Date |\n|---|---|---|---|---|---|---|---|\n${lifecycleRows}\n`);
+  fixture.write('docs/constitution/TRUST-ISSUANCE-POLICY.md', `# Trust Issuance\n\n**Constitution Version:** ${version}\n\n## Trust issuance requirements registry\n\n| Trust ID | Standing Requirement | Claim Requirement | Evidence Evaluation | Issuance Authority | Self-Issuable | Self-Issuance Authorization | Trust Record Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|\n${issuanceRows}\n`);
+  fixture.write('docs/constitution/TRUST-DECAY-POLICY.md', `# Trust Decay\n\n**Constitution Version:** ${version}\n\n## Trust decay rules registry\n\n| Trust ID | Enabled | Trigger | Rule | Floor | Historical Preservation | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${decayRows}\n`);
+  fixture.write('docs/constitution/TRUST-REVOCATION-POLICY.md', `# Trust Revocation\n\n**Constitution Version:** ${version}\n\n## Trust revocation authority registry\n\n| Trust ID | Revocable | Valid Causes | Revocation Authority | Evidence Required | Decision Reference Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${revocationAuthorityRows}\n\n## Trust revocation registry\n\n| Revocation ID | Trust ID | Subject | Cause | Evidence | Revoked By | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|---|\n${options.revocationRows ?? ''}\n`);
+  fixture.write('docs/constitution/TRUST-VIOLATION-CATALOG.md', `# Trust Violations\n\n**Constitution Version:** ${version}\n`);
+};

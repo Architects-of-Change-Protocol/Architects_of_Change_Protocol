@@ -1,6 +1,6 @@
 # Standing Eligibility Policy
 
-**Constitution Version:** v6.0
+**Constitution Version:** v7.0
 
 ## Constitutional rule
 

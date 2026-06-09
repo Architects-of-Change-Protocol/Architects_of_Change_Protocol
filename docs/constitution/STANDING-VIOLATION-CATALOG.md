@@ -1,6 +1,6 @@
 # Standing Violation Catalog
 
-**Constitution Version:** v6.0
+**Constitution Version:** v7.0
 
 | Violation ID | Name | Trigger | Required Response |
 |---|---|---|---|
