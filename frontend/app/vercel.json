@@ -1,4 +1,7 @@
 {
+  "installCommand": "npm --prefix ../.. install && npm install",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
   "rewrites": [
     {
       "source": "/(.*)",

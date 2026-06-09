@@ -2,7 +2,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   transform: {
-    '^.+\\.tsx?$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.base.json' }]
+    '^.+\\.tsx?$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.test.json' }]
   },
   testMatch: ['<rootDir>/tests/contracts/**/*.test.ts', '<rootDir>/__tests__/contracts/**/*.test.ts', '<rootDir>/__tests__/architecture/**/*.test.ts', '<rootDir>/__tests__/constitution/**/*.test.ts'],
   moduleNameMapper: {
