@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+import { reputationRecords, reputationDisputeRecords, reputationAmendments, reputationViolation, REPUTATION_DISPUTE_FILE } from './reputation-governance-lib.mjs';
+import { runScanner } from './constitutional-governance-lib.mjs';
+export function scanReputationDisputes(root){const violations=[],reputations=new Map(reputationRecords(root).map(r=>[r['Reputation ID'],r])),records=reputationDisputeRecords(root);
+for(const r of records){const id=r['Dispute ID'];if(!/^RDI-\d{4}$/.test(id))violations.push(reputationViolation(REPUTATION_DISPUTE_FILE,`invalid dispute ID '${id}'`,'REP-V-008'));if(!reputations.has(r['Reputation ID']))violations.push(reputationViolation(REPUTATION_DISPUTE_FILE,`${id} references unknown reputation '${r['Reputation ID']}'`,'REP-V-008'));if(!r.Grounds)violations.push(reputationViolation(REPUTATION_DISPUTE_FILE,`${id} is missing Grounds`,'REP-V-008'));if(!r.Evidence)violations.push(reputationViolation(REPUTATION_DISPUTE_FILE,`${id} is missing Evidence`,'REP-V-008'));if(!r.Initiator)violations.push(reputationViolation(REPUTATION_DISPUTE_FILE,`${id} is missing Initiator`,'REP-V-008'));if(!r['Decision Reference'])violations.push(reputationViolation(REPUTATION_DISPUTE_FILE,`${id} is missing Decision Reference`,'REP-V-008'));}
+return violations;}
+if(process.argv[1]&&import.meta.url===new URL(`file://${process.argv[1]}`).href)runScanner('Reputation disputes scanner',scanReputationDisputes);

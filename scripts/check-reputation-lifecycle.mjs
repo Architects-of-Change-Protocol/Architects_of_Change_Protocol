@@ -1,0 +1,7 @@
+#!/usr/bin/env node
+import { reputationRecords, reputationLifecycleRecords, reputationAmendments, reputationViolation, REPUTATION_TRANSITIONS, REPUTATION_LIFECYCLE_FILE } from './reputation-governance-lib.mjs';
+import { runScanner } from './constitutional-governance-lib.mjs';
+export function scanReputationLifecycle(root){const violations=[],reputations=new Map(reputationRecords(root).map(r=>[r['Reputation ID'],r])),amendments=new Set(reputationAmendments(root).map(r=>r.id)),records=reputationLifecycleRecords(root);
+for(const r of records){const id=r['Transition ID'];if(!/^RLT-\d{4}$/.test(id))violations.push(reputationViolation(REPUTATION_LIFECYCLE_FILE,`invalid transition ID '${id}'`,'REP-V-006'));if(!reputations.has(r['Reputation ID']))violations.push(reputationViolation(REPUTATION_LIFECYCLE_FILE,`${id} references unknown reputation '${r['Reputation ID']}'`,'REP-V-006'));const allowed=REPUTATION_TRANSITIONS.get(r.From);if(!allowed)violations.push(reputationViolation(REPUTATION_LIFECYCLE_FILE,`${id} has invalid source state '${r.From}'`,'REP-V-006'));else if(!allowed.has(r.To))violations.push(reputationViolation(REPUTATION_LIFECYCLE_FILE,`${id} invalid transition '${r.From}' → '${r.To}'`,'REP-V-006'));if(!amendments.has(r.Amendment))violations.push(reputationViolation(REPUTATION_LIFECYCLE_FILE,`${id} lacks a ratified reputation amendment`,'REP-V-006'));}
+return violations;}
+if(process.argv[1]&&import.meta.url===new URL(`file://${process.argv[1]}`).href)runScanner('Reputation lifecycle scanner',scanReputationLifecycle);

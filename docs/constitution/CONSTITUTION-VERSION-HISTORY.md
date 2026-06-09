@@ -4,6 +4,7 @@
 
 | Version | Date | Amendments | Summary | Breaking Changes |
 |---|---|---|---|---|
+| v9.0 | 2026-06-09 | AOC-AMD-0009 | Establishes constitutional reputation authority, sources, calculation, lifecycle, decay, disputes, corrections, revocation, violations, and enforcement. | Historical reliability is no longer implicit; decision influence may include governed reputation evaluation. Trust ≠ Reputation and Verification ≠ Reputation as constitutional doctrine. |
 | v8.0 | 2026-06-09 | AOC-AMD-0008 | Establishes constitutional verification authority, evidence, methods, lifecycle, expiration, revocation, violations, and enforcement. | Active trust signals no longer imply independent validation; decision influence may require governed verification evaluation. |
 | v7.0 | 2026-06-08 | AOC-AMD-0007 | Establishes constitutional trust authority, evidence, issuance, lifecycle, decay, revocation, violations, and enforcement. | Accepted claims no longer carry equal confidence; decision influence requires governed trust evaluation. |
 | v5.0 | 2026-06-08 | AOC-AMD-0005 | Establishes constitutional standing authority, eligibility, lifecycle, delegation, representation, revocation, violations, and enforcement. | Participation requires applicable active, eligibility-validated standing. |
@@ -63,6 +64,15 @@
 - **Summary:** Establishes Constitutional, Governance, Runtime, and Operational claim classes; catalogs claim authorities and evidence policies; governs lifecycle, disputes, supersession, withdrawal, violations, and traceability; and adds fail-closed CI and release scanners.
 - **Breaking Changes:** Participant standing no longer makes an assertion constitutionally influential. Governed decisions may rely only on cataloged claims that reach `Accepted` through standing-backed submission and evidence validation.
 - **Migration Notes:** Repository governance changes only. No claims, trust, identity, verification, voting, federation, reputation, or governance runtime is introduced. Future claim governance changes require Type B or Type C amendments.
+
+
+## v9.0
+
+- **Date:** 2026-06-09
+- **Amendments:** AOC-AMD-0009
+- **Summary:** Establishes Constitutional, Governance, Runtime, and Operational reputation classes; catalogs reputation authorities, sources policies, calculation policies, decay policies, and revocation authorities; governs lifecycle, decay, disputes, corrections, revocation, retirement, violations, decision influence, and traceability; establishes Trust ≠ Reputation and Verification ≠ Reputation as constitutional doctrine; advances the constitutional chain to include Reputation before Decision; and adds fail-closed CI and release scanners.
+- **Breaking Changes:** Historical reliability is no longer implicit. Governed decisions may include reputation only through an Active, source-evaluated, calculation-governed, decay-aware, disputable, correctable, revocable, traceable reputation signal. All eight states of (Trust × Verification × Reputation) are constitutionally valid.
+- **Migration Notes:** Repository governance changes only. No reputation, scoring, trust, verification, voting, federation, governance, authentication, authorization, claims, or decision runtime is introduced. Future reputation governance changes require Type B or Type C amendments.
 
 
 ## v8.0
