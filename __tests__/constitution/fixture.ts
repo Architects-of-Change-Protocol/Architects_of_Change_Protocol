@@ -411,3 +411,57 @@ export const writeVerificationGovernance = (fixture: ConstitutionalFixture, opti
   fixture.write('docs/constitution/VERIFICATION-REVOCATION-POLICY.md', `# Verification Revocation Policy\n\n**Constitution Version:** ${version}\n\n## Verification revocation authority registry\n\n| Verification ID | Revocable | Valid Causes | Revocation Authority | Evidence Required | Decision Reference Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${revocationAuthorityRows}\n\n## Verification revocation registry\n\n| Revocation ID | Verification ID | Subject | Cause | Evidence | Revoked By | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|---|\n`);
   fixture.write('docs/constitution/VERIFICATION-VIOLATION-CATALOG.md', `# Verification Violations\n\n**Constitution Version:** ${version}\n`);
 };
+
+export const writeReputationGovernance = (fixture: ConstitutionalFixture, options: {
+  version?: string;
+  amendmentId?: string;
+} = {}) => {
+  const version = options.version ?? 'v1.0';
+  const amendmentId = options.amendmentId ?? 'AOC-AMD-0001';
+  writeVerificationGovernance(fixture, { version, amendmentId });
+  writeConstitutionalGovernance(fixture, { version, amendmentId, affectedAuthorities: 'Constitution; Reputation Authorities; Reputation Sources; Reputation Lifecycle; Reputation Calculation' });
+
+  const repDefs = [
+    ['REP-0001', 'Constitutional Stewardship Reputation', 'Constitutional', 'Constitution', 'RSP-0001', 'RCP-0001', 'RDP-0001'],
+    ['REP-0002', 'Reviewer Reputation', 'Governance', 'Constitution', 'RSP-0002', 'RCP-0002', 'RDP-0002'],
+    ['REP-0003', 'Claimant Reputation', 'Runtime', 'Protocol', 'RSP-0003', 'RCP-0003', 'RDP-0003'],
+    ['REP-0004', 'Audit Reputation', 'Operational', 'Enterprise', 'RSP-0004', 'RCP-0004', 'RDP-0004'],
+  ] as const;
+
+  const repRows = repDefs.map(([id, name, cls, owner, src, calc, decay]) =>
+    `| ${id} | ${name} | ${cls} | ${owner} | ${src} | ${calc} | ${decay} | Yes | Yes | Yes | ${amendmentId} | Not scheduled | Canonical |`
+  ).join('\n');
+
+  const sourceRows = repDefs.map(([,, cls,, src]) =>
+    `| ${src} | ${cls} | Standing History; Claim Outcomes | Recency-weighted | Within 90 days | Traceable to authority | Authority-traceable | At least two source categories required | ${amendmentId} | Active |`
+  ).join('\n');
+
+  const calcRows = repDefs.map(([,, cls,,, calc]) =>
+    `| ${calc} | ${cls} | Source-weighted aggregate | Recency-weighted | Rolling 90-day window | Minimum 0.0; Maximum 1.0; Confidence interval required | Reduces score proportionally | Corrections replace current score | May be presented as decision input; may not override requirements | ${amendmentId} | Active |`
+  ).join('\n');
+
+  const decayRows = repDefs.map(([,, cls,,,,decay]) =>
+    `| ${decay} | ${cls} | Time; Inactivity | Linear decay of 0.05 per 30-day period | Floor of 0.0 when sources expire | Yes | All historical records preserved permanently | ${amendmentId} | Active |`
+  ).join('\n');
+
+  const lifecycleRows = repDefs.flatMap(([id,,, owner], index) => [
+    `| RLT-${String(index * 2 + 1).padStart(4, '0')} | ${id} | Proposed | Pending Source Evaluation | ${owner} | Review initiated | ${amendmentId} | 2026-06-09 |`,
+    `| RLT-${String(index * 2 + 2).padStart(4, '0')} | ${id} | Pending Source Evaluation | Active | ${owner} | RSP-${String(index + 1).padStart(4, '0')} satisfied | ${amendmentId} | 2026-06-09 |`,
+  ]).join('\n');
+
+  const causes = 'Fraud; Source Integrity Failure; Standing Failure; Constitutional Override; Governance Decision';
+  const revocationAuthorityRows = repDefs.map(([id,,, owner]) =>
+    `| ${id} | Yes | ${causes} | ${owner} | Required | Required | ${amendmentId} | Active |`
+  ).join('\n');
+
+  fixture.write('docs/constitution/REPUTATION-CONSTITUTION.md', `# Reputation Constitution\n\n**Constitution Version:** ${version}\n`);
+  fixture.write('docs/constitution/REPUTATION-AUTHORITIES.md', `# Reputation Authorities\n\n**Constitution Version:** ${version}\n\n## Reputation authority catalog\n\n| Reputation ID | Reputation Name | Reputation Class | Owner | Source Policy | Calculation Policy | Decay Policy | Disputable | Correctable | Revocable | Creation Amendment | Retirement Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|---|---|---|\n${repRows}\n`);
+  fixture.write('docs/constitution/REPUTATION-SOURCES-POLICY.md', `# Reputation Sources Policy\n\n**Constitution Version:** ${version}\n\n## Reputation sources registry\n\n| Source Policy ID | Reputation Class | Allowed Sources | Source Weight | Source Freshness | Source Integrity | Source Traceability | Minimum Source Coverage | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|\n${sourceRows}\n`);
+  fixture.write('docs/constitution/REPUTATION-LIFECYCLE.md', `# Reputation Lifecycle\n\n**Constitution Version:** ${version}\n\n## Reputation lifecycle transition ledger\n\n| Transition ID | Reputation ID | From | To | Authorized By | Source Evaluation | Amendment | Effective Date |\n|---|---|---|---|---|---|---|---|\n${lifecycleRows}\n`);
+  fixture.write('docs/constitution/REPUTATION-CALCULATION-POLICY.md', `# Reputation Calculation Policy\n\n**Constitution Version:** ${version}\n\n## Reputation calculation registry\n\n| Calculation Policy ID | Reputation Class | Calculation Basis | Weighting Method | Aggregation Window | Confidence Bounds | Negative Event Treatment | Correction Treatment | Decision Influence Rule | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|---|\n${calcRows}\n`);
+  fixture.write('docs/constitution/REPUTATION-DECAY-POLICY.md', `# Reputation Decay Policy\n\n**Constitution Version:** ${version}\n\n## Reputation decay policy catalog\n\n| Decay Policy ID | Reputation Class | Decay Triggers | Decay Rate | Floor | Re-evaluation Permitted | Historical Preservation | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n${decayRows}\n`);
+  fixture.write('docs/constitution/REPUTATION-DISPUTE-POLICY.md', `# Reputation Dispute Policy\n\n**Constitution Version:** ${version}\n\n## Reputation dispute registry\n\n| Dispute ID | Reputation ID | Grounds | Evidence | Initiator | Decision Reference | Resolution | Status |\n|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/REPUTATION-CORRECTION-POLICY.md', `# Reputation Correction Policy\n\n**Constitution Version:** ${version}\n\n## Reputation correction registry\n\n| Correction ID | Reputation ID | Correction Cause | Prior Value | Corrected Value | Reason | Evidence | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/REPUTATION-REVOCATION-POLICY.md', `# Reputation Revocation Policy\n\n**Constitution Version:** ${version}\n\n## Reputation revocation authority registry\n\n| Reputation ID | Revocable | Valid Causes | Revocation Authority | Evidence Required | Decision Reference Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${revocationAuthorityRows}\n\n## Reputation revocation registry\n\n| Revocation ID | Reputation ID | Subject | Cause | Evidence | Revoked By | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/REPUTATION-VIOLATION-CATALOG.md', `# Reputation Violations\n\n**Constitution Version:** ${version}\n`);
+};

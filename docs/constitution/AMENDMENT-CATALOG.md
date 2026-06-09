@@ -1,6 +1,6 @@
 # Constitutional Amendment Catalog
 
-**Constitution Version:** v8.0
+**Constitution Version:** v9.0
 
 ## Amendment index
 
@@ -14,6 +14,7 @@
 | AOC-AMD-0006 | Establish Constitutional Claims Governance Framework | Type C | v6.0 | Ratified |
 | AOC-AMD-0007 | Establish Constitutional Trust Governance Framework | Type C | v7.0 | Ratified |
 | AOC-AMD-0008 | Establish Constitutional Verification Governance Framework | Type C | v8.0 | Ratified |
+| AOC-AMD-0009 | Establish Constitutional Reputation Governance Framework | Type C | v9.0 | Ratified |
 
 ## AOC-AMD-0001 — Establish Constitutional Amendment System
 
@@ -136,4 +137,20 @@
 - **Rationale:** Close the constitutional gap between governed trust confidence and governed truth validation by making verification explicit, evidence-backed, method-backed, expiring, revocable, versioned, and traceable. Establish that Trust ≠ Verified as constitutional doctrine.
 - **Risk Assessment:** Moderate governance risk and low runtime risk. The amendment adds fail-closed repository governance without implementing a verification, identity, trust, reputation, voting, federation, or governance runtime.
 - **Migration Impact:** Future verification creation, retirement, semantic changes, lifecycle semantics, evidence minimums, method requirements, expiration causes, revocation causes, and enforcement obligations require Type B or Type C amendment governance. CI and release validation execute verification governance scanners before publishability.
+- **Ratification Status:** Ratified
+
+
+## AOC-AMD-0009 — Establish Constitutional Reputation Governance Framework
+
+- **Amendment ID:** AOC-AMD-0009
+- **Title:** Establish Constitutional Reputation Governance Framework
+- **Author:** Architects of Change maintainers
+- **Date:** 2026-06-09
+- **Type:** Type C
+- **Version:** v9.0
+- **Affected Laws:** LAW-008; reputation ownership, authority, lifecycle, sources, calculation, decay, disputes, corrections, revocation, evolution, traceability, and enforcement obligations
+- **Affected Authorities:** Constitution; Protocol; Enterprise; Reputation Authorities REP-0001 through REP-0017
+- **Rationale:** Close the constitutional gap between governed truth validation and governed historical reliability by making reputation source-backed, calculation-governed, decaying, disputable, correctable, revocable, versioned, and traceable. Establish that Trust ≠ Reputation and Verification ≠ Reputation as constitutional doctrine. Advance the constitutional chain to `Authority → Capability → Policy → Standing → Claim → Trust → Verification → Reputation → Decision → Action`.
+- **Risk Assessment:** Moderate governance risk and low runtime risk. The amendment adds fail-closed repository governance without implementing a reputation, scoring, trust, verification, voting, federation, identity, governance, policy, decision, authentication, or authorization runtime.
+- **Migration Impact:** Constitutional governance advances from v8.0 to v9.0. Future reputation creation, retirement, semantic changes, ownership changes, source policies, calculation policies, decay policies, dispute rules, correction rules, revocation causes, lifecycle semantics, and enforcement obligations require Type B or Type C amendments. CI and release validation execute reputation governance scanners before publishability.
 - **Ratification Status:** Ratified
