@@ -353,3 +353,61 @@ export const writeTrustGovernance = (fixture: ConstitutionalFixture, options: {
   fixture.write('docs/constitution/TRUST-REVOCATION-POLICY.md', `# Trust Revocation\n\n**Constitution Version:** ${version}\n\n## Trust revocation authority registry\n\n| Trust ID | Revocable | Valid Causes | Revocation Authority | Evidence Required | Decision Reference Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${revocationAuthorityRows}\n\n## Trust revocation registry\n\n| Revocation ID | Trust ID | Subject | Cause | Evidence | Revoked By | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|---|\n${options.revocationRows ?? ''}\n`);
   fixture.write('docs/constitution/TRUST-VIOLATION-CATALOG.md', `# Trust Violations\n\n**Constitution Version:** ${version}\n`);
 };
+
+export const writeVerificationGovernance = (fixture: ConstitutionalFixture, options: {
+  version?: string;
+  amendmentId?: string;
+} = {}) => {
+  const version = options.version ?? 'v1.0';
+  const amendmentId = options.amendmentId ?? 'AOC-AMD-0001';
+  writeTrustGovernance(fixture, { version, amendmentId });
+  writeConstitutionalGovernance(fixture, { version, amendmentId, affectedAuthorities: 'Constitution; Verification Authorities; Verification Evidence; Verification Lifecycle; Verification Methods' });
+
+  const verDefs = [
+    ['VER-0001', 'Constitution Verification', 'Constitutional', 'Constitution', 'VMP-0001', 'VEP-0001', 'VXP-0001'],
+    ['VER-0002', 'Capability Verification', 'Governance', 'Constitution', 'VMP-0002', 'VEP-0002', 'VXP-0002'],
+    ['VER-0003', 'Identity Verification', 'Runtime', 'Protocol', 'VMP-0003', 'VEP-0003', 'VXP-0003'],
+    ['VER-0004', 'Audit Verification', 'Operational', 'Enterprise', 'VMP-0004', 'VEP-0004', 'VXP-0004'],
+  ] as const;
+
+  const verRows = verDefs.map(([id, name, cls, owner, method, evidence, expiration]) =>
+    `| ${id} | ${name} | ${cls} | ${owner} | ${method} | ${evidence} | ${expiration} | Yes | ${amendmentId} | Not scheduled | Canonical |`
+  ).join('\n');
+
+  const evidenceRows = verDefs.map(([id,,,,,evidence]) =>
+    `| ${evidence} | ${id} | Required fixture evidence | One fixture record | No alterations permitted | Within 90 days | One record verified | Subject identity traceable | ${amendmentId} | Active |`
+  ).join('\n');
+
+  const lifecycleRows = verDefs.flatMap(([id,,,owner], index) => [
+    `| VLT-${String(index * 2 + 1).padStart(4, '0')} | ${id} | Proposed | Pending Verification | ${owner} | Review initiated | ${amendmentId} | 2026-06-09 |`,
+    `| VLT-${String(index * 2 + 2).padStart(4, '0')} | ${id} | Pending Verification | Verified | ${owner} | ${`VEP-${String(index + 1).padStart(4, '0')}`} satisfied | ${amendmentId} | 2026-06-09 |`,
+  ]).join('\n');
+
+  const methodRows = [
+    `| VMP-0001 | Constitutional Review | Independent evaluation of constitutional document integrity | Constitutional | ${amendmentId} | Active |`,
+    `| VMP-0002 | Document Review | Structured review of governance artifacts | Governance | ${amendmentId} | Active |`,
+    `| VMP-0003 | Witness Attestation | Attested confirmation by an authorized witness | Runtime | ${amendmentId} | Active |`,
+    `| VMP-0004 | Cross-System Correlation | Correlation of evidence across independent system records | Operational | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const expirationRows = [
+    `| VXP-0001 | Constitutional | Evidence Expiration; Time Limit | Verification becomes Expired; no new validation influence; historical record preserved | Yes | Required | ${amendmentId} | Active |`,
+    `| VXP-0002 | Governance | Evidence Expiration; Time Limit | Verification becomes Expired; no new validation influence; historical record preserved | Yes | Required | ${amendmentId} | Active |`,
+    `| VXP-0003 | Runtime | Evidence Expiration; Time Limit | Verification becomes Expired; no new validation influence; historical record preserved | Yes | Required | ${amendmentId} | Active |`,
+    `| VXP-0004 | Operational | Evidence Expiration; Time Limit | Verification becomes Expired; no new validation influence; historical record preserved | Yes | Required | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const causes = 'Fraud; Evidence Failure; Method Failure; Constitutional Override; Governance Decision';
+  const revocationAuthorityRows = verDefs.map(([id,,,owner]) =>
+    `| ${id} | Yes | ${causes} | ${owner} | Required | Required | ${amendmentId} | Active |`
+  ).join('\n');
+
+  fixture.write('docs/constitution/VERIFICATION-CONSTITUTION.md', `# Verification Constitution\n\n**Constitution Version:** ${version}\n`);
+  fixture.write('docs/constitution/VERIFICATION-AUTHORITIES.md', `# Verification Authorities\n\n**Constitution Version:** ${version}\n\n## Verification authority catalog\n\n| Verification ID | Verification Name | Verification Class | Owner | Verification Method | Evidence Policy | Expiration Policy | Revocable | Creation Amendment | Retirement Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|---|\n${verRows}\n`);
+  fixture.write('docs/constitution/VERIFICATION-EVIDENCE-POLICY.md', `# Verification Evidence Policy\n\n**Constitution Version:** ${version}\n\n## Verification evidence registry\n\n| Evidence Policy ID | Verification ID | Required Evidence | Minimum Evidence | Integrity Rules | Freshness Rules | Verification Threshold | Traceability Rules | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|\n${evidenceRows}\n`);
+  fixture.write('docs/constitution/VERIFICATION-LIFECYCLE.md', `# Verification Lifecycle\n\n**Constitution Version:** ${version}\n\n## Verification lifecycle transition ledger\n\n| Transition ID | Verification ID | From | To | Authorized By | Evidence Evaluation | Amendment | Effective Date |\n|---|---|---|---|---|---|---|---|\n${lifecycleRows}\n`);
+  fixture.write('docs/constitution/VERIFICATION-METHOD-POLICY.md', `# Verification Method Policy\n\n**Constitution Version:** ${version}\n\n## Verification method catalog\n\n| Method ID | Method Name | Description | Applies To Classes | Amendment | Status |\n|---|---|---|---|---|---|\n${methodRows}\n`);
+  fixture.write('docs/constitution/VERIFICATION-EXPIRATION-POLICY.md', `# Verification Expiration Policy\n\n**Constitution Version:** ${version}\n\n## Verification expiration policy catalog\n\n| Expiration Policy ID | Applies To Class | Valid Expiration Triggers | Expiration Semantics | Re-verification Permitted | Historical Preservation | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${expirationRows}\n`);
+  fixture.write('docs/constitution/VERIFICATION-REVOCATION-POLICY.md', `# Verification Revocation Policy\n\n**Constitution Version:** ${version}\n\n## Verification revocation authority registry\n\n| Verification ID | Revocable | Valid Causes | Revocation Authority | Evidence Required | Decision Reference Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${revocationAuthorityRows}\n\n## Verification revocation registry\n\n| Revocation ID | Verification ID | Subject | Cause | Evidence | Revoked By | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/VERIFICATION-VIOLATION-CATALOG.md', `# Verification Violations\n\n**Constitution Version:** ${version}\n`);
+};
