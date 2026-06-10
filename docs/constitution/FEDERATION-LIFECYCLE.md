@@ -1,6 +1,6 @@
 # Federation Lifecycle
 
-**Constitution Version:** v17.0
+**Constitution Version:** v18.0
 
 ## Valid lifecycle states
 

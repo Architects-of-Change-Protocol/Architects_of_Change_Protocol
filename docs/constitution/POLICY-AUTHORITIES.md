@@ -1,6 +1,6 @@
 # Policy Authority Catalog
 
-**Constitution Version:** v17.0
+**Constitution Version:** v18.0
 
 ## Catalog schema
 

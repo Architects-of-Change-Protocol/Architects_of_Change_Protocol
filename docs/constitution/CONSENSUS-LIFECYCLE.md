@@ -1,6 +1,6 @@
 # Consensus Lifecycle
 
-**Constitution Version:** v17.0
+**Constitution Version:** v18.0
 
 ## Constitutional rule
 

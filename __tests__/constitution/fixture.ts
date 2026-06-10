@@ -1057,3 +1057,55 @@ export const writeRuntimeGovernance = (fixture: ConstitutionalFixture, options: 
   fixture.write('docs/constitution/RUNTIME-REVOCATION-POLICY.md', `# Runtime Revocation Policy\n\n**Constitution Version:** ${version}\n\n## Revocation authority registry\n\n| Runtime Authority ID | Revocable | Valid Causes | Revocation Authority | Evidence Required | Decision Reference Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${revocationAuthorityRows}\n\n## Revocation registry\n\n| Revocation ID | Runtime Authority ID | Cause | Evidence | Revoked By | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|\n`);
   fixture.write('docs/constitution/RUNTIME-VIOLATION-CATALOG.md', `# Runtime Violation Catalog\n\n**Constitution Version:** ${version}\n`);
 };
+
+export const writeAuditGovernance = (fixture: ConstitutionalFixture, options: {
+  version?: string;
+  amendmentId?: string;
+} = {}) => {
+  const version = options.version ?? 'v1.0';
+  const amendmentId = options.amendmentId ?? 'AOC-AMD-0001';
+  writeRuntimeGovernance(fixture, { version, amendmentId });
+  writeConstitutionalGovernance(fixture, { version, amendmentId, affectedAuthorities: 'Constitution; Audit Authorities AUD-0001 through AUD-0015' });
+
+  const audDefs = [
+    ['AUD-0001', 'Constitutional Audit Authority', 'Constitutional', 'Constitution'],
+    ['AUD-0002', 'Domain Audit Authority', 'Constitutional', 'Constitution'],
+    ['AUD-0003', 'Coverage Audit Authority', 'Governance', 'Constitution'],
+    ['AUD-0004', 'Traceability Audit Authority', 'Governance', 'Constitution'],
+    ['AUD-0005', 'Integrity Audit Authority', 'Constitutional', 'Constitution'],
+    ['AUD-0006', 'Certification Authority', 'Certification', 'Constitution'],
+    ['AUD-0007', 'Remediation Authority', 'Governance', 'Enterprise'],
+    ['AUD-0008', 'Ratification Readiness Authority', 'Constitutional', 'Constitution'],
+    ['AUD-0009', 'Amendment Audit Authority', 'Constitutional', 'Constitution'],
+    ['AUD-0010', 'Runtime Audit Authority', 'Operational', 'Enterprise'],
+    ['AUD-0011', 'Economics Audit Authority', 'Operational', 'Enterprise'],
+    ['AUD-0012', 'Federation Audit Authority', 'Governance', 'Constitution'],
+    ['AUD-0013', 'Governance Audit Authority', 'Governance', 'Constitution'],
+    ['AUD-0014', 'Constitutional Authority Audit', 'Constitutional', 'Constitution'],
+    ['AUD-0015', 'Constitutional System Audit', 'Constitutional', 'Constitution'],
+  ] as const;
+
+  const audRows = audDefs.map(([id, name, cls, owner]) =>
+    `| ${id} | ${name} | ${cls} | ${owner} | ${amendmentId} | Canonical |`
+  ).join('\n');
+
+  const certRows = [
+    `| Level 0 | Unverified | No audit performed | Not certified | ${amendmentId} |`,
+    `| Level 1 | Domain Verified | Single domain audited and verified | Not certified | ${amendmentId} |`,
+    `| Level 2 | Domain Certified | Single domain audited and certified | Not certified | ${amendmentId} |`,
+    `| Level 3 | Constitution Verified | All domains verified | Not certified | ${amendmentId} |`,
+    `| Level 4 | Constitution Certified | All domains certified | Certified | ${amendmentId} |`,
+    `| Level 5 | Ratification Ready | Constitution certified and ratification-ready | Ratification Ready | ${amendmentId} |`,
+  ].join('\n');
+
+  fixture.write('docs/constitution/AUDIT-CONSTITUTION.md', `# Audit Constitution\n\n**Constitution Version:** ${version}\n\n## Preamble\n\nAudit is the governed constitutional process through which the entirety of the constitutional system is evaluated for consistency, integrity, traceability, coverage, coherence, and ratification readiness.\n\n## Constitutional Artifacts\n\n- \`AUDIT-AUTHORITIES.md\` — Audit authority catalog\n- \`AUDIT-DOMAIN-POLICY.md\` — Audit domain policy\n- \`AUDIT-COVERAGE-POLICY.md\` — Audit coverage policy\n- \`AUDIT-TRACEABILITY-POLICY.md\` — Audit traceability policy\n- \`AUDIT-INTEGRITY-POLICY.md\` — Audit integrity policy\n- \`AUDIT-CERTIFICATION-POLICY.md\` — Audit certification policy\n- \`AUDIT-LIFECYCLE.md\` — Audit lifecycle\n- \`AUDIT-REMEDIATION-POLICY.md\` — Audit remediation policy\n- \`AUDIT-VIOLATION-CATALOG.md\` — Audit violation catalog\n\n## Creation Amendment\n\n${amendmentId}\n`);
+  fixture.write('docs/constitution/AUDIT-AUTHORITIES.md', `# Audit Authorities\n\n**Constitution Version:** ${version}\n\n## Audit authority catalog\n\n| Audit Authority ID | Audit Authority Name | Authority Class | Owner | Amendment | Status |\n|---|---|---|---|---|---|\n${audRows}\n`);
+  fixture.write('docs/constitution/AUDIT-DOMAIN-POLICY.md', `# Audit Domain Policy\n\n**Constitution Version:** ${version}\n\n## Auditable Domains\n\nAuthority\nCapability\nPolicy\nStanding\nClaim\nTrust\nVerification\nReputation\nAttestation\nConsensus\nGovernance\nVoting\nFederation\nEconomics\nRuntime\n`);
+  fixture.write('docs/constitution/AUDIT-COVERAGE-POLICY.md', `# Audit Coverage Policy\n\n**Constitution Version:** ${version}\n\n## Coverage Categories\n\n- Artifact Coverage\n- Scanner Coverage\n- Test Coverage\n- Lifecycle Coverage\n- Authority Coverage\n- Violation Coverage\n- Amendment Coverage\n`);
+  fixture.write('docs/constitution/AUDIT-TRACEABILITY-POLICY.md', `# Audit Traceability Policy\n\n**Constitution Version:** ${version}\n\n## Artifact Traceability\n\nEvery constitutional artifact must trace to: Authority, Amendment, Version, Scanner, Test, Domain\n`);
+  fixture.write('docs/constitution/AUDIT-INTEGRITY-POLICY.md', `# Audit Integrity Policy\n\n**Constitution Version:** ${version}\n\n## Integrity Dimensions\n\n- Version Integrity\n- Amendment Integrity\n- Authority Integrity\n- Lifecycle Integrity\n- Policy Integrity\n- Cross-Domain Integrity\n- Scanner Integrity\n- Test Integrity\n`);
+  fixture.write('docs/constitution/AUDIT-CERTIFICATION-POLICY.md', `# Audit Certification Policy\n\n**Constitution Version:** ${version}\n\n## Certification level catalog\n\n| Certification Level | Level Name | Definition | Certified | Amendment |\n|---|---|---|---|---|\n${certRows}\n`);
+  fixture.write('docs/constitution/AUDIT-LIFECYCLE.md', `# Audit Lifecycle\n\n**Constitution Version:** ${version}\n\n## Audit lifecycle transition ledger\n\n| Transition ID | Audit ID | From | To | Authorized By | Evidence | Amendment | Effective Date |\n|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/AUDIT-REMEDIATION-POLICY.md', `# Audit Remediation Policy\n\n**Constitution Version:** ${version}\n\n## Finding Fields\n\nEvery finding must contain: Finding ID, Domain, Severity, Evidence, Root Cause, Remediation, Owner, Status\n\n## Severity Levels\n\n- Critical\n- High\n- Medium\n- Low\n\n## Finding registry\n\n| Finding ID | Domain | Severity | Evidence | Root Cause | Remediation | Owner | Status |\n|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/AUDIT-VIOLATION-CATALOG.md', `# Audit Violation Catalog\n\n**Constitution Version:** ${version}\n\n## Violation Registry\n\n| Violation ID | Name | Severity | Description | Amendment |\n|---|---|---|---|---|\n| AUD-V-001 | Missing Constitutional Artifact | Critical | A required constitutional artifact is absent | ${amendmentId} |\n| AUD-V-002 | Missing Scanner | High | A required scanner is absent | ${amendmentId} |\n| AUD-V-003 | Missing Test | High | A required test is absent | ${amendmentId} |\n| AUD-V-004 | Version Integrity Failure | Critical | Version parity violation detected | ${amendmentId} |\n| AUD-V-005 | Amendment Integrity Failure | Critical | Amendment reference is invalid | ${amendmentId} |\n| AUD-V-006 | Traceability Failure | High | Artifact cannot be traced to required dimension | ${amendmentId} |\n| AUD-V-007 | Coverage Failure | High | Coverage category is incomplete | ${amendmentId} |\n| AUD-V-008 | Domain Integrity Failure | Critical | Domain audit dimension is missing | ${amendmentId} |\n| AUD-V-009 | Cross-Domain Conflict | Critical | Cross-domain consistency violation detected | ${amendmentId} |\n| AUD-V-010 | Certification Fraud | Critical | Invalid certification claim detected | ${amendmentId} |\n| AUD-V-011 | Audit Escalation | High | Audit escalation triggered | ${amendmentId} |\n| AUD-V-012 | Ratification Readiness Failure | Critical | Constitution is not ready for ratification | ${amendmentId} |\n`);
+};

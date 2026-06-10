@@ -1,6 +1,6 @@
 # Constitutional Amendment Catalog
 
-**Constitution Version:** v17.0
+**Constitution Version:** v18.0
 
 ## Amendment index
 
@@ -23,6 +23,7 @@
 | AOC-AMD-0015 | Establish Constitutional Federation Governance Framework | Type C | v15.0 | Ratified |
 | AOC-AMD-0016 | Establish Constitutional Economics Governance Framework | Type C | v16.0 | Ratified |
 | AOC-AMD-0017 | Establish Constitutional Runtime Governance Framework | Type C | v17.0 | Ratified |
+| AOC-AMD-0018 | Establish Constitutional Audit Framework | Type C | v18.0 | Ratified |
 
 ## AOC-AMD-0001 — Establish Constitutional Amendment System
 
@@ -288,4 +289,19 @@
 - **Rationale:** Close the constitutional gap between governed economic legitimacy and governed execution legitimacy by making runtime execution explicit, authority-gated, capability-bounded, policy-constrained, evidence-generating, integrity-preserving, obligation-fulfilling, outcome-recording, auditable, challengeable, revocable, versioned, and traceable. Establish that Runtime ≠ Infrastructure, Runtime ≠ Implementation, Runtime ≠ Decision, and Runtime ≠ Outcome as constitutional doctrine. Advance the constitutional chain to include Runtime between Economics and Decision.
 - **Risk Assessment:** Moderate governance risk and no infrastructure risk. The amendment adds fail-closed repository governance without implementing a workflow engine, agent runtime, Kubernetes runtime, cloud runtime, blockchain runtime, execution scheduler, or infrastructure layer.
 - **Migration Impact:** Constitutional governance advances from v16.0 to v17.0. Future runtime creation, retirement, semantic changes, ownership changes, execution policies, capability policies, evidence policies, integrity policies, obligation policies, outcome policies, audit policies, lifecycle semantics, challenge grounds, revocation causes, and enforcement obligations require Type B or Type C amendment governance. CI and release validation now execute twelve runtime governance scanners.
+- **Ratification Status:** Ratified
+
+## AOC-AMD-0018 — Establish Constitutional Audit Framework
+
+- **Amendment ID:** AOC-AMD-0018
+- **Title:** Establish Constitutional Audit Framework
+- **Author:** Architects of Change maintainers
+- **Date:** 2026-06-10
+- **Type:** Type C
+- **Version:** v18.0
+- **Affected Laws:** LAW-008; audit authority, coverage, traceability, integrity, certification, lifecycle, remediation, violation, and enforcement obligations
+- **Affected Authorities:** Constitution; Audit Authorities AUD-0001 through AUD-0015
+- **Rationale:** Introduce constitutional audit governance as the governed process through which the entirety of the constitutional system is evaluated for consistency, integrity, traceability, coverage, coherence, and ratification readiness. Establish that Complete ≠ Certified, Coverage ≠ Integrity, and Passing Scanners ≠ Constitutional Correctness as constitutional doctrine. Advance the constitution to v18.0 as the final validation phase before PR-30 Constitutional Ratification v1.0.
+- **Risk Assessment:** Low implementation risk. The amendment introduces audit governance artifacts and scanners without changing existing laws, adding runtime execution, or implementing any agent, economic, or federation runtime.
+- **Migration Impact:** Constitutional governance advances from v17.0 to v18.0. Future audit authority, coverage, traceability, integrity, certification, lifecycle, remediation, and violation changes require Type B or Type C amendment governance. CI and release validation now execute eight audit governance scanners.
 - **Ratification Status:** Ratified

@@ -1,6 +1,6 @@
 # Runtime Execution Policy
 
-**Constitution Version:** v17.0
+**Constitution Version:** v18.0
 
 ## Execution policy catalog
 
