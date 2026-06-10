@@ -1,6 +1,6 @@
 # Claim Constitution
 
-**Constitution Version:** v12.0
+**Constitution Version:** v13.0
 
 ## Constitutional purpose
 

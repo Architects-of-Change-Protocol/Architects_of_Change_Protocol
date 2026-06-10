@@ -1,6 +1,6 @@
 # Claim Lifecycle
 
-**Constitution Version:** v12.0
+**Constitution Version:** v13.0
 
 ## States
 

@@ -4,6 +4,8 @@
 
 | Version | Date | Amendments | Summary | Breaking Changes |
 |---|---|---|---|---|
+| v13.0 | 2026-06-10 | AOC-AMD-0013 | Establishes constitutional governance authority, proposals, motions, mandates, outcomes, lifecycle, challenges, expiration, revocation, violations, and enforcement. | Collective authority is no longer implicit; governed agreement must produce a legitimate governance act before becoming collective direction. Consensus ≠ Governance, Governance ≠ Voting, Governance ≠ Execution as constitutional doctrine. |
+| v12.0 | 2026-06-09 | AOC-AMD-0012 | Aligns all constitutional artifact headers to the current Constitution version. No semantic changes. | None. Version parity correction only. |
 | v11.0 | 2026-06-09 | AOC-AMD-0011 | Establishes constitutional consensus authority, models, thresholds, lifecycle, expiration, revocation, disputes, recomputation, violations, and enforcement. | Collective agreement is no longer implicit; decision influence may include governed consensus evaluation. Attestation ≠ Consensus as constitutional doctrine. |
 | v10.0 | 2026-06-09 | AOC-AMD-0010 | Establishes constitutional attestation authority, eligibility, scope, weight, lifecycle, expiration, revocation, disputes, violations, and enforcement. | Endorsement is no longer implicit; decision influence may include governed attestation evaluation. Verified ≠ Attested and Reputable ≠ Attested as constitutional doctrine. |
 | v9.0 | 2026-06-09 | AOC-AMD-0009 | Establishes constitutional reputation authority, sources, calculation, lifecycle, decay, disputes, corrections, revocation, violations, and enforcement. | Historical reliability is no longer implicit; decision influence may include governed reputation evaluation. Trust ≠ Reputation and Verification ≠ Reputation as constitutional doctrine. |
@@ -118,3 +120,11 @@
 - **Summary:** Aligns all constitutional artifact headers to the current Constitution version. All documents that declared v10.0 following the v11.0 consensus governance introduction are advanced to v12.0 to maintain version parity with the supreme Constitution. No semantic changes are introduced.
 - **Breaking Changes:** None. This version increment is a version parity correction only.
 - **Migration Notes:** Repository governance changes only. No new scanner obligations are introduced.
+
+## v13.0
+
+- **Date:** 2026-06-10
+- **Amendments:** AOC-AMD-0013
+- **Summary:** Establishes Constitutional, Protocol, Runtime, and Operational governance classes; catalogs governance authorities GOV-0001 through GOV-0017; governs proposals, motions, mandates, outcomes, lifecycle, challenges, expiration, revocation, violations, and traceability; establishes Consensus ≠ Governance, Governance ≠ Voting, and Governance ≠ Execution as constitutional doctrine; advances the constitutional chain to include Governance between Consensus and Decision; and adds fail-closed CI and release scanners.
+- **Breaking Changes:** Collective authority is no longer implicit. Governed consensus may produce collective direction only through a cataloged governance authority, a valid proposal, a passed motion satisfying its consensus requirement, an authorized mandate, and a traceable outcome. All combinations of (Consensus × Governance) states are constitutionally valid.
+- **Migration Notes:** Repository governance changes only. No voting engine, governance runtime, proposal runtime, mandate runtime, execution runtime, federation engine, economic settlement, treasury governance, or blockchain governance is introduced. Future governance changes require Type B or Type C amendments.

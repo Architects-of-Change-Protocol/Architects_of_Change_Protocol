@@ -1,6 +1,6 @@
 # Capability Revocation Policy
 
-**Constitution Version:** v12.0
+**Constitution Version:** v13.0
 
 ## Revocation forms
 
