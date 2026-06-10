@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+import { votingEligibilityRecords, votingViolation, VALID_VOTING_CLASSES, VOTING_ELIGIBILITY_FILE } from './voting-governance-lib.mjs';
+import { runScanner } from './constitutional-governance-lib.mjs';
+export function scanVotingEligibility(root){const violations=[];const records=votingEligibilityRecords(root);if(!records.length)violations.push(votingViolation(VOTING_ELIGIBILITY_FILE,'eligibility policy catalog contains no records','VOTE-V-003'));for(const r of records){const id=r['Eligibility Policy ID'];if(!id||!/^VEL-\d{4}$/.test(id))violations.push(votingViolation(VOTING_ELIGIBILITY_FILE,`invalid eligibility policy ID '${id}'`,'VOTE-V-003'));if(!VALID_VOTING_CLASSES.includes(r['Voting Class']))violations.push(votingViolation(VOTING_ELIGIBILITY_FILE,`${id} has invalid voting class '${r['Voting Class']}'`,'VOTE-V-003'));}return violations;}
+if(process.argv[1]&&import.meta.url===new URL(`file://${process.argv[1]}`).href)runScanner('Voting eligibility scanner',scanVotingEligibility);

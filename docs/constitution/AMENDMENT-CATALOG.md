@@ -1,6 +1,6 @@
 # Constitutional Amendment Catalog
 
-**Constitution Version:** v13.0
+**Constitution Version:** v14.0
 
 ## Amendment index
 
@@ -19,6 +19,7 @@
 | AOC-AMD-0011 | Establish Constitutional Consensus Governance Framework | Type C | v11.0 | Ratified |
 | AOC-AMD-0012 | Constitutional Version Parity Alignment | Type A | v12.0 | Ratified |
 | AOC-AMD-0013 | Establish Constitutional Governance Framework | Type C | v13.0 | Ratified |
+| AOC-AMD-0014 | Establish Constitutional Voting Governance Framework | Type C | v14.0 | Ratified |
 
 ## AOC-AMD-0001 — Establish Constitutional Amendment System
 
@@ -220,4 +221,20 @@
 - **Rationale:** Close the constitutional gap between governed collective agreement and governed collective authority by making governance legitimacy explicit, proposal-governed, motion-bound, consensus-requiring, mandate-creating, outcome-recording, challengeable, expirable, revocable, versioned, and traceable. Establish that Consensus ≠ Governance, Governance ≠ Voting, and Governance ≠ Execution as constitutional doctrine. Advance the constitutional chain to include Governance between Consensus and Decision.
 - **Risk Assessment:** Moderate governance risk and no runtime risk. The amendment adds fail-closed repository governance without implementing a voting engine, governance runtime, proposal runtime, mandate runtime, execution runtime, federation engine, economic settlement, treasury governance, or blockchain governance.
 - **Migration Impact:** Constitutional governance advances from v12.0 to v13.0. Future governance creation, retirement, semantic changes, ownership changes, proposal policies, motion policies, mandate policies, outcome policies, lifecycle semantics, challenge grounds, expiration causes, revocation causes, and enforcement obligations require Type B or Type C amendment governance. CI and release validation now execute ten governance governance scanners.
+- **Ratification Status:** Ratified
+
+
+## AOC-AMD-0014 — Establish Constitutional Voting Governance Framework
+
+- **Amendment ID:** AOC-AMD-0014
+- **Title:** Establish Constitutional Voting Governance Framework
+- **Author:** Architects of Change maintainers
+- **Date:** 2026-06-10
+- **Type:** Type C
+- **Version:** v14.0
+- **Affected Laws:** LAW-008; voting ownership, authority, eligibility, weight, delegation, motion, lifecycle, expiration, challenge, revocation, evolution, traceability, and enforcement obligations
+- **Affected Authorities:** Constitution; Protocol; Enterprise; Voting Authorities VOT-0001 through VOT-0015
+- **Rationale:** Close the constitutional gap between governed collective authority and governed constitutional will by making voting legitimacy explicit, eligibility-gated, weight-governed, delegation-bounded, motion-bound, lifecycle-controlled, expirable, challengeable, revocable, versioned, and traceable. Establish that Voting ≠ Consensus, Voting ≠ Governance, and Vote Weight ≠ Authority as constitutional doctrine. Advance the constitutional chain to include Voting between Governance and Decision.
+- **Risk Assessment:** Moderate governance risk and no runtime risk. The amendment adds fail-closed repository governance without implementing a voting engine, election runtime, federation runtime, blockchain voting, token voting, treasury voting, or execution runtime.
+- **Migration Impact:** Constitutional governance advances from v13.0 to v14.0. Future voting creation, retirement, semantic changes, ownership changes, eligibility policies, weight policies, delegation policies, motion policies, lifecycle semantics, expiration causes, challenge grounds, revocation causes, and enforcement obligations require Type B or Type C amendment governance. CI and release validation now execute ten voting governance scanners.
 - **Ratification Status:** Ratified

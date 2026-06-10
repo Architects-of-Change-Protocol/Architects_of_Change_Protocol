@@ -1,6 +1,6 @@
 # Governance Revocation Policy
 
-**Constitution Version:** v13.0
+**Constitution Version:** v14.0
 
 ## Purpose
 
