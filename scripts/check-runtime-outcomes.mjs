@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+import { runtimeOutcomeRecords, runtimeViolation, RUNTIME_OUTCOME_FILE, VALID_RUNTIME_CLASSES, VALID_RUNTIME_STATUSES } from './runtime-governance-lib.mjs';
+import { runScanner } from './constitutional-governance-lib.mjs';
+export function scanRuntimeOutcomes(root){const violations=[];const records=runtimeOutcomeRecords(root);for(const r of records){const id=r['Outcome Policy ID'];if(!id||!/^ROUT-\d{4}$/.test(id))violations.push(runtimeViolation(RUNTIME_OUTCOME_FILE,`invalid outcome policy ID '${id}'`,'RUN-V-008'));if(!VALID_RUNTIME_CLASSES.includes(r['Authority Class']))violations.push(runtimeViolation(RUNTIME_OUTCOME_FILE,`${id} has invalid authority class '${r['Authority Class']}'`,'RUN-V-008'));if(!VALID_RUNTIME_STATUSES.includes(r.Status))violations.push(runtimeViolation(RUNTIME_OUTCOME_FILE,`${id} has invalid status '${r.Status}'`,'RUN-V-008'));}return violations;}
+if(process.argv[1]&&import.meta.url===new URL(`file://${process.argv[1]}`).href)runScanner('Runtime outcomes scanner',scanRuntimeOutcomes);

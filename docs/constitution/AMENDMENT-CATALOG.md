@@ -1,6 +1,6 @@
 # Constitutional Amendment Catalog
 
-**Constitution Version:** v16.0
+**Constitution Version:** v17.0
 
 ## Amendment index
 
@@ -22,6 +22,7 @@
 | AOC-AMD-0014 | Establish Constitutional Voting Governance Framework | Type C | v14.0 | Ratified |
 | AOC-AMD-0015 | Establish Constitutional Federation Governance Framework | Type C | v15.0 | Ratified |
 | AOC-AMD-0016 | Establish Constitutional Economics Governance Framework | Type C | v16.0 | Ratified |
+| AOC-AMD-0017 | Establish Constitutional Runtime Governance Framework | Type C | v17.0 | Ratified |
 
 ## AOC-AMD-0001 — Establish Constitutional Amendment System
 
@@ -271,4 +272,20 @@
 - **Rationale:** Close the constitutional gap between federation sovereignty and economic sovereignty by defining, allocating, consuming, transferring, settling, and auditing value within and across sovereign systems. Introduces GCU (Governance Compute Unit) and SCU (Sovereign Compute Unit) as constitutional economic primitives.
 - **Risk Assessment:** Low implementation risk. The amendment introduces governance artifacts and scanners without changing existing laws, adding runtime economics, or implementing cryptocurrency, token issuance, blockchain treasury, market pricing, payment gateway, exchange system, or revenue engine.
 - **Migration Impact:** Future economic definitions, rights assignments, obligation changes, asset changes, consumption changes, settlement changes, treasury changes, and valuation changes require Type B or Type C amendment governance. CI and release validation now execute twelve economics governance scanners.
+- **Ratification Status:** Ratified
+
+
+## AOC-AMD-0017 — Establish Constitutional Runtime Governance Framework
+
+- **Amendment ID:** AOC-AMD-0017
+- **Title:** Establish Constitutional Runtime Governance Framework
+- **Author:** Architects of Change maintainers
+- **Date:** 2026-06-10
+- **Type:** Type C
+- **Version:** v17.0
+- **Affected Laws:** LAW-008; runtime ownership, authority, execution, capability, evidence, integrity, obligation, outcome, audit, lifecycle, challenge, revocation, evolution, traceability, and enforcement obligations
+- **Affected Authorities:** Constitution; Protocol; Enterprise; Runtime Authorities RUN-0001 through RUN-0015
+- **Rationale:** Close the constitutional gap between governed economic legitimacy and governed execution legitimacy by making runtime execution explicit, authority-gated, capability-bounded, policy-constrained, evidence-generating, integrity-preserving, obligation-fulfilling, outcome-recording, auditable, challengeable, revocable, versioned, and traceable. Establish that Runtime ≠ Infrastructure, Runtime ≠ Implementation, Runtime ≠ Decision, and Runtime ≠ Outcome as constitutional doctrine. Advance the constitutional chain to include Runtime between Economics and Decision.
+- **Risk Assessment:** Moderate governance risk and no infrastructure risk. The amendment adds fail-closed repository governance without implementing a workflow engine, agent runtime, Kubernetes runtime, cloud runtime, blockchain runtime, execution scheduler, or infrastructure layer.
+- **Migration Impact:** Constitutional governance advances from v16.0 to v17.0. Future runtime creation, retirement, semantic changes, ownership changes, execution policies, capability policies, evidence policies, integrity policies, obligation policies, outcome policies, audit policies, lifecycle semantics, challenge grounds, revocation causes, and enforcement obligations require Type B or Type C amendment governance. CI and release validation now execute twelve runtime governance scanners.
 - **Ratification Status:** Ratified

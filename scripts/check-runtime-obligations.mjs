@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+import { runtimeObligationRecords, runtimeViolation, RUNTIME_OBLIGATION_FILE, VALID_RUNTIME_CLASSES, VALID_RUNTIME_STATUSES } from './runtime-governance-lib.mjs';
+import { runScanner } from './constitutional-governance-lib.mjs';
+export function scanRuntimeObligations(root){const violations=[];const records=runtimeObligationRecords(root);for(const r of records){const id=r['Obligation Policy ID'];if(!id||!/^ROP-\d{4}$/.test(id))violations.push(runtimeViolation(RUNTIME_OBLIGATION_FILE,`invalid obligation policy ID '${id}'`,'RUN-V-007'));if(!VALID_RUNTIME_CLASSES.includes(r['Authority Class']))violations.push(runtimeViolation(RUNTIME_OBLIGATION_FILE,`${id} has invalid authority class '${r['Authority Class']}'`,'RUN-V-007'));if(!VALID_RUNTIME_STATUSES.includes(r.Status))violations.push(runtimeViolation(RUNTIME_OBLIGATION_FILE,`${id} has invalid status '${r.Status}'`,'RUN-V-007'));}return violations;}
+if(process.argv[1]&&import.meta.url===new URL(`file://${process.argv[1]}`).href)runScanner('Runtime obligations scanner',scanRuntimeObligations);

@@ -1,6 +1,6 @@
 # Decision Lifecycle
 
-**Constitution Version:** v16.0
+**Constitution Version:** v17.0
 
 ## Lifecycle states
 

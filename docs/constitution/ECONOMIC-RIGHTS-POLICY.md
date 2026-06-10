@@ -1,6 +1,6 @@
 # Economic Rights Policy
 
-**Constitution Version:** v16.0
+**Constitution Version:** v17.0
 
 ## Rights policy catalog
 

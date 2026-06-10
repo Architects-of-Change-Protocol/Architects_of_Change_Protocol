@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+import { runtimeAuditRecords, runtimeViolation, RUNTIME_AUDIT_FILE, VALID_RUNTIME_CLASSES, VALID_RUNTIME_STATUSES } from './runtime-governance-lib.mjs';
+import { runScanner } from './constitutional-governance-lib.mjs';
+export function scanRuntimeAudit(root){const violations=[];const records=runtimeAuditRecords(root);for(const r of records){const id=r['Audit Policy ID'];if(!id||!/^RAP-\d{4}$/.test(id))violations.push(runtimeViolation(RUNTIME_AUDIT_FILE,`invalid audit policy ID '${id}'`,'RUN-V-009'));if(!VALID_RUNTIME_CLASSES.includes(r['Authority Class']))violations.push(runtimeViolation(RUNTIME_AUDIT_FILE,`${id} has invalid authority class '${r['Authority Class']}'`,'RUN-V-009'));if(!VALID_RUNTIME_STATUSES.includes(r.Status))violations.push(runtimeViolation(RUNTIME_AUDIT_FILE,`${id} has invalid status '${r.Status}'`,'RUN-V-009'));}return violations;}
+if(process.argv[1]&&import.meta.url===new URL(`file://${process.argv[1]}`).href)runScanner('Runtime audit scanner',scanRuntimeAudit);

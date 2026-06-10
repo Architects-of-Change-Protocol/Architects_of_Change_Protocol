@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+import { runtimeCapabilityRecords, runtimeViolation, RUNTIME_CAPABILITY_FILE, VALID_RUNTIME_CLASSES, VALID_RUNTIME_STATUSES } from './runtime-governance-lib.mjs';
+import { runScanner } from './constitutional-governance-lib.mjs';
+export function scanRuntimeCapabilities(root){const violations=[];const records=runtimeCapabilityRecords(root);for(const r of records){const id=r['Capability Policy ID'];if(!id||!/^RCP-\d{4}$/.test(id))violations.push(runtimeViolation(RUNTIME_CAPABILITY_FILE,`invalid capability policy ID '${id}'`,'RUN-V-002'));if(!VALID_RUNTIME_CLASSES.includes(r['Authority Class']))violations.push(runtimeViolation(RUNTIME_CAPABILITY_FILE,`${id} has invalid authority class '${r['Authority Class']}'`,'RUN-V-002'));if(!VALID_RUNTIME_STATUSES.includes(r.Status))violations.push(runtimeViolation(RUNTIME_CAPABILITY_FILE,`${id} has invalid status '${r.Status}'`,'RUN-V-002'));}return violations;}
+if(process.argv[1]&&import.meta.url===new URL(`file://${process.argv[1]}`).href)runScanner('Runtime capabilities scanner',scanRuntimeCapabilities);

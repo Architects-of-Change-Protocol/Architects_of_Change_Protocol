@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+import { runtimeExecutionRecords, runtimeViolation, RUNTIME_EXECUTION_FILE, VALID_RUNTIME_CLASSES, VALID_RUNTIME_STATUSES } from './runtime-governance-lib.mjs';
+import { runScanner } from './constitutional-governance-lib.mjs';
+export function scanRuntimeExecution(root){const violations=[];const records=runtimeExecutionRecords(root);for(const r of records){const id=r['Execution Policy ID'];if(!id||!/^REP-\d{4}$/.test(id))violations.push(runtimeViolation(RUNTIME_EXECUTION_FILE,`invalid execution policy ID '${id}'`,'RUN-V-003'));if(!VALID_RUNTIME_CLASSES.includes(r['Authority Class']))violations.push(runtimeViolation(RUNTIME_EXECUTION_FILE,`${id} has invalid authority class '${r['Authority Class']}'`,'RUN-V-003'));if(!VALID_RUNTIME_STATUSES.includes(r.Status))violations.push(runtimeViolation(RUNTIME_EXECUTION_FILE,`${id} has invalid status '${r.Status}'`,'RUN-V-003'));}return violations;}
+if(process.argv[1]&&import.meta.url===new URL(`file://${process.argv[1]}`).href)runScanner('Runtime execution scanner',scanRuntimeExecution);
