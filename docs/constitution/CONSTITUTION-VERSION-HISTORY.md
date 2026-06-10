@@ -110,3 +110,11 @@
 - **Summary:** Establishes Constitutional, Governance, Runtime, and Operational consensus classes; catalogs consensus authorities, model policies, threshold policies, expiration policies, and revocation authorities; governs lifecycle, expiration, revocation, disputes, recomputation, violations, decision influence, and traceability; establishes Attestation ≠ Consensus as constitutional doctrine; advances the constitutional chain to include Consensus before Decision; and adds fail-closed CI and release scanners.
 - **Breaking Changes:** Collective agreement is no longer implicit. Governed decisions may include consensus only through an Established, model-governed, threshold-satisfying, attestation-aggregating, expiring, disputable, revocable, recomputable, traceable consensus signal. Consensus must be recomputed when underlying signals change.
 - **Migration Notes:** Repository governance changes only. No voting engine, governance engine, federation engine, consensus runtime, blockchain consensus, distributed consensus protocol, or AI consensus engine is introduced. Future consensus governance changes require Type B or Type C amendments.
+
+## v12.0
+
+- **Date:** 2026-06-09
+- **Amendments:** AOC-AMD-0012
+- **Summary:** Aligns all constitutional artifact headers to the current Constitution version. All documents that declared v10.0 following the v11.0 consensus governance introduction are advanced to v12.0 to maintain version parity with the supreme Constitution. No semantic changes are introduced.
+- **Breaking Changes:** None. This version increment is a version parity correction only.
+- **Migration Notes:** Repository governance changes only. No new scanner obligations are introduced.

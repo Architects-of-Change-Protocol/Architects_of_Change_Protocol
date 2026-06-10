@@ -1,6 +1,6 @@
 # Policy Exception Policy
 
-**Constitution Version:** v10.0
+**Constitution Version:** v12.0
 
 ## Exception authority
 
