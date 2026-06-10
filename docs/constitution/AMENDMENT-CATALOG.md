@@ -1,6 +1,6 @@
 # Constitutional Amendment Catalog
 
-**Constitution Version:** v18.0
+**Constitution Version:** v1.0
 
 ## Amendment index
 
@@ -24,6 +24,7 @@
 | AOC-AMD-0016 | Establish Constitutional Economics Governance Framework | Type C | v16.0 | Ratified |
 | AOC-AMD-0017 | Establish Constitutional Runtime Governance Framework | Type C | v17.0 | Ratified |
 | AOC-AMD-0018 | Establish Constitutional Audit Framework | Type C | v18.0 | Ratified |
+| AOC-AMD-0019 | Ratify AOC Constitution v1.0 | Type C | v1.0 | Ratified |
 
 ## AOC-AMD-0001 — Establish Constitutional Amendment System
 
@@ -304,4 +305,18 @@
 - **Rationale:** Introduce constitutional audit governance as the governed process through which the entirety of the constitutional system is evaluated for consistency, integrity, traceability, coverage, coherence, and ratification readiness. Establish that Complete ≠ Certified, Coverage ≠ Integrity, and Passing Scanners ≠ Constitutional Correctness as constitutional doctrine. Advance the constitution to v18.0 as the final validation phase before PR-30 Constitutional Ratification v1.0.
 - **Risk Assessment:** Low implementation risk. The amendment introduces audit governance artifacts and scanners without changing existing laws, adding runtime execution, or implementing any agent, economic, or federation runtime.
 - **Migration Impact:** Constitutional governance advances from v17.0 to v18.0. Future audit authority, coverage, traceability, integrity, certification, lifecycle, remediation, and violation changes require Type B or Type C amendment governance. CI and release validation now execute eight audit governance scanners.
+- **Ratification Status:** Ratified
+
+## AOC-AMD-0019 — Ratify AOC Constitution v1.0
+
+- **Amendment ID:** AOC-AMD-0019
+- **Title:** Ratify AOC Constitution v1.0
+- **Type:** Type C
+- **Version:** v1.0
+- **Date:** 2026-06-10
+- **Affected Laws:** LAW-001 through LAW-008; ratification authority, readiness, decision, signature, release, lifecycle, amendment lock, violation governance
+- **Affected Authorities:** Constitution; Ratification Authorities RAT-0001 through RAT-0010
+- **Rationale:** Formally ratify the AOC Constitutional System as v1.0, the first complete sovereign constitutional baseline of the AOC Protocol. Establish ratification as a governed constitutional act distinct from audit, governance, voting, runtime execution, product launch, or package publication. Declare Complete ≠ Ratified, Audited ≠ Ratified, Ratified ≠ Immutable, and v1.0 ≠ Final as constitutional doctrine. Establish the ratification lifecycle, amendment lock, violation catalog, and release policy. Declare development versions v2.0–v18.0 as construction-era constitutional development versions superseded by the first ratified sovereign baseline. Advance the constitution to v1.0 as the first sovereign baseline version.
+- **Risk Assessment:** Low implementation risk. Introduces ratification governance artifacts and scanners. Establishes sovereign baseline without changing existing laws or adding runtime execution.
+- **Migration Impact:** Constitutional governance advances from v18.0 (construction era) to v1.0 (sovereign baseline). All constitutional artifacts are updated to declare v1.0. Future constitutional changes require governed amendment following v1.x (minor) or v2.0+ (major) versioning. CI and release validation now execute eight ratification governance scanners.
 - **Ratification Status:** Ratified

@@ -1,6 +1,6 @@
 # Voting Constitution
 
-**Constitution Version:** v18.0
+**Constitution Version:** v1.0
 
 ## Constitutional purpose
 

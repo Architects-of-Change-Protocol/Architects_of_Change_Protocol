@@ -24,7 +24,7 @@
     "check:runtime-boundaries": "node scripts/check-runtime-boundaries.mjs",
     "check:identity-vocabulary": "node scripts/check-identity-vocabulary.mjs",
     "check:contract-drift": "node scripts/check-contract-drift.mjs",
-    "validate:release": "npm run check:aoc-boundaries && npm run typecheck && npm run build && npm run lint && npm test && npm run lint:semantic-ownership && npm run check:version-graph && npm run check:constitutional-amendments && npm run check:constitutional-versioning && npm run check:authority-governance && npm run check:capability-governance && npm run check:policy-governance && npm run check:decision-governance && npm run check:standing-governance && npm run check:claim-governance && npm run check:trust-governance && npm run check:verification-governance && npm run check:reputation-governance && npm run check:attestation-governance && npm run check:consensus-governance && npm run check:governance-governance && npm run check:voting-governance && npm run check:federation-governance && npm run check:economics-governance && npm run check:audit-authorities && npm run check:audit-domains && npm run check:audit-coverage && npm run check:audit-traceability && npm run check:audit-integrity && npm run check:audit-certification && npm run check:audit-remediation && npm run check:audit-governance && npm run validate:publishability && npm pack ./packages/protocol",
+    "validate:release": "npm run check:aoc-boundaries && npm run typecheck && npm run build && npm run lint && npm test && npm run lint:semantic-ownership && npm run check:version-graph && npm run check:constitutional-amendments && npm run check:constitutional-versioning && npm run check:authority-governance && npm run check:capability-governance && npm run check:policy-governance && npm run check:decision-governance && npm run check:standing-governance && npm run check:claim-governance && npm run check:trust-governance && npm run check:verification-governance && npm run check:reputation-governance && npm run check:attestation-governance && npm run check:consensus-governance && npm run check:governance-governance && npm run check:voting-governance && npm run check:federation-governance && npm run check:economics-governance && npm run check:audit-authorities && npm run check:audit-domains && npm run check:audit-coverage && npm run check:audit-traceability && npm run check:audit-integrity && npm run check:audit-certification && npm run check:audit-remediation && npm run check:audit-governance && npm run check:ratification-authorities && npm run check:ratification-readiness && npm run check:ratification-decisions && npm run check:ratification-signatures && npm run check:ratification-release && npm run check:ratification-lifecycle && npm run check:ratification-amendment-lock && npm run check:ratification-governance && npm run validate:publishability && npm pack ./packages/protocol",
     "check:policy-governance": "node scripts/check-policy-governance.mjs",
     "check:reason-code-governance": "node scripts/check-reason-code-governance.mjs",
     "check:capability-governance": "node scripts/check-capability-governance.mjs",
@@ -179,7 +179,15 @@
     "check:audit-integrity": "node scripts/check-audit-integrity.mjs",
     "check:audit-certification": "node scripts/check-audit-certification.mjs",
     "check:audit-remediation": "node scripts/check-audit-remediation.mjs",
-    "check:audit-governance": "node scripts/check-audit-governance.mjs"
+    "check:audit-governance": "node scripts/check-audit-governance.mjs",
+    "check:ratification-authorities": "node scripts/check-ratification-authorities.mjs",
+    "check:ratification-readiness": "node scripts/check-ratification-readiness.mjs",
+    "check:ratification-decisions": "node scripts/check-ratification-decisions.mjs",
+    "check:ratification-signatures": "node scripts/check-ratification-signatures.mjs",
+    "check:ratification-release": "node scripts/check-ratification-release.mjs",
+    "check:ratification-lifecycle": "node scripts/check-ratification-lifecycle.mjs",
+    "check:ratification-amendment-lock": "node scripts/check-ratification-amendment-lock.mjs",
+    "check:ratification-governance": "node scripts/check-ratification-governance.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",

@@ -4,6 +4,7 @@
 
 | Version | Date | Amendments | Summary | Breaking Changes |
 |---|---|---|---|---|
+| v1.0 (sovereign) | 2026-06-10 | AOC-AMD-0019 | Ratifies AOC Constitution v1.0 as first sovereign baseline. Establishes ratification governance: authorities, readiness policy, decision policy, signature policy, release policy, lifecycle, amendment lock policy, violation catalog. | Ratification is now a governed constitutional domain. Complete ≠ Ratified, Audited ≠ Ratified, Ratified ≠ Immutable as constitutional doctrine. Development versions v2.0–v18.0 declared construction-era. v1.0 is sovereign baseline. |
 | v18.0 | 2026-06-10 | AOC-AMD-0018 | Establishes constitutional audit governance: authority catalog, domain policy, coverage policy, traceability policy, integrity policy, certification levels, lifecycle, remediation policy, violation catalog, audit matrix, gap analysis, and integrity report. | Audit is now a governed constitutional domain. Complete ≠ Certified, Coverage ≠ Integrity, Passing Scanners ≠ Constitutional Correctness as constitutional doctrine. |
 | v17.0 | 2026-06-10 | AOC-AMD-0017 | Establishes constitutional runtime authority, execution, capability, evidence, integrity, obligation, outcome, audit, lifecycle, challenges, revocation, violations, and enforcement. | Runtime execution is no longer implicit; governed execution must be established through a legitimate runtime act. Runtime ≠ Infrastructure, Runtime ≠ Implementation, Runtime ≠ Decision, Runtime ≠ Outcome as constitutional doctrine. |
 | v16.0 | 2026-06-10 | AOC-AMD-0016 | Establishes constitutional economics authority, rights, obligations, assets, consumption, settlement, treasury, valuation, lifecycle, challenges, revocation, violations, and enforcement. Introduces GCU and SCU as constitutional economic primitives. | Sovereign value is no longer implicit; governed economics must be established through a legitimate economics act. Value ≠ Currency, Rights ≠ Assets, Consumption ≠ Ownership, Settlement ≠ Payment as constitutional doctrine. |
@@ -22,7 +23,16 @@
 | v2.0 | 2026-06-08 | AOC-AMD-0002 | Establishes constitutional capability classes, authority catalog, lifecycle, delegation, revocation, violations, and enforcement. | Capability authority becomes explicit and deny-by-default. |
 | v1.0 | 2026-06-08 | AOC-AMD-0001 | Establishes the supreme Constitution, amendment procedure, amendment catalog, authority catalog, version history, and governance scanners. | None |
 
-## v1.0
+## v1.0 — Sovereign Baseline (2026-06-10) — AOC-AMD-0019
+
+- **Date:** 2026-06-10
+- **Amendments:** AOC-AMD-0019
+- **Summary:** Establishes the first ratified sovereign constitutional baseline of the AOC Protocol. Introduces ratification governance: authorities, readiness policy, decision policy, signature policy, release policy, lifecycle, amendment lock policy, and violation catalog.
+- **Versioning Rule:** Development versions v2.0–v18.0 were construction-era constitutional development versions. AOC Constitution v1.0 is the first ratified sovereign baseline. Future versions after ratification follow: v1.1, v1.2, v1.3 for minor amendments; v2.0 for major constitutional amendments.
+- **Breaking Changes:** Ratification is now a governed constitutional domain. Complete ≠ Ratified, Audited ≠ Ratified, Ratified ≠ Immutable, and v1.0 ≠ Final as constitutional doctrine. All constitutional artifacts updated to declare v1.0.
+- **Migration Notes:** All future constitutional changes require the amendment process. Minor amendments produce v1.x versions. Major amendments produce v2.0+.
+
+## v1.0 — Construction Era (2026-06-08) — AOC-AMD-0001
 
 - **Date:** 2026-06-08
 - **Amendments:** AOC-AMD-0001

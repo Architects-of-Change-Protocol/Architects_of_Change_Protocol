@@ -1,8 +1,10 @@
 # AOC Constitution
 
-**Constitution Version:** v18.0
+**Constitution Version:** v1.0
 
-**Status:** Ratified
+**Ratification Status:** Ratified
+
+**Sovereign Baseline:** AOC Constitution v1.0
 
 **Supreme authority:** This document is the canonical constitutional authority for the Architects of Change Protocol repository.
 
@@ -161,6 +163,16 @@ The following documents are incorporated into the Constitution by reference:
 - `docs/constitution/ECONOMIC-REVOCATION-POLICY.md`
 - `docs/constitution/ECONOMIC-VIOLATION-CATALOG.md`
 
+- `docs/constitution/RATIFICATION-CONSTITUTION.md`
+- `docs/constitution/RATIFICATION-AUTHORITIES.md`
+- `docs/constitution/RATIFICATION-READINESS-POLICY.md`
+- `docs/constitution/RATIFICATION-DECISION-POLICY.md`
+- `docs/constitution/RATIFICATION-SIGNATURE-POLICY.md`
+- `docs/constitution/RATIFICATION-RELEASE-POLICY.md`
+- `docs/constitution/RATIFICATION-LIFECYCLE.md`
+- `docs/constitution/RATIFICATION-AMENDMENT-LOCK-POLICY.md`
+- `docs/constitution/RATIFICATION-VIOLATION-CATALOG.md`
+
 ## 3. Constitutional principles
 
 1. The Constitution is enforceable through scanners, tests, CI gates, and release gates.
@@ -311,3 +323,21 @@ Audit governance is governed by:
 - `AUDIT-VIOLATION-CATALOG.md`
 
 Creation Amendment: AOC-AMD-0018
+
+## Section 26 — Constitutional Ratification
+
+Ratification governance is governed by:
+
+- `RATIFICATION-CONSTITUTION.md`
+- `RATIFICATION-AUTHORITIES.md`
+- `RATIFICATION-READINESS-POLICY.md`
+- `RATIFICATION-DECISION-POLICY.md`
+- `RATIFICATION-SIGNATURE-POLICY.md`
+- `RATIFICATION-RELEASE-POLICY.md`
+- `RATIFICATION-LIFECYCLE.md`
+- `RATIFICATION-AMENDMENT-LOCK-POLICY.md`
+- `RATIFICATION-VIOLATION-CATALOG.md`
+
+Ratification is the governed constitutional act through which the completed constitutional system is formally adopted as the authoritative foundation for AOC Protocol governance. Ratification ≠ Audit, Ratification ≠ Governance, Ratification ≠ Voting, and Complete ≠ Ratified as constitutional doctrine. v1.0 is the first ratified sovereign baseline. Future constitutional changes require governed amendment.
+
+Creation Amendment: AOC-AMD-0019

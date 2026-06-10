@@ -1,6 +1,6 @@
 # Decision Constitution
 
-**Constitution Version:** v18.0
+**Constitution Version:** v1.0
 
 ## Constitutional definition
 

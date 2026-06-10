@@ -1,6 +1,6 @@
 # Economic Treasury Policy
 
-**Constitution Version:** v18.0
+**Constitution Version:** v1.0
 
 Treasury does NOT govern market pricing, speculation, or external assets. Treasury governs constitutional allocation, reserves, and distribution only.
 
