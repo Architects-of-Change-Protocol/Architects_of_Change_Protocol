@@ -1,6 +1,6 @@
 # Governance Violation Catalog
 
-**Constitution Version:** v14.0
+**Constitution Version:** v15.0
 
 ## Governance violation index
 

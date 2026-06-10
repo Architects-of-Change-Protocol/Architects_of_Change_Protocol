@@ -4,6 +4,7 @@
 
 | Version | Date | Amendments | Summary | Breaking Changes |
 |---|---|---|---|---|
+| v15.0 | 2026-06-10 | AOC-AMD-0015 | Establishes constitutional federation authority, recognition, trust, delegation, capability sharing, governance, lifecycle, challenge, revocation, violations, and enforcement. | Inter-sovereign relationships are no longer implicit; governed federation must be established through a legitimate federation act. Federation ≠ Merger, Recognition ≠ Trust, Trust ≠ Delegation, Delegation ≠ Sovereignty Transfer as constitutional doctrine. |
 | v14.0 | 2026-06-10 | AOC-AMD-0014 | Establishes constitutional voting authority, eligibility, weight, delegation, motion, lifecycle, expiration, challenge, revocation, violations, and enforcement. | Constitutional will is no longer implicit; governed preference must be expressed through a legitimate voting act. Voting ≠ Consensus, Voting ≠ Governance, Vote Weight ≠ Authority as constitutional doctrine. |
 | v13.0 | 2026-06-10 | AOC-AMD-0013 | Establishes constitutional governance authority, proposals, motions, mandates, outcomes, lifecycle, challenges, expiration, revocation, violations, and enforcement. | Collective authority is no longer implicit; governed agreement must produce a legitimate governance act before becoming collective direction. Consensus ≠ Governance, Governance ≠ Voting, Governance ≠ Execution as constitutional doctrine. |
 | v12.0 | 2026-06-09 | AOC-AMD-0012 | Aligns all constitutional artifact headers to the current Constitution version. No semantic changes. | None. Version parity correction only. |
@@ -121,6 +122,15 @@
 - **Summary:** Aligns all constitutional artifact headers to the current Constitution version. All documents that declared v10.0 following the v11.0 consensus governance introduction are advanced to v12.0 to maintain version parity with the supreme Constitution. No semantic changes are introduced.
 - **Breaking Changes:** None. This version increment is a version parity correction only.
 - **Migration Notes:** Repository governance changes only. No new scanner obligations are introduced.
+
+## v15.0
+
+- **Date:** 2026-06-10
+- **Amendments:** AOC-AMD-0015
+- **Summary:** Establishes Constitutional, Governance, Runtime, and Operational federation classes; catalogs federation authorities FED-0001 through FED-0015; governs recognition, trust, delegation, capability sharing, federated governance, lifecycle, challenges, revocation, violations, and traceability; establishes Federation ≠ Merger, Recognition ≠ Trust, Trust ≠ Delegation, and Delegation ≠ Sovereignty Transfer as constitutional doctrine; advances the constitutional chain to include Federation between Voting and Decision; and adds fail-closed CI and release scanners.
+- **Breaking Changes:** Inter-sovereign relationships are no longer implicit. Governed federation may coordinate sovereign systems only through a cataloged federation authority, recognition validation, trust level assignment, and valid lifecycle transitions. Sovereignty is never transferred through federation.
+- **Migration Notes:** Repository governance changes only. No cross-chain federation, blockchain bridges, runtime federation protocols, economic settlement, treasury federation, network federation protocols, or execution federation is introduced. Future federation changes require Type B or Type C amendments.
+
 
 ## v14.0
 

@@ -1,6 +1,6 @@
 # Trust Constitution
 
-**Constitution Version:** v14.0
+**Constitution Version:** v15.0
 
 ## Constitutional purpose
 
