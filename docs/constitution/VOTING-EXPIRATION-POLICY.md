@@ -1,6 +1,6 @@
 # Voting Expiration Policy
 
-**Constitution Version:** v18.0
+**Constitution Version:** v1.0
 
 ## Expiration policy catalog
 

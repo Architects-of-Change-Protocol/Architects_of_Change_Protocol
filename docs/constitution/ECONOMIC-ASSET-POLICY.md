@@ -1,6 +1,6 @@
 # Economic Asset Policy
 
-**Constitution Version:** v18.0
+**Constitution Version:** v1.0
 
 Assets are constitutional abstractions, not accounting records.
 

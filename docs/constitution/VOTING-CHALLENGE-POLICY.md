@@ -1,6 +1,6 @@
 # Voting Challenge Policy
 
-**Constitution Version:** v18.0
+**Constitution Version:** v1.0
 
 ## Valid challenge grounds
 
