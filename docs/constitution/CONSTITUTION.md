@@ -1,6 +1,6 @@
 # AOC Constitution
 
-**Constitution Version:** v14.0
+**Constitution Version:** v15.0
 
 **Status:** Ratified
 
@@ -123,6 +123,30 @@ The following documents are incorporated into the Constitution by reference:
 - `docs/constitution/GOVERNANCE-REVOCATION-POLICY.md`
 - `docs/constitution/GOVERNANCE-VIOLATION-CATALOG.md`
 
+- `docs/constitution/VOTING-CONSTITUTION.md`
+- `docs/constitution/VOTING-AUTHORITIES.md`
+- `docs/constitution/VOTING-ELIGIBILITY-POLICY.md`
+- `docs/constitution/VOTING-WEIGHT-POLICY.md`
+- `docs/constitution/VOTING-DELEGATION-POLICY.md`
+- `docs/constitution/VOTING-MOTION-POLICY.md`
+- `docs/constitution/VOTING-LIFECYCLE.md`
+- `docs/constitution/VOTING-EXPIRATION-POLICY.md`
+- `docs/constitution/VOTING-CHALLENGE-POLICY.md`
+- `docs/constitution/VOTING-REVOCATION-POLICY.md`
+- `docs/constitution/VOTING-VIOLATION-CATALOG.md`
+
+- `docs/constitution/FEDERATION-CONSTITUTION.md`
+- `docs/constitution/FEDERATION-AUTHORITIES.md`
+- `docs/constitution/FEDERATION-RECOGNITION-POLICY.md`
+- `docs/constitution/FEDERATION-TRUST-POLICY.md`
+- `docs/constitution/FEDERATION-DELEGATION-POLICY.md`
+- `docs/constitution/FEDERATION-CAPABILITY-POLICY.md`
+- `docs/constitution/FEDERATION-GOVERNANCE-POLICY.md`
+- `docs/constitution/FEDERATION-LIFECYCLE.md`
+- `docs/constitution/FEDERATION-CHALLENGE-POLICY.md`
+- `docs/constitution/FEDERATION-REVOCATION-POLICY.md`
+- `docs/constitution/FEDERATION-VIOLATION-CATALOG.md`
+
 ## 3. Constitutional principles
 
 1. The Constitution is enforceable through scanners, tests, CI gates, and release gates.
@@ -237,4 +261,10 @@ The constitutional chain is `Authority → Capability → Policy → Standing �
 
 Voting is a constitutionally governed process through which eligible actors formally express preference regarding a governance motion, proposal, mandate, decision, or constitutional artifact. Voting legitimacy is distinct from authority, capability, policy, standing, claim, trust, verification, reputation, attestation, consensus, and governance legitimacy. A voting act may influence a governance outcome only after valid standing, eligibility validation under the governing eligibility policy, weight assignment under the governing weight policy, delegation validation where exercised, and a valid lifecycle transition to `Active`. Delegation transfers voting expression only; it does not transfer authority ownership.
 
-The constitutional chain is `Authority → Capability → Policy → Standing → Claim → Trust → Verification → Reputation → Attestation → Consensus → Governance → Voting → Decision → Action`. Voting governs how eligible actors formally express constitutional will, but never directly authorizes action, and never overrides authority, capability, policy, standing, claim evidence, verification requirements, reputation signals, attestation endorsements, consensus requirements, or governance authority. Voting ≠ Consensus, Voting ≠ Governance, and Vote Weight ≠ Authority as constitutional doctrine. Expiration removes voting influence without deleting history; revocation disables voting permanently.
+The constitutional chain is `Authority → Capability → Policy → Standing → Claim → Trust → Verification → Reputation → Attestation → Consensus → Governance → Voting → Federation → Decision → Action`. Voting governs how eligible actors formally express constitutional will, but never directly authorizes action, and never overrides authority, capability, policy, standing, claim evidence, verification requirements, reputation signals, attestation endorsements, consensus requirements, or governance authority. Voting ≠ Consensus, Voting ≠ Governance, and Vote Weight ≠ Authority as constitutional doctrine. Expiration removes voting influence without deleting history; revocation disables voting permanently.
+
+## 22. Federation authority governance
+
+Federation is a constitutionally governed relationship between sovereign constitutional systems that establishes recognition, trust, coordination, delegation, and cooperation boundaries. Federation legitimacy is distinct from authority, capability, policy, standing, claim, trust, verification, reputation, attestation, consensus, governance, and voting legitimacy. A federation act may govern inter-sovereign relationships only after valid recognition under the recognition policy, trust level assignment under the trust policy, delegation validation where delegation is exercised, capability sharing validation where capabilities are shared, and governance policy compliance where federated governance is invoked. Delegation transfers authority scope only; it does not transfer sovereignty.
+
+The constitutional chain is `Authority → Capability → Policy → Standing → Claim → Trust → Verification → Reputation → Attestation → Consensus → Governance → Voting → Federation → Decision → Action`. Federation governs how sovereign constitutional systems interact without surrendering sovereignty, but never directly authorizes action, and never overrides authority, capability, policy, standing, claim evidence, verification requirements, reputation signals, attestation endorsements, consensus requirements, governance authority, or voting legitimacy. Federation ≠ Merger, Recognition ≠ Trust, Trust ≠ Delegation, and Delegation ≠ Sovereignty Transfer as constitutional doctrine. Revocation disables federation permanently. Federated governance cannot override local sovereignty.

@@ -756,3 +756,90 @@ export const writeVotingGovernance = (fixture: ConstitutionalFixture, options: {
   fixture.write('docs/constitution/VOTING-REVOCATION-POLICY.md', `# Voting Revocation Policy\n\n**Constitution Version:** ${version}\n\n## Revocation authority registry\n\n| Voting ID | Revocable | Valid Causes | Revocation Authority | Evidence Required | Decision Reference Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${revocationAuthorityRows}\n\n## Revocation registry\n\n| Revocation ID | Voting ID | Subject | Cause | Evidence | Revoked By | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|---|\n`);
   fixture.write('docs/constitution/VOTING-VIOLATION-CATALOG.md', `# Voting Violations\n\n**Constitution Version:** ${version}\n`);
 };
+
+export const writeFederationGovernance = (fixture: ConstitutionalFixture, options: {
+  version?: string;
+  amendmentId?: string;
+} = {}) => {
+  const version = options.version ?? 'v1.0';
+  const amendmentId = options.amendmentId ?? 'AOC-AMD-0001';
+  writeVotingGovernance(fixture, { version, amendmentId });
+  writeConstitutionalGovernance(fixture, { version, amendmentId, affectedAuthorities: 'Constitution; Federation Authorities FED-0001 through FED-0015' });
+
+  const fedDefs = [
+    ['FED-0001', 'Constitutional Federation', 'Constitutional', 'Constitution', 'FRP-0001', 'FTP-0001', 'No'],
+    ['FED-0002', 'Authority Federation', 'Constitutional', 'Constitution', 'FRP-0001', 'FTP-0001', 'No'],
+    ['FED-0003', 'Capability Federation', 'Governance', 'Constitution', 'FRP-0002', 'FTP-0002', 'Yes'],
+    ['FED-0004', 'Policy Federation', 'Governance', 'Constitution', 'FRP-0002', 'FTP-0002', 'Yes'],
+    ['FED-0005', 'Claim Federation', 'Runtime', 'Protocol', 'FRP-0003', 'FTP-0003', 'Yes'],
+    ['FED-0006', 'Trust Federation', 'Runtime', 'Protocol', 'FRP-0003', 'FTP-0003', 'Yes'],
+    ['FED-0007', 'Verification Federation', 'Runtime', 'Protocol', 'FRP-0003', 'FTP-0003', 'Yes'],
+    ['FED-0008', 'Reputation Federation', 'Runtime', 'Protocol', 'FRP-0003', 'FTP-0003', 'Yes'],
+    ['FED-0009', 'Attestation Federation', 'Runtime', 'Protocol', 'FRP-0003', 'FTP-0003', 'Yes'],
+    ['FED-0010', 'Consensus Federation', 'Runtime', 'Protocol', 'FRP-0003', 'FTP-0003', 'Yes'],
+    ['FED-0011', 'Governance Federation', 'Governance', 'Constitution', 'FRP-0002', 'FTP-0002', 'Yes'],
+    ['FED-0012', 'Voting Federation', 'Governance', 'Constitution', 'FRP-0002', 'FTP-0002', 'Yes'],
+    ['FED-0013', 'Audit Federation', 'Operational', 'Enterprise', 'FRP-0004', 'FTP-0004', 'Yes'],
+    ['FED-0014', 'Assurance Federation', 'Operational', 'Enterprise', 'FRP-0004', 'FTP-0004', 'Yes'],
+    ['FED-0015', 'Compliance Federation', 'Operational', 'Enterprise', 'FRP-0004', 'FTP-0004', 'Yes'],
+  ] as const;
+
+  const fedRows = fedDefs.map(([id, name, cls, owner, recPolicy, trustPolicy, delegation]) =>
+    `| ${id} | ${name} | ${cls} | ${owner} | ${recPolicy} | ${trustPolicy} | ${delegation} | Yes | Yes | ${amendmentId} | Not scheduled | Canonical |`
+  ).join('\n');
+
+  const recognitionPolicyRows = [
+    `| FRP-0001 | Constitutional | Constitutional authority evidence | Yes | Yes | Yes | ${amendmentId} | Active |`,
+    `| FRP-0002 | Governance | Governance authority evidence | No | Yes | Yes | ${amendmentId} | Active |`,
+    `| FRP-0003 | Runtime | Runtime authority evidence | No | Yes | Yes | ${amendmentId} | Active |`,
+    `| FRP-0004 | Operational | Operational evidence | No | Yes | Yes | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const trustPolicyRows = [
+    `| FTP-0001 | Constitutional | Constitutional Trust | Constitutional Trust | Yes | Constitutional evidence | No | ${amendmentId} | Active |`,
+    `| FTP-0002 | Governance | Conditional Trust | Operational Trust | Yes | Governance evidence | Yes | ${amendmentId} | Active |`,
+    `| FTP-0003 | Runtime | Limited Trust | Operational Trust | Yes | Runtime evidence | Yes | ${amendmentId} | Active |`,
+    `| FTP-0004 | Operational | Limited Trust | Conditional Trust | Yes | Operational evidence | Yes | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const delegationPolicyRows = [
+    `| FDP-0001 | Constitutional | No | N/A | N/A | N/A | N/A | ${amendmentId} | Active |`,
+    `| FDP-0002 | Governance | Yes | Governance scope only | Yes | Yes | Required | ${amendmentId} | Active |`,
+    `| FDP-0003 | Runtime | Yes | Runtime scope only | Yes | Yes | Required | ${amendmentId} | Active |`,
+    `| FDP-0004 | Operational | Yes | Operational scope only | Yes | Yes | Required | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const capabilityPolicyRows = [
+    `| FCP-0001 | Constitutional | No | No | No | Yes | Constitutional evidence | ${amendmentId} | Active |`,
+    `| FCP-0002 | Governance | Yes | Yes | Yes | Yes | Governance evidence | ${amendmentId} | Active |`,
+    `| FCP-0003 | Runtime | Yes | Yes | Yes | Yes | Runtime evidence | ${amendmentId} | Active |`,
+    `| FCP-0004 | Operational | Yes | Yes | Yes | Yes | Operational evidence | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const governancePolicyRows = [
+    `| FGP-0001 | Constitutional | No | Yes | No | Yes | ${amendmentId} | Active |`,
+    `| FGP-0002 | Governance | Yes | Yes | Yes | Yes | ${amendmentId} | Active |`,
+    `| FGP-0003 | Runtime | Yes | Yes | No | Yes | ${amendmentId} | Active |`,
+    `| FGP-0004 | Operational | Yes | No | No | Yes | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const revocationAuthorityRows = [
+    `| FED-0001 | Yes | Fraud; Constitutional Violation; Sovereignty Violation; Constitutional Override; Federated Decision | Constitution | Required | Required | ${amendmentId} | Active |`,
+    `| FED-0002 | Yes | Fraud; Constitutional Violation; Sovereignty Violation; Constitutional Override; Federated Decision | Constitution | Required | Required | ${amendmentId} | Active |`,
+    `| FED-0003 | Yes | Fraud; Trust Failure; Governance Failure; Constitutional Violation; Sovereignty Violation; Evidence Failure; Constitutional Override; Federated Decision | Constitution | Required | Required | ${amendmentId} | Active |`,
+    `| FED-0005 | Yes | Fraud; Trust Failure; Governance Failure; Constitutional Violation; Sovereignty Violation; Evidence Failure; Constitutional Override; Federated Decision | Protocol | Required | Required | ${amendmentId} | Active |`,
+    `| FED-0013 | Yes | Fraud; Trust Failure; Governance Failure; Constitutional Violation; Sovereignty Violation; Evidence Failure; Constitutional Override; Federated Decision | Enterprise | Required | Required | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  fixture.write('docs/constitution/FEDERATION-CONSTITUTION.md', `# Federation Constitution\n\n**Constitution Version:** ${version}\n`);
+  fixture.write('docs/constitution/FEDERATION-AUTHORITIES.md', `# Federation Authorities\n\n**Constitution Version:** ${version}\n\n## Federation authority catalog\n\n| Federation ID | Federation Name | Federation Class | Owner | Recognition Policy | Trust Policy | Delegation Allowed | Revocable | Challengeable | Creation Amendment | Retirement Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|---|---|\n${fedRows}\n`);
+  fixture.write('docs/constitution/FEDERATION-RECOGNITION-POLICY.md', `# Federation Recognition Policy\n\n**Constitution Version:** ${version}\n\n## Recognition policy catalog\n\n| Recognition Policy ID | Federation Class | Minimum Evidence | Mutual Recognition Required | Challenge Allowed | Revocation Allowed | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${recognitionPolicyRows}\n\n## Recognition registry\n\n| Recognition ID | Federation ID | Recognizing Authority | Recognized Authority | Evidence | Decision Reference | Status |\n|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/FEDERATION-TRUST-POLICY.md', `# Federation Trust Policy\n\n**Constitution Version:** ${version}\n\n## Trust policy catalog\n\n| Trust Policy ID | Federation Class | Minimum Trust Level | Maximum Trust Level | Conditions Required | Evidence Required | Decay Allowed | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n${trustPolicyRows}\n\n## Trust registry\n\n| Trust Record ID | Federation ID | Source Constitution | Target Constitution | Trust Level | Conditions | Evidence | Decision Reference | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/FEDERATION-DELEGATION-POLICY.md', `# Federation Delegation Policy\n\n**Constitution Version:** ${version}\n\n## Delegation policy catalog\n\n| Delegation Policy ID | Federation Class | Delegation Allowed | Maximum Scope | Expiration Required | Revocation Allowed | Evidence Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n${delegationPolicyRows}\n\n## Delegation registry\n\n| Delegation ID | Source Constitution | Target Constitution | Delegated Authority | Scope | Expiration | Revocation Rule | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/FEDERATION-CAPABILITY-POLICY.md', `# Federation Capability Policy\n\n**Constitution Version:** ${version}\n\n## Capability policy catalog\n\n| Capability Policy ID | Federation Class | Sharing Allowed | Borrowing Allowed | Federation Allowed | Recognition Allowed | Evidence Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n${capabilityPolicyRows}\n\n## Capability sharing registry\n\n| Sharing ID | Federation ID | Source Constitution | Target Constitution | Capability | Mode | Scope | Expiration | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/FEDERATION-GOVERNANCE-POLICY.md', `# Federation Governance Policy\n\n**Constitution Version:** ${version}\n\n## Governance policy catalog\n\n| Governance Policy ID | Federation Class | Federated Motion Allowed | Federated Consensus Required | Federated Mandate Allowed | Sovereignty Override Prohibited | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${governancePolicyRows}\n\n## Federated governance registry\n\n| Governance Record ID | Federation ID | Motion Reference | Consensus Reference | Mandate Reference | Outcome Reference | Participating Sovereigns | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/FEDERATION-LIFECYCLE.md', `# Federation Lifecycle\n\n**Constitution Version:** ${version}\n\n## Federation lifecycle transition ledger\n\n| Transition ID | Federation ID | From | To | Authorized By | Evidence | Amendment | Effective Date |\n|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/FEDERATION-CHALLENGE-POLICY.md', `# Federation Challenge Policy\n\n**Constitution Version:** ${version}\n\n## Challenge registry\n\n| Challenge ID | Federation ID | Grounds | Evidence | Initiator | Decision Reference | Resolution | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/FEDERATION-REVOCATION-POLICY.md', `# Federation Revocation Policy\n\n**Constitution Version:** ${version}\n\n## Revocation authority registry\n\n| Federation ID | Revocable | Valid Causes | Revocation Authority | Evidence Required | Decision Reference Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${revocationAuthorityRows}\n\n## Revocation registry\n\n| Revocation ID | Federation ID | Cause | Evidence | Revoked By | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/FEDERATION-VIOLATION-CATALOG.md', `# Federation Violations\n\n**Constitution Version:** ${version}\n`);
+};

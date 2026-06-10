@@ -1,6 +1,6 @@
 # Constitutional Amendment Catalog
 
-**Constitution Version:** v14.0
+**Constitution Version:** v15.0
 
 ## Amendment index
 
@@ -20,6 +20,7 @@
 | AOC-AMD-0012 | Constitutional Version Parity Alignment | Type A | v12.0 | Ratified |
 | AOC-AMD-0013 | Establish Constitutional Governance Framework | Type C | v13.0 | Ratified |
 | AOC-AMD-0014 | Establish Constitutional Voting Governance Framework | Type C | v14.0 | Ratified |
+| AOC-AMD-0015 | Establish Constitutional Federation Governance Framework | Type C | v15.0 | Ratified |
 
 ## AOC-AMD-0001 — Establish Constitutional Amendment System
 
@@ -237,4 +238,20 @@
 - **Rationale:** Close the constitutional gap between governed collective authority and governed constitutional will by making voting legitimacy explicit, eligibility-gated, weight-governed, delegation-bounded, motion-bound, lifecycle-controlled, expirable, challengeable, revocable, versioned, and traceable. Establish that Voting ≠ Consensus, Voting ≠ Governance, and Vote Weight ≠ Authority as constitutional doctrine. Advance the constitutional chain to include Voting between Governance and Decision.
 - **Risk Assessment:** Moderate governance risk and no runtime risk. The amendment adds fail-closed repository governance without implementing a voting engine, election runtime, federation runtime, blockchain voting, token voting, treasury voting, or execution runtime.
 - **Migration Impact:** Constitutional governance advances from v13.0 to v14.0. Future voting creation, retirement, semantic changes, ownership changes, eligibility policies, weight policies, delegation policies, motion policies, lifecycle semantics, expiration causes, challenge grounds, revocation causes, and enforcement obligations require Type B or Type C amendment governance. CI and release validation now execute ten voting governance scanners.
+- **Ratification Status:** Ratified
+
+
+## AOC-AMD-0015 — Establish Constitutional Federation Governance Framework
+
+- **Amendment ID:** AOC-AMD-0015
+- **Title:** Establish Constitutional Federation Governance Framework
+- **Author:** Architects of Change maintainers
+- **Date:** 2026-06-10
+- **Type:** Type C
+- **Version:** v15.0
+- **Affected Laws:** LAW-008; federation ownership, authority, recognition, trust, delegation, capability sharing, governance, lifecycle, challenge, revocation, evolution, traceability, and enforcement obligations
+- **Affected Authorities:** Constitution; Protocol; Enterprise; Federation Authorities FED-0001 through FED-0015
+- **Rationale:** Close the constitutional gap between governed sovereign systems and governed inter-sovereign relationships by making federation legitimacy explicit, recognition-gated, trust-governed, delegation-bounded, capability-scoped, governance-constrained, lifecycle-controlled, challengeable, revocable, versioned, and traceable. Establish that Federation ≠ Merger, Recognition ≠ Trust, Trust ≠ Delegation, and Delegation ≠ Sovereignty Transfer as constitutional doctrine. Advance the constitutional chain to include Federation between Voting and Decision.
+- **Risk Assessment:** Moderate governance risk and no runtime risk. The amendment adds fail-closed repository governance without implementing cross-chain federation, blockchain bridges, runtime federation protocols, economic settlement, treasury federation, network federation protocols, or execution federation.
+- **Migration Impact:** Constitutional governance advances from v14.0 to v15.0. Future federation creation, retirement, semantic changes, ownership changes, recognition policies, trust policies, delegation policies, capability policies, governance policies, lifecycle semantics, challenge grounds, revocation causes, and enforcement obligations require Type B or Type C amendment governance. CI and release validation now execute ten federation governance scanners.
 - **Ratification Status:** Ratified
