@@ -1,6 +1,6 @@
 # Standing Constitution
 
-**Constitution Version:** v13.0
+**Constitution Version:** v14.0
 
 ## Definition and purpose
 

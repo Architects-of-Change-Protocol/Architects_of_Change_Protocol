@@ -670,3 +670,89 @@ export const writeGovernanceGovernance = (fixture: ConstitutionalFixture, option
   fixture.write('docs/constitution/GOVERNANCE-REVOCATION-POLICY.md', `# Governance Revocation Policy\n\n**Constitution Version:** ${version}\n\n## Revocation authority registry\n\n| Governance ID | Revocable | Valid Causes | Revocation Authority | Evidence Required | Decision Reference Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${revocationRows}\n\n## Revocation registry\n\n| Revocation ID | Governance ID | Target ID | Cause | Evidence | Revoked By | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|---|\n`);
   fixture.write('docs/constitution/GOVERNANCE-VIOLATION-CATALOG.md', `# Governance Violations\n\n**Constitution Version:** ${version}\n`);
 };
+
+export const writeVotingGovernance = (fixture: ConstitutionalFixture, options: {
+  version?: string;
+  amendmentId?: string;
+} = {}) => {
+  const version = options.version ?? 'v1.0';
+  const amendmentId = options.amendmentId ?? 'AOC-AMD-0001';
+  writeGovernanceGovernance(fixture, { version, amendmentId });
+  writeConstitutionalGovernance(fixture, { version, amendmentId, affectedAuthorities: 'Constitution; Voting Authorities VOT-0001 through VOT-0015' });
+
+  const votDefs = [
+    ['VOT-0001', 'Constitutional Amendment Voting', 'Constitutional', 'Constitution', 'VEL-0001', 'VWT-0001', 'No', 'VEX-0001'],
+    ['VOT-0002', 'Constitutional Authority Voting', 'Constitutional', 'Constitution', 'VEL-0001', 'VWT-0001', 'No', 'VEX-0001'],
+    ['VOT-0003', 'Constitutional Interpretation Voting', 'Constitutional', 'Constitution', 'VEL-0001', 'VWT-0001', 'No', 'VEX-0001'],
+    ['VOT-0004', 'Policy Voting', 'Governance', 'Constitution', 'VEL-0002', 'VWT-0002', 'Yes', 'VEX-0002'],
+    ['VOT-0005', 'Capability Voting', 'Governance', 'Constitution', 'VEL-0002', 'VWT-0002', 'Yes', 'VEX-0002'],
+    ['VOT-0006', 'Governance Proposal Voting', 'Governance', 'Constitution', 'VEL-0002', 'VWT-0002', 'Yes', 'VEX-0002'],
+    ['VOT-0007', 'Governance Mandate Voting', 'Governance', 'Constitution', 'VEL-0002', 'VWT-0002', 'Yes', 'VEX-0002'],
+    ['VOT-0008', 'Claim Voting', 'Runtime', 'Protocol', 'VEL-0003', 'VWT-0003', 'Yes', 'VEX-0003'],
+    ['VOT-0009', 'Trust Voting', 'Runtime', 'Protocol', 'VEL-0003', 'VWT-0003', 'Yes', 'VEX-0003'],
+    ['VOT-0010', 'Verification Voting', 'Runtime', 'Protocol', 'VEL-0003', 'VWT-0003', 'Yes', 'VEX-0003'],
+    ['VOT-0011', 'Reputation Voting', 'Runtime', 'Protocol', 'VEL-0003', 'VWT-0003', 'Yes', 'VEX-0003'],
+    ['VOT-0012', 'Consensus Voting', 'Runtime', 'Protocol', 'VEL-0003', 'VWT-0003', 'Yes', 'VEX-0003'],
+    ['VOT-0013', 'Audit Voting', 'Operational', 'Enterprise', 'VEL-0004', 'VWT-0004', 'Yes', 'VEX-0004'],
+    ['VOT-0014', 'Assurance Voting', 'Operational', 'Enterprise', 'VEL-0004', 'VWT-0004', 'Yes', 'VEX-0004'],
+    ['VOT-0015', 'Compliance Voting', 'Operational', 'Enterprise', 'VEL-0004', 'VWT-0004', 'Yes', 'VEX-0004'],
+  ] as const;
+
+  const votRows = votDefs.map(([id, name, cls, owner, eligibility, weight, delegation, expiration]) =>
+    `| ${id} | ${name} | ${cls} | ${owner} | ${eligibility} | ${weight} | ${delegation} | ${expiration} | Yes | Yes | ${amendmentId} | Not scheduled | Canonical |`
+  ).join('\n');
+
+  const eligibilityRows = [
+    `| VEL-0001 | Constitutional | Active constitutional standing | Full trust required | Required | Full reputation required | Constitutional role required | Required | ${amendmentId} | Active |`,
+    `| VEL-0002 | Governance | Active governance standing | Trust required | Verification encouraged | Reputation required | None | None | ${amendmentId} | Active |`,
+    `| VEL-0003 | Runtime | Active standing required | Trust required | Verification optional | Reputation recommended | None | None | ${amendmentId} | Active |`,
+    `| VEL-0004 | Operational | Active standing required | Trust recommended | Verification recommended | Reputation recommended | None | None | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const weightRows = [
+    `| VWT-0001 | Constitutional | Constitutional Weight | Equal weight per eligible constitutional actor | 1.0 | 1.0 | No normalization; equal weight enforced | Revoked on standing or eligibility failure | ${amendmentId} | Active |`,
+    `| VWT-0002 | Governance | Standing Weight | Standing-level weight per eligible governance actor | 0.1 | 1.0 | Normalized to eligible participant pool | Revoked on standing or eligibility failure | ${amendmentId} | Active |`,
+    `| VWT-0003 | Runtime | Reputation Weight | Reputation-score weight per eligible runtime actor | 0.0 | 1.0 | Normalized to sum of eligible weights | Revoked on reputation revocation or eligibility failure | ${amendmentId} | Active |`,
+    `| VWT-0004 | Operational | Trust Weight | Trust-score weight per eligible operational actor | 0.0 | 1.0 | Normalized to sum of eligible weights | Revoked on trust revocation or eligibility failure | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const delegationPermissions = [
+    `| Constitutional | No | Prohibited | N/A | ${amendmentId} |`,
+    `| Governance | Yes | Bounded to single motion | Required | ${amendmentId} |`,
+    `| Runtime | Yes | Bounded to single motion | Required | ${amendmentId} |`,
+    `| Operational | Yes | Bounded to single motion | Required | ${amendmentId} |`,
+  ].join('\n');
+
+  const motionRows = [
+    `| VMN-0001 | Constitutional | VOT-0001; VOT-0002; VOT-0003 | Until unanimous | Unanimous consent required | Unanimous approval required | Yes | ${amendmentId} | Active |`,
+    `| VMN-0002 | Governance | VOT-0004; VOT-0005; VOT-0006; VOT-0007 | Time-bounded | Supermajority threshold | Supermajority approval required | Yes | ${amendmentId} | Active |`,
+    `| VMN-0003 | Runtime | VOT-0008; VOT-0009; VOT-0010; VOT-0011; VOT-0012 | Time-bounded | Majority threshold | Simple majority approval required | Yes | ${amendmentId} | Active |`,
+    `| VMN-0004 | Operational | VOT-0013; VOT-0014; VOT-0015 | Time-bounded | Majority threshold | Simple majority approval required | Yes | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const expirationRows = [
+    `| VEX-0001 | Constitutional | Time Limit; Standing Revocation; Constitutional Override; Governance Decision | Vote becomes Expired; no influence on governance outcomes; historical record preserved | Yes | Preserved permanently | ${amendmentId} | Active |`,
+    `| VEX-0002 | Governance | Time Limit; Standing Revocation; Governance Expiration; Constitutional Override; Governance Decision | Vote becomes Expired; no influence on governance outcomes; historical record preserved | Yes | Preserved permanently | ${amendmentId} | Active |`,
+    `| VEX-0003 | Runtime | Time Limit; Standing Revocation; Consensus Expiration; Constitutional Override; Governance Decision | Vote becomes Expired; no influence on governance outcomes; historical record preserved | Yes | Preserved permanently | ${amendmentId} | Active |`,
+    `| VEX-0004 | Operational | Time Limit; Standing Revocation; Governance Expiration; Constitutional Override; Governance Decision | Vote becomes Expired; no influence on governance outcomes; historical record preserved | Yes | Preserved permanently | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const revocationAuthorityRows = [
+    `| VOT-0001 | Yes | Fraud; Eligibility Failure; Constitutional Override; Governance Decision | Constitution | Required | Required | ${amendmentId} | Active |`,
+    `| VOT-0004 | Yes | Fraud; Eligibility Failure; Delegation Abuse; Evidence Failure; Constitutional Override; Governance Decision | Constitution | Required | Required | ${amendmentId} | Active |`,
+    `| VOT-0008 | Yes | Fraud; Eligibility Failure; Delegation Abuse; Evidence Failure; Constitutional Override; Governance Decision | Protocol | Required | Required | ${amendmentId} | Active |`,
+    `| VOT-0013 | Yes | Fraud; Eligibility Failure; Delegation Abuse; Evidence Failure; Constitutional Override; Governance Decision | Enterprise | Required | Required | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  fixture.write('docs/constitution/VOTING-CONSTITUTION.md', `# Voting Constitution\n\n**Constitution Version:** ${version}\n`);
+  fixture.write('docs/constitution/VOTING-AUTHORITIES.md', `# Voting Authorities\n\n**Constitution Version:** ${version}\n\n## Voting authority catalog\n\n| Voting ID | Voting Name | Voting Class | Owner | Eligibility Policy | Weight Policy | Delegation Allowed | Expiration Policy | Revocable | Challengeable | Creation Amendment | Retirement Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|---|---|---|\n${votRows}\n`);
+  fixture.write('docs/constitution/VOTING-ELIGIBILITY-POLICY.md', `# Voting Eligibility Policy\n\n**Constitution Version:** ${version}\n\n## Eligibility policy catalog\n\n| Eligibility Policy ID | Voting Class | Standing Requirement | Trust Requirement | Verification Required | Reputation Threshold | Governance Role Required | Authority Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|\n${eligibilityRows}\n`);
+  fixture.write('docs/constitution/VOTING-WEIGHT-POLICY.md', `# Voting Weight Policy\n\n**Constitution Version:** ${version}\n\n## Weight policy catalog\n\n| Weight Policy ID | Voting Class | Weight Model | Calculation Basis | Minimum Threshold | Maximum Threshold | Normalization Rule | Revocation Rule | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|\n${weightRows}\n`);
+  fixture.write('docs/constitution/VOTING-DELEGATION-POLICY.md', `# Voting Delegation Policy\n\n**Constitution Version:** ${version}\n\n## Delegation permission catalog\n\n| Voting Class | Delegation Allowed | Maximum Scope | Expiration Required | Amendment |\n|---|---|---|---|---|\n${delegationPermissions}\n\n## Delegation registry\n\n| Delegation ID | Delegator | Delegate | Voting Authority | Scope | Expiration | Status | Amendment |\n|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/VOTING-MOTION-POLICY.md', `# Voting Motion Policy\n\n**Constitution Version:** ${version}\n\n## Motion policy catalog\n\n| Motion Policy ID | Voting Class | Eligible Voting Authorities | Open Duration | Close Rule | Outcome Rule | Decision Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n${motionRows}\n`);
+  fixture.write('docs/constitution/VOTING-LIFECYCLE.md', `# Voting Lifecycle\n\n**Constitution Version:** ${version}\n\n## Voting lifecycle transition ledger\n\n| Transition ID | Voting ID | From | To | Authorized By | Evidence | Amendment | Effective Date |\n|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/VOTING-EXPIRATION-POLICY.md', `# Voting Expiration Policy\n\n**Constitution Version:** ${version}\n\n## Expiration policy catalog\n\n| Expiration Policy ID | Voting Class | Valid Expiration Triggers | Expiration Semantics | Resubmission Permitted | Historical Preservation | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${expirationRows}\n`);
+  fixture.write('docs/constitution/VOTING-CHALLENGE-POLICY.md', `# Voting Challenge Policy\n\n**Constitution Version:** ${version}\n\n## Challenge registry\n\n| Challenge ID | Voting ID | Grounds | Evidence | Initiator | Decision Reference | Resolution | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/VOTING-REVOCATION-POLICY.md', `# Voting Revocation Policy\n\n**Constitution Version:** ${version}\n\n## Revocation authority registry\n\n| Voting ID | Revocable | Valid Causes | Revocation Authority | Evidence Required | Decision Reference Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${revocationAuthorityRows}\n\n## Revocation registry\n\n| Revocation ID | Voting ID | Subject | Cause | Evidence | Revoked By | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/VOTING-VIOLATION-CATALOG.md', `# Voting Violations\n\n**Constitution Version:** ${version}\n`);
+};

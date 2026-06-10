@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+import { votingDelegationRecords, votingViolation, VALID_VOTING_CLASSES, VOTING_DELEGATION_FILE } from './voting-governance-lib.mjs';
+import { runScanner } from './constitutional-governance-lib.mjs';
+export function scanVotingDelegations(root){const violations=[];const records=votingDelegationRecords(root);if(!records.length)violations.push(votingViolation(VOTING_DELEGATION_FILE,'delegation permission catalog contains no records','VOTE-V-005'));for(const r of records){if(!VALID_VOTING_CLASSES.includes(r['Voting Class']))violations.push(votingViolation(VOTING_DELEGATION_FILE,`delegation record has invalid voting class '${r['Voting Class']}'`,'VOTE-V-005'));if(!['Yes','No'].includes(r['Delegation Allowed']))violations.push(votingViolation(VOTING_DELEGATION_FILE,`delegation record has invalid Delegation Allowed value '${r['Delegation Allowed']}'`,'VOTE-V-005'));}return violations;}
+if(process.argv[1]&&import.meta.url===new URL(`file://${process.argv[1]}`).href)runScanner('Voting delegation scanner',scanVotingDelegations);

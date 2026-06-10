@@ -1,0 +1,7 @@
+import { spawnSync } from 'node:child_process';
+import { createConstitutionalFixture, repositoryRoot, writeVotingGovernance } from './fixture';
+const run=()=>spawnSync(process.execPath,['scripts/check-voting-revocation.mjs'],{cwd:repositoryRoot,encoding:'utf8'});
+describe('voting revocation governance',()=>{
+ it('validates the repository voting revocation catalog',()=>{const r=run();expect(r.status).toBe(0);expect(r.stderr).toBe('');expect(r.stdout).toContain('Voting revocation scanner passed');});
+ it('rejects invalid Revocable value in revocation authority registry',()=>{const f=createConstitutionalFixture();try{writeVotingGovernance(f);f.write('docs/constitution/VOTING-REVOCATION-POLICY.md',`# Voting Revocation Policy\n\n**Constitution Version:** v1.0\n\n## Revocation authority registry\n\n| Voting ID | Revocable | Valid Causes | Revocation Authority | Evidence Required | Decision Reference Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n| VOT-0001 | Maybe | Fraud | Constitution | Required | Required | AOC-AMD-0001 | Active |\n\n## Revocation registry\n\n| Revocation ID | Voting ID | Subject | Cause | Evidence | Revoked By | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|---|\n`);const r=f.run('check-voting-revocation.mjs');expect(r.status).toBe(1);expect(r.stderr).toContain("VOTE-V-008");}finally{f.cleanup();}});
+});

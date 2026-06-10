@@ -4,6 +4,7 @@
 
 | Version | Date | Amendments | Summary | Breaking Changes |
 |---|---|---|---|---|
+| v14.0 | 2026-06-10 | AOC-AMD-0014 | Establishes constitutional voting authority, eligibility, weight, delegation, motion, lifecycle, expiration, challenge, revocation, violations, and enforcement. | Constitutional will is no longer implicit; governed preference must be expressed through a legitimate voting act. Voting ≠ Consensus, Voting ≠ Governance, Vote Weight ≠ Authority as constitutional doctrine. |
 | v13.0 | 2026-06-10 | AOC-AMD-0013 | Establishes constitutional governance authority, proposals, motions, mandates, outcomes, lifecycle, challenges, expiration, revocation, violations, and enforcement. | Collective authority is no longer implicit; governed agreement must produce a legitimate governance act before becoming collective direction. Consensus ≠ Governance, Governance ≠ Voting, Governance ≠ Execution as constitutional doctrine. |
 | v12.0 | 2026-06-09 | AOC-AMD-0012 | Aligns all constitutional artifact headers to the current Constitution version. No semantic changes. | None. Version parity correction only. |
 | v11.0 | 2026-06-09 | AOC-AMD-0011 | Establishes constitutional consensus authority, models, thresholds, lifecycle, expiration, revocation, disputes, recomputation, violations, and enforcement. | Collective agreement is no longer implicit; decision influence may include governed consensus evaluation. Attestation ≠ Consensus as constitutional doctrine. |
@@ -120,6 +121,15 @@
 - **Summary:** Aligns all constitutional artifact headers to the current Constitution version. All documents that declared v10.0 following the v11.0 consensus governance introduction are advanced to v12.0 to maintain version parity with the supreme Constitution. No semantic changes are introduced.
 - **Breaking Changes:** None. This version increment is a version parity correction only.
 - **Migration Notes:** Repository governance changes only. No new scanner obligations are introduced.
+
+## v14.0
+
+- **Date:** 2026-06-10
+- **Amendments:** AOC-AMD-0014
+- **Summary:** Establishes Constitutional, Governance, Runtime, and Operational voting classes; catalogs voting authorities VOT-0001 through VOT-0015; governs eligibility, weight, delegation, motions, lifecycle, expiration, challenges, revocation, violations, and traceability; establishes Voting ≠ Consensus, Voting ≠ Governance, and Vote Weight ≠ Authority as constitutional doctrine; advances the constitutional chain to include Voting between Governance and Decision; and adds fail-closed CI and release scanners.
+- **Breaking Changes:** Constitutional will is no longer implicit. Governed preference may influence governance only through a cataloged voting authority, eligibility validation, weight assignment, and a valid lifecycle transition. All combinations of (Voting × Consensus × Governance) states are constitutionally valid.
+- **Migration Notes:** Repository governance changes only. No voting engine, election runtime, federation runtime, blockchain voting, token voting, treasury voting, or execution runtime is introduced. Future voting changes require Type B or Type C amendments.
+
 
 ## v13.0
 
