@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+import { economicsConsumptionRecords, economicsViolation, ECONOMIC_CONSUMPTION_FILE, VALID_ECONOMICS_CLASSES, VALID_ECONOMICS_STATUSES } from './economics-governance-lib.mjs';
+import { runScanner } from './constitutional-governance-lib.mjs';
+export function scanEconomicConsumption(root){const violations=[];const records=economicsConsumptionRecords(root);for(const r of records){const id=r['Consumption Policy ID'];if(!id||!/^ECP-\d{4}$/.test(id))violations.push(economicsViolation(ECONOMIC_CONSUMPTION_FILE,`invalid consumption policy ID '${id}'`,'ECO-V-004'));if(!VALID_ECONOMICS_CLASSES.includes(r['Authority Class']))violations.push(economicsViolation(ECONOMIC_CONSUMPTION_FILE,`${id} has invalid authority class '${r['Authority Class']}'`,'ECO-V-004'));if(!VALID_ECONOMICS_STATUSES.includes(r.Status))violations.push(economicsViolation(ECONOMIC_CONSUMPTION_FILE,`${id} has invalid status '${r.Status}'`,'ECO-V-004'));}return violations;}
+if(process.argv[1]&&import.meta.url===new URL(`file://${process.argv[1]}`).href)runScanner('Economics consumption scanner',scanEconomicConsumption);

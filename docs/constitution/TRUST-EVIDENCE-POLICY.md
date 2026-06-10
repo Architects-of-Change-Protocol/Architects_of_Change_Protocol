@@ -1,6 +1,6 @@
 # Trust Evidence Policy
 
-**Constitution Version:** v15.0
+**Constitution Version:** v16.0
 
 ## Activation rule
 

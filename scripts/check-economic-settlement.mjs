@@ -1,0 +1,6 @@
+#!/usr/bin/env node
+import { economicsSettlementRecords, economicsViolation, ECONOMIC_SETTLEMENT_FILE, VALID_ECONOMICS_STATUSES } from './economics-governance-lib.mjs';
+import { runScanner } from './constitutional-governance-lib.mjs';
+const VALID_SETTLEMENT_TYPES = ['Internal Settlement','Federated Settlement','Consumption Settlement','Treasury Settlement','Governance Settlement'];
+export function scanEconomicSettlement(root){const violations=[];const records=economicsSettlementRecords(root);for(const r of records){const id=r['Settlement Policy ID'];if(!id||!/^ESP-\d{4}$/.test(id))violations.push(economicsViolation(ECONOMIC_SETTLEMENT_FILE,`invalid settlement policy ID '${id}'`,'ECO-V-005'));if(!VALID_SETTLEMENT_TYPES.includes(r['Settlement Type']))violations.push(economicsViolation(ECONOMIC_SETTLEMENT_FILE,`${id} has invalid settlement type '${r['Settlement Type']}'`,'ECO-V-005'));if(!VALID_ECONOMICS_STATUSES.includes(r.Status))violations.push(economicsViolation(ECONOMIC_SETTLEMENT_FILE,`${id} has invalid status '${r.Status}'`,'ECO-V-005'));}return violations;}
+if(process.argv[1]&&import.meta.url===new URL(`file://${process.argv[1]}`).href)runScanner('Economics settlement scanner',scanEconomicSettlement);

@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+import { economicsRightsRecords, economicsViolation, ECONOMIC_RIGHTS_FILE, VALID_ECONOMICS_CLASSES, VALID_ECONOMICS_STATUSES } from './economics-governance-lib.mjs';
+import { runScanner } from './constitutional-governance-lib.mjs';
+export function scanEconomicRights(root){const violations=[];const records=economicsRightsRecords(root);for(const r of records){const id=r['Rights Policy ID'];if(!id||!/^ERP-\d{4}$/.test(id))violations.push(economicsViolation(ECONOMIC_RIGHTS_FILE,`invalid rights policy ID '${id}'`,'ECO-V-001'));if(!VALID_ECONOMICS_CLASSES.includes(r['Authority Class']))violations.push(economicsViolation(ECONOMIC_RIGHTS_FILE,`${id} has invalid authority class '${r['Authority Class']}'`,'ECO-V-001'));if(!r.Amendment)violations.push(economicsViolation(ECONOMIC_RIGHTS_FILE,`${id} is missing Amendment`,'ECO-V-001'));if(!VALID_ECONOMICS_STATUSES.includes(r.Status))violations.push(economicsViolation(ECONOMIC_RIGHTS_FILE,`${id} has invalid status '${r.Status}'`,'ECO-V-001'));}return violations;}
+if(process.argv[1]&&import.meta.url===new URL(`file://${process.argv[1]}`).href)runScanner('Economics rights scanner',scanEconomicRights);
