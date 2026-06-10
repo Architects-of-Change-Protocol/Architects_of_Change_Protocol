@@ -953,3 +953,107 @@ export const writeEconomicsGovernance = (fixture: ConstitutionalFixture, options
   fixture.write('docs/constitution/ECONOMIC-REVOCATION-POLICY.md', `# Economic Revocation Policy\n\n**Constitution Version:** ${version}\n\n## Revocation authority registry\n\n| Economic Authority ID | Revocable | Valid Causes | Revocation Authority | Evidence Required | Decision Reference Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${revocationRows}\n\n## Revocation registry\n\n| Revocation ID | Economic Authority ID | Cause | Evidence | Revoked By | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|\n`);
   fixture.write('docs/constitution/ECONOMIC-VIOLATION-CATALOG.md', `# Economic Violation Catalog\n\n**Constitution Version:** ${version}\n`);
 };
+
+export const writeRuntimeGovernance = (fixture: ConstitutionalFixture, options: {
+  version?: string;
+  amendmentId?: string;
+} = {}) => {
+  const version = options.version ?? 'v1.0';
+  const amendmentId = options.amendmentId ?? 'AOC-AMD-0001';
+  writeEconomicsGovernance(fixture, { version, amendmentId });
+  writeConstitutionalGovernance(fixture, { version, amendmentId, affectedAuthorities: 'Constitution; Economic Authorities ECO-0001 through ECO-0015; Runtime Authorities RUN-0001 through RUN-0015' });
+
+  const runDefs = [
+    ['RUN-0001', 'Runtime Execution Authority', 'Constitutional', 'Constitution', 'REP-0001', 'RCP-0001'],
+    ['RUN-0002', 'Runtime Capability Authority', 'Constitutional', 'Constitution', 'REP-0001', 'RCP-0001'],
+    ['RUN-0003', 'Runtime Evidence Authority', 'Constitutional', 'Constitution', 'REP-0001', 'RCP-0001'],
+    ['RUN-0004', 'Runtime Integrity Authority', 'Constitutional', 'Constitution', 'REP-0001', 'RCP-0001'],
+    ['RUN-0005', 'Runtime Obligation Authority', 'Constitutional', 'Constitution', 'REP-0001', 'RCP-0001'],
+    ['RUN-0006', 'Runtime Outcome Authority', 'Constitutional', 'Constitution', 'REP-0001', 'RCP-0001'],
+    ['RUN-0007', 'Runtime Audit Authority', 'Operational', 'Enterprise', 'REP-0004', 'RCP-0004'],
+    ['RUN-0008', 'Runtime Assurance Authority', 'Operational', 'Enterprise', 'REP-0004', 'RCP-0004'],
+    ['RUN-0009', 'Runtime Compliance Authority', 'Operational', 'Enterprise', 'REP-0004', 'RCP-0004'],
+    ['RUN-0010', 'Runtime Federation Authority', 'Governance', 'Constitution', 'REP-0002', 'RCP-0002'],
+    ['RUN-0011', 'Runtime Economics Authority', 'Governance', 'Protocol', 'REP-0003', 'RCP-0003'],
+    ['RUN-0012', 'Runtime Governance Authority', 'Governance', 'Constitution', 'REP-0002', 'RCP-0002'],
+    ['RUN-0013', 'Runtime Decision Authority', 'Constitutional', 'Constitution', 'REP-0001', 'RCP-0001'],
+    ['RUN-0014', 'Runtime Action Authority', 'Runtime', 'Protocol', 'REP-0003', 'RCP-0003'],
+    ['RUN-0015', 'Runtime Constitutional Authority', 'Constitutional', 'Constitution', 'REP-0001', 'RCP-0001'],
+  ] as const;
+
+  const runRows = runDefs.map(([id, name, cls, owner, execPolicy, capPolicy]) =>
+    `| ${id} | ${name} | ${cls} | ${owner} | ${execPolicy} | ${capPolicy} | Yes | Yes | ${amendmentId} | Not scheduled | Canonical |`
+  ).join('\n');
+
+  const execPolicyRows = [
+    `| REP-0001 | Constitutional | Yes | Yes | Yes | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| REP-0002 | Governance | Yes | Yes | Yes | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| REP-0003 | Runtime | Yes | Yes | Yes | No | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| REP-0004 | Operational | Yes | Yes | No | No | Yes | Yes | ${amendmentId} | Canonical |`,
+  ].join('\n');
+
+  const capPolicyRows = [
+    `| RCP-0001 | Constitutional | Yes | Yes | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| RCP-0002 | Governance | Yes | Yes | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| RCP-0003 | Runtime | Yes | Yes | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| RCP-0004 | Operational | Yes | No | No | Yes | Yes | ${amendmentId} | Canonical |`,
+  ].join('\n');
+
+  const evidencePolicyRows = [
+    `| REVI-0001 | Execution Evidence | Constitutional | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| REVI-0002 | Decision Evidence | Constitutional | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| REVI-0003 | Consumption Evidence | Runtime | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| REVI-0004 | Outcome Evidence | Constitutional | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| REVI-0005 | Audit Evidence | Operational | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+  ].join('\n');
+
+  const integrityPolicyRows = [
+    `| RIP-0001 | Constitutional | Yes | Yes | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| RIP-0002 | Governance | Yes | Yes | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| RIP-0003 | Runtime | Yes | Yes | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| RIP-0004 | Operational | Yes | Yes | Yes | Yes | No | ${amendmentId} | Canonical |`,
+  ].join('\n');
+
+  const obligationPolicyRows = [
+    `| ROP-0001 | Constitutional | Yes | Yes | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| ROP-0002 | Governance | Yes | Yes | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| ROP-0003 | Runtime | Yes | Yes | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| ROP-0004 | Operational | Yes | Yes | No | Yes | Yes | ${amendmentId} | Canonical |`,
+  ].join('\n');
+
+  const outcomePolicyRows = [
+    `| ROUT-0001 | Constitutional | Yes | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| ROUT-0002 | Governance | Yes | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| ROUT-0003 | Runtime | Yes | No | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| ROUT-0004 | Operational | Yes | No | Yes | Yes | ${amendmentId} | Canonical |`,
+  ].join('\n');
+
+  const auditPolicyRows = [
+    `| RAP-0001 | Full Audit | Constitutional | Yes | Yes | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| RAP-0002 | Governance Audit | Governance | Yes | Yes | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| RAP-0003 | Runtime Audit | Runtime | Yes | Yes | Yes | Yes | No | ${amendmentId} | Canonical |`,
+    `| RAP-0004 | Operational Audit | Operational | Yes | Yes | No | Yes | No | ${amendmentId} | Canonical |`,
+  ].join('\n');
+
+  const revocationAuthorityRows = [
+    `| RUN-0001 | Yes | Fraud; Integrity Failure; Evidence Failure; Authority Failure; Constitutional Override; Governance Decision | Constitution | Required | Required | ${amendmentId} | Active |`,
+    `| RUN-0002 | Yes | Fraud; Integrity Failure; Capability Failure; Constitutional Override; Governance Decision | Constitution | Required | Required | ${amendmentId} | Active |`,
+    `| RUN-0003 | Yes | Fraud; Integrity Failure; Evidence Failure; Constitutional Override; Governance Decision | Constitution | Required | Required | ${amendmentId} | Active |`,
+    `| RUN-0013 | Yes | Fraud; Authority Failure; Constitutional Override; Governance Decision | Constitution | Required | Required | ${amendmentId} | Active |`,
+    `| RUN-0015 | Yes | Fraud; Integrity Failure; Constitutional Override | Constitution | Required | Required | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  fixture.write('docs/constitution/RUNTIME-CONSTITUTION.md', `# Runtime Constitution\n\n**Constitution Version:** ${version}\n`);
+  fixture.write('docs/constitution/RUNTIME-AUTHORITIES.md', `# Runtime Authorities\n\n**Constitution Version:** ${version}\n\n## Runtime authority catalog\n\n| Runtime Authority ID | Runtime Authority Name | Authority Class | Owner | Execution Policy | Capability Policy | Revocable | Challengeable | Creation Amendment | Retirement Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|---|\n${runRows}\n`);
+  fixture.write('docs/constitution/RUNTIME-EXECUTION-POLICY.md', `# Runtime Execution Policy\n\n**Constitution Version:** ${version}\n\n## Execution policy catalog\n\n| Execution Policy ID | Authority Class | Authority Required | Capability Required | Policy Required | Decision Required | Evidence Required | Audit Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|\n${execPolicyRows}\n\n## Execution registry\n\n| Execution ID | Authority Reference | Capability Reference | Policy Reference | Decision Reference | Runtime Scope | Execution Window | Evidence Requirement | Status |\n|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/RUNTIME-CAPABILITY-POLICY.md', `# Runtime Capability Policy\n\n**Constitution Version:** ${version}\n\n## Capability policy catalog\n\n| Capability Policy ID | Authority Class | Invocation Governed | Limits Governed | Dependencies Governed | Consumption Governed | Completion Governed | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n${capPolicyRows}\n\n## Capability invocation registry\n\n| Invocation ID | Execution ID | Capability Reference | Policy | Scope | Limits | Dependencies Satisfied | Consumption Recorded | Completion Recorded | Status |\n|---|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/RUNTIME-EVIDENCE-POLICY.md', `# Runtime Evidence Policy\n\n**Constitution Version:** ${version}\n\n## Evidence policy catalog\n\n| Evidence Policy ID | Evidence Type | Authority Class | Timestamp Required | Integrity Hash Required | Authority Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${evidencePolicyRows}\n\n## Evidence registry\n\n| Evidence ID | Execution ID | Timestamp | Authority | Event | Integrity Hash | Status |\n|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/RUNTIME-INTEGRITY-POLICY.md', `# Runtime Integrity Policy\n\n**Constitution Version:** ${version}\n\n## Integrity policy catalog\n\n| Integrity Policy ID | Authority Class | Authenticity Required | Completeness Required | Traceability Required | Immutability Required | Verifiability Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n${integrityPolicyRows}\n\n## Integrity registry\n\n| Integrity Record ID | Execution ID | Authenticity Verified | Completeness Verified | Traceability Verified | Immutability Verified | Verifiability Verified | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/RUNTIME-OBLIGATION-POLICY.md', `# Runtime Obligation Policy\n\n**Constitution Version:** ${version}\n\n## Obligation policy catalog\n\n| Obligation Policy ID | Authority Class | Execution Obligations | Evidence Obligations | Settlement Obligations | Audit Obligations | Compliance Obligations | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n${obligationPolicyRows}\n\n## Obligation fulfillment registry\n\n| Obligation Record ID | Execution ID | Execution Fulfilled | Evidence Fulfilled | Settlement Fulfilled | Audit Fulfilled | Compliance Fulfilled | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/RUNTIME-OUTCOME-POLICY.md', `# Runtime Outcome Policy\n\n**Constitution Version:** ${version}\n\n## Outcome policy catalog\n\n| Outcome Policy ID | Authority Class | Evidence Required | Decision Reference Required | Audit Required | Revocation Allowed | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${outcomePolicyRows}\n\n## Outcome registry\n\n| Outcome ID | Execution ID | Decision ID | Result | Evidence | Status |\n|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/RUNTIME-AUDIT-POLICY.md', `# Runtime Audit Policy\n\n**Constitution Version:** ${version}\n\n## Audit policy catalog\n\n| Audit Policy ID | Audit Domain | Authority Class | Execution Audit | Evidence Audit | Integrity Audit | Consumption Audit | Compliance Audit | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|\n${auditPolicyRows}\n\n## Audit registry\n\n| Audit ID | Execution ID | Audit Domain | Execution Verified | Evidence Verified | Integrity Verified | Consumption Verified | Compliance Verified | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/RUNTIME-LIFECYCLE.md', `# Runtime Lifecycle\n\n**Constitution Version:** ${version}\n\n## Runtime lifecycle transition ledger\n\n| Transition ID | Execution ID | From | To | Authorized By | Evidence | Amendment | Effective Date |\n|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/RUNTIME-CHALLENGE-POLICY.md', `# Runtime Challenge Policy\n\n**Constitution Version:** ${version}\n\n## Challenge registry\n\n| Challenge ID | Execution ID | Grounds | Evidence | Initiator | Decision Reference | Resolution | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/RUNTIME-REVOCATION-POLICY.md', `# Runtime Revocation Policy\n\n**Constitution Version:** ${version}\n\n## Revocation authority registry\n\n| Runtime Authority ID | Revocable | Valid Causes | Revocation Authority | Evidence Required | Decision Reference Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${revocationAuthorityRows}\n\n## Revocation registry\n\n| Revocation ID | Runtime Authority ID | Cause | Evidence | Revoked By | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/RUNTIME-VIOLATION-CATALOG.md', `# Runtime Violation Catalog\n\n**Constitution Version:** ${version}\n`);
+};

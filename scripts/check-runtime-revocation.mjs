@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+import { runtimeRevocationRecords, runtimeViolation, RUNTIME_REVOCATION_FILE, VALID_REVOCATION_CAUSES } from './runtime-governance-lib.mjs';
+import { runScanner } from './constitutional-governance-lib.mjs';
+export function scanRuntimeRevocation(root){const violations=[];const records=runtimeRevocationRecords(root);for(const r of records){const id=r['Runtime Authority ID'];if(!id||!/^RUN-\d{4}$/.test(id))violations.push(runtimeViolation(RUNTIME_REVOCATION_FILE,`invalid runtime authority ID '${id}' in revocation registry`,'RUN-V-009'));if(r['Valid Causes']){const causes=r['Valid Causes'].split(';').map(s=>s.trim());for(const cause of causes){if(cause&&!VALID_REVOCATION_CAUSES.includes(cause))violations.push(runtimeViolation(RUNTIME_REVOCATION_FILE,`${id} has invalid revocation cause '${cause}'`,'RUN-V-009'));}}}return violations;}
+if(process.argv[1]&&import.meta.url===new URL(`file://${process.argv[1]}`).href)runScanner('Runtime revocation scanner',scanRuntimeRevocation);
