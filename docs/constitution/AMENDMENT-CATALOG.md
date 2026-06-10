@@ -1,6 +1,6 @@
 # Constitutional Amendment Catalog
 
-**Constitution Version:** v15.0
+**Constitution Version:** v16.0
 
 ## Amendment index
 
@@ -21,6 +21,7 @@
 | AOC-AMD-0013 | Establish Constitutional Governance Framework | Type C | v13.0 | Ratified |
 | AOC-AMD-0014 | Establish Constitutional Voting Governance Framework | Type C | v14.0 | Ratified |
 | AOC-AMD-0015 | Establish Constitutional Federation Governance Framework | Type C | v15.0 | Ratified |
+| AOC-AMD-0016 | Establish Constitutional Economics Governance Framework | Type C | v16.0 | Ratified |
 
 ## AOC-AMD-0001 — Establish Constitutional Amendment System
 
@@ -254,4 +255,20 @@
 - **Rationale:** Close the constitutional gap between governed sovereign systems and governed inter-sovereign relationships by making federation legitimacy explicit, recognition-gated, trust-governed, delegation-bounded, capability-scoped, governance-constrained, lifecycle-controlled, challengeable, revocable, versioned, and traceable. Establish that Federation ≠ Merger, Recognition ≠ Trust, Trust ≠ Delegation, and Delegation ≠ Sovereignty Transfer as constitutional doctrine. Advance the constitutional chain to include Federation between Voting and Decision.
 - **Risk Assessment:** Moderate governance risk and no runtime risk. The amendment adds fail-closed repository governance without implementing cross-chain federation, blockchain bridges, runtime federation protocols, economic settlement, treasury federation, network federation protocols, or execution federation.
 - **Migration Impact:** Constitutional governance advances from v14.0 to v15.0. Future federation creation, retirement, semantic changes, ownership changes, recognition policies, trust policies, delegation policies, capability policies, governance policies, lifecycle semantics, challenge grounds, revocation causes, and enforcement obligations require Type B or Type C amendment governance. CI and release validation now execute ten federation governance scanners.
+- **Ratification Status:** Ratified
+
+
+## AOC-AMD-0016 — Establish Constitutional Economics Governance Framework
+
+- **Amendment ID:** AOC-AMD-0016
+- **Title:** Establish Constitutional Economics Governance Framework
+- **Author:** Architects of Change maintainers
+- **Date:** 2026-06-10
+- **Type:** Type C
+- **Version:** v16.0
+- **Affected Laws:** LAW-008
+- **Affected Authorities:** Constitution; Economic Authorities ECO-0001 through ECO-0015
+- **Rationale:** Close the constitutional gap between federation sovereignty and economic sovereignty by defining, allocating, consuming, transferring, settling, and auditing value within and across sovereign systems. Introduces GCU (Governance Compute Unit) and SCU (Sovereign Compute Unit) as constitutional economic primitives.
+- **Risk Assessment:** Low implementation risk. The amendment introduces governance artifacts and scanners without changing existing laws, adding runtime economics, or implementing cryptocurrency, token issuance, blockchain treasury, market pricing, payment gateway, exchange system, or revenue engine.
+- **Migration Impact:** Future economic definitions, rights assignments, obligation changes, asset changes, consumption changes, settlement changes, treasury changes, and valuation changes require Type B or Type C amendment governance. CI and release validation now execute twelve economics governance scanners.
 - **Ratification Status:** Ratified

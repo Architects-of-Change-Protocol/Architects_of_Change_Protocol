@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+import { economicsTreasuryRecords, economicsViolation, ECONOMIC_TREASURY_FILE, VALID_ECONOMICS_CLASSES, VALID_ECONOMICS_STATUSES } from './economics-governance-lib.mjs';
+import { runScanner } from './constitutional-governance-lib.mjs';
+export function scanEconomicTreasury(root){const violations=[];const records=economicsTreasuryRecords(root);for(const r of records){const id=r['Treasury Policy ID'];if(!id||!/^ETP-\d{4}$/.test(id))violations.push(economicsViolation(ECONOMIC_TREASURY_FILE,`invalid treasury policy ID '${id}'`,'ECO-V-006'));if(!VALID_ECONOMICS_CLASSES.includes(r['Authority Class']))violations.push(economicsViolation(ECONOMIC_TREASURY_FILE,`${id} has invalid authority class '${r['Authority Class']}'`,'ECO-V-006'));if(!VALID_ECONOMICS_STATUSES.includes(r.Status))violations.push(economicsViolation(ECONOMIC_TREASURY_FILE,`${id} has invalid status '${r.Status}'`,'ECO-V-006'));}return violations;}
+if(process.argv[1]&&import.meta.url===new URL(`file://${process.argv[1]}`).href)runScanner('Economics treasury scanner',scanEconomicTreasury);

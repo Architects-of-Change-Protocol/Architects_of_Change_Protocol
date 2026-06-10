@@ -1,6 +1,6 @@
 # AOC Constitution
 
-**Constitution Version:** v15.0
+**Constitution Version:** v16.0
 
 **Status:** Ratified
 
@@ -147,6 +147,20 @@ The following documents are incorporated into the Constitution by reference:
 - `docs/constitution/FEDERATION-REVOCATION-POLICY.md`
 - `docs/constitution/FEDERATION-VIOLATION-CATALOG.md`
 
+- `docs/constitution/ECONOMICS-CONSTITUTION.md`
+- `docs/constitution/ECONOMICS-AUTHORITIES.md`
+- `docs/constitution/ECONOMIC-RIGHTS-POLICY.md`
+- `docs/constitution/ECONOMIC-OBLIGATIONS-POLICY.md`
+- `docs/constitution/ECONOMIC-ASSET-POLICY.md`
+- `docs/constitution/ECONOMIC-CONSUMPTION-POLICY.md`
+- `docs/constitution/ECONOMIC-SETTLEMENT-POLICY.md`
+- `docs/constitution/ECONOMIC-TREASURY-POLICY.md`
+- `docs/constitution/ECONOMIC-VALUATION-POLICY.md`
+- `docs/constitution/ECONOMIC-LIFECYCLE.md`
+- `docs/constitution/ECONOMIC-CHALLENGE-POLICY.md`
+- `docs/constitution/ECONOMIC-REVOCATION-POLICY.md`
+- `docs/constitution/ECONOMIC-VIOLATION-CATALOG.md`
+
 ## 3. Constitutional principles
 
 1. The Constitution is enforceable through scanners, tests, CI gates, and release gates.
@@ -267,4 +281,10 @@ The constitutional chain is `Authority → Capability → Policy → Standing �
 
 Federation is a constitutionally governed relationship between sovereign constitutional systems that establishes recognition, trust, coordination, delegation, and cooperation boundaries. Federation legitimacy is distinct from authority, capability, policy, standing, claim, trust, verification, reputation, attestation, consensus, governance, and voting legitimacy. A federation act may govern inter-sovereign relationships only after valid recognition under the recognition policy, trust level assignment under the trust policy, delegation validation where delegation is exercised, capability sharing validation where capabilities are shared, and governance policy compliance where federated governance is invoked. Delegation transfers authority scope only; it does not transfer sovereignty.
 
-The constitutional chain is `Authority → Capability → Policy → Standing → Claim → Trust → Verification → Reputation → Attestation → Consensus → Governance → Voting → Federation → Decision → Action`. Federation governs how sovereign constitutional systems interact without surrendering sovereignty, but never directly authorizes action, and never overrides authority, capability, policy, standing, claim evidence, verification requirements, reputation signals, attestation endorsements, consensus requirements, governance authority, or voting legitimacy. Federation ≠ Merger, Recognition ≠ Trust, Trust ≠ Delegation, and Delegation ≠ Sovereignty Transfer as constitutional doctrine. Revocation disables federation permanently. Federated governance cannot override local sovereignty.
+The constitutional chain is `Authority → Capability → Policy → Standing → Claim → Trust → Verification → Reputation → Attestation → Consensus → Governance → Voting → Federation → Economics → Decision → Action`. Federation governs how sovereign constitutional systems interact without surrendering sovereignty, but never directly authorizes action, and never overrides authority, capability, policy, standing, claim evidence, verification requirements, reputation signals, attestation endorsements, consensus requirements, governance authority, or voting legitimacy. Federation ≠ Merger, Recognition ≠ Trust, Trust ≠ Delegation, and Delegation ≠ Sovereignty Transfer as constitutional doctrine. Revocation disables federation permanently. Federated governance cannot override local sovereignty.
+
+## 23. Economics authority governance
+
+Economics is a constitutionally governed system for defining, allocating, consuming, transferring, settling, and auditing value within and across sovereign systems. Economics legitimacy is distinct from authority, capability, policy, standing, claim, trust, verification, reputation, attestation, consensus, governance, voting, and federation legitimacy. An economics act may govern value only after valid authority, valid rights assignment, valid obligations, valid assets, valid consumption, valid settlement, and valid lifecycle transitions.
+
+The constitutional chain is `Authority → Capability → Policy → Standing → Claim → Trust → Verification → Reputation → Attestation → Consensus → Governance → Voting → Federation → Economics → Decision → Action`. Economics governs how sovereign constitutional systems allocate value, but never directly authorizes action, and never overrides authority, capability, policy, standing, claim evidence, verification requirements, reputation signals, attestation endorsements, consensus requirements, governance authority, voting legitimacy, or federation relationships. Value ≠ Currency, Rights ≠ Assets, Consumption ≠ Ownership, and Settlement ≠ Payment as constitutional doctrine. GCU (Governance Compute Unit) and SCU (Sovereign Compute Unit) are constitutional economic primitives, not currencies. Revocation disables economics permanently. Economic governance cannot override local sovereignty.

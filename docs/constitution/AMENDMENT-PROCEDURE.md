@@ -1,6 +1,6 @@
 # Constitutional Amendment Procedure
 
-**Constitution Version:** v15.0
+**Constitution Version:** v16.0
 
 ## Purpose
 

@@ -1,0 +1,5 @@
+#!/usr/bin/env node
+import { economicsObligationsRecords, economicsViolation, ECONOMIC_OBLIGATIONS_FILE, VALID_ECONOMICS_CLASSES, VALID_ECONOMICS_STATUSES } from './economics-governance-lib.mjs';
+import { runScanner } from './constitutional-governance-lib.mjs';
+export function scanEconomicObligations(root){const violations=[];const records=economicsObligationsRecords(root);for(const r of records){const id=r['Obligations Policy ID'];if(!id||!/^EOP-\d{4}$/.test(id))violations.push(economicsViolation(ECONOMIC_OBLIGATIONS_FILE,`invalid obligations policy ID '${id}'`,'ECO-V-002'));if(!VALID_ECONOMICS_CLASSES.includes(r['Authority Class']))violations.push(economicsViolation(ECONOMIC_OBLIGATIONS_FILE,`${id} has invalid authority class '${r['Authority Class']}'`,'ECO-V-002'));if(!VALID_ECONOMICS_STATUSES.includes(r.Status))violations.push(economicsViolation(ECONOMIC_OBLIGATIONS_FILE,`${id} has invalid status '${r.Status}'`,'ECO-V-002'));}return violations;}
+if(process.argv[1]&&import.meta.url===new URL(`file://${process.argv[1]}`).href)runScanner('Economics obligations scanner',scanEconomicObligations);

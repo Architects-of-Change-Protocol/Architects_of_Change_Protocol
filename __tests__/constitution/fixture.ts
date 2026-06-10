@@ -843,3 +843,113 @@ export const writeFederationGovernance = (fixture: ConstitutionalFixture, option
   fixture.write('docs/constitution/FEDERATION-REVOCATION-POLICY.md', `# Federation Revocation Policy\n\n**Constitution Version:** ${version}\n\n## Revocation authority registry\n\n| Federation ID | Revocable | Valid Causes | Revocation Authority | Evidence Required | Decision Reference Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${revocationAuthorityRows}\n\n## Revocation registry\n\n| Revocation ID | Federation ID | Cause | Evidence | Revoked By | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|\n`);
   fixture.write('docs/constitution/FEDERATION-VIOLATION-CATALOG.md', `# Federation Violations\n\n**Constitution Version:** ${version}\n`);
 };
+
+export const writeEconomicsGovernance = (fixture: ConstitutionalFixture, options: {
+  version?: string;
+  amendmentId?: string;
+} = {}) => {
+  const version = options.version ?? 'v1.0';
+  const amendmentId = options.amendmentId ?? 'AOC-AMD-0001';
+  writeFederationGovernance(fixture, { version, amendmentId });
+  writeConstitutionalGovernance(fixture, { version, amendmentId, affectedAuthorities: 'Constitution; Federation Authorities FED-0001 through FED-0015; Economic Authorities ECO-0001 through ECO-0015' });
+
+  const ecoDefs = [
+    ['ECO-0001', 'Economic Rights Authority', 'Constitutional', 'Constitution', 'ERP-0001', 'EOP-0001'],
+    ['ECO-0002', 'Economic Obligations Authority', 'Constitutional', 'Constitution', 'ERP-0001', 'EOP-0001'],
+    ['ECO-0003', 'Asset Authority', 'Governance', 'Constitution', 'ERP-0002', 'EOP-0002'],
+    ['ECO-0004', 'Consumption Authority', 'Governance', 'Protocol', 'ERP-0002', 'EOP-0002'],
+    ['ECO-0005', 'Settlement Authority', 'Governance', 'Protocol', 'ERP-0003', 'EOP-0003'],
+    ['ECO-0006', 'Treasury Authority', 'Constitutional', 'Constitution', 'ERP-0001', 'EOP-0001'],
+    ['ECO-0007', 'Valuation Authority', 'Governance', 'Protocol', 'ERP-0002', 'EOP-0002'],
+    ['ECO-0008', 'Federation Economics Authority', 'Governance', 'Constitution', 'ERP-0002', 'EOP-0002'],
+    ['ECO-0009', 'GCU Authority', 'Constitutional', 'Constitution', 'ERP-0001', 'EOP-0001'],
+    ['ECO-0010', 'SCU Authority', 'Constitutional', 'Constitution', 'ERP-0001', 'EOP-0001'],
+    ['ECO-0011', 'Economic Audit Authority', 'Operational', 'Enterprise', 'ERP-0004', 'EOP-0004'],
+    ['ECO-0012', 'Economic Assurance Authority', 'Operational', 'Enterprise', 'ERP-0004', 'EOP-0004'],
+    ['ECO-0013', 'Economic Compliance Authority', 'Operational', 'Enterprise', 'ERP-0004', 'EOP-0004'],
+    ['ECO-0014', 'Economic Governance Authority', 'Governance', 'Constitution', 'ERP-0002', 'EOP-0002'],
+    ['ECO-0015', 'Economic Runtime Authority', 'Runtime', 'Protocol', 'ERP-0003', 'EOP-0003'],
+  ] as const;
+
+  const ecoRows = ecoDefs.map(([id, name, cls, owner, rightsPolicy, obligationsPolicy]) =>
+    `| ${id} | ${name} | ${cls} | ${owner} | ${rightsPolicy} | ${obligationsPolicy} | Yes | Yes | ${amendmentId} | Not scheduled | Canonical |`
+  ).join('\n');
+
+  const rightsRows = [
+    `| ERP-0001 | Constitutional | Yes | Yes | Yes | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| ERP-0002 | Governance | Yes | Yes | Yes | No | No | Yes | ${amendmentId} | Canonical |`,
+    `| ERP-0003 | Runtime | Yes | Yes | No | Yes | No | No | ${amendmentId} | Canonical |`,
+    `| ERP-0004 | Operational | Yes | No | No | No | No | No | ${amendmentId} | Canonical |`,
+  ].join('\n');
+
+  const obligationsRows = [
+    `| EOP-0001 | Constitutional | Yes | Yes | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| EOP-0002 | Governance | No | Yes | No | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| EOP-0003 | Runtime | No | Yes | No | Yes | No | ${amendmentId} | Canonical |`,
+    `| EOP-0004 | Operational | No | No | No | Yes | No | ${amendmentId} | Canonical |`,
+  ].join('\n');
+
+  const assetRows = [
+    `| EAC-0001 | Capability Asset | CAPABILITY-CONSTITUTION.md | Constitution | No | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| EAC-0002 | Authority Asset | CONSTITUTIONAL-AUTHORITIES.md | Constitution | No | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| EAC-0003 | Policy Asset | POLICY-CONSTITUTION.md | Constitution | No | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| EAC-0004 | Trust Asset | TRUST-CONSTITUTION.md | Constitution | No | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| EAC-0005 | Verification Asset | VERIFICATION-CONSTITUTION.md | Constitution | No | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| EAC-0006 | Reputation Asset | REPUTATION-CONSTITUTION.md | Constitution | No | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| EAC-0007 | Federation Asset | FEDERATION-CONSTITUTION.md | Constitution | No | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| EAC-0008 | Economic Asset | ECONOMICS-CONSTITUTION.md | Constitution | No | Yes | Yes | ${amendmentId} | Canonical |`,
+  ].join('\n');
+
+  const consumptionRows = [
+    `| ECP-0001 | Constitutional | GCU consumption | Constitutional budget | Constitutional rights | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| ECP-0002 | Governance | Governance activity | Governance budget | Governance rights | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| ECP-0003 | Runtime | SCU consumption | Protocol budget | Runtime rights | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| ECP-0004 | Operational | Operational consumption | Operational budget | Operational rights | Yes | Yes | ${amendmentId} | Canonical |`,
+  ].join('\n');
+
+  const settlementRows = [
+    `| ESP-0001 | Internal Settlement | Constitutional | Both parties | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| ESP-0002 | Federated Settlement | Governance | Both sovereign parties | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| ESP-0003 | Consumption Settlement | Runtime | Consuming authority | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| ESP-0004 | Treasury Settlement | Constitutional | Treasury authority | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| ESP-0005 | Governance Settlement | Governance | Governance authority | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+  ].join('\n');
+
+  const treasuryRows = [
+    `| ETP-0001 | Constitutional | Yes | Yes | Yes | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| ETP-0002 | Governance | Yes | Yes | Yes | Yes | No | Yes | ${amendmentId} | Canonical |`,
+    `| ETP-0003 | Runtime | Yes | No | No | Yes | No | Yes | ${amendmentId} | Canonical |`,
+    `| ETP-0004 | Operational | Yes | No | No | Yes | No | No | ${amendmentId} | Canonical |`,
+  ].join('\n');
+
+  const valuationRows = [
+    `| EVM-0001 | Consumption Value | Runtime | Consumption accounting | No | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| EVM-0002 | Capability Value | Governance | Capability assignment | Yes | No | Yes | ${amendmentId} | Canonical |`,
+    `| EVM-0003 | Governance Value | Governance | Governance activity | Yes | No | Yes | ${amendmentId} | Canonical |`,
+    `| EVM-0004 | Federation Value | Governance | Federation relationships | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+    `| EVM-0005 | Assurance Value | Operational | Assurance records | Yes | No | Yes | ${amendmentId} | Canonical |`,
+    `| EVM-0006 | Economic Value | Constitutional | Composite economic signal | Yes | Yes | Yes | ${amendmentId} | Canonical |`,
+  ].join('\n');
+
+  const revocationRows = [
+    `| ECO-0001 | Yes | Fraud; Invalid Right; Constitutional Override; Governance Decision | Constitution | Required | Required | ${amendmentId} | Active |`,
+    `| ECO-0002 | Yes | Fraud; Invalid Obligation; Constitutional Override; Governance Decision | Constitution | Required | Required | ${amendmentId} | Active |`,
+    `| ECO-0009 | Yes | Fraud; Invalid Right; Constitutional Override | Constitution | Required | Required | ${amendmentId} | Active |`,
+    `| ECO-0010 | Yes | Fraud; Invalid Right; Constitutional Override | Constitution | Required | Required | ${amendmentId} | Active |`,
+    `| ECO-0006 | Yes | Fraud; Invalid Right; Treasury Violation; Constitutional Override; Governance Decision | Constitution | Required | Required | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  fixture.write('docs/constitution/ECONOMICS-CONSTITUTION.md', `# Economics Constitution\n\n**Constitution Version:** ${version}\n`);
+  fixture.write('docs/constitution/ECONOMICS-AUTHORITIES.md', `# Economics Authorities\n\n**Constitution Version:** ${version}\n\n## Economic authority catalog\n\n| Economic Authority ID | Economic Authority Name | Authority Class | Owner | Rights Policy | Obligations Policy | Revocable | Challengeable | Creation Amendment | Retirement Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|---|\n${ecoRows}\n`);
+  fixture.write('docs/constitution/ECONOMIC-RIGHTS-POLICY.md', `# Economic Rights Policy\n\n**Constitution Version:** ${version}\n\n## Rights policy catalog\n\n| Rights Policy ID | Authority Class | Access Rights | Consumption Rights | Transfer Rights | Settlement Rights | Treasury Rights | Federation Rights | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|\n${rightsRows}\n\n## Rights registry\n\n| Right ID | Owner | Scope | Source | Expiration | Revocation Rule | Status |\n|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/ECONOMIC-OBLIGATIONS-POLICY.md', `# Economic Obligations Policy\n\n**Constitution Version:** ${version}\n\n## Obligations policy catalog\n\n| Obligations Policy ID | Authority Class | Payment Obligations | Settlement Obligations | Treasury Obligations | Consumption Obligations | Federation Obligations | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n${obligationsRows}\n\n## Obligations registry\n\n| Obligation ID | Holder | Type | Scope | Source | Expiration | Revocation Rule | Status |\n|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/ECONOMIC-ASSET-POLICY.md', `# Economic Asset Policy\n\n**Constitution Version:** ${version}\n\nAssets are constitutional abstractions, not accounting records.\n\n## Asset class catalog\n\n| Asset Class ID | Asset Class | Constitutional Source | Owner | Delegation Allowed | Revocable | Challengeable | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n${assetRows}\n\n## Asset registry\n\n| Asset ID | Asset Class | Owner | Scope | Source Authority | Valuation Policy | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/ECONOMIC-CONSUMPTION-POLICY.md', `# Economic Consumption Policy\n\n**Constitution Version:** ${version}\n\n## GCU and SCU definitions\n\n**GCU (Governance Compute Unit)** is the constitutional unit of measurement for governance activity.\n\n**SCU (Sovereign Compute Unit)** is the constitutional unit of measurement for sovereign system activity.\n\n## Consumption policy catalog\n\n| Consumption Policy ID | Authority Class | Consumption Events | Consumption Limits | Consumption Rights | Accounting Required | Auditing Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n${consumptionRows}\n\n## Consumption registry\n\n| Consumption ID | Economic Authority ID | Consumption Policy | GCU Units | SCU Units | Authorized By | Evidence | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/ECONOMIC-SETTLEMENT-POLICY.md', `# Economic Settlement Policy\n\n**Constitution Version:** ${version}\n\n## Settlement policy catalog\n\n| Settlement Policy ID | Settlement Type | Authority Class | Parties Required | Evidence Required | Dispute Allowed | Revocation Allowed | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n${settlementRows}\n\n## Settlement registry\n\n| Settlement ID | Settlement Type | Settlement Policy | Initiating Authority | Counterparty Authority | GCU Amount | SCU Amount | Evidence | Decision Reference | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/ECONOMIC-TREASURY-POLICY.md', `# Economic Treasury Policy\n\n**Constitution Version:** ${version}\n\n## Treasury policy catalog\n\n| Treasury Policy ID | Authority Class | Allocation Governed | Reserve Governed | Distribution Governed | Consumption Funding | Federation Funding | Sustainability Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|\n${treasuryRows}\n\n## Treasury registry\n\n| Treasury Record ID | Treasury Authority ID | Policy | Allocation Source | Reserve Amount (GCU) | Reserve Amount (SCU) | Distribution Target | Evidence | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/ECONOMIC-VALUATION-POLICY.md', `# Economic Valuation Policy\n\n**Constitution Version:** ${version}\n\nValuation ≠ Market Price.\n\n## Valuation model catalog\n\n| Valuation Model ID | Model Name | Authority Class | Basis | GCU Denominated | SCU Denominated | Evidence Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n${valuationRows}\n\n## Valuation registry\n\n| Valuation ID | Economic Authority ID | Valuation Model | Computed Value | Evidence | Amendment | Status |\n|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/ECONOMIC-LIFECYCLE.md', `# Economic Lifecycle\n\n**Constitution Version:** ${version}\n\n## Lifecycle transition ledger\n\n| Transition ID | Economic Authority ID | From | To | Authorized By | Evidence | Amendment | Effective Date |\n|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/ECONOMIC-CHALLENGE-POLICY.md', `# Economic Challenge Policy\n\n**Constitution Version:** ${version}\n\n## Challenge registry\n\n| Challenge ID | Economic Authority ID | Grounds | Evidence | Initiator | Decision Reference | Resolution | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/ECONOMIC-REVOCATION-POLICY.md', `# Economic Revocation Policy\n\n**Constitution Version:** ${version}\n\n## Revocation authority registry\n\n| Economic Authority ID | Revocable | Valid Causes | Revocation Authority | Evidence Required | Decision Reference Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${revocationRows}\n\n## Revocation registry\n\n| Revocation ID | Economic Authority ID | Cause | Evidence | Revoked By | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/ECONOMIC-VIOLATION-CATALOG.md', `# Economic Violation Catalog\n\n**Constitution Version:** ${version}\n`);
+};
