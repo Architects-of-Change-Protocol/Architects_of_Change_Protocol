@@ -1,6 +1,6 @@
 # Economic Valuation Policy
 
-**Constitution Version:** v17.0
+**Constitution Version:** v18.0
 
 Valuation ≠ Market Price. Constitutional valuation computes governed value based on constitutional activity, not market signals or speculative pricing.
 

@@ -1,6 +1,6 @@
 # Economic Obligations Policy
 
-**Constitution Version:** v17.0
+**Constitution Version:** v18.0
 
 ## Obligations policy catalog
 

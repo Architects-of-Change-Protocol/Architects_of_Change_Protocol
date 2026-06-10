@@ -1,6 +1,6 @@
 # AOC Constitution
 
-**Constitution Version:** v17.0
+**Constitution Version:** v18.0
 
 **Status:** Ratified
 
@@ -294,3 +294,20 @@ The constitutional chain is `Authority → Capability → Policy → Standing �
 Runtime is the governed constitutional execution layer through which constitutional authority, capability, policy, standing, trust, verification, reputation, attestation, consensus, governance, voting, federation, and economics produce observable action. Runtime legitimacy is distinct from authority, capability, policy, standing, claim, trust, verification, reputation, attestation, consensus, governance, voting, federation, economics, and decision legitimacy. A runtime execution may begin only after valid authority, capability, policy, and decision references are established, and may not exceed capability scope. Every runtime action must be auditable, evidence-generating, integrity-preserving, obligation-fulfilling, and outcome-recording.
 
 The constitutional chain is `Authority → Capability → Policy → Standing → Claim → Trust → Verification → Reputation → Attestation → Consensus → Governance → Voting → Federation → Economics → Runtime → Decision → Action`. Runtime governs how constitutional authority executes, but never directly issues decisions, and never overrides authority, capability, policy, standing, claim evidence, verification requirements, reputation signals, attestation endorsements, consensus requirements, governance authority, voting legitimacy, federation relationships, or economic rights. Runtime ≠ Infrastructure, Runtime ≠ Implementation, Runtime ≠ Decision, and Runtime ≠ Outcome as constitutional doctrine. Revocation disables execution permanently. Runtime governance cannot override local sovereignty.
+
+## Section 25 — Constitutional Audit Governance
+
+Audit governance is governed by:
+
+- `AUDIT-CONSTITUTION.md`
+- `AUDIT-AUTHORITIES.md`
+- `AUDIT-DOMAIN-POLICY.md`
+- `AUDIT-COVERAGE-POLICY.md`
+- `AUDIT-TRACEABILITY-POLICY.md`
+- `AUDIT-INTEGRITY-POLICY.md`
+- `AUDIT-CERTIFICATION-POLICY.md`
+- `AUDIT-LIFECYCLE.md`
+- `AUDIT-REMEDIATION-POLICY.md`
+- `AUDIT-VIOLATION-CATALOG.md`
+
+Creation Amendment: AOC-AMD-0018

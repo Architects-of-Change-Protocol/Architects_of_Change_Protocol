@@ -1,6 +1,6 @@
 # Runtime Authorities
 
-**Constitution Version:** v17.0
+**Constitution Version:** v18.0
 
 ## Runtime authority catalog
 

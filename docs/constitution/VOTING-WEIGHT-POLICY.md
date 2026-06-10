@@ -1,6 +1,6 @@
 # Voting Weight Policy
 
-**Constitution Version:** v17.0
+**Constitution Version:** v18.0
 
 ## Weight policy catalog
 
