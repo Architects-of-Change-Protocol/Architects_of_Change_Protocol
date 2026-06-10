@@ -1,6 +1,6 @@
 # AOC Constitution
 
-**Constitution Version:** v12.0
+**Constitution Version:** v13.0
 
 **Status:** Ratified
 
@@ -111,6 +111,18 @@ The following documents are incorporated into the Constitution by reference:
 - `docs/constitution/CONSENSUS-RECOMPUTATION-POLICY.md`
 - `docs/constitution/CONSENSUS-VIOLATION-CATALOG.md`
 
+- `docs/constitution/GOVERNANCE-CONSTITUTION.md`
+- `docs/constitution/GOVERNANCE-AUTHORITIES.md`
+- `docs/constitution/GOVERNANCE-PROPOSAL-POLICY.md`
+- `docs/constitution/GOVERNANCE-MOTION-POLICY.md`
+- `docs/constitution/GOVERNANCE-MANDATE-POLICY.md`
+- `docs/constitution/GOVERNANCE-OUTCOME-POLICY.md`
+- `docs/constitution/GOVERNANCE-LIFECYCLE.md`
+- `docs/constitution/GOVERNANCE-CHALLENGE-POLICY.md`
+- `docs/constitution/GOVERNANCE-EXPIRATION-POLICY.md`
+- `docs/constitution/GOVERNANCE-REVOCATION-POLICY.md`
+- `docs/constitution/GOVERNANCE-VIOLATION-CATALOG.md`
+
 ## 3. Constitutional principles
 
 1. The Constitution is enforceable through scanners, tests, CI gates, and release gates.
@@ -213,4 +225,10 @@ The constitutional chain is `Authority → Capability → Policy → Standing �
 
 Consensus is a governed determination that sufficient constitutional agreement exists regarding a claim, verification, reputation, attestation, proposal, decision, or constitutional artifact. Consensus legitimacy is distinct from authority, capability, policy, standing, claim, trust, verification, reputation, attestation, and decision legitimacy. A consensus determination may influence a decision only after sufficient attestations satisfy the threshold policy under the governing consensus model, and a valid lifecycle transition to `Established`. Attestation and consensus are constitutionally independent; the existence of attestations does not establish consensus.
 
-The constitutional chain is `Authority → Capability → Policy → Standing → Claim → Trust → Verification → Reputation → Attestation → Consensus → Decision → Action`. Consensus governs whether sufficient constitutional agreement exists, but never directly authorizes action, and never overrides authority, capability, policy, standing, claim evidence, verification requirements, reputation signals, or attestation endorsements. Expiration transitions consensus to non-influencing status without deleting history; revocation disables influence permanently. Consensus must be recomputed when underlying attestations, trust, verification, reputation, standing, or policy signals change.
+The constitutional chain is `Authority → Capability → Policy → Standing → Claim → Trust → Verification → Reputation → Attestation → Consensus → Governance → Decision → Action`. Consensus governs whether sufficient constitutional agreement exists, but never directly authorizes action, and never overrides authority, capability, policy, standing, claim evidence, verification requirements, reputation signals, or attestation endorsements. Expiration transitions consensus to non-influencing status without deleting history; revocation disables influence permanently. Consensus must be recomputed when underlying attestations, trust, verification, reputation, standing, or policy signals change.
+
+## 20. Governance authority governance
+
+Governance is a constitutionally governed process through which valid authority, standing, claims, trust, verification, reputation, attestation, and consensus produce legitimate collective direction. Governance legitimacy is distinct from authority, capability, policy, standing, claim, trust, verification, reputation, attestation, consensus, and decision legitimacy. A governance act may produce collective direction only after a valid proposal satisfies the proposal policy, a valid motion satisfies the motion policy and consensus requirement, an authorized mandate records the scope, and a traceable outcome records the result. Consensus and governance are constitutionally independent; the existence of consensus does not establish a governance act.
+
+The constitutional chain is `Authority → Capability → Policy → Standing → Claim → Trust → Verification → Reputation → Attestation → Consensus → Governance → Decision → Action`. Governance governs how collective legitimacy becomes collective authority, but never directly authorizes action, and never overrides authority, capability, policy, standing, claim evidence, verification requirements, reputation signals, attestation endorsements, or consensus requirements. Governance ≠ Voting, Governance ≠ Execution, and Consensus ≠ Governance as constitutional doctrine. Expiration removes governance effect without deleting history; revocation disables governance permanently. Mandates record authorized direction; they do not execute action.

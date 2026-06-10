@@ -1,6 +1,6 @@
 # Constitutional Amendment Catalog
 
-**Constitution Version:** v11.0
+**Constitution Version:** v13.0
 
 ## Amendment index
 
@@ -17,6 +17,8 @@
 | AOC-AMD-0009 | Establish Constitutional Reputation Governance Framework | Type C | v9.0 | Ratified |
 | AOC-AMD-0010 | Establish Constitutional Attestation Governance Framework | Type C | v10.0 | Ratified |
 | AOC-AMD-0011 | Establish Constitutional Consensus Governance Framework | Type C | v11.0 | Ratified |
+| AOC-AMD-0012 | Constitutional Version Parity Alignment | Type A | v12.0 | Ratified |
+| AOC-AMD-0013 | Establish Constitutional Governance Framework | Type C | v13.0 | Ratified |
 
 ## AOC-AMD-0001 — Establish Constitutional Amendment System
 
@@ -202,4 +204,20 @@
 - **Rationale:** Align all constitutional artifact headers to the current Constitution version following the introduction of Constitutional Consensus Governance in AOC-AMD-0011. All documents that declared v10.0 are advanced to v12.0 to maintain version parity with the supreme Constitution.
 - **Risk Assessment:** Low governance risk and no runtime risk. This amendment makes no semantic changes to any governed domain.
 - **Migration Impact:** Constitutional governance advances from v11.0 to v12.0. No new scanner obligations are introduced; this amendment only corrects header versions across all constitutional artifacts.
+- **Ratification Status:** Ratified
+
+
+## AOC-AMD-0013 — Establish Constitutional Governance Framework
+
+- **Amendment ID:** AOC-AMD-0013
+- **Title:** Establish Constitutional Governance Framework
+- **Author:** Architects of Change maintainers
+- **Date:** 2026-06-10
+- **Type:** Type C
+- **Version:** v13.0
+- **Affected Laws:** LAW-008; governance ownership, authority, proposal, motion, mandate, outcome, lifecycle, challenge, expiration, revocation, evolution, traceability, and enforcement obligations
+- **Affected Authorities:** Constitution; Protocol; Enterprise; Governance Authorities GOV-0001 through GOV-0017
+- **Rationale:** Close the constitutional gap between governed collective agreement and governed collective authority by making governance legitimacy explicit, proposal-governed, motion-bound, consensus-requiring, mandate-creating, outcome-recording, challengeable, expirable, revocable, versioned, and traceable. Establish that Consensus ≠ Governance, Governance ≠ Voting, and Governance ≠ Execution as constitutional doctrine. Advance the constitutional chain to include Governance between Consensus and Decision.
+- **Risk Assessment:** Moderate governance risk and no runtime risk. The amendment adds fail-closed repository governance without implementing a voting engine, governance runtime, proposal runtime, mandate runtime, execution runtime, federation engine, economic settlement, treasury governance, or blockchain governance.
+- **Migration Impact:** Constitutional governance advances from v12.0 to v13.0. Future governance creation, retirement, semantic changes, ownership changes, proposal policies, motion policies, mandate policies, outcome policies, lifecycle semantics, challenge grounds, expiration causes, revocation causes, and enforcement obligations require Type B or Type C amendment governance. CI and release validation now execute ten governance governance scanners.
 - **Ratification Status:** Ratified

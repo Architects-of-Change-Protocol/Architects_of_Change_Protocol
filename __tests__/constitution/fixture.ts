@@ -598,3 +598,75 @@ export const writeConsensusGovernance = (fixture: ConstitutionalFixture, options
   fixture.write('docs/constitution/CONSENSUS-RECOMPUTATION-POLICY.md', `# Consensus Recomputation Policy\n\n**Constitution Version:** ${version}\n\n## Recomputation trigger catalog\n\n| Trigger ID | Trigger Name | Trigger Class | Description | Required Action | Amendment | Status |\n|---|---|---|---|---|---|---|\n${recomputationRows}\n`);
   fixture.write('docs/constitution/CONSENSUS-VIOLATION-CATALOG.md', `# Consensus Violations\n\n**Constitution Version:** ${version}\n`);
 };
+
+export const writeGovernanceGovernance = (fixture: ConstitutionalFixture, options: {
+  version?: string;
+  amendmentId?: string;
+} = {}) => {
+  const version = options.version ?? 'v1.0';
+  const amendmentId = options.amendmentId ?? 'AOC-AMD-0001';
+  writeConsensusGovernance(fixture, { version, amendmentId });
+  writeConstitutionalGovernance(fixture, { version, amendmentId, affectedAuthorities: 'Constitution; Governance Authorities GOV-0001 through GOV-0017' });
+
+  const govDefs = [
+    ['GOV-0001', 'Constitutional Amendment Governance', 'Constitutional', 'Constitution'],
+    ['GOV-0002', 'Constitutional Authority Governance', 'Constitutional', 'Constitution'],
+    ['GOV-0003', 'Constitutional Interpretation Governance', 'Constitutional', 'Constitution'],
+    ['GOV-0004', 'Protocol Law Governance', 'Protocol', 'Protocol'],
+  ] as const;
+
+  const govRows = govDefs.map(([id, name, cls, owner]) =>
+    `| ${id} | ${name} | ${cls} | ${owner} | GPP-0001 | GMP-0001 | GMD-0001 | GOP-0001 | Yes | Yes | Yes | ${amendmentId} | Not scheduled | Canonical |`
+  ).join('\n');
+
+  const proposalRows = [
+    `| GPP-0001 | Constitutional | Constitutional standing | Yes | Constitutional evidence | ${amendmentId} | Active |`,
+    `| GPP-0002 | Protocol | Protocol standing | Yes | Protocol evidence | ${amendmentId} | Active |`,
+    `| GPP-0003 | Runtime | Runtime standing | Yes | Runtime evidence | ${amendmentId} | Active |`,
+    `| GPP-0004 | Operational | Operational standing | Yes | Operational evidence | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const motionRows = [
+    `| GMP-0001 | Constitutional | Constitutional Motion | Unanimous | Yes | ${amendmentId} | Active |`,
+    `| GMP-0002 | Protocol | Authority Motion; Policy Motion | Supermajority | Yes | ${amendmentId} | Active |`,
+    `| GMP-0003 | Runtime | Runtime Motion | Simple Majority | Yes | ${amendmentId} | Active |`,
+    `| GMP-0004 | Operational | Operational Motion | Simple Majority | Yes | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const mandateRows = [
+    `| GMD-0001 | Constitutional | Constitutional authority only | Yes | Yes | ${amendmentId} | Active |`,
+    `| GMD-0002 | Protocol | Protocol authority only | Yes | Yes | ${amendmentId} | Active |`,
+    `| GMD-0003 | Runtime | Runtime authority only | Yes | Yes | ${amendmentId} | Active |`,
+    `| GMD-0004 | Operational | Operational authority only | Yes | Yes | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const outcomeRows = [
+    `| GOP-0001 | Constitutional | Approved; Rejected; Modified; Invalidated | Yes | Constitutional evidence | ${amendmentId} | Active |`,
+    `| GOP-0002 | Protocol | Approved; Rejected; Modified; Deferred | Yes | Protocol evidence | ${amendmentId} | Active |`,
+    `| GOP-0003 | Runtime | Approved; Rejected; Modified; Deferred; Superseded | Yes | Runtime evidence | ${amendmentId} | Active |`,
+    `| GOP-0004 | Operational | Approved; Rejected; Modified; Deferred; Superseded | Yes | Operational evidence | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const expirationRows = [
+    `| GXP-0001 | Constitutional | Time Limit; Constitutional Override; Governance Decision | Mandate becomes Expired | Preserved permanently | ${amendmentId} | Active |`,
+    `| GXP-0002 | Protocol | Time Limit; Policy Change; Constitutional Override; Governance Decision | Mandate becomes Expired | Preserved permanently | ${amendmentId} | Active |`,
+    `| GXP-0003 | Runtime | Time Limit; Consensus Expiration; Standing Revocation; Policy Change; Governance Decision | Mandate becomes Expired | Preserved permanently | ${amendmentId} | Active |`,
+    `| GXP-0004 | Operational | Time Limit; Consensus Expiration; Mandate Expiration; Standing Revocation; Governance Decision | Mandate becomes Expired | Preserved permanently | ${amendmentId} | Active |`,
+  ].join('\n');
+
+  const revocationRows = govDefs.map(([id,,, owner]) =>
+    `| ${id} | Yes | Fraud; Invalid Consensus; Constitutional Override; Governance Decision | ${owner} | Required | Required | ${amendmentId} | Active |`
+  ).join('\n');
+
+  fixture.write('docs/constitution/GOVERNANCE-CONSTITUTION.md', `# Governance Constitution\n\n**Constitution Version:** ${version}\n`);
+  fixture.write('docs/constitution/GOVERNANCE-AUTHORITIES.md', `# Governance Authorities\n\n**Constitution Version:** ${version}\n\n## Governance authority catalog\n\n| Governance ID | Governance Name | Governance Class | Owner | Proposal Policy | Motion Policy | Mandate Policy | Outcome Policy | Consensus Required | Revocable | Disputable | Creation Amendment | Retirement Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|---|---|---|---|\n${govRows}\n`);
+  fixture.write('docs/constitution/GOVERNANCE-PROPOSAL-POLICY.md', `# Governance Proposal Policy\n\n**Constitution Version:** ${version}\n\n## Proposal policy catalog\n\n| Proposal Policy ID | Governance Class | Minimum Standing | Consensus Required | Evidence Required | Amendment | Status |\n|---|---|---|---|---|---|---|\n${proposalRows}\n`);
+  fixture.write('docs/constitution/GOVERNANCE-MOTION-POLICY.md', `# Governance Motion Policy\n\n**Constitution Version:** ${version}\n\n## Motion policy catalog\n\n| Motion Policy ID | Governance Class | Motion Types Allowed | Consensus Threshold | Decision Required | Amendment | Status |\n|---|---|---|---|---|---|---|\n${motionRows}\n`);
+  fixture.write('docs/constitution/GOVERNANCE-MANDATE-POLICY.md', `# Governance Mandate Policy\n\n**Constitution Version:** ${version}\n\n## Mandate policy catalog\n\n| Mandate Policy ID | Governance Class | Authority Scope | Expiration Required | Decision Required | Amendment | Status |\n|---|---|---|---|---|---|---|\n${mandateRows}\n`);
+  fixture.write('docs/constitution/GOVERNANCE-OUTCOME-POLICY.md', `# Governance Outcome Policy\n\n**Constitution Version:** ${version}\n\n## Outcome policy catalog\n\n| Outcome Policy ID | Governance Class | Outcome Types Allowed | Decision Required | Evidence Required | Amendment | Status |\n|---|---|---|---|---|---|---|\n${outcomeRows}\n`);
+  fixture.write('docs/constitution/GOVERNANCE-LIFECYCLE.md', `# Governance Lifecycle\n\n**Constitution Version:** ${version}\n\n## Governance lifecycle transition ledger\n\n| Transition ID | Governance ID | From | To | Authorized By | Evidence | Amendment | Effective Date |\n|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/GOVERNANCE-CHALLENGE-POLICY.md', `# Governance Challenge Policy\n\n**Constitution Version:** ${version}\n\n## Challenge registry\n\n| Challenge ID | Governance ID | Target ID | Grounds | Evidence | Initiator | Decision Reference | Resolution | Amendment | Status |\n|---|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/GOVERNANCE-EXPIRATION-POLICY.md', `# Governance Expiration Policy\n\n**Constitution Version:** ${version}\n\n## Expiration policy catalog\n\n| Expiration Policy ID | Governance Class | Valid Expiration Triggers | Expiration Semantics | Historical Preservation | Amendment | Status |\n|---|---|---|---|---|---|---|\n${expirationRows}\n`);
+  fixture.write('docs/constitution/GOVERNANCE-REVOCATION-POLICY.md', `# Governance Revocation Policy\n\n**Constitution Version:** ${version}\n\n## Revocation authority registry\n\n| Governance ID | Revocable | Valid Causes | Revocation Authority | Evidence Required | Decision Reference Required | Amendment | Status |\n|---|---|---|---|---|---|---|---|\n${revocationRows}\n\n## Revocation registry\n\n| Revocation ID | Governance ID | Target ID | Cause | Evidence | Revoked By | Decision Reference | Amendment | Effective Date | Status |\n|---|---|---|---|---|---|---|---|---|---|\n`);
+  fixture.write('docs/constitution/GOVERNANCE-VIOLATION-CATALOG.md', `# Governance Violations\n\n**Constitution Version:** ${version}\n`);
+};
