@@ -43,48 +43,102 @@ const MATRIX_DIMENSIONS = [
 const ASSESSMENT_TIERS = [
   {
     tier: 'Foundation',
+    label: 'PUBLIC CONSTITUTIONAL ASSESSMENT',
     badgeClass: 'tier-foundation',
-    headline: 'Baseline Constitutional Review',
+    price: '$49',
+    priceNote: null,
+    founderBadge: false,
+    comingSoon: false,
+    headline: 'Public Constitutional Assessment',
     description:
-      'A structured review of your AI product against the AOC Constitutional Matrix. Covers governance posture, data sovereignty, and disclosure obligations.',
+      'A rapid constitutional review of your AI product using public documentation, public repositories, websites, policies, and disclosures.',
     items: [
-      'Constitutional Matrix baseline scan',
-      'Governance gap analysis',
-      'Written findings report',
-      'Remediation roadmap',
+      'Governance Score',
+      'Sovereignty Score',
+      'Constitutional Matrix Classification',
+      'Executive PDF Report',
+      'Public Constitutional Index Listing',
+      'Delivered within 72 hours',
     ],
-    cta: 'Request Foundation Assessment',
+    cta: 'Start Assessment — $49',
+    ctaHref: 'mailto:hello@aocprotocol.xyz?subject=Foundation%20Assessment%20%E2%80%94%20%2449',
+    featured: false,
   },
   {
     tier: 'Advanced',
+    label: 'FOUNDER PROGRAM',
     badgeClass: 'tier-advanced',
-    headline: 'Deep Constitutional Audit',
+    price: '$149',
+    priceNote: 'Future public price: $499',
+    founderBadge: true,
+    comingSoon: false,
+    headline: 'Founder Program',
     description:
-      'An in-depth constitutional audit with runtime tracing, policy enforcement review, and sovereign data flow mapping.',
+      'A collaborative constitutional assessment that includes interviews, architecture reviews, governance analysis, operational controls, and detailed constitutional recommendations.',
     items: [
       'Everything in Foundation',
-      'Runtime governance trace',
-      'Data sovereignty mapping',
-      'Policy enforcement verification',
-      'Audit trail integrity check',
+      'Architecture Review',
+      'Governance Gap Analysis',
+      'Sovereignty Assessment',
+      'Constitutional Risk Analysis',
+      'Prioritized Findings',
+      'Remediation Roadmap',
+      'Recommended AOC Protocol Integrations',
+      'Detailed Constitutional Assessment Report',
+      'Delivered within 5 business days',
     ],
-    cta: 'Request Advanced Audit',
+    cta: 'Join Founder Program — $149',
+    ctaHref: 'mailto:hello@aocprotocol.xyz?subject=Founder%20Program%20%E2%80%94%20%24149',
     featured: true,
   },
   {
     tier: 'Sovereign',
+    label: 'DEEP CONSTITUTIONAL AUDIT',
     badgeClass: 'tier-sovereign',
+    price: 'Contact Sales',
+    priceNote: null,
+    founderBadge: false,
+    comingSoon: false,
+    headline: 'Deep Constitutional Audit',
+    description:
+      'A comprehensive constitutional audit for organizations seeking deep validation of governance, sovereignty, traceability, evidence systems, and AI operational controls.',
+    items: [
+      'Private Repository Review',
+      'Governance Validation',
+      'Authority Mapping',
+      'Evidence Chain Review',
+      'Agent Architecture Analysis',
+      'Runtime Control Assessment',
+      'Executive Workshops',
+      'Enterprise Remediation Planning',
+    ],
+    cta: 'Contact Sales',
+    ctaHref: 'mailto:hello@aocprotocol.xyz?subject=Deep%20Constitutional%20Audit',
+    featured: false,
+  },
+  {
+    tier: 'Continuous',
+    label: 'CONTINUOUS CONSTITUTIONAL ASSURANCE',
+    badgeClass: 'tier-continuous',
+    price: 'Contact Sales',
+    priceNote: null,
+    founderBadge: false,
+    comingSoon: true,
     headline: 'Continuous Constitutional Assurance',
     description:
-      'Ongoing constitutional oversight with live monitoring, quarterly reassessments, and a public certification mark.',
+      'Continuous constitutional monitoring for AI systems with governance drift detection, sovereignty monitoring, constitutional health scoring, and ongoing assurance.',
     items: [
-      'Everything in Advanced',
-      'Continuous monitoring integration',
-      'Quarterly reassessments',
-      'AOC Constitutional Certification mark',
-      'Incident response constitutional review',
+      'Continuous Monitoring',
+      'Governance Drift Detection',
+      'Sovereignty Erosion Detection',
+      'Quarterly Reassessments',
+      'Constitutional Dashboard',
+      'Certification Maintenance',
+      'Continuous Assurance Reporting',
     ],
-    cta: 'Request Sovereign Programme',
+    cta: 'Join Waitlist',
+    ctaHref: 'mailto:hello@aocprotocol.xyz?subject=Continuous%20Constitutional%20Assurance%20Waitlist',
+    featured: false,
   },
 ];
 
@@ -255,28 +309,62 @@ export const renderAssurancePage = () => {
               Assessments
             </p>
             <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-5">
-              Three tiers. One constitutional standard.
+              From discovery to assurance.
             </h2>
             <p className="text-white/60 text-lg leading-relaxed">
-              Choose the depth of constitutional oversight that matches your regulatory exposure
-              and product maturity.
+              A clear progression path — from a rapid public assessment through to continuous
+              constitutional monitoring for enterprise AI.
             </p>
           </header>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          {/* 2-col top row, 2-col bottom row */}
+          <div className="grid md:grid-cols-2 gap-6">
             {ASSESSMENT_TIERS.map((tier) => (
               <article
                 key={tier.tier}
-                className={`rounded-2xl border p-7 flex flex-col ${
+                className={`rounded-2xl border p-7 flex flex-col relative ${
                   tier.featured
-                    ? 'border-emerald-500/40 bg-emerald-950/30'
+                    ? 'border-emerald-500/50 bg-emerald-950/35 shadow-[0_0_40px_rgba(52,211,153,0.08)]'
                     : 'border-white/10 bg-white/[0.02]'
                 }`}
               >
+                {/* Featured ring accent */}
+                {tier.featured && (
+                  <div className="absolute inset-0 rounded-2xl pointer-events-none ring-1 ring-emerald-500/20" />
+                )}
+
                 <div className="mb-5">
-                  <span className={`assurance-tier-badge ${tier.badgeClass} text-emerald-300`}>
-                    {tier.tier}
-                  </span>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className={`assurance-tier-badge ${tier.badgeClass} text-emerald-300`}>
+                      {tier.label}
+                    </span>
+                    {tier.founderBadge && (
+                      <span className="inline-flex items-center gap-1 text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-amber-300 bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded-full">
+                        Most Popular
+                      </span>
+                    )}
+                    {tier.comingSoon && (
+                      <span className="inline-flex items-center gap-1 text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-white/40 bg-white/5 border border-white/10 px-2 py-0.5 rounded-full">
+                        Coming Soon
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="mt-4 flex items-baseline gap-3">
+                    <span className={`text-3xl font-semibold ${tier.featured ? 'text-emerald-300' : 'text-white'}`}>
+                      {tier.price}
+                    </span>
+                    {tier.priceNote && (
+                      <span className="text-xs text-white/35 line-through">{tier.priceNote}</span>
+                    )}
+                  </div>
+
+                  {tier.founderBadge && (
+                    <p className="mt-1 text-xs text-amber-300/70 font-medium">
+                      Founder Pricing — Limited to the first 25 organizations
+                    </p>
+                  )}
+
                   <h3 className="mt-3 text-xl font-semibold">{tier.headline}</h3>
                   <p className="mt-2 text-sm text-white/55 leading-relaxed">{tier.description}</p>
                 </div>
@@ -291,7 +379,7 @@ export const renderAssurancePage = () => {
                 </ul>
 
                 <a
-                  href={`mailto:hello@aocprotocol.xyz?subject=${encodeURIComponent(tier.cta)}`}
+                  href={tier.ctaHref}
                   className={`text-center py-3 rounded-xl text-sm font-semibold transition-colors ${
                     tier.featured
                       ? 'bg-emerald-500 hover:bg-emerald-400 text-black'
@@ -302,6 +390,33 @@ export const renderAssurancePage = () => {
                 </a>
               </article>
             ))}
+          </div>
+
+          {/* ── Delivery commitment banner ── */}
+          <p className="mt-8 text-center text-xs text-white/35 tracking-wide">
+            Assessments delivered within 72 hours to 5 business days depending on tier.
+          </p>
+
+          {/* ── Trust section ── */}
+          <div className="mt-14 rounded-2xl border border-white/8 bg-white/[0.015] px-8 py-7">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/40 mb-5 text-center">
+              Every assessment includes
+            </p>
+            <ul className="flex flex-wrap justify-center gap-x-10 gap-y-3">
+              {[
+                'Constitutional Matrix Evaluation',
+                'Governance Analysis',
+                'Sovereignty Analysis',
+                'Independent Findings',
+                'Actionable Recommendations',
+                'Executive Report',
+              ].map((item) => (
+                <li key={item} className="flex items-center gap-2 text-sm text-white/55">
+                  <span className="text-emerald-400 text-xs">✓</span>
+                  {item}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>

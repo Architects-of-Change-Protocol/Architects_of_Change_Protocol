@@ -55,9 +55,10 @@
   border-radius: 50%;
 }
 
-.assurance-tier-badge.tier-foundation::before { background: #6ee7b7; }
-.assurance-tier-badge.tier-advanced::before   { background: #34d399; }
-.assurance-tier-badge.tier-sovereign::before  { background: #10b981; }
+.assurance-tier-badge.tier-foundation::before  { background: #6ee7b7; }
+.assurance-tier-badge.tier-advanced::before    { background: #34d399; }
+.assurance-tier-badge.tier-sovereign::before   { background: #10b981; }
+.assurance-tier-badge.tier-continuous::before  { background: #6b7280; }
 
 .assurance-divider {
   border: none;
