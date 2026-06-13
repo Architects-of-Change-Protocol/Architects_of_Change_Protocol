@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { ProtocolFooter } from './components/ProtocolFooter'
 import { AocInfrastructureAnimated } from './components/AocInfrastructureAnimated'
 import { HowItWorksFlow } from './components/HowItWorksFlow';
@@ -12,7 +13,16 @@ import { ExplicitConsentAnimation } from './components/ExplicitConsentAnimation'
 import { VerifiableInteractionsAnimation } from './components/VerifiableInteractionsAnimation';
 import { FullControlAnimation } from './components/FullControlAnimation';
 
-export const renderAocLandingPage = () => {
+const mobileNavigationItems = [
+  { label: 'Protocol', href: '/' },
+  { label: 'Enterprise', href: '/?view=enterprise' },
+  { label: 'Assurance', href: '/?view=assurance' },
+  { label: 'Documentation', href: '/?view=docs' },
+];
+
+export const AocLandingPage = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white overflow-hidden font-sans">
       <header>
@@ -48,10 +58,71 @@ export const renderAocLandingPage = () => {
 
             <a
               href="/app"
-              className="px-6 py-2.5 bg-white text-black rounded-full text-sm font-semibold hover:bg-gray-200 transition active:scale-[0.98] inline-block"
+              className="hidden md:inline-block px-6 py-2.5 bg-white text-black rounded-full text-sm font-semibold hover:bg-gray-200 transition active:scale-[0.98]"
             >
               Launch App
             </a>
+
+            <button
+              type="button"
+              className="relative flex md:hidden h-10 w-10 items-center justify-center rounded-full border border-white/15 text-white transition-colors hover:border-white/30 hover:bg-white/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-navigation"
+              onClick={() => setIsMobileMenuOpen((isOpen) => !isOpen)}
+            >
+              <span className="sr-only">
+                {isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              </span>
+              <span
+                className={`absolute h-0.5 w-5 bg-current transition-transform duration-300 ${
+                  isMobileMenuOpen ? 'translate-y-0 rotate-45' : '-translate-y-1.5'
+                }`}
+              />
+              <span
+                className={`absolute h-0.5 w-5 bg-current transition-opacity duration-300 ${
+                  isMobileMenuOpen ? 'opacity-0' : 'opacity-100'
+                }`}
+              />
+              <span
+                className={`absolute h-0.5 w-5 bg-current transition-transform duration-300 ${
+                  isMobileMenuOpen ? 'translate-y-0 -rotate-45' : 'translate-y-1.5'
+                }`}
+              />
+            </button>
+          </div>
+
+          <div
+            id="mobile-navigation"
+            aria-hidden={!isMobileMenuOpen}
+            inert={!isMobileMenuOpen}
+            className={`absolute left-0 right-0 top-full overflow-hidden border-b border-white/10 bg-black/95 backdrop-blur-lg transition-[max-height,opacity] duration-300 ease-out md:hidden ${
+              isMobileMenuOpen
+                ? 'max-h-96 opacity-100'
+                : 'pointer-events-none max-h-0 opacity-0'
+            }`}
+          >
+            <div className="max-w-7xl mx-auto px-6 py-5">
+              <div className="flex flex-col gap-1">
+                {mobileNavigationItems.map((item) => (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    className="rounded-xl px-4 py-3 text-sm font-medium text-white/70 transition-colors hover:bg-white/5 hover:text-white"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {item.label}
+                  </a>
+                ))}
+                <a
+                  href="/app"
+                  className="mt-3 rounded-full bg-white px-6 py-3 text-center text-sm font-semibold text-black transition hover:bg-gray-200 active:scale-[0.98]"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Launch App
+                </a>
+              </div>
+            </div>
           </div>
         </nav>
       </header>
