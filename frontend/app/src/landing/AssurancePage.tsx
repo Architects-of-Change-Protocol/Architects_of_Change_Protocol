@@ -11,7 +11,7 @@ const MOBILE_NAVIGATION_ITEMS = [
   { label: 'AOC Protocol', href: '/' },
 ];
 const FOUNDATION_CHECKOUT_URL = 'https://buy.stripe.com/aFa5kDlKfgcp67N11gejK01';
-const FOUNDER_PROGRAM_CHECKOUT_URL = 'https://buy.stripe.com/3cI7sl88D5xLbs76lAejK00';
+const FOUNDER_PROGRAM_CHECKOUT_URL = 'https://buy.stripe.com/3cI7sL88D5xLbs76lAejK00';
 const ENTERPRISE_INTAKE_FORM_URL = 'https://tally.so/r/MeGJkA';
 
 const MATRIX_DIMENSIONS = [
