@@ -10,6 +10,9 @@ const MOBILE_NAVIGATION_ITEMS = [
   { label: 'Index', href: '#index' },
   { label: 'AOC Protocol', href: '/' },
 ];
+const FOUNDATION_CHECKOUT_URL = 'REPLACE_WITH_STRIPE_FOUNDATION_CHECKOUT_URL';
+const FOUNDER_PROGRAM_CHECKOUT_URL = 'REPLACE_WITH_STRIPE_FOUNDER_PROGRAM_CHECKOUT_URL';
+const ENTERPRISE_INTAKE_FORM_URL = 'REPLACE_WITH_ENTERPRISE_INTAKE_FORM_URL';
 
 const MATRIX_DIMENSIONS = [
   {
@@ -71,7 +74,7 @@ const ASSESSMENT_TIERS = [
       'Delivered within 72 hours',
     ],
     cta: 'Start Assessment — $49',
-    ctaHref: 'mailto:hello@aocprotocol.xyz?subject=Foundation%20Assessment%20%E2%80%94%20%2449',
+    ctaHref: FOUNDATION_CHECKOUT_URL,
     featured: false,
   },
   {
@@ -98,7 +101,7 @@ const ASSESSMENT_TIERS = [
       'Delivered within 5 business days',
     ],
     cta: 'Join Founder Program — $149',
-    ctaHref: 'mailto:hello@aocprotocol.xyz?subject=Founder%20Program%20%E2%80%94%20%24149',
+    ctaHref: FOUNDER_PROGRAM_CHECKOUT_URL,
     featured: true,
   },
   {
@@ -122,8 +125,8 @@ const ASSESSMENT_TIERS = [
       'Executive Workshops',
       'Enterprise Remediation Planning',
     ],
-    cta: 'Contact Sales',
-    ctaHref: 'mailto:hello@aocprotocol.xyz?subject=Deep%20Constitutional%20Audit',
+    cta: 'Start Enterprise Intake',
+    ctaHref: ENTERPRISE_INTAKE_FORM_URL,
     featured: false,
   },
   {
@@ -146,8 +149,8 @@ const ASSESSMENT_TIERS = [
       'Certification Maintenance',
       'Continuous Assurance Reporting',
     ],
-    cta: 'Join Waitlist',
-    ctaHref: 'mailto:hello@aocprotocol.xyz?subject=Continuous%20Constitutional%20Assurance%20Waitlist',
+    cta: 'Join Continuous Assurance Waitlist',
+    ctaHref: ENTERPRISE_INTAKE_FORM_URL,
     featured: false,
   },
 ];
@@ -185,10 +188,10 @@ const AssurancePage = () => {
           </div>
 
           <a
-            href="mailto:hello@aocprotocol.xyz?subject=AOC%20Constitutional%20Assurance"
-            className="hidden md:inline-block px-5 py-2 bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-semibold rounded-xl transition-colors"
+            href="#assessments"
+            className="px-5 py-2 bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-semibold rounded-xl transition-colors"
           >
-            Request assessment
+            Request Assessment
           </a>
 
           <button
@@ -271,7 +274,7 @@ const AssurancePage = () => {
             href="#assessments"
             className="px-10 py-4 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-lg rounded-2xl transition-colors"
           >
-            View assessments →
+            Request Assessment
           </a>
           <a
             href="#matrix"
@@ -453,6 +456,8 @@ const AssurancePage = () => {
 
                 <a
                   href={tier.ctaHref}
+                  target="_blank"
+                  rel="noreferrer"
                   className={`text-center py-3 rounded-xl text-sm font-semibold transition-colors ${
                     tier.featured
                       ? 'bg-emerald-500 hover:bg-emerald-400 text-black'
@@ -509,10 +514,10 @@ const AssurancePage = () => {
           First response within one business day.
         </p>
         <a
-          href="mailto:hello@aocprotocol.xyz?subject=AOC%20Constitutional%20Assurance%20Enquiry"
+          href="#assessments"
           className="inline-flex items-center px-12 py-5 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-lg rounded-2xl transition-colors"
         >
-          Start your assessment →
+          Request Assessment
         </a>
       </section>
 
