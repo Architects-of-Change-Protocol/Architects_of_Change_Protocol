@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { renderAocLandingPage } from './landing/AocLandingPage';
+import { renderAssurancePage } from './landing/AssurancePage';
 import { renderEnterprisePage } from './landing/EnterprisePage';
 import { renderDocsPage } from './landing/DocsPage';
 import { renderContactPage } from './landing/ContactPage';
@@ -22,6 +23,7 @@ export default function App() {
     };
   }, []);
 
+  if (view === 'assurance') return renderAssurancePage();
   if (view === 'docs') return renderDocsPage();
   if (view === 'enterprise') return renderEnterprisePage();
   if (view === 'contact') return renderContactPage();
