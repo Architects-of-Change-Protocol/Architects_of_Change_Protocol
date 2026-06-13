@@ -41,6 +41,9 @@ export const renderAocLandingPage = () => {
               <a href="#how" className="hover:text-white transition">
                 How it works
               </a>
+              <a href="/?view=assurance" className="hover:text-white transition text-white/70">
+                Assurance
+              </a>
             </div>
 
             <a

@@ -1,0 +1,66 @@
+/* AssurancePage — Constitutional Assurance for AI */
+
+.assurance-hero-glow {
+  background: radial-gradient(
+    ellipse 80% 50% at 50% 0%,
+    rgba(11, 44, 37, 0.7) 0%,
+    transparent 70%
+  );
+}
+
+.assurance-matrix-card {
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.assurance-matrix-card:hover {
+  border-color: rgba(52, 211, 153, 0.3);
+  background-color: rgba(52, 211, 153, 0.04);
+}
+
+.assurance-score-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.assurance-score-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #34d399, #6ee7b7);
+  animation: assurance-fill-in 1s ease forwards;
+  transform-origin: left;
+}
+
+@keyframes assurance-fill-in {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.assurance-tier-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.assurance-tier-badge::before {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.assurance-tier-badge.tier-foundation::before { background: #6ee7b7; }
+.assurance-tier-badge.tier-advanced::before   { background: #34d399; }
+.assurance-tier-badge.tier-sovereign::before  { background: #10b981; }
+
+.assurance-divider {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  margin: 0;
+}
