@@ -1,6 +1,15 @@
+/* eslint-disable react-refresh/only-export-components */
+import { useState } from 'react';
 import { LogoRotating } from '../components/logo/LogoRotating';
 import './assurance.css';
 
+const MOBILE_NAVIGATION_ITEMS = [
+  { label: 'Matrix', href: '#matrix' },
+  { label: 'Domains', href: '#domains' },
+  { label: 'Assessments', href: '#assessments' },
+  { label: 'Index', href: '#index' },
+  { label: 'AOC Protocol', href: '/' },
+];
 const FOUNDATION_CHECKOUT_URL = 'REPLACE_WITH_STRIPE_FOUNDATION_CHECKOUT_URL';
 const FOUNDER_PROGRAM_CHECKOUT_URL = 'REPLACE_WITH_STRIPE_FOUNDER_PROGRAM_CHECKOUT_URL';
 const ENTERPRISE_INTAKE_FORM_URL = 'REPLACE_WITH_ENTERPRISE_INTAKE_FORM_URL';
@@ -154,7 +163,9 @@ function ScoreBar({ score }: { score: number }) {
   );
 }
 
-export const renderAssurancePage = () => {
+const AssurancePage = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
     <main className="min-h-screen bg-[#070d0b] text-white font-sans">
 
@@ -182,6 +193,67 @@ export const renderAssurancePage = () => {
           >
             Request Assessment
           </a>
+
+          <button
+            type="button"
+            className="relative flex md:hidden h-10 w-10 items-center justify-center rounded-xl border border-white/15 text-white transition-colors hover:border-white/30 hover:bg-white/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
+            aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="assurance-mobile-navigation"
+            onClick={() => setIsMobileMenuOpen((isOpen) => !isOpen)}
+          >
+            <span className="sr-only">
+              {isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            </span>
+            <span
+              className={`absolute h-0.5 w-5 bg-current transition-transform duration-300 ${
+                isMobileMenuOpen ? 'translate-y-0 rotate-45' : '-translate-y-1.5'
+              }`}
+            />
+            <span
+              className={`absolute h-0.5 w-5 bg-current transition-opacity duration-300 ${
+                isMobileMenuOpen ? 'opacity-0' : 'opacity-100'
+              }`}
+            />
+            <span
+              className={`absolute h-0.5 w-5 bg-current transition-transform duration-300 ${
+                isMobileMenuOpen ? 'translate-y-0 -rotate-45' : 'translate-y-1.5'
+              }`}
+            />
+          </button>
+        </div>
+
+        <div
+          id="assurance-mobile-navigation"
+          aria-hidden={!isMobileMenuOpen}
+          inert={!isMobileMenuOpen}
+          className={`absolute left-0 right-0 top-full overflow-hidden border-b border-white/10 bg-[#070d0b]/95 backdrop-blur-lg transition-[max-height,opacity] duration-300 ease-out md:hidden ${
+            isMobileMenuOpen
+              ? 'max-h-96 opacity-100'
+              : 'pointer-events-none max-h-0 opacity-0'
+          }`}
+        >
+          <div className="max-w-7xl mx-auto px-6 py-5">
+            <div className="flex flex-col gap-1">
+              {MOBILE_NAVIGATION_ITEMS.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className="rounded-xl px-4 py-3 text-sm font-medium text-white/70 transition-colors hover:bg-white/5 hover:text-white"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {item.label}
+                </a>
+              ))}
+              <a
+                href="/app"
+                className="mt-3 rounded-xl bg-emerald-500 px-6 py-3 text-center text-sm font-semibold text-black transition-colors hover:bg-emerald-400"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Launch App
+              </a>
+            </div>
+          </div>
         </div>
       </nav>
 
@@ -452,3 +524,5 @@ export const renderAssurancePage = () => {
     </main>
   );
 };
+
+export const renderAssurancePage = () => <AssurancePage />;
