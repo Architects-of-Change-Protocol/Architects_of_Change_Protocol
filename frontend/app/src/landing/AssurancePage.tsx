@@ -189,7 +189,7 @@ const AssurancePage = () => {
 
           <a
             href="#assessments"
-            className="px-5 py-2 bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-semibold rounded-xl transition-colors"
+            className="hidden md:inline-block px-5 py-2 bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-semibold rounded-xl transition-colors"
           >
             Request Assessment
           </a>
