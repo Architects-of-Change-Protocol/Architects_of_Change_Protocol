@@ -12,7 +12,8 @@ const MOBILE_NAVIGATION_ITEMS = [
 ];
 const FOUNDATION_CHECKOUT_URL = 'https://buy.stripe.com/aFa5kD1Kfgcp67N11gejK01';
 const FOUNDER_PROGRAM_CHECKOUT_URL = 'https://buy.stripe.com/3cI7sL88D5xLbs76lAejK00';
-const ENTERPRISE_INTAKE_FORM_URL = 'https://tally.so/r/MeGJkA';
+const ENTERPRISE_INTAKE_FORM_URL = 'https://tally.so/r/2ER1M9';
+const CONTINUOUS_ASSURANCE_WAITLIST_URL = 'https://tally.so/r/yP7oN4';
 
 const MATRIX_DIMENSIONS = [
   {
@@ -150,7 +151,7 @@ const ASSESSMENT_TIERS = [
       'Continuous Assurance Reporting',
     ],
     cta: 'Join Continuous Assurance Waitlist',
-    ctaHref: ENTERPRISE_INTAKE_FORM_URL,
+    ctaHref: CONTINUOUS_ASSURANCE_WAITLIST_URL,
     featured: false,
   },
 ];
