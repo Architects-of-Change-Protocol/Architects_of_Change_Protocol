@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useState } from 'react';
 import { LogoRotating } from '../components/logo/LogoRotating';
+import { ASSURANCE_INDEX_ORGANIZATIONS } from './assuranceIndexData';
 import './assurance.css';
 
 const MOBILE_NAVIGATION_ITEMS = [
@@ -14,20 +15,6 @@ const FOUNDATION_CHECKOUT_URL = 'https://buy.stripe.com/aFa5kD1Kfgcp67N11gejK01'
 const FOUNDER_PROGRAM_CHECKOUT_URL = 'https://buy.stripe.com/3cI7sL88D5xLbs76lAejK00';
 const ENTERPRISE_INTAKE_FORM_URL = 'https://tally.so/r/2ER1M9';
 const CONTINUOUS_ASSURANCE_WAITLIST_URL = 'https://tally.so/r/yP7oN4';
-
-const CONSTITUTIONAL_INDEX = [
-  { rank: 1, organization: 'AnythingLLM', score: 82, tier: 'Gold', tierClass: 'gold' },
-  { rank: 2, organization: 'Ollama', score: 81, tier: 'Gold', tierClass: 'gold' },
-  { rank: 3, organization: 'Writer', score: 64, tier: 'Silver', tierClass: 'silver' },
-  {
-    rank: 4,
-    organization: 'Harvey AI',
-    score: 58,
-    tier: 'Silver Conditional',
-    tierClass: 'silver-conditional',
-  },
-  { rank: 5, organization: 'Anthropic', score: 48, tier: 'Bronze', tierClass: 'bronze' },
-];
 
 const MATRIX_DIMENSIONS = [
   {
@@ -371,37 +358,39 @@ const AssurancePage = () => {
                 <span className="sr-only" role="columnheader">Public profile</span>
               </div>
 
-              {CONSTITUTIONAL_INDEX.map((entry) => (
-                <div className="assurance-index-row" role="row" key={entry.organization}>
+              {ASSURANCE_INDEX_ORGANIZATIONS.map((organization, index) => (
+                <div className="assurance-index-row" role="row" key={organization.id}>
                   <div className="assurance-index-rank" role="cell">
                     <span className="md:hidden">Rank</span>
-                    <strong>{String(entry.rank).padStart(2, '0')}</strong>
+                    <strong>{String(index + 1).padStart(2, '0')}</strong>
                   </div>
                   <div className="assurance-index-organization" role="cell">
                     <span className="assurance-index-monogram" aria-hidden="true">
-                      {entry.organization.charAt(0)}
+                      {organization.name.charAt(0)}
                     </span>
-                    <strong>{entry.organization}</strong>
+                    <strong>{organization.name}</strong>
                   </div>
                   <div className="assurance-index-score" role="cell">
                     <div className="assurance-index-score-copy">
                       <span className="md:hidden">Sovereignty Score</span>
-                      <strong>{entry.score}</strong>
+                      <strong>{organization.sovereigntyScore}</strong>
                     </div>
                     <div className="assurance-index-score-track" aria-hidden="true">
-                      <span style={{ width: `${entry.score}%` }} />
+                      <span style={{ width: `${organization.sovereigntyScore}%` }} />
                     </div>
                   </div>
                   <div role="cell">
-                    <span className={`assurance-index-tier assurance-index-tier--${entry.tierClass}`}>
-                      {entry.tier}
+                    <span
+                      className={`assurance-index-tier assurance-index-tier--${organization.certificationClass}`}
+                    >
+                      {organization.certification}
                     </span>
                   </div>
                   <div className="assurance-index-action" role="cell">
                     <button
                       type="button"
                       className="assurance-index-profile-button"
-                      aria-label={`View ${entry.organization} public profile`}
+                      aria-label={`View ${organization.name} public profile`}
                     >
                       View Public Profile
                     </button>
