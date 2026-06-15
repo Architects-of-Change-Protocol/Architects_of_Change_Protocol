@@ -16,6 +16,46 @@ const FOUNDER_PROGRAM_CHECKOUT_URL = 'https://buy.stripe.com/3cI7sL88D5xLbs76lAe
 const ENTERPRISE_INTAKE_FORM_URL = 'https://tally.so/r/2ER1M9';
 const CONTINUOUS_ASSURANCE_WAITLIST_URL = 'https://tally.so/r/yP7oN4';
 
+const INDEX_FEATURES = [
+  {
+    title: 'Governance',
+    description: 'Who is accountable when AI systems act?',
+  },
+  {
+    title: 'Sovereignty',
+    description: 'How much control remains with the organization?',
+  },
+  {
+    title: 'Assurance',
+    description: 'What evidence supports the score?',
+  },
+];
+
+const INDEX_METRICS = [
+  {
+    label: 'Organizations Assessed',
+    value: ASSURANCE_INDEX_ORGANIZATIONS.length,
+  },
+  {
+    label: 'Gold Certifications',
+    value: ASSURANCE_INDEX_ORGANIZATIONS.filter(
+      (organization) => organization.certificationClass === 'gold',
+    ).length,
+  },
+  {
+    label: 'Silver Certifications',
+    value: ASSURANCE_INDEX_ORGANIZATIONS.filter((organization) =>
+      organization.certificationClass.startsWith('silver'),
+    ).length,
+  },
+  {
+    label: 'Bronze Certifications',
+    value: ASSURANCE_INDEX_ORGANIZATIONS.filter(
+      (organization) => organization.certificationClass === 'bronze',
+    ).length,
+  },
+];
+
 const MATRIX_DIMENSIONS = [
   {
     id: 'governance',
@@ -335,18 +375,38 @@ const AssurancePage = () => {
       {/* ── Constitutional Index ── */}
       <section id="index" className="scroll-mt-20 py-28 px-6">
         <div className="max-w-7xl mx-auto">
-          <header className="mb-12 max-w-3xl">
+          <header className="assurance-index-hero">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
-              Public Benchmark
+              Public Constitutional Index
             </p>
-            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-5">
-              AOC Constitutional Index
+            <h2 className="text-4xl md:text-6xl font-semibold tracking-tight mb-5">
+              The Public Index for AI Governance and AI Sovereignty
             </h2>
-            <p className="text-white/60 text-lg leading-relaxed">
-              A public ranking of AI organizations based on independently observed sovereignty
-              signals, governance posture, and constitutional readiness.
+            <p className="max-w-4xl text-white/60 text-lg leading-relaxed">
+              AOC evaluates AI organizations across governance and sovereignty dimensions, helping
+              founders, enterprises, investors, and buyers better understand accountability,
+              control, dependency, and trust.
             </p>
           </header>
+
+          <div className="assurance-index-features">
+            {INDEX_FEATURES.map((feature, index) => (
+              <article className="assurance-index-feature-card" key={feature.title}>
+                <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+                <h3>{feature.title}</h3>
+                <p>{feature.description}</p>
+              </article>
+            ))}
+          </div>
+
+          <dl className="assurance-index-metrics">
+            {INDEX_METRICS.map((metric) => (
+              <div key={metric.label}>
+                <dt>{metric.label}</dt>
+                <dd>{metric.value}</dd>
+              </div>
+            ))}
+          </dl>
 
           <div className="assurance-index-shell">
             <div className="assurance-index-table" role="table" aria-label="AOC Constitutional Index">
