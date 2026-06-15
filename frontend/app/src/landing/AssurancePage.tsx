@@ -15,6 +15,20 @@ const FOUNDER_PROGRAM_CHECKOUT_URL = 'https://buy.stripe.com/3cI7sL88D5xLbs76lAe
 const ENTERPRISE_INTAKE_FORM_URL = 'https://tally.so/r/2ER1M9';
 const CONTINUOUS_ASSURANCE_WAITLIST_URL = 'https://tally.so/r/yP7oN4';
 
+const CONSTITUTIONAL_INDEX = [
+  { rank: 1, organization: 'AnythingLLM', score: 82, tier: 'Gold', tierClass: 'gold' },
+  { rank: 2, organization: 'Ollama', score: 81, tier: 'Gold', tierClass: 'gold' },
+  { rank: 3, organization: 'Writer', score: 64, tier: 'Silver', tierClass: 'silver' },
+  {
+    rank: 4,
+    organization: 'Harvey AI',
+    score: 58,
+    tier: 'Silver Conditional',
+    tierClass: 'silver-conditional',
+  },
+  { rank: 5, organization: 'Anthropic', score: 48, tier: 'Bronze', tierClass: 'bronze' },
+];
+
 const MATRIX_DIMENSIONS = [
   {
     id: 'governance',
@@ -183,6 +197,7 @@ const AssurancePage = () => {
 
           <div className="hidden md:flex items-center gap-9 text-sm font-medium text-white/70">
             <a href="#matrix" className="hover:text-white transition-colors">Matrix</a>
+            <a href="#index" className="hover:text-white transition-colors">Index</a>
             <a href="#assessments" className="hover:text-white transition-colors">Assessments</a>
             <a href="#why" className="hover:text-white transition-colors">Why it matters</a>
             <a href="/" className="hover:text-white transition-colors">Protocol</a>
@@ -324,6 +339,98 @@ const AssurancePage = () => {
 
           <p className="mt-8 text-xs text-white/30 text-center">
             Scores shown are illustrative benchmarks from the AOC Constitutional Matrix v1.0.
+          </p>
+        </div>
+      </section>
+
+      <hr className="assurance-divider" />
+
+      {/* ── Constitutional Index ── */}
+      <section id="index" className="scroll-mt-20 py-28 px-6">
+        <div className="max-w-7xl mx-auto">
+          <header className="mb-12 max-w-3xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
+              Public Benchmark
+            </p>
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-5">
+              AOC Constitutional Index
+            </h2>
+            <p className="text-white/60 text-lg leading-relaxed">
+              A public ranking of AI organizations based on independently observed sovereignty
+              signals, governance posture, and constitutional readiness.
+            </p>
+          </header>
+
+          <div className="assurance-index-shell">
+            <div className="assurance-index-table" role="table" aria-label="AOC Constitutional Index">
+              <div className="assurance-index-header" role="row">
+                <span role="columnheader">Rank</span>
+                <span role="columnheader">Organization</span>
+                <span role="columnheader">Sovereignty Score</span>
+                <span role="columnheader">Classification</span>
+                <span className="sr-only" role="columnheader">Public profile</span>
+              </div>
+
+              {CONSTITUTIONAL_INDEX.map((entry) => (
+                <div className="assurance-index-row" role="row" key={entry.organization}>
+                  <div className="assurance-index-rank" role="cell">
+                    <span className="md:hidden">Rank</span>
+                    <strong>{String(entry.rank).padStart(2, '0')}</strong>
+                  </div>
+                  <div className="assurance-index-organization" role="cell">
+                    <span className="assurance-index-monogram" aria-hidden="true">
+                      {entry.organization.charAt(0)}
+                    </span>
+                    <strong>{entry.organization}</strong>
+                  </div>
+                  <div className="assurance-index-score" role="cell">
+                    <div className="assurance-index-score-copy">
+                      <span className="md:hidden">Sovereignty Score</span>
+                      <strong>{entry.score}</strong>
+                    </div>
+                    <div className="assurance-index-score-track" aria-hidden="true">
+                      <span style={{ width: `${entry.score}%` }} />
+                    </div>
+                  </div>
+                  <div role="cell">
+                    <span className={`assurance-index-tier assurance-index-tier--${entry.tierClass}`}>
+                      {entry.tier}
+                    </span>
+                  </div>
+                  <div className="assurance-index-action" role="cell">
+                    <button
+                      type="button"
+                      className="assurance-index-profile-button"
+                      aria-label={`View ${entry.organization} public profile`}
+                    >
+                      View Public Profile
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="assurance-index-footer">
+              <div>
+                <p className="text-sm font-semibold text-white">Go beyond the public signals.</p>
+                <p className="mt-1 text-sm text-white/45">
+                  Request an evidence-backed assessment for a complete constitutional view.
+                </p>
+              </div>
+              <a
+                href={ENTERPRISE_INTAKE_FORM_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="assurance-index-unlock-button"
+              >
+                Unlock Full Assessment
+              </a>
+            </div>
+          </div>
+
+          <p className="mt-6 text-xs text-white/30">
+            Initial rankings reflect publicly available information and are subject to change as
+            new evidence is assessed.
           </p>
         </div>
       </section>
