@@ -300,3 +300,290 @@
     width: 100%;
   }
 }
+
+.assurance-profile-page {
+  width: min(100% - 3rem, 72rem);
+  margin: 0 auto;
+  padding: 5rem 0 7rem;
+}
+
+.assurance-profile-nav-link,
+.assurance-profile-back {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.assurance-profile-nav-link:hover,
+.assurance-profile-back:hover {
+  color: #fff;
+}
+
+.assurance-profile-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2.5rem;
+  align-items: end;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.assurance-profile-back {
+  display: inline-flex;
+  gap: 0.5rem;
+  margin-bottom: 3rem;
+}
+
+.assurance-profile-eyebrow,
+.assurance-profile-section-label {
+  color: #34d399;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.assurance-profile-header h1 {
+  margin-top: 0.75rem;
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 600;
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+}
+
+.assurance-profile-meta {
+  display: flex;
+  grid-column: 1 / -1;
+  gap: 4rem;
+  margin-top: 1rem;
+}
+
+.assurance-profile-meta dt,
+.assurance-profile-score-card > p {
+  margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.38);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.assurance-profile-meta dd {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.assurance-profile-scores {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 3rem 0 5rem;
+}
+
+.assurance-profile-score-card,
+.assurance-profile-section {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 1.25rem;
+  background:
+    linear-gradient(145deg, rgba(52, 211, 153, 0.045), transparent 45%),
+    rgba(255, 255, 255, 0.018);
+}
+
+.assurance-profile-score-card {
+  min-height: 10.5rem;
+  padding: 1.75rem;
+}
+
+.assurance-profile-score-value {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.assurance-profile-score-value strong {
+  color: #6ee7b7;
+  font-size: 3.25rem;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+.assurance-profile-score-value span {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.875rem;
+}
+
+.assurance-profile-score-pending {
+  display: block;
+  max-width: 20rem;
+  margin-top: 1.25rem;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 1.125rem;
+  line-height: 1.45;
+}
+
+.assurance-profile-section {
+  padding: clamp(1.75rem, 5vw, 3.5rem);
+}
+
+.assurance-profile-section h2,
+.assurance-profile-cta h2 {
+  margin-top: 0.875rem;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+
+.assurance-profile-summary {
+  max-width: 52rem;
+  margin-top: 1.5rem;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 1.125rem;
+  line-height: 1.8;
+}
+
+.assurance-profile-findings {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.assurance-profile-section ul {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.assurance-profile-section li {
+  display: flex;
+  gap: 0.75rem;
+  color: rgba(255, 255, 255, 0.68);
+  line-height: 1.6;
+}
+
+.assurance-profile-section li span {
+  color: #34d399;
+}
+
+.assurance-profile-section-label--muted,
+.assurance-profile-constraints li span {
+  color: #94a3b8;
+}
+
+.assurance-profile-cta {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 3rem;
+  margin-top: 5rem;
+  padding: clamp(2rem, 6vw, 4rem);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  border-radius: 1.5rem;
+  background:
+    radial-gradient(circle at top left, rgba(16, 185, 129, 0.13), transparent 50%),
+    rgba(255, 255, 255, 0.025);
+}
+
+.assurance-profile-cta p:not(.assurance-profile-section-label) {
+  max-width: 42rem;
+  margin-top: 1.25rem;
+  color: rgba(255, 255, 255, 0.58);
+  line-height: 1.7;
+}
+
+.assurance-profile-cta-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.75rem;
+}
+
+.assurance-profile-primary-cta,
+.assurance-profile-secondary-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0.75rem 1.125rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.assurance-profile-primary-cta {
+  background: #10b981;
+  color: #06110d;
+}
+
+.assurance-profile-primary-cta:hover {
+  background: #34d399;
+}
+
+.assurance-profile-secondary-cta {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.assurance-profile-secondary-cta:hover {
+  border-color: rgba(110, 231, 183, 0.35);
+  background: rgba(52, 211, 153, 0.06);
+}
+
+.assurance-profile-not-found {
+  padding: 8rem 0;
+  text-align: center;
+}
+
+.assurance-profile-not-found h1 {
+  margin-top: 1rem;
+  font-size: 3rem;
+  font-weight: 600;
+}
+
+.assurance-profile-not-found > p:not(.assurance-profile-eyebrow) {
+  margin: 1rem 0 2rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+@media (max-width: 767px) {
+  .assurance-profile-page {
+    width: min(100% - 2rem, 72rem);
+    padding-top: 3rem;
+  }
+
+  .assurance-profile-nav-link {
+    display: none;
+  }
+
+  .assurance-profile-header,
+  .assurance-profile-scores,
+  .assurance-profile-findings {
+    grid-template-columns: 1fr;
+  }
+
+  .assurance-profile-header {
+    align-items: start;
+    gap: 1.5rem;
+  }
+
+  .assurance-profile-header .assurance-index-tier {
+    grid-row: 2;
+  }
+
+  .assurance-profile-meta {
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .assurance-profile-cta {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .assurance-profile-cta-actions {
+    flex-direction: column;
+  }
+}

@@ -387,13 +387,13 @@ const AssurancePage = () => {
                     </span>
                   </div>
                   <div className="assurance-index-action" role="cell">
-                    <button
-                      type="button"
+                    <a
+                      href={`/assurance/index/${organization.slug}`}
                       className="assurance-index-profile-button"
                       aria-label={`View ${organization.name} public profile`}
                     >
                       View Public Profile
-                    </button>
+                    </a>
                   </div>
                 </div>
               ))}
