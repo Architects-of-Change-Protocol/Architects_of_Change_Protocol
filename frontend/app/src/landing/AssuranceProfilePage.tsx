@@ -19,28 +19,22 @@ function formatAssessmentDate(date: string) {
 function ScoreCard({
   label,
   score,
+  tone = 'sovereignty',
 }: {
   label: string;
-  score: number | null;
+  score: number;
+  tone?: 'sovereignty' | 'governance';
 }) {
   return (
-    <article className="assurance-profile-score-card">
+    <article className={`assurance-profile-score-card assurance-profile-score-card--${tone}`}>
       <p>{label}</p>
-      {score === null ? (
-        <strong className="assurance-profile-score-pending">
-          Pending Public Governance Assessment
-        </strong>
-      ) : (
-        <>
-          <div className="assurance-profile-score-value">
-            <strong>{score}</strong>
-            <span>/ 100</span>
-          </div>
-          <div className="assurance-index-score-track" aria-hidden="true">
-            <span style={{ width: `${score}%` }} />
-          </div>
-        </>
-      )}
+      <div className="assurance-profile-score-value">
+        <strong>{score}</strong>
+        <span>/ 100</span>
+      </div>
+      <div className="assurance-index-score-track" aria-hidden="true">
+        <span style={{ width: `${score}%` }} />
+      </div>
     </article>
   );
 }
@@ -79,7 +73,11 @@ function ProfileContent({
 
       <section className="assurance-profile-scores" aria-label="Public assessment scores">
         <ScoreCard label="Sovereignty Score" score={organization.sovereigntyScore} />
-        <ScoreCard label="Governance Score" score={organization.governanceScore} />
+        <ScoreCard
+          label="Governance Score"
+          score={organization.governanceScore}
+          tone="governance"
+        />
       </section>
 
       <section className="assurance-profile-section">
@@ -116,6 +114,43 @@ function ProfileContent({
           </ul>
         </section>
       </div>
+
+      <section className="assurance-profile-section assurance-profile-audit-section">
+        <p className="assurance-profile-section-label assurance-profile-section-label--governance">
+          Governance Audit Details
+        </p>
+        <h2>Qualitative governance assessment</h2>
+        <div className="assurance-profile-audit-grid">
+          {organization.governanceAudit.map((audit) => (
+            <article className="assurance-profile-audit-card" key={audit.title}>
+              <div className="assurance-profile-audit-card-header">
+                <h3>{audit.title}</h3>
+                <span>{audit.status}</span>
+              </div>
+              <dl>
+                <div>
+                  <dt>Finding</dt>
+                  <dd>{audit.finding}</dd>
+                </div>
+                <div>
+                  <dt>Risk</dt>
+                  <dd>{audit.risk}</dd>
+                </div>
+                {audit.evidence ? (
+                  <div>
+                    <dt>Evidence Observed</dt>
+                    <dd>{audit.evidence}</dd>
+                  </div>
+                ) : null}
+                <div>
+                  <dt>Recommendation</dt>
+                  <dd>{audit.recommendation}</dd>
+                </div>
+              </dl>
+            </article>
+          ))}
+        </div>
+      </section>
 
       <section className="assurance-profile-cta">
         <div>

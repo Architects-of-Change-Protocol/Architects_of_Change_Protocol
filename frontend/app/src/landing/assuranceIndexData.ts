@@ -1,3 +1,12 @@
+export type GovernanceAuditSection = {
+  title: string;
+  status: 'Strong' | 'Partial' | 'Weak' | 'Missing';
+  finding: string;
+  risk: string;
+  recommendation: string;
+  evidence?: string;
+};
+
 export type AssuranceIndexOrganization = {
   id: string;
   name: string;
@@ -6,7 +15,8 @@ export type AssuranceIndexOrganization = {
   assessmentNumber: string;
   assessmentDate: string;
   sovereigntyScore: number;
-  governanceScore: number | null;
+  governanceScore: number;
+  governanceAudit: GovernanceAuditSection[];
   certification: string;
   certificationClass: string;
   status: string;
@@ -27,7 +37,24 @@ export const ASSURANCE_INDEX_ORGANIZATIONS: AssuranceIndexOrganization[] = [
     assessmentNumber: 'AOC-001',
     assessmentDate: '2026-06-15',
     sovereigntyScore: 82,
-    governanceScore: null,
+    governanceScore: 61,
+    governanceAudit: [
+      {
+        title: 'Human Oversight',
+        status: 'Partial',
+        finding: 'A privacy-focused deployment model supports user control, but public governance evidence remains incomplete.',
+        risk: 'Local deployment can reduce data exposure while leaving oversight duties to implementers.',
+        evidence: 'Observed from public product, policy, security, and documentation materials.',
+        recommendation: 'Publish role-specific oversight responsibilities, escalation paths, and review cadences for high-impact AI workflows.',
+      },
+      {
+        title: 'Accountability Evidence',
+        status: 'Partial',
+        finding: 'Public-facing materials provide directional governance signals but do not expose a complete independent audit evidence package.',
+        risk: 'External reviewers may be unable to distinguish implemented controls from policy or marketing claims.',
+        recommendation: 'Maintain an evidence-backed governance control summary with ownership, auditability, and exception-handling details.',
+      },
+    ],
     certification: 'Gold',
     certificationClass: 'gold',
     status: 'Assessed',
@@ -46,7 +73,24 @@ export const ASSURANCE_INDEX_ORGANIZATIONS: AssuranceIndexOrganization[] = [
     assessmentNumber: 'AOC-002',
     assessmentDate: '2026-06-15',
     sovereigntyScore: 81,
-    governanceScore: null,
+    governanceScore: 56,
+    governanceAudit: [
+      {
+        title: 'Human Oversight',
+        status: 'Partial',
+        finding: 'Local runtime design gives operators direct execution control, but public materials emphasize tooling more than organizational governance.',
+        risk: 'Implementers may assume runtime control is equivalent to governance oversight.',
+        evidence: 'Observed from public product, policy, security, and documentation materials.',
+        recommendation: 'Publish role-specific oversight responsibilities, escalation paths, and review cadences for high-impact AI workflows.',
+      },
+      {
+        title: 'Accountability Evidence',
+        status: 'Partial',
+        finding: 'Public-facing materials provide directional governance signals but do not expose a complete independent audit evidence package.',
+        risk: 'External reviewers may be unable to distinguish implemented controls from policy or marketing claims.',
+        recommendation: 'Maintain an evidence-backed governance control summary with ownership, auditability, and exception-handling details.',
+      },
+    ],
     certification: 'Gold',
     certificationClass: 'gold',
     status: 'Assessed',
@@ -65,7 +109,24 @@ export const ASSURANCE_INDEX_ORGANIZATIONS: AssuranceIndexOrganization[] = [
     assessmentNumber: 'AOC-003',
     assessmentDate: '2026-06-15',
     sovereigntyScore: 64,
-    governanceScore: null,
+    governanceScore: 74,
+    governanceAudit: [
+      {
+        title: 'Human Oversight',
+        status: 'Partial',
+        finding: 'Public enterprise materials describe security, administrative controls, and governed workflows for business users.',
+        risk: 'Hosted platform dependency requires customers to validate governance enforcement through contractual and audit evidence.',
+        evidence: 'Observed from public product, policy, security, and documentation materials.',
+        recommendation: 'Publish role-specific oversight responsibilities, escalation paths, and review cadences for high-impact AI workflows.',
+      },
+      {
+        title: 'Accountability Evidence',
+        status: 'Partial',
+        finding: 'Public-facing materials provide directional governance signals but do not expose a complete independent audit evidence package.',
+        risk: 'External reviewers may be unable to distinguish implemented controls from policy or marketing claims.',
+        recommendation: 'Maintain an evidence-backed governance control summary with ownership, auditability, and exception-handling details.',
+      },
+    ],
     certification: 'Silver',
     certificationClass: 'silver',
     status: 'Assessed',
@@ -84,7 +145,24 @@ export const ASSURANCE_INDEX_ORGANIZATIONS: AssuranceIndexOrganization[] = [
     assessmentNumber: 'AOC-004',
     assessmentDate: '2026-06-15',
     sovereigntyScore: 58,
-    governanceScore: null,
+    governanceScore: 69,
+    governanceAudit: [
+      {
+        title: 'Human Oversight',
+        status: 'Partial',
+        finding: 'Public positioning indicates high-trust professional workflows, with limited public detail on internal oversight mechanics.',
+        risk: 'Sensitive professional use cases may outpace independently observable governance evidence.',
+        evidence: 'Observed from public product, policy, security, and documentation materials.',
+        recommendation: 'Publish role-specific oversight responsibilities, escalation paths, and review cadences for high-impact AI workflows.',
+      },
+      {
+        title: 'Accountability Evidence',
+        status: 'Partial',
+        finding: 'Public-facing materials provide directional governance signals but do not expose a complete independent audit evidence package.',
+        risk: 'External reviewers may be unable to distinguish implemented controls from policy or marketing claims.',
+        recommendation: 'Maintain an evidence-backed governance control summary with ownership, auditability, and exception-handling details.',
+      },
+    ],
     certification: 'Silver Conditional',
     certificationClass: 'silver-conditional',
     status: 'Assessed',
@@ -103,7 +181,24 @@ export const ASSURANCE_INDEX_ORGANIZATIONS: AssuranceIndexOrganization[] = [
     assessmentNumber: 'AOC-005',
     assessmentDate: '2026-06-15',
     sovereigntyScore: 48,
-    governanceScore: null,
+    governanceScore: 82,
+    governanceAudit: [
+      {
+        title: 'Human Oversight',
+        status: 'Partial',
+        finding: 'Public safety, responsible scaling, and policy materials indicate a mature governance posture at the provider level.',
+        risk: 'Strong provider governance does not automatically give customers direct control over model operation or infrastructure dependency.',
+        evidence: 'Observed from public product, policy, security, and documentation materials.',
+        recommendation: 'Publish role-specific oversight responsibilities, escalation paths, and review cadences for high-impact AI workflows.',
+      },
+      {
+        title: 'Accountability Evidence',
+        status: 'Partial',
+        finding: 'Public-facing materials provide directional governance signals but do not expose a complete independent audit evidence package.',
+        risk: 'External reviewers may be unable to distinguish implemented controls from policy or marketing claims.',
+        recommendation: 'Maintain an evidence-backed governance control summary with ownership, auditability, and exception-handling details.',
+      },
+    ],
     certification: 'Bronze',
     certificationClass: 'bronze',
     status: 'Assessed',
