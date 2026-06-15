@@ -413,7 +413,7 @@ const AssurancePage = () => {
               <div className="assurance-index-header" role="row">
                 <span role="columnheader">Rank</span>
                 <span role="columnheader">Organization</span>
-                <span role="columnheader">Sovereignty Score</span>
+                <span role="columnheader">Scores</span>
                 <span role="columnheader">Classification</span>
                 <span className="sr-only" role="columnheader">Public profile</span>
               </div>
@@ -430,13 +430,24 @@ const AssurancePage = () => {
                     </span>
                     <strong>{organization.name}</strong>
                   </div>
-                  <div className="assurance-index-score" role="cell">
-                    <div className="assurance-index-score-copy">
-                      <span className="md:hidden">Sovereignty Score</span>
-                      <strong>{organization.sovereigntyScore}</strong>
+                  <div className="assurance-index-scores" role="cell">
+                    <div className="assurance-index-score assurance-index-score--sovereignty">
+                      <div className="assurance-index-score-copy">
+                        <span>Sovereignty Score</span>
+                        <strong>{organization.sovereigntyScore}</strong>
+                      </div>
+                      <div className="assurance-index-score-track" aria-hidden="true">
+                        <span style={{ width: `${organization.sovereigntyScore}%` }} />
+                      </div>
                     </div>
-                    <div className="assurance-index-score-track" aria-hidden="true">
-                      <span style={{ width: `${organization.sovereigntyScore}%` }} />
+                    <div className="assurance-index-score assurance-index-score--governance">
+                      <div className="assurance-index-score-copy">
+                        <span>Governance Score</span>
+                        <strong>{organization.governanceScore}</strong>
+                      </div>
+                      <div className="assurance-index-score-track" aria-hidden="true">
+                        <span style={{ width: `${organization.governanceScore}%` }} />
+                      </div>
                     </div>
                   </div>
                   <div role="cell">
