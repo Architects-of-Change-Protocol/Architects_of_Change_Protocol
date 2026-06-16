@@ -72,11 +72,17 @@
 }
 
 .ci-map-org-label {
-  fill: rgba(255, 255, 255, 0.75);
+  fill: rgba(255, 255, 255, 0.95);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   font-family: inherit;
   pointer-events: none;
+}
+
+@media (max-width: 480px) {
+  .ci-map-org-label {
+    font-size: 9px;
+  }
 }
 
 .ci-map-dot {

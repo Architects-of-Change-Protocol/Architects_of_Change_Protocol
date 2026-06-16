@@ -185,15 +185,30 @@ function ConstitutionalMap() {
         {CONSTITUTIONAL_INDEX_ORGANIZATIONS.map((org) => {
           const cx = toX(org.sovereigntyScore);
           const cy = toY(org.governanceScore);
+
+          // Per-company label offsets to avoid overlap and clipping
+          const labelOffsets: Record<string, { dx: number; dy: number; anchor: 'middle' | 'start' | 'end' }> = {
+            anthropic:   { dx:   0, dy: -16, anchor: 'middle' },
+            writer:      { dx: -12, dy: -16, anchor: 'end'    },
+            harvey:      { dx:  12, dy: -16, anchor: 'start'  },
+            ollama:      { dx:   0, dy: -16, anchor: 'middle' },
+            anythingllm: { dx: -12, dy: -16, anchor: 'end'    },
+          };
+          const off = labelOffsets[org.id] ?? { dx: 0, dy: -16, anchor: 'middle' };
+
           return (
             <g key={org.id}>
               <a href={`/assurance/index/${org.slug}`}>
                 <circle cx={cx} cy={cy} r={9} className={`ci-map-dot ci-map-dot--${org.quadrant}`} />
                 <text
-                  x={cx}
-                  y={cy - 14}
+                  x={cx + off.dx}
+                  y={cy + off.dy}
                   className="ci-map-org-label"
-                  textAnchor="middle"
+                  textAnchor={off.anchor}
+                  style={{
+                    fontWeight: 700,
+                    filter: 'drop-shadow(0 0 6px rgba(0,0,0,0.9))',
+                  }}
                 >
                   {org.name}
                 </text>
