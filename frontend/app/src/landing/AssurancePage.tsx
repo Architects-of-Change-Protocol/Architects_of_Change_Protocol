@@ -30,12 +30,12 @@ const ASSESSMENT_OFFERINGS = [
     comingSoon: false,
     headline: 'Public Constitutional Assessment',
     description:
-      'A rapid constitutional review of your AI product using public documentation, repositories, websites, policies, and disclosures.',
+      'A rapid constitutional assessment that establishes your organization\'s Governance Score, Sovereignty Score, and Constitutional Position using exclusively publicly observable evidence, documentation, repositories, websites, policies, and disclosures.',
     items: [
       'Governance Score',
       'Sovereignty Score',
       'Constitutional Position',
-      'Executive PDF Report',
+      'Executive Summary Report',
       'Public Constitutional Index Listing',
       'Delivered within 72 hours',
     ],
@@ -52,17 +52,16 @@ const ASSESSMENT_OFFERINGS = [
     comingSoon: false,
     headline: 'Founder Program',
     description:
-      'A collaborative constitutional assessment that includes interviews, architecture reviews, governance analysis, operational controls, and detailed constitutional recommendations.',
+      'A collaborative constitutional review designed to explain your results, validate assumptions, identify governance and sovereignty constraints, and build a prioritized improvement roadmap.',
     items: [
       'Everything in Foundation',
-      'Architecture Review',
-      'Governance Gap Analysis',
-      'Sovereignty Assessment',
-      'Constitutional Risk Analysis',
-      'Prioritized Findings',
-      'Remediation Roadmap',
+      'Constitutional Findings Review',
+      'Governance Constraint Analysis',
+      'Sovereignty Constraint Analysis',
+      'Evidence Validation',
+      'Prioritized Improvement Roadmap',
       'Recommended AOC Protocol Integrations',
-      'Detailed Constitutional Assessment Report',
+      'Executive Constitutional Report',
       'Delivered within 5 business days',
     ],
     cta: 'Join Founder Program — $149',
@@ -78,16 +77,15 @@ const ASSESSMENT_OFFERINGS = [
     comingSoon: false,
     headline: 'Deep Constitutional Audit',
     description:
-      'A comprehensive constitutional audit for organizations seeking deep validation of governance, sovereignty, traceability, evidence systems, and AI operational controls.',
+      'A hands-on constitutional engagement for organizations actively seeking measurable improvement — validating controls, implementing governance changes, increasing sovereignty, and preparing for reassessment.',
     items: [
       'Private Repository Review',
       'Governance Validation',
       'Authority Mapping',
-      'Evidence Chain Review',
-      'Agent Architecture Analysis',
       'Runtime Control Assessment',
+      'Evidence Chain Review',
+      'Remediation Planning',
       'Executive Workshops',
-      'Enterprise Remediation Planning',
     ],
     cta: 'Start Enterprise Intake',
     ctaHref: ENTERPRISE_INTAKE_FORM_URL,
@@ -597,10 +595,10 @@ const AssurancePage = () => {
               Assessments
             </p>
             <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-5">
-              From discovery to assurance.
+              Measure. Understand. Improve.
             </h2>
             <p className="text-white/60 text-lg leading-relaxed">
-              A clear progression from rapid public assessment to deep constitutional audit.
+              A transparent progression from rapid public measurement to hands-on constitutional improvement.
             </p>
           </header>
 
