@@ -1,116 +1,40 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useState } from 'react';
 import { LogoRotating } from '../components/logo/LogoRotating';
-import { ASSURANCE_INDEX_ORGANIZATIONS } from './assuranceIndexData';
+import {
+  CONSTITUTIONAL_INDEX_ORGANIZATIONS,
+  GOVERNANCE_RANKED,
+  SOVEREIGNTY_RANKED,
+} from './assuranceIndexData';
 import './assurance.css';
 
 const MOBILE_NAVIGATION_ITEMS = [
-  { label: 'Matrix', href: '#matrix' },
-  { label: 'Domains', href: '#domains' },
-  { label: 'Assessments', href: '#assessments' },
+  { label: 'Map', href: '#map' },
   { label: 'Index', href: '#index' },
+  { label: 'Leaders', href: '#leaders' },
+  { label: 'Methodology', href: '#methodology' },
   { label: 'AOC Protocol', href: '/' },
 ];
+
 const FOUNDATION_CHECKOUT_URL = 'https://buy.stripe.com/aFa5kD1Kfgcp67N11gejK01';
 const FOUNDER_PROGRAM_CHECKOUT_URL = 'https://buy.stripe.com/3cI7sL88D5xLbs76lAejK00';
 const ENTERPRISE_INTAKE_FORM_URL = 'https://tally.so/r/2ER1M9';
-const CONTINUOUS_ASSURANCE_WAITLIST_URL = 'https://tally.so/r/yP7oN4';
 
-const INDEX_FEATURES = [
+const ASSESSMENT_OFFERINGS = [
   {
-    title: 'Governance',
-    description: 'Who is accountable when AI systems act?',
-  },
-  {
-    title: 'Sovereignty',
-    description: 'How much control remains with the organization?',
-  },
-  {
-    title: 'Assurance',
-    description: 'What evidence supports the score?',
-  },
-];
-
-const INDEX_METRICS = [
-  {
-    label: 'Organizations Assessed',
-    value: ASSURANCE_INDEX_ORGANIZATIONS.length,
-  },
-  {
-    label: 'Gold Certifications',
-    value: ASSURANCE_INDEX_ORGANIZATIONS.filter(
-      (organization) => organization.certificationClass === 'gold',
-    ).length,
-  },
-  {
-    label: 'Silver Certifications',
-    value: ASSURANCE_INDEX_ORGANIZATIONS.filter((organization) =>
-      organization.certificationClass.startsWith('silver'),
-    ).length,
-  },
-  {
-    label: 'Bronze Certifications',
-    value: ASSURANCE_INDEX_ORGANIZATIONS.filter(
-      (organization) => organization.certificationClass === 'bronze',
-    ).length,
-  },
-];
-
-const MATRIX_DIMENSIONS = [
-  {
-    id: 'governance',
-    label: 'Governance',
-    description: 'Policy frameworks, decision authority, and constitutional accountability structures.',
-    score: 0.82,
-  },
-  {
-    id: 'sovereignty',
-    label: 'Sovereignty',
-    description: 'Data ownership, jurisdictional compliance, and user autonomy guarantees.',
-    score: 0.75,
-  },
-  {
-    id: 'auditability',
-    label: 'Auditability',
-    description: 'Traceable decision logs, immutable audit trails, and inspection rights.',
-    score: 0.91,
-  },
-  {
-    id: 'certification',
-    label: 'Certification',
-    description: 'Third-party attestation, standard adherence, and ongoing compliance posture.',
-    score: 0.68,
-  },
-  {
-    id: 'transparency',
-    label: 'Transparency',
-    description: 'Explainability of automated decisions, model cards, and disclosure obligations.',
-    score: 0.79,
-  },
-  {
-    id: 'accountability',
-    label: 'Accountability',
-    description: 'Human-in-the-loop guarantees, escalation paths, and redress mechanisms.',
-    score: 0.85,
-  },
-];
-
-const ASSESSMENT_TIERS = [
-  {
-    tier: 'Foundation',
+    key: 'foundation',
     label: 'PUBLIC CONSTITUTIONAL ASSESSMENT',
-    badgeClass: 'tier-foundation',
     price: '$49',
     priceNote: null,
-    founderBadge: false,
+    popular: false,
     comingSoon: false,
     headline: 'Public Constitutional Assessment',
     description:
-      'A rapid constitutional review of your AI product using public documentation, public repositories, websites, policies, and disclosures.',
+      'A rapid constitutional review of your AI product using public documentation, repositories, websites, policies, and disclosures.',
     items: [
       'Governance Score',
       'Sovereignty Score',
-      'Constitutional Matrix Classification',
+      'Constitutional Position',
       'Executive PDF Report',
       'Public Constitutional Index Listing',
       'Delivered within 72 hours',
@@ -120,12 +44,11 @@ const ASSESSMENT_TIERS = [
     featured: false,
   },
   {
-    tier: 'Advanced',
+    key: 'advanced',
     label: 'FOUNDER PROGRAM',
-    badgeClass: 'tier-advanced',
     price: '$149',
     priceNote: 'Future public price: $499',
-    founderBadge: true,
+    popular: true,
     comingSoon: false,
     headline: 'Founder Program',
     description:
@@ -147,12 +70,11 @@ const ASSESSMENT_TIERS = [
     featured: true,
   },
   {
-    tier: 'Sovereign',
+    key: 'sovereign',
     label: 'DEEP CONSTITUTIONAL AUDIT',
-    badgeClass: 'tier-sovereign',
     price: 'Contact Sales',
     priceNote: null,
-    founderBadge: false,
+    popular: false,
     comingSoon: false,
     headline: 'Deep Constitutional Audit',
     description:
@@ -171,42 +93,132 @@ const ASSESSMENT_TIERS = [
     ctaHref: ENTERPRISE_INTAKE_FORM_URL,
     featured: false,
   },
-  {
-    tier: 'Continuous',
-    label: 'CONTINUOUS CONSTITUTIONAL ASSURANCE',
-    badgeClass: 'tier-continuous',
-    price: 'Contact Sales',
-    priceNote: null,
-    founderBadge: false,
-    comingSoon: true,
-    headline: 'Continuous Constitutional Assurance',
-    description:
-      'Continuous constitutional monitoring for AI systems with governance drift detection, sovereignty monitoring, constitutional health scoring, and ongoing assurance.',
-    items: [
-      'Continuous Monitoring',
-      'Governance Drift Detection',
-      'Sovereignty Erosion Detection',
-      'Quarterly Reassessments',
-      'Constitutional Dashboard',
-      'Certification Maintenance',
-      'Continuous Assurance Reporting',
-    ],
-    cta: 'Join Continuous Assurance Waitlist',
-    ctaHref: CONTINUOUS_ASSURANCE_WAITLIST_URL,
-    featured: false,
-  },
 ];
 
-function ScoreBar({ score }: { score: number }) {
+const QUADRANT_LABELS = [
+  { id: 'constitutional-leaders', label: 'Constitutional\nLeaders', x: '72%', y: '12%' },
+  { id: 'trusted-custodians', label: 'Trusted\nCustodians', x: '22%', y: '12%' },
+  { id: 'sovereignty-first', label: 'Sovereignty\nFirst', x: '72%', y: '62%' },
+  { id: 'dependency-platforms', label: 'Dependency\nPlatforms', x: '22%', y: '62%' },
+];
+
+function ConstitutionalMap() {
+  const W = 600;
+  const H = 440;
+  const PAD_L = 52;
+  const PAD_R = 20;
+  const PAD_T = 20;
+  const PAD_B = 44;
+  const plotW = W - PAD_L - PAD_R;
+  const plotH = H - PAD_T - PAD_B;
+
+  const toX = (sov: number) => PAD_L + (sov / 100) * plotW;
+  const toY = (gov: number) => PAD_T + ((100 - gov) / 100) * plotH;
+
+  const divX = toX(55);
+  const divY = toY(55);
+
+  const ticks = [0, 20, 40, 60, 80, 100];
+
   return (
-    <div className="assurance-score-bar mt-3">
-      <div className="assurance-score-fill" style={{ width: `${score * 100}%` }} />
+    <div className="ci-map-shell">
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="ci-map-svg"
+        role="img"
+        aria-label="Constitutional Index Map — Governance vs Sovereignty"
+      >
+        {/* Quadrant fills */}
+        <rect x={PAD_L} y={PAD_T} width={divX - PAD_L} height={divY - PAD_T} className="ci-map-q2" />
+        <rect x={divX} y={PAD_T} width={PAD_L + plotW - divX} height={divY - PAD_T} className="ci-map-q1" />
+        <rect x={PAD_L} y={divY} width={divX - PAD_L} height={PAD_T + plotH - divY} className="ci-map-q3" />
+        <rect x={divX} y={divY} width={PAD_L + plotW - divX} height={PAD_T + plotH - divY} className="ci-map-q4" />
+
+        {/* Grid lines */}
+        {ticks.map((t) => (
+          <g key={t}>
+            <line x1={toX(t)} y1={PAD_T} x2={toX(t)} y2={PAD_T + plotH} className="ci-map-grid" />
+            <line x1={PAD_L} y1={toY(t)} x2={PAD_L + plotW} y2={toY(t)} className="ci-map-grid" />
+          </g>
+        ))}
+
+        {/* Quadrant dividers */}
+        <line x1={divX} y1={PAD_T} x2={divX} y2={PAD_T + plotH} className="ci-map-divider" />
+        <line x1={PAD_L} y1={divY} x2={PAD_L + plotW} y2={divY} className="ci-map-divider" />
+
+        {/* Axis tick labels */}
+        {ticks.map((t) => (
+          <g key={`tick-${t}`}>
+            <text x={toX(t)} y={PAD_T + plotH + 18} className="ci-map-tick" textAnchor="middle">
+              {t}
+            </text>
+            {t > 0 && (
+              <text x={PAD_L - 8} y={toY(t) + 4} className="ci-map-tick" textAnchor="end">
+                {t}
+              </text>
+            )}
+          </g>
+        ))}
+
+        {/* Axis labels */}
+        <text x={PAD_L + plotW / 2} y={H - 2} className="ci-map-axis-label" textAnchor="middle">
+          Sovereignty
+        </text>
+        <text
+          x={14}
+          y={PAD_T + plotH / 2}
+          className="ci-map-axis-label"
+          textAnchor="middle"
+          transform={`rotate(-90, 14, ${PAD_T + plotH / 2})`}
+        >
+          Governance
+        </text>
+
+        {/* Quadrant labels */}
+        <text x={PAD_L + (divX - PAD_L) / 2} y={PAD_T + 18} className="ci-map-q-label" textAnchor="middle">
+          Trusted Custodians
+        </text>
+        <text x={divX + (PAD_L + plotW - divX) / 2} y={PAD_T + 18} className="ci-map-q-label" textAnchor="middle">
+          Constitutional Leaders
+        </text>
+        <text x={PAD_L + (divX - PAD_L) / 2} y={divY + 18} className="ci-map-q-label" textAnchor="middle">
+          Dependency Platforms
+        </text>
+        <text x={divX + (PAD_L + plotW - divX) / 2} y={divY + 18} className="ci-map-q-label" textAnchor="middle">
+          Sovereignty First
+        </text>
+
+        {/* Organization dots */}
+        {CONSTITUTIONAL_INDEX_ORGANIZATIONS.map((org) => {
+          const cx = toX(org.sovereigntyScore);
+          const cy = toY(org.governanceScore);
+          return (
+            <g key={org.id}>
+              <a href={`/assurance/index/${org.slug}`}>
+                <circle cx={cx} cy={cy} r={9} className={`ci-map-dot ci-map-dot--${org.quadrant}`} />
+                <text
+                  x={cx}
+                  y={cy - 14}
+                  className="ci-map-org-label"
+                  textAnchor="middle"
+                >
+                  {org.name}
+                </text>
+              </a>
+            </g>
+          );
+        })}
+      </svg>
     </div>
   );
 }
 
 const AssurancePage = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const emergingCandidates = CONSTITUTIONAL_INDEX_ORGANIZATIONS.filter(
+    (o) => o.quadrant === 'sovereignty-first',
+  ).sort((a, b) => b.governanceScore + b.sovereigntyScore - (a.governanceScore + a.sovereigntyScore));
 
   return (
     <main className="min-h-screen bg-[#070d0b] text-white font-sans">
@@ -218,15 +230,15 @@ const AssurancePage = () => {
             <LogoRotating size={28} inverted />
             <div className="flex items-baseline gap-2">
               <span className="text-xl font-semibold tracking-tighter">AOC</span>
-              <span className="text-xs text-emerald-400 uppercase tracking-[0.2em]">Assurance</span>
+              <span className="text-xs text-emerald-400 uppercase tracking-[0.2em]">Constitutional Index</span>
             </div>
           </a>
 
           <div className="hidden md:flex items-center gap-9 text-sm font-medium text-white/70">
-            <a href="#matrix" className="hover:text-white transition-colors">Matrix</a>
+            <a href="#map" className="hover:text-white transition-colors">Map</a>
             <a href="#index" className="hover:text-white transition-colors">Index</a>
-            <a href="#assessments" className="hover:text-white transition-colors">Assessments</a>
-            <a href="#why" className="hover:text-white transition-colors">Why it matters</a>
+            <a href="#leaders" className="hover:text-white transition-colors">Leaders</a>
+            <a href="#methodology" className="hover:text-white transition-colors">Methodology</a>
             <a href="/" className="hover:text-white transition-colors">Protocol</a>
           </div>
 
@@ -239,63 +251,35 @@ const AssurancePage = () => {
 
           <button
             type="button"
-            className="relative flex md:hidden h-10 w-10 items-center justify-center rounded-xl border border-white/15 text-white transition-colors hover:border-white/30 hover:bg-white/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400"
+            className="relative flex md:hidden h-10 w-10 items-center justify-center rounded-xl border border-white/15 text-white transition-colors hover:border-white/30 hover:bg-white/5"
             aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={isMobileMenuOpen}
-            aria-controls="assurance-mobile-navigation"
-            onClick={() => setIsMobileMenuOpen((isOpen) => !isOpen)}
+            aria-controls="ci-mobile-nav"
+            onClick={() => setIsMobileMenuOpen((v) => !v)}
           >
-            <span className="sr-only">
-              {isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-            </span>
-            <span
-              className={`absolute h-0.5 w-5 bg-current transition-transform duration-300 ${
-                isMobileMenuOpen ? 'translate-y-0 rotate-45' : '-translate-y-1.5'
-              }`}
-            />
-            <span
-              className={`absolute h-0.5 w-5 bg-current transition-opacity duration-300 ${
-                isMobileMenuOpen ? 'opacity-0' : 'opacity-100'
-              }`}
-            />
-            <span
-              className={`absolute h-0.5 w-5 bg-current transition-transform duration-300 ${
-                isMobileMenuOpen ? 'translate-y-0 -rotate-45' : 'translate-y-1.5'
-              }`}
-            />
+            <span className={`absolute h-0.5 w-5 bg-current transition-transform duration-300 ${isMobileMenuOpen ? 'rotate-45' : '-translate-y-1.5'}`} />
+            <span className={`absolute h-0.5 w-5 bg-current transition-opacity duration-300 ${isMobileMenuOpen ? 'opacity-0' : 'opacity-100'}`} />
+            <span className={`absolute h-0.5 w-5 bg-current transition-transform duration-300 ${isMobileMenuOpen ? '-rotate-45' : 'translate-y-1.5'}`} />
           </button>
         </div>
 
         <div
-          id="assurance-mobile-navigation"
+          id="ci-mobile-nav"
           aria-hidden={!isMobileMenuOpen}
           inert={!isMobileMenuOpen}
-          className={`absolute left-0 right-0 top-full overflow-hidden border-b border-white/10 bg-[#070d0b]/95 backdrop-blur-lg transition-[max-height,opacity] duration-300 ease-out md:hidden ${
-            isMobileMenuOpen
-              ? 'max-h-96 opacity-100'
-              : 'pointer-events-none max-h-0 opacity-0'
-          }`}
+          className={`absolute left-0 right-0 top-full overflow-hidden border-b border-white/10 bg-[#070d0b]/95 backdrop-blur-lg transition-[max-height,opacity] duration-300 ease-out md:hidden ${isMobileMenuOpen ? 'max-h-96 opacity-100' : 'pointer-events-none max-h-0 opacity-0'}`}
         >
-          <div className="max-w-7xl mx-auto px-6 py-5">
-            <div className="flex flex-col gap-1">
-              {MOBILE_NAVIGATION_ITEMS.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className="rounded-xl px-4 py-3 text-sm font-medium text-white/70 transition-colors hover:bg-white/5 hover:text-white"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {item.label}
-                </a>
-              ))}
+          <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col gap-1">
+            {MOBILE_NAVIGATION_ITEMS.map((item) => (
               <a
-                href="/app"
-                className="mt-3 rounded-xl bg-emerald-500 px-6 py-3 text-center text-sm font-semibold text-black transition-colors hover:bg-emerald-400"
+                key={item.label}
+                href={item.href}
+                className="rounded-xl px-4 py-3 text-sm font-medium text-white/70 hover:bg-white/5 hover:text-white"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Launch App
+                {item.label}
               </a>
-            </div>
+            ))}
           </div>
         </div>
       </nav>
@@ -303,167 +287,154 @@ const AssurancePage = () => {
       {/* ── Hero ── */}
       <section className="assurance-hero-glow relative pt-28 pb-32 text-center px-6">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-6">
-          Constitutional Assurance for AI
+          AOC Constitutional Index
         </p>
         <h1 className="text-5xl md:text-7xl font-semibold tracking-[-2.5px] leading-[1.05] max-w-4xl mx-auto mb-8">
-          Measure. Govern. Certify.
+          Constitutional positioning for AI organizations.
         </h1>
         <p className="max-w-2xl mx-auto text-lg md:text-xl text-white/65 leading-relaxed mb-12">
-          Independent constitutional assessments for AI products, agents, and platforms.
-          Measure governance and sovereignty before your regulator does.
+          Independent evaluation of AI organizations across Governance and Sovereignty dimensions.
+          Understanding constitutional position before your regulator asks.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <a
-            href="#assessments"
+            href="#map"
             className="px-10 py-4 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-lg rounded-2xl transition-colors"
           >
-            Request Assessment
+            Explore the Map
           </a>
           <a
-            href="#matrix"
+            href="#assessments"
             className="px-10 py-4 border border-white/15 hover:border-white/30 text-white font-semibold text-lg rounded-2xl transition-colors"
           >
-            Explore the Matrix
+            Request Assessment
           </a>
         </div>
       </section>
 
       <hr className="assurance-divider" />
 
-      {/* ── Constitutional Matrix ── */}
-      <section id="matrix" className="scroll-mt-20 py-28 px-6">
+      {/* ── Constitutional Map ── */}
+      <section id="map" className="scroll-mt-20 py-28 px-6">
         <div className="max-w-7xl mx-auto">
-          <header className="mb-16 max-w-2xl">
+          <header className="mb-12 max-w-2xl">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
-              Constitutional Matrix
+              Constitutional Map
             </p>
             <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-5">
-              Six dimensions of constitutional AI.
+              Where organizations stand.
             </h2>
             <p className="text-white/60 text-lg leading-relaxed">
-              The AOC Constitutional Matrix evaluates AI systems across six sovereign dimensions.
-              Each dimension maps to measurable outcomes and enforceable obligations.
+              Each organization is plotted by its Governance score (Y axis) and Sovereignty score
+              (X axis). Position reflects constitutional reality, not aspiration.
             </p>
           </header>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {MATRIX_DIMENSIONS.map((dim) => (
-              <article
-                key={dim.id}
-                className="assurance-matrix-card rounded-2xl border border-white/10 bg-white/[0.025] p-6"
-              >
-                <div className="flex items-start justify-between mb-2">
-                  <h3 className="text-lg font-semibold">{dim.label}</h3>
-                  <span className="text-sm font-medium text-emerald-400">
-                    {Math.round(dim.score * 100)}
-                  </span>
-                </div>
-                <p className="text-sm text-white/55 leading-relaxed">{dim.description}</p>
-                <ScoreBar score={dim.score} />
-              </article>
+          <ConstitutionalMap />
+
+          <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {[
+              { q: 'Constitutional Leaders', desc: 'High Governance · High Sovereignty', cls: 'ci-legend--q1' },
+              { q: 'Trusted Custodians', desc: 'High Governance · Lower Sovereignty', cls: 'ci-legend--q2' },
+              { q: 'Sovereignty First', desc: 'High Sovereignty · Lower Governance', cls: 'ci-legend--q4' },
+              { q: 'Dependency Platforms', desc: 'Moderate Governance · Low Sovereignty', cls: 'ci-legend--q3' },
+            ].map(({ q, desc, cls }) => (
+              <div key={q} className={`ci-legend-card ${cls}`}>
+                <strong>{q}</strong>
+                <span>{desc}</span>
+              </div>
             ))}
           </div>
 
-          <p className="mt-8 text-xs text-white/30 text-center">
-            Scores shown are illustrative benchmarks from the AOC Constitutional Matrix v1.0.
+          <p className="mt-6 text-xs text-white/30 text-center">
+            Positions derived from public materials. Governance threshold: 55. Sovereignty threshold: 55.
           </p>
         </div>
       </section>
 
       <hr className="assurance-divider" />
 
-      {/* ── Constitutional Index ── */}
+      {/* ── Constitutional Index Table ── */}
       <section id="index" className="scroll-mt-20 py-28 px-6">
         <div className="max-w-7xl mx-auto">
-          <header className="assurance-index-hero">
+          <header className="mb-12 max-w-4xl">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
-              Public Constitutional Index
+              Constitutional Index
             </p>
             <h2 className="text-4xl md:text-6xl font-semibold tracking-tight mb-5">
-              The Public Index for AI Governance and AI Sovereignty
+              The Public Index for AI Governance and Sovereignty
             </h2>
-            <p className="max-w-4xl text-white/60 text-lg leading-relaxed">
-              AOC evaluates AI organizations across governance and sovereignty dimensions, helping
-              founders, enterprises, investors, and buyers better understand accountability,
-              control, dependency, and trust.
+            <p className="text-white/60 text-lg leading-relaxed">
+              AOC evaluates AI organizations across Governance and Sovereignty dimensions, helping
+              founders, enterprises, investors, and buyers understand accountability, control,
+              dependency, and constitutional position.
             </p>
           </header>
 
-          <div className="assurance-index-features">
-            {INDEX_FEATURES.map((feature, index) => (
-              <article className="assurance-index-feature-card" key={feature.title}>
-                <span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
-                <h3>{feature.title}</h3>
-                <p>{feature.description}</p>
-              </article>
-            ))}
-          </div>
-
           <dl className="assurance-index-metrics">
-            {INDEX_METRICS.map((metric) => (
-              <div key={metric.label}>
-                <dt>{metric.label}</dt>
-                <dd>{metric.value}</dd>
-              </div>
-            ))}
+            <div>
+              <dt>Organizations Assessed</dt>
+              <dd>{CONSTITUTIONAL_INDEX_ORGANIZATIONS.length}</dd>
+            </div>
+            <div>
+              <dt>Constitutional Leaders</dt>
+              <dd>{CONSTITUTIONAL_INDEX_ORGANIZATIONS.filter((o) => o.quadrant === 'constitutional-leaders').length}</dd>
+            </div>
+            <div>
+              <dt>Trusted Custodians</dt>
+              <dd>{CONSTITUTIONAL_INDEX_ORGANIZATIONS.filter((o) => o.quadrant === 'trusted-custodians').length}</dd>
+            </div>
+            <div>
+              <dt>Sovereignty First</dt>
+              <dd>{CONSTITUTIONAL_INDEX_ORGANIZATIONS.filter((o) => o.quadrant === 'sovereignty-first').length}</dd>
+            </div>
           </dl>
 
           <div className="assurance-index-shell">
-            <div className="assurance-index-table" role="table" aria-label="AOC Constitutional Index">
-              <div className="assurance-index-header" role="row">
-                <span role="columnheader">Rank</span>
+            <div className="ci-index-table" role="table" aria-label="AOC Constitutional Index">
+              <div className="ci-index-header" role="row">
                 <span role="columnheader">Organization</span>
-                <span role="columnheader">Scores</span>
-                <span role="columnheader">Classification</span>
-                <span className="sr-only" role="columnheader">Public profile</span>
+                <span role="columnheader">Governance</span>
+                <span role="columnheader">Sovereignty</span>
+                <span role="columnheader">Constitutional Position</span>
+                <span className="sr-only" role="columnheader">Profile</span>
               </div>
 
-              {ASSURANCE_INDEX_ORGANIZATIONS.map((organization, index) => (
-                <div className="assurance-index-row" role="row" key={organization.id}>
-                  <div className="assurance-index-rank" role="cell">
-                    <span className="md:hidden">Rank</span>
-                    <strong>{String(index + 1).padStart(2, '0')}</strong>
-                  </div>
+              {CONSTITUTIONAL_INDEX_ORGANIZATIONS.map((org) => (
+                <div className="ci-index-row" role="row" key={org.id}>
                   <div className="assurance-index-organization" role="cell">
                     <span className="assurance-index-monogram" aria-hidden="true">
-                      {organization.name.charAt(0)}
+                      {org.name.charAt(0)}
                     </span>
-                    <strong>{organization.name}</strong>
-                  </div>
-                  <div className="assurance-index-scores" role="cell">
-                    <div className="assurance-index-score assurance-index-score--sovereignty">
-                      <div className="assurance-index-score-copy">
-                        <span>Sovereignty Score</span>
-                        <strong>{organization.sovereigntyScore}</strong>
-                      </div>
-                      <div className="assurance-index-score-track" aria-hidden="true">
-                        <span style={{ width: `${organization.sovereigntyScore}%` }} />
-                      </div>
+                    <div>
+                      <strong className="block">{org.name}</strong>
+                      <span className="text-xs text-white/40 font-normal">{org.constitutionalSummary}</span>
                     </div>
-                    <div className="assurance-index-score assurance-index-score--governance">
-                      <div className="assurance-index-score-copy">
-                        <span>Governance Score</span>
-                        <strong>{organization.governanceScore}</strong>
-                      </div>
-                      <div className="assurance-index-score-track" aria-hidden="true">
-                        <span style={{ width: `${organization.governanceScore}%` }} />
-                      </div>
+                  </div>
+                  <div className="ci-index-score-cell" role="cell">
+                    <strong className="ci-score-number">{org.governanceScore}</strong>
+                    <div className="assurance-index-score-track" aria-hidden="true">
+                      <span style={{ width: `${org.governanceScore}%` }} className="ci-score-track--governance" />
+                    </div>
+                  </div>
+                  <div className="ci-index-score-cell" role="cell">
+                    <strong className="ci-score-number ci-score-number--sovereignty">{org.sovereigntyScore}</strong>
+                    <div className="assurance-index-score-track" aria-hidden="true">
+                      <span style={{ width: `${org.sovereigntyScore}%` }} className="ci-score-track--sovereignty" />
                     </div>
                   </div>
                   <div role="cell">
-                    <span
-                      className={`assurance-index-tier assurance-index-tier--${organization.certificationClass}`}
-                    >
-                      {organization.certification}
+                    <span className={`ci-position-badge ci-position-badge--${org.quadrant}`}>
+                      {org.quadrantLabel}
                     </span>
                   </div>
                   <div className="assurance-index-action" role="cell">
                     <a
-                      href={`/assurance/index/${organization.slug}`}
+                      href={`/assurance/index/${org.slug}`}
                       className="assurance-index-profile-button"
-                      aria-label={`View ${organization.name} public profile`}
+                      aria-label={`View ${org.name} constitutional profile`}
                     >
-                      View Public Profile
+                      View Profile
                     </a>
                   </div>
                 </div>
@@ -489,63 +460,143 @@ const AssurancePage = () => {
           </div>
 
           <p className="mt-6 text-xs text-white/30">
-            Initial rankings reflect publicly available information and are subject to change as
-            new evidence is assessed.
+            Rankings reflect publicly available information and are subject to revision as new evidence is assessed.
           </p>
         </div>
       </section>
 
       <hr className="assurance-divider" />
 
-      {/* ── Why it matters ── */}
-      <section id="why" className="scroll-mt-20 py-28 px-6">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
-          <div>
+      {/* ── Leadership Panels ── */}
+      <section id="leaders" className="scroll-mt-20 py-28 px-6">
+        <div className="max-w-7xl mx-auto">
+          <header className="mb-12 max-w-2xl">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
-              Why it matters
+              Index Leaders
             </p>
-            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-6">
-              Governance is no longer optional.
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-5">
+              Who leads in each dimension.
             </h2>
-            <div className="space-y-5 text-white/65 text-base leading-relaxed">
-              <p>
-                Regulators across the EU, UK, and US are mandating constitutional accountability
-                for AI systems that touch personal data, make consequential decisions, or operate
-                autonomously.
+          </header>
+
+          <div className="grid md:grid-cols-3 gap-6">
+
+            {/* Governance Leaders */}
+            <div className="ci-leader-panel">
+              <p className="ci-leader-panel-title">Governance Leaders</p>
+              <ol className="ci-leader-list">
+                {GOVERNANCE_RANKED.map((org, i) => (
+                  <li key={org.id} className="ci-leader-item">
+                    <span className="ci-leader-rank">{i + 1}</span>
+                    <div className="ci-leader-meta">
+                      <strong>{org.name}</strong>
+                      <span>{org.quadrantLabel}</span>
+                    </div>
+                    <strong className="ci-leader-score">{org.governanceScore}</strong>
+                  </li>
+                ))}
+              </ol>
+            </div>
+
+            {/* Sovereignty Leaders */}
+            <div className="ci-leader-panel">
+              <p className="ci-leader-panel-title">Sovereignty Leaders</p>
+              <ol className="ci-leader-list">
+                {SOVEREIGNTY_RANKED.map((org, i) => (
+                  <li key={org.id} className="ci-leader-item">
+                    <span className="ci-leader-rank">{i + 1}</span>
+                    <div className="ci-leader-meta">
+                      <strong>{org.name}</strong>
+                      <span>{org.quadrantLabel}</span>
+                    </div>
+                    <strong className="ci-leader-score ci-leader-score--sovereignty">{org.sovereigntyScore}</strong>
+                  </li>
+                ))}
+              </ol>
+            </div>
+
+            {/* Emerging Constitutional Leaders */}
+            <div className="ci-leader-panel ci-leader-panel--emerging">
+              <p className="ci-leader-panel-title">Emerging Constitutional Leaders</p>
+              <p className="ci-leader-emerging-note">
+                No organization currently qualifies as a Constitutional Leader.
+                Closest candidates by combined constitutional score:
               </p>
-              <p>
-                AOC Assurance provides the independent constitutional layer your legal, compliance,
-                and product teams need — before a regulator asks for it.
-              </p>
-              <p>
-                Every assessment produces a machine-readable constitutional record aligned with
-                the AOC Protocol's sovereign data infrastructure.
+              <ol className="ci-leader-list mt-4">
+                {emergingCandidates.map((org, i) => (
+                  <li key={org.id} className="ci-leader-item">
+                    <span className="ci-leader-rank">{i + 1}</span>
+                    <div className="ci-leader-meta">
+                      <strong>{org.name}</strong>
+                      <span>Gov {org.governanceScore} · Sov {org.sovereigntyScore}</span>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+              <p className="ci-leader-threshold-note mt-4">
+                Constitutional Leaders require Governance ≥ 70 and Sovereignty ≥ 70.
               </p>
             </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            {[
-              { stat: 'EU AI Act', sub: 'High-risk system obligations now in force' },
-              { stat: 'SOC 2 +', sub: 'Constitutional controls mapped to trust criteria' },
-              { stat: 'ISO 42001', sub: 'AI management system alignment' },
-              { stat: 'NIST AI RMF', sub: 'Govern, Map, Measure, Manage coverage' },
-            ].map(({ stat, sub }) => (
-              <div
-                key={stat}
-                className="rounded-2xl border border-white/10 bg-white/[0.02] p-5"
-              >
-                <p className="text-lg font-semibold text-emerald-400 mb-1">{stat}</p>
-                <p className="text-xs text-white/50 leading-snug">{sub}</p>
-              </div>
-            ))}
           </div>
         </div>
       </section>
 
       <hr className="assurance-divider" />
 
-      {/* ── Assessment tiers ── */}
+      {/* ── Methodology ── */}
+      <section id="methodology" className="scroll-mt-20 py-28 px-6">
+        <div className="max-w-7xl mx-auto">
+          <header className="mb-12 max-w-2xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
+              Methodology
+            </p>
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-5">
+              How Organizations Are Evaluated
+            </h2>
+            <p className="text-white/60 text-lg leading-relaxed">
+              The AOC Constitutional Index evaluates organizations across two independent dimensions.
+              Neither dimension substitutes for the other.
+            </p>
+          </header>
+
+          <div className="grid md:grid-cols-2 gap-6 mb-10">
+            <div className="ci-method-card">
+              <p className="ci-method-card-eyebrow">Governance Dimensions</p>
+              <ul className="ci-method-list">
+                {['Accountability', 'Auditability', 'Human Oversight', 'Risk Controls'].map((d) => (
+                  <li key={d}><span aria-hidden="true">—</span>{d}</li>
+                ))}
+              </ul>
+            </div>
+            <div className="ci-method-card">
+              <p className="ci-method-card-eyebrow">Sovereignty Dimensions</p>
+              <ul className="ci-method-list">
+                {['Ownership', 'Portability', 'Runtime Control', 'Exit Feasibility', 'Authority'].map((d) => (
+                  <li key={d}><span aria-hidden="true">—</span>{d}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div className="ci-method-highlight">
+            <p>
+              <strong>Strong Governance does not guarantee Sovereignty.</strong>
+            </p>
+            <p>
+              <strong>Strong Sovereignty does not guarantee Governance.</strong>
+            </p>
+            <p className="mt-3 text-white/55 text-sm leading-relaxed">
+              Constitutional position is defined by the intersection of both dimensions.
+              An organization may excel in one area while remaining constitutionally incomplete.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <hr className="assurance-divider" />
+
+      {/* ── Assessments ── */}
       <section id="assessments" className="scroll-mt-20 py-28 px-6">
         <div className="max-w-7xl mx-auto">
           <header className="mb-16 max-w-2xl">
@@ -556,65 +607,62 @@ const AssurancePage = () => {
               From discovery to assurance.
             </h2>
             <p className="text-white/60 text-lg leading-relaxed">
-              A clear progression path — from a rapid public assessment through to continuous
-              constitutional monitoring for enterprise AI.
+              A clear progression from rapid public assessment to deep constitutional audit.
             </p>
           </header>
 
-          {/* 2-col top row, 2-col bottom row */}
-          <div className="grid md:grid-cols-2 gap-6">
-            {ASSESSMENT_TIERS.map((tier) => (
+          <div className="grid md:grid-cols-3 gap-6">
+            {ASSESSMENT_OFFERINGS.map((offering) => (
               <article
-                key={tier.tier}
+                key={offering.key}
                 className={`rounded-2xl border p-7 flex flex-col relative ${
-                  tier.featured
+                  offering.featured
                     ? 'border-emerald-500/50 bg-emerald-950/35 shadow-[0_0_40px_rgba(52,211,153,0.08)]'
                     : 'border-white/10 bg-white/[0.02]'
                 }`}
               >
-                {/* Featured ring accent */}
-                {tier.featured && (
+                {offering.featured && (
                   <div className="absolute inset-0 rounded-2xl pointer-events-none ring-1 ring-emerald-500/20" />
                 )}
 
                 <div className="mb-5">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className={`assurance-tier-badge ${tier.badgeClass} text-emerald-300`}>
-                      {tier.label}
+                    <span className="text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-emerald-400">
+                      {offering.label}
                     </span>
-                    {tier.founderBadge && (
-                      <span className="inline-flex items-center gap-1 text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-amber-300 bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded-full">
+                    {offering.popular && (
+                      <span className="inline-flex items-center text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-amber-300 bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded-full">
                         Most Popular
                       </span>
                     )}
-                    {tier.comingSoon && (
-                      <span className="inline-flex items-center gap-1 text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-white/40 bg-white/5 border border-white/10 px-2 py-0.5 rounded-full">
+                    {offering.comingSoon && (
+                      <span className="inline-flex items-center text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-white/40 bg-white/5 border border-white/10 px-2 py-0.5 rounded-full">
                         Coming Soon
                       </span>
                     )}
                   </div>
 
                   <div className="mt-4 flex items-baseline gap-3">
-                    <span className={`text-3xl font-semibold ${tier.featured ? 'text-emerald-300' : 'text-white'}`}>
-                      {tier.price}
+                    <span className={`text-3xl font-semibold ${offering.featured ? 'text-emerald-300' : 'text-white'}`}>
+                      {offering.price}
                     </span>
-                    {tier.priceNote && (
-                      <span className="text-xs text-white/35 line-through">{tier.priceNote}</span>
+                    {offering.priceNote && (
+                      <span className="text-xs text-white/35 line-through">{offering.priceNote}</span>
                     )}
                   </div>
 
-                  {tier.founderBadge && (
+                  {offering.popular && (
                     <p className="mt-1 text-xs text-amber-300/70 font-medium">
                       Founder Pricing — Limited to the first 25 organizations
                     </p>
                   )}
 
-                  <h3 className="mt-3 text-xl font-semibold">{tier.headline}</h3>
-                  <p className="mt-2 text-sm text-white/55 leading-relaxed">{tier.description}</p>
+                  <h3 className="mt-3 text-xl font-semibold">{offering.headline}</h3>
+                  <p className="mt-2 text-sm text-white/55 leading-relaxed">{offering.description}</p>
                 </div>
 
                 <ul className="flex-1 space-y-2 mb-8">
-                  {tier.items.map((item) => (
+                  {offering.items.map((item) => (
                     <li key={item} className="flex items-start gap-2 text-sm text-white/70">
                       <span className="text-emerald-400 mt-0.5 shrink-0">✓</span>
                       {item}
@@ -623,46 +671,19 @@ const AssurancePage = () => {
                 </ul>
 
                 <a
-                  href={tier.ctaHref}
+                  href={offering.ctaHref}
                   target="_blank"
                   rel="noreferrer"
                   className={`text-center py-3 rounded-xl text-sm font-semibold transition-colors ${
-                    tier.featured
+                    offering.featured
                       ? 'bg-emerald-500 hover:bg-emerald-400 text-black'
                       : 'border border-white/15 hover:border-white/30 text-white'
                   }`}
                 >
-                  {tier.cta}
+                  {offering.cta}
                 </a>
               </article>
             ))}
-          </div>
-
-          {/* ── Delivery commitment banner ── */}
-          <p className="mt-8 text-center text-xs text-white/35 tracking-wide">
-            Assessments delivered within 72 hours to 5 business days depending on tier.
-          </p>
-
-          {/* ── Trust section ── */}
-          <div className="mt-14 rounded-2xl border border-white/8 bg-white/[0.015] px-8 py-7">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/40 mb-5 text-center">
-              Every assessment includes
-            </p>
-            <ul className="flex flex-wrap justify-center gap-x-10 gap-y-3">
-              {[
-                'Constitutional Matrix Evaluation',
-                'Governance Analysis',
-                'Sovereignty Analysis',
-                'Independent Findings',
-                'Actionable Recommendations',
-                'Executive Report',
-              ].map((item) => (
-                <li key={item} className="flex items-center gap-2 text-sm text-white/55">
-                  <span className="text-emerald-400 text-xs">✓</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
           </div>
         </div>
       </section>
@@ -675,11 +696,10 @@ const AssurancePage = () => {
           Get started
         </p>
         <h2 className="text-5xl md:text-6xl font-semibold tracking-tight mb-6 max-w-3xl mx-auto">
-          Constitutional AI starts with an honest assessment.
+          Know your constitutional position.
         </h2>
         <p className="text-white/55 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
-          Reach out to begin your constitutional assurance programme.
-          First response within one business day.
+          Reach out to begin your constitutional assessment. First response within one business day.
         </p>
         <a
           href="#assessments"
