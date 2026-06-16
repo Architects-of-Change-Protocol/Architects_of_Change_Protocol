@@ -187,7 +187,8 @@
     "check:ratification-release": "node scripts/check-ratification-release.mjs",
     "check:ratification-lifecycle": "node scripts/check-ratification-lifecycle.mjs",
     "check:ratification-amendment-lock": "node scripts/check-ratification-amendment-lock.mjs",
-    "check:ratification-governance": "node scripts/check-ratification-governance.mjs"
+    "check:ratification-governance": "node scripts/check-ratification-governance.mjs",
+    "check:governance": "npm run check:governance-authorities && npm run check:governance-proposals && npm run check:governance-motions && npm run check:governance-mandates && npm run check:governance-outcomes && npm run check:governance-lifecycle && npm run check:governance-challenges && npm run check:governance-expiration && npm run check:governance-revocation && npm run check:governance-governance"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
