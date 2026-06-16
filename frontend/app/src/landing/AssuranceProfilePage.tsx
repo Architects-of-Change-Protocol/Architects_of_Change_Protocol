@@ -1,7 +1,7 @@
 import { LogoRotating } from '../components/logo/LogoRotating';
 import {
-  ASSURANCE_INDEX_ORGANIZATIONS,
-  type AssuranceIndexOrganization,
+  CONSTITUTIONAL_INDEX_ORGANIZATIONS,
+  type ConstitutionalIndexOrganization,
 } from './assuranceIndexData';
 import './assurance.css';
 
@@ -19,31 +19,30 @@ function formatAssessmentDate(date: string) {
 function ScoreCard({
   label,
   score,
-  tone = 'sovereignty',
+  variant,
 }: {
   label: string;
   score: number;
-  tone?: 'sovereignty' | 'governance';
+  variant: 'governance' | 'sovereignty';
 }) {
   return (
-    <article className={`assurance-profile-score-card assurance-profile-score-card--${tone}`}>
+    <article className={`assurance-profile-score-card assurance-profile-score-card--${variant}`}>
       <p>{label}</p>
       <div className="assurance-profile-score-value">
         <strong>{score}</strong>
         <span>/ 100</span>
       </div>
       <div className="assurance-index-score-track" aria-hidden="true">
-        <span style={{ width: `${score}%` }} />
+        <span
+          className={`ci-score-track--${variant}`}
+          style={{ width: `${score}%` }}
+        />
       </div>
     </article>
   );
 }
 
-function ProfileContent({
-  organization,
-}: {
-  organization: AssuranceIndexOrganization;
-}) {
+function ProfileContent({ organization }: { organization: ConstitutionalIndexOrganization }) {
   return (
     <>
       <header className="assurance-profile-header">
@@ -54,12 +53,18 @@ function ProfileContent({
           <p className="assurance-profile-eyebrow">Public Constitutional Profile</p>
           <h1>{organization.name}</h1>
         </div>
-        <span
-          className={`assurance-index-tier assurance-index-tier--${organization.certificationClass}`}
-        >
-          {organization.certification} Certification
+        <span className={`ci-position-badge ci-position-badge--${organization.quadrant}`}>
+          {organization.quadrantLabel}
         </span>
         <dl className="assurance-profile-meta">
+          <div>
+            <dt>Website</dt>
+            <dd>
+              <a href={organization.website} target="_blank" rel="noreferrer" className="hover:text-emerald-400 transition-colors">
+                {organization.website.replace(/^https?:\/\//, '')}
+              </a>
+            </dd>
+          </div>
           <div>
             <dt>Assessment Number</dt>
             <dd>{organization.assessmentNumber}</dd>
@@ -72,15 +77,17 @@ function ProfileContent({
       </header>
 
       <section className="assurance-profile-scores" aria-label="Public assessment scores">
-        <ScoreCard label="Sovereignty Score" score={organization.sovereigntyScore} />
-        <ScoreCard
-          label="Governance Score"
-          score={organization.governanceScore}
-          tone="governance"
-        />
+        <ScoreCard label="Governance Score" score={organization.governanceScore} variant="governance" />
+        <ScoreCard label="Sovereignty Score" score={organization.sovereigntyScore} variant="sovereignty" />
       </section>
 
       <section className="assurance-profile-section">
+        <p className="assurance-profile-section-label">Constitutional Position</p>
+        <h2>{organization.quadrantLabel}</h2>
+        <p className="assurance-profile-summary">{organization.constitutionalSummary}</p>
+      </section>
+
+      <section className="assurance-profile-section mt-4">
         <p className="assurance-profile-section-label">Executive Summary</p>
         <h2>Constitutional posture at a glance</h2>
         <p className="assurance-profile-summary">{organization.summary}</p>
@@ -115,50 +122,13 @@ function ProfileContent({
         </section>
       </div>
 
-      <section className="assurance-profile-section assurance-profile-audit-section">
-        <p className="assurance-profile-section-label assurance-profile-section-label--governance">
-          Governance Audit Details
-        </p>
-        <h2>Qualitative governance assessment</h2>
-        <div className="assurance-profile-audit-grid">
-          {organization.governanceAudit.map((audit) => (
-            <article className="assurance-profile-audit-card" key={audit.title}>
-              <div className="assurance-profile-audit-card-header">
-                <h3>{audit.title}</h3>
-                <span>{audit.status}</span>
-              </div>
-              <dl>
-                <div>
-                  <dt>Finding</dt>
-                  <dd>{audit.finding}</dd>
-                </div>
-                <div>
-                  <dt>Risk</dt>
-                  <dd>{audit.risk}</dd>
-                </div>
-                {audit.evidence ? (
-                  <div>
-                    <dt>Evidence Observed</dt>
-                    <dd>{audit.evidence}</dd>
-                  </div>
-                ) : null}
-                <div>
-                  <dt>Recommendation</dt>
-                  <dd>{audit.recommendation}</dd>
-                </div>
-              </dl>
-            </article>
-          ))}
-        </div>
-      </section>
-
       <section className="assurance-profile-cta">
         <div>
           <p className="assurance-profile-section-label">Complete Assessment</p>
           <h2>Represent this organization?</h2>
           <p>
             Unlock the complete AOC Constitutional Assessment including findings, evidence review,
-            domain analysis, and recommendations.
+            domain analysis, and constitutional recommendations.
           </p>
         </div>
         <div className="assurance-profile-cta-actions">
@@ -168,7 +138,7 @@ function ProfileContent({
             target="_blank"
             rel="noreferrer"
           >
-            {organization.fullAssessmentCtaLabel}
+            Unlock Full Assessment
           </a>
           <a className="assurance-profile-secondary-cta" href={ENTERPRISE_URL}>
             Explore AOC Enterprise
@@ -180,7 +150,7 @@ function ProfileContent({
 }
 
 export function AssuranceProfilePage({ slug }: { slug: string }) {
-  const organization = ASSURANCE_INDEX_ORGANIZATIONS.find((entry) => entry.slug === slug);
+  const organization = CONSTITUTIONAL_INDEX_ORGANIZATIONS.find((entry) => entry.slug === slug);
 
   return (
     <main className="min-h-screen bg-[#070d0b] text-white font-sans">
@@ -190,7 +160,7 @@ export function AssuranceProfilePage({ slug }: { slug: string }) {
             <LogoRotating size={28} inverted />
             <div className="flex items-baseline gap-2">
               <span className="text-xl font-semibold tracking-tighter">AOC</span>
-              <span className="text-xs text-emerald-400 uppercase tracking-[0.2em]">Assurance</span>
+              <span className="text-xs text-emerald-400 uppercase tracking-[0.2em]">Constitutional Index</span>
             </div>
           </a>
           <a className="assurance-profile-nav-link" href="/?view=assurance#index">
