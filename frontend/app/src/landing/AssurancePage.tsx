@@ -95,13 +95,6 @@ const ASSESSMENT_OFFERINGS = [
   },
 ];
 
-const QUADRANT_LABELS = [
-  { id: 'constitutional-leaders', label: 'Constitutional\nLeaders', x: '72%', y: '12%' },
-  { id: 'trusted-custodians', label: 'Trusted\nCustodians', x: '22%', y: '12%' },
-  { id: 'sovereignty-first', label: 'Sovereignty\nFirst', x: '72%', y: '62%' },
-  { id: 'dependency-platforms', label: 'Dependency\nPlatforms', x: '22%', y: '62%' },
-];
-
 function ConstitutionalMap() {
   const W = 600;
   const H = 440;
