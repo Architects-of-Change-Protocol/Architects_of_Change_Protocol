@@ -9,7 +9,7 @@ import {
 import './assurance.css';
 
 const MOBILE_NAVIGATION_ITEMS = [
-  { label: 'Map', href: '#map' },
+  { label: 'Matrix', href: '#map' },
   { label: 'Index', href: '#index' },
   { label: 'Leaders', href: '#leaders' },
   { label: 'Methodology', href: '#methodology' },
