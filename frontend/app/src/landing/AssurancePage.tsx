@@ -21,6 +21,95 @@ const FOUNDER_PROGRAM_CHECKOUT_URL = 'https://buy.stripe.com/3cI7sL88D5xLbs76lAe
 const ENTERPRISE_INTAKE_FORM_URL = 'https://tally.so/r/2ER1M9';
 const FOUNDER_ESSAY_URL = 'https://www.linkedin.com/pulse/i-started-looking-sovereignty-found-constitutional-valverde-checa-hnpye/';
 
+
+const FOOTER_LINK_GROUPS = [
+  {
+    title: 'Assessments',
+    links: [
+      { label: 'Public Constitutional Assessment', href: '#assessments' },
+      { label: 'Founder Constitutional Assessment', href: '#assessments' },
+      { label: 'Enterprise Constitutional Assessment', href: '#assessments' },
+      { label: 'Constitutional Index', href: '#index' },
+    ],
+  },
+  {
+    title: 'Research',
+    links: [
+      { label: 'Constitutional Matrix', href: '#map' },
+      { label: 'Constitutional Index Methodology', href: '/assurance/methodology' },
+      { label: 'Founder Essay', href: FOUNDER_ESSAY_URL, external: true },
+      { label: 'Public Research Initiative', href: '/assurance/research' },
+    ],
+  },
+  {
+    title: 'Company',
+    links: [
+      { label: 'About AOC Assurance', href: '/assurance/about' },
+      { label: 'About AOC Protocol', href: '/' },
+      { label: 'Privacy Policy', href: '/assurance/privacy' },
+      { label: 'Terms of Service', href: '/assurance/terms' },
+    ],
+  },
+  {
+    title: 'Connect',
+    links: [
+      { label: 'LinkedIn', href: 'https://www.linkedin.com/company/architects-of-change-protocol/', external: true },
+      { label: 'X (@archofchange)', href: 'https://x.com/archofchange', external: true },
+      { label: 'GitHub', href: 'https://github.com/Architects-of-Change-Protocol/Architects_of_Change_Protocol', external: true },
+      { label: 'Contact Us', href: 'mailto:vicvalch@onchainfest.xyz' },
+    ],
+  },
+];
+
+function PublicResearchBridge() {
+  return (
+    <section className="assurance-research-bridge px-6 py-16" aria-labelledby="research-bridge-heading">
+      <div className="max-w-7xl mx-auto assurance-research-bridge-card">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">PUBLIC RESEARCH INITIATIVE</p>
+          <h2 id="research-bridge-heading">Mapping the constitutional posture of the AI industry.</h2>
+          <p>AOC Assurance continuously evaluates AI organizations using publicly observable evidence to better understand the evolving relationship between Governance and Sovereignty across the industry.</p>
+        </div>
+        <a href="/assurance/research" className="assurance-research-bridge-link">Explore the Research Initiative</a>
+      </div>
+    </section>
+  );
+}
+
+function AssuranceFooter() {
+  return (
+    <footer className="assurance-footer px-6" aria-labelledby="assurance-footer-title">
+      <div className="max-w-7xl mx-auto assurance-footer-inner">
+        <div className="assurance-footer-brand">
+          <h2 id="assurance-footer-title">AOC Assurance</h2>
+          <p>A constitutional assessment framework developed by AOC Protocol.</p>
+          <p className="assurance-footer-tagline">Measure Governance.<br />Measure Sovereignty.<br />Understand the Balance.</p>
+          <p className="assurance-footer-institutional">AOC Assurance and AOC Protocol are initiatives of OnchainFest LLC.</p>
+        </div>
+        <nav className="assurance-footer-links" aria-label="AOC Assurance footer navigation">
+          {FOOTER_LINK_GROUPS.map((group) => (
+            <section key={group.title} aria-labelledby={`footer-${group.title.toLowerCase()}`}>
+              <h3 id={`footer-${group.title.toLowerCase()}`}>{group.title}</h3>
+              <ul>
+                {group.links.map((link) => (
+                  <li key={link.label}>
+                    <a href={link.href} target={link.external ? '_blank' : undefined} rel={link.external ? 'noopener noreferrer' : undefined}>{link.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </nav>
+        <div className="assurance-footer-legal">
+          <p>© 2026 OnchainFest LLC. All rights reserved.</p>
+          <p>AOC Assurance does not certify organizations as safe, secure, compliant, trustworthy, or risk-free.</p>
+          <p>The Constitutional Index is an evidence-based assessment framework designed to evaluate governance and sovereignty characteristics using publicly observable and/or supplied evidence. Constitutional scores represent analytical assessments and should not be interpreted as guarantees, certifications, or endorsements.</p>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
 const ASSESSMENT_OFFERINGS = [
   {
     key: 'foundation',
@@ -773,6 +862,9 @@ const AssurancePage = () => {
           Request Assessment
         </a>
       </section>
+
+      <PublicResearchBridge />
+      <AssuranceFooter />
 
     </main>
   );
