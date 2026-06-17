@@ -308,7 +308,7 @@ const AssurancePage = () => {
             href="#map"
             className="px-10 py-4 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-lg rounded-2xl transition-colors"
           >
-            Explore the Map
+            Explore the Matrix
           </a>
           <a
             href="#assessments"
@@ -326,7 +326,7 @@ const AssurancePage = () => {
         <div className="max-w-7xl mx-auto">
           <header className="mb-12 max-w-2xl">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
-              Constitutional Map
+              Constitutional Matrix
             </p>
             <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-5">
               Where organizations stand.
