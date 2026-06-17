@@ -19,6 +19,7 @@ const MOBILE_NAVIGATION_ITEMS = [
 const FOUNDATION_CHECKOUT_URL = 'https://buy.stripe.com/aFa5kD1Kfgcp67N11gejK01';
 const FOUNDER_PROGRAM_CHECKOUT_URL = 'https://buy.stripe.com/3cI7sL88D5xLbs76lAejK00';
 const ENTERPRISE_INTAKE_FORM_URL = 'https://tally.so/r/2ER1M9';
+const FOUNDER_ESSAY_URL = 'https://www.linkedin.com/pulse/i-started-looking-sovereignty-found-constitutional-valverde-checa-hnpye/';
 
 const ASSESSMENT_OFFERINGS = [
   {
@@ -596,6 +597,64 @@ const AssurancePage = () => {
               Constitutional position is defined by the intersection of both dimensions.
               An organization may excel in one area while remaining constitutionally incomplete.
             </p>
+          </div>
+        </div>
+      </section>
+
+      <hr className="assurance-divider" />
+
+      {/* ── Founder Essay ── */}
+      <section id="founder-essay" className="assurance-editorial-section scroll-mt-20 py-28 px-6" aria-labelledby="founder-essay-heading">
+        <div className="max-w-7xl mx-auto">
+          <div className="assurance-editorial-grid">
+            <div className="assurance-editorial-copy">
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
+                Why Governance Alone Is Not Enough
+              </p>
+              <h2 id="founder-essay-heading" className="text-4xl md:text-6xl font-semibold tracking-tight mb-6">
+                AI trust cannot be understood through governance alone.
+              </h2>
+              <div className="assurance-editorial-body">
+                <p>
+                  The AOC Constitutional Index was born from a simple realization: AI trust cannot be
+                  fully understood through governance alone.
+                </p>
+                <p>
+                  Governance shows how an AI system is supervised, controlled, and made accountable.
+                </p>
+                <p>
+                  Sovereignty shows who truly controls the capability, who can move it, replace it,
+                  operate it, and preserve independence over time.
+                </p>
+                <p>When one exists without the other, organizations become exposed.</p>
+              </div>
+              <div className="assurance-editorial-emphasis" aria-label="Governance and sovereignty balance principles">
+                <p>Governance without sovereignty creates dependency.</p>
+                <p>Sovereignty without governance creates chaos.</p>
+                <p>Trust emerges when both exist in balance.</p>
+              </div>
+            </div>
+
+            <aside className="assurance-founder-essay-card" aria-labelledby="founder-essay-card-title">
+              <p className="assurance-founder-essay-card-kicker">Founder Essay</p>
+              <h3 id="founder-essay-card-title">
+                I Started Looking for Sovereignty. I Found a Constitutional Problem.
+              </h3>
+              <p>
+                A founder essay on the origin of the AOC Constitutional Index and why the AI industry
+                may be measuring only half of the constitutional equation.
+              </p>
+              <a
+                href={FOUNDER_ESSAY_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="assurance-founder-essay-link"
+                aria-label="Read the founder essay on LinkedIn in a new tab"
+              >
+                Read the Founder Essay
+                <span aria-hidden="true">↗</span>
+              </a>
+            </aside>
           </div>
         </div>
       </section>
