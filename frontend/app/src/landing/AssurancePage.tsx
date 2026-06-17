@@ -331,7 +331,7 @@ const AssurancePage = () => {
           </a>
 
           <div className="hidden md:flex items-center gap-9 text-sm font-medium text-white/70">
-            <a href="#map" className="hover:text-white transition-colors">Map</a>
+            <a href="#map" className="hover:text-white transition-colors">Matrix</a>
             <a href="#index" className="hover:text-white transition-colors">Index</a>
             <a href="#leaders" className="hover:text-white transition-colors">Leaders</a>
             <a href="#methodology" className="hover:text-white transition-colors">Methodology</a>
