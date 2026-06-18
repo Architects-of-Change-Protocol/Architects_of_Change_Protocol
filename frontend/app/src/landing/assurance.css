@@ -92,8 +92,9 @@
 
 .ci-map-dot:hover { r: 12; }
 
-.ci-map-dot--trusted-custodians    { fill: #818cf8; }
+.ci-map-dot--trusted-custodians     { fill: #818cf8; }
 .ci-map-dot--constitutional-leaders { fill: #34d399; }
+.ci-map-dot--sovereignty-pioneers,
 .ci-map-dot--sovereignty-first      { fill: #38bdf8; }
 .ci-map-dot--dependency-platforms   { fill: #fb923c; }
 
@@ -287,6 +288,7 @@
   color: #fdba74;
 }
 
+.ci-position-badge--sovereignty-pioneers,
 .ci-position-badge--sovereignty-first {
   border-color: rgba(56, 189, 248, 0.25);
   background: rgba(56, 189, 248, 0.07);
@@ -962,3 +964,511 @@
 .assurance-research-card:hover, .assurance-research-card:focus-visible { border-color: rgba(110, 231, 183, 0.5); }
 @media (max-width: 900px) { .assurance-footer-inner { grid-template-columns: 1fr; } .assurance-research-bridge-card { display: grid; } .assurance-footer-links { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 640px) { .assurance-footer-links, .assurance-research-grid { grid-template-columns: 1fr; } .assurance-support-nav { width: min(100% - 2rem, 72rem); align-items: flex-start; flex-direction: column; gap: 1rem; } .assurance-support-shell { width: min(100% - 2rem, 72rem); } .assurance-research-bridge-link, .assurance-support-primary, .assurance-support-secondary { width: 100%; white-space: normal; text-align: center; } }
+
+/* ── Constitutional Benchmark Explorer ── */
+
+/* Benchmark summary bar */
+.cbe-summary-bar {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.cbe-summary-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.875rem 1.25rem;
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.cbe-summary-label {
+  color: rgba(255, 255, 255, 0.38);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cbe-summary-value {
+  color: #fff;
+  font-size: 1.375rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.cbe-summary-value--gov   { color: #6ee7b7; }
+.cbe-summary-value--sov   { color: #38bdf8; }
+.cbe-summary-value--quadrant { font-size: 0.9rem; }
+
+/* Controls */
+.cbe-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: 1.5rem;
+}
+
+.cbe-search-input {
+  flex: 1;
+  min-width: 10rem;
+  height: 2.5rem;
+  padding: 0 0.875rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  font-size: 0.875rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.cbe-search-input::placeholder { color: rgba(255, 255, 255, 0.3); }
+.cbe-search-input:focus { border-color: rgba(52, 211, 153, 0.45); }
+
+.cbe-select-wrap { position: relative; }
+
+.cbe-filter-select {
+  height: 2.5rem;
+  padding: 0 2rem 0 0.875rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.04);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='rgba(255,255,255,0.4)' d='M5 6L0 0h10L5 6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 10px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.875rem;
+  font-family: inherit;
+  appearance: none;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.cbe-filter-select:focus { border-color: rgba(52, 211, 153, 0.45); }
+
+.cbe-view-toggle {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.875rem;
+  background: rgba(255, 255, 255, 0.025);
+  margin-left: auto;
+}
+
+.cbe-view-btn {
+  padding: 0.375rem 0.875rem;
+  border-radius: 0.625rem;
+  border: none;
+  background: none;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.cbe-view-btn:hover { color: rgba(255, 255, 255, 0.8); }
+
+.cbe-view-btn--active {
+  background: rgba(52, 211, 153, 0.12);
+  color: #6ee7b7;
+}
+
+/* Tooltip */
+.cbe-tooltip {
+  min-width: 14rem;
+  max-width: 18rem;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1rem;
+  background: #0b1a14;
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(52, 211, 153, 0.07);
+}
+
+.cbe-tooltip-name {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.25rem;
+}
+
+.cbe-tooltip-type {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.38);
+  margin-bottom: 0.625rem;
+}
+
+.cbe-tooltip-scores {
+  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 0.625rem;
+}
+
+.cbe-tooltip-score {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.cbe-tooltip-score-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.cbe-tooltip-score-value {
+  font-size: 1.375rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.cbe-tooltip-score-value--gov { color: #6ee7b7; }
+.cbe-tooltip-score-value--sov { color: #38bdf8; }
+
+.cbe-tooltip-badge { margin: 0.5rem 0; }
+
+.cbe-tooltip-industries {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin: 0.5rem 0;
+}
+
+.cbe-tooltip-industry-tag {
+  padding: 0.125rem 0.375rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.03em;
+}
+
+.cbe-tooltip-summary {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.55;
+  margin: 0.5rem 0 0.375rem;
+}
+
+.cbe-tooltip-link {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6ee7b7;
+  margin-top: 0.375rem;
+}
+
+.cbe-tooltip-coming-soon {
+  display: block;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.3);
+  margin-top: 0.375rem;
+}
+
+/* Industry tags (shared) */
+.cbe-industry-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.cbe-industry-tag {
+  padding: 0.125rem 0.375rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.42);
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+}
+
+/* Assessment labels */
+.cbe-assessment-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.22);
+}
+
+.cbe-assessment-label--soon { color: rgba(255, 255, 255, 0.38); }
+
+/* Ranking view */
+.cbe-ranking-shell {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.cbe-ranking-row-cols {
+  display: grid;
+  grid-template-columns: 2.2fr 1.4fr 0.9fr 0.9fr 1.3fr auto;
+  gap: 1.25rem;
+  align-items: center;
+}
+
+.cbe-ranking-header {
+  padding: 0.875rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cbe-col-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.cbe-sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  border: none;
+  background: none;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  font-family: inherit;
+  padding: 0;
+  transition: color 0.15s ease;
+}
+
+.cbe-sort-btn:hover { color: rgba(255, 255, 255, 0.7); }
+.cbe-sort-btn--active { color: #6ee7b7; }
+
+.cbe-ranking-row {
+  min-height: 4.5rem;
+  padding: 0.875rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background-color 0.2s ease;
+}
+
+.cbe-ranking-row:last-child { border-bottom: 0; }
+.cbe-ranking-row:hover { background: rgba(52, 211, 153, 0.028); }
+
+/* Comparison view */
+.cbe-comparison-insight {
+  margin-bottom: 1.25rem;
+  padding: 0.875rem 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.875rem;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.cbe-comparison-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.cbe-comparison-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: none;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+}
+
+.cbe-comparison-chip:hover {
+  border-color: rgba(52, 211, 153, 0.3);
+  color: #fff;
+}
+
+.cbe-comparison-chip--selected {
+  border-color: rgba(52, 211, 153, 0.4);
+  background: rgba(52, 211, 153, 0.08);
+  color: #6ee7b7;
+}
+
+.cbe-comparison-chip--disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.cbe-comparison-chip--clear {
+  color: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.cbe-comparison-chip--clear:hover {
+  color: rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.2);
+  background: none;
+}
+
+.cbe-comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.cbe-comparison-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+  padding: 1.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1.25rem;
+  background:
+    linear-gradient(145deg, rgba(52, 211, 153, 0.04), transparent 50%),
+    rgba(255, 255, 255, 0.018);
+}
+
+.cbe-comparison-card-name {
+  margin-top: 0.625rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.cbe-comparison-org-type {
+  margin-top: 0.25rem;
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.cbe-comparison-scores {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.cbe-comparison-score {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.cbe-comparison-score-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.cbe-comparison-score-value {
+  font-size: 2rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.cbe-comparison-score-value--gov { color: #6ee7b7; }
+.cbe-comparison-score-value--sov { color: #38bdf8; }
+
+.cbe-comparison-industries {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.cbe-comparison-summary {
+  flex: 1;
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.52);
+  line-height: 1.65;
+}
+
+.cbe-comparison-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #6ee7b7;
+  margin-top: auto;
+  transition: color 0.15s ease;
+}
+
+.cbe-comparison-link:hover { color: #a7f3d0; }
+
+/* Empty state */
+.cbe-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 16rem;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 1.25rem;
+  font-size: 0.9375rem;
+  color: rgba(255, 255, 255, 0.28);
+}
+
+/* Explorer responsive */
+@media (max-width: 767px) {
+  .cbe-summary-bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cbe-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cbe-view-toggle {
+    margin-left: 0;
+    justify-content: center;
+  }
+
+  .cbe-ranking-header { display: none; }
+
+  .cbe-ranking-row.cbe-ranking-row-cols {
+    grid-template-columns: 1fr auto;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    min-height: auto;
+  }
+
+  .cbe-ranking-row .assurance-index-organization { grid-column: 1; }
+  .cbe-ranking-row .cbe-industry-tags            { grid-column: 1 / -1; }
+  .cbe-ranking-row .ci-index-score-cell          { grid-column: 1; }
+  .cbe-ranking-row .assurance-index-action       { grid-column: 1 / -1; }
+
+  .cbe-comparison-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .cbe-summary-bar {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .cbe-summary-value--quadrant {
+    font-size: 0.8rem;
+  }
+}

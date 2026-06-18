@@ -6,6 +6,7 @@ import {
   GOVERNANCE_RANKED,
   SOVEREIGNTY_RANKED,
 } from './assuranceIndexData';
+import { ConstitutionalBenchmarkExplorer } from './components/ConstitutionalBenchmarkExplorer';
 import './assurance.css';
 
 const MOBILE_NAVIGATION_ITEMS = [
@@ -183,137 +184,12 @@ const ASSESSMENT_OFFERINGS = [
   },
 ];
 
-function ConstitutionalMap() {
-  const W = 600;
-  const H = 440;
-  const PAD_L = 52;
-  const PAD_R = 20;
-  const PAD_T = 20;
-  const PAD_B = 44;
-  const plotW = W - PAD_L - PAD_R;
-  const plotH = H - PAD_T - PAD_B;
-
-  const toX = (sov: number) => PAD_L + (sov / 100) * plotW;
-  const toY = (gov: number) => PAD_T + ((100 - gov) / 100) * plotH;
-
-  const divX = toX(55);
-  const divY = toY(55);
-
-  const ticks = [0, 20, 40, 60, 80, 100];
-
-  return (
-    <div className="ci-map-shell">
-      <svg
-        viewBox={`0 0 ${W} ${H}`}
-        className="ci-map-svg"
-        role="img"
-        aria-label="Constitutional Index Map — Governance vs Sovereignty"
-      >
-        {/* Quadrant fills */}
-        <rect x={PAD_L} y={PAD_T} width={divX - PAD_L} height={divY - PAD_T} className="ci-map-q2" />
-        <rect x={divX} y={PAD_T} width={PAD_L + plotW - divX} height={divY - PAD_T} className="ci-map-q1" />
-        <rect x={PAD_L} y={divY} width={divX - PAD_L} height={PAD_T + plotH - divY} className="ci-map-q3" />
-        <rect x={divX} y={divY} width={PAD_L + plotW - divX} height={PAD_T + plotH - divY} className="ci-map-q4" />
-
-        {/* Grid lines */}
-        {ticks.map((t) => (
-          <g key={t}>
-            <line x1={toX(t)} y1={PAD_T} x2={toX(t)} y2={PAD_T + plotH} className="ci-map-grid" />
-            <line x1={PAD_L} y1={toY(t)} x2={PAD_L + plotW} y2={toY(t)} className="ci-map-grid" />
-          </g>
-        ))}
-
-        {/* Quadrant dividers */}
-        <line x1={divX} y1={PAD_T} x2={divX} y2={PAD_T + plotH} className="ci-map-divider" />
-        <line x1={PAD_L} y1={divY} x2={PAD_L + plotW} y2={divY} className="ci-map-divider" />
-
-        {/* Axis tick labels */}
-        {ticks.map((t) => (
-          <g key={`tick-${t}`}>
-            <text x={toX(t)} y={PAD_T + plotH + 18} className="ci-map-tick" textAnchor="middle">
-              {t}
-            </text>
-            {t > 0 && (
-              <text x={PAD_L - 8} y={toY(t) + 4} className="ci-map-tick" textAnchor="end">
-                {t}
-              </text>
-            )}
-          </g>
-        ))}
-
-        {/* Axis labels */}
-        <text x={PAD_L + plotW / 2} y={H - 2} className="ci-map-axis-label" textAnchor="middle">
-          Sovereignty
-        </text>
-        <text
-          x={14}
-          y={PAD_T + plotH / 2}
-          className="ci-map-axis-label"
-          textAnchor="middle"
-          transform={`rotate(-90, 14, ${PAD_T + plotH / 2})`}
-        >
-          Governance
-        </text>
-
-        {/* Quadrant labels */}
-        <text x={PAD_L + (divX - PAD_L) / 2} y={PAD_T + 18} className="ci-map-q-label" textAnchor="middle">
-          Trusted Custodians
-        </text>
-        <text x={divX + (PAD_L + plotW - divX) / 2} y={PAD_T + 18} className="ci-map-q-label" textAnchor="middle">
-          Constitutional Leaders
-        </text>
-        <text x={PAD_L + (divX - PAD_L) / 2} y={divY + 18} className="ci-map-q-label" textAnchor="middle">
-          Dependency Platforms
-        </text>
-        <text x={divX + (PAD_L + plotW - divX) / 2} y={divY + 18} className="ci-map-q-label" textAnchor="middle">
-          Sovereignty First
-        </text>
-
-        {/* Organization dots */}
-        {CONSTITUTIONAL_INDEX_ORGANIZATIONS.map((org) => {
-          const cx = toX(org.sovereigntyScore);
-          const cy = toY(org.governanceScore);
-
-          // Per-company label offsets to avoid overlap and clipping
-          const labelOffsets: Record<string, { dx: number; dy: number; anchor: 'middle' | 'start' | 'end' }> = {
-            anthropic:   { dx:   0, dy: -16, anchor: 'middle' },
-            writer:      { dx: -12, dy: -16, anchor: 'end'    },
-            harvey:      { dx:  12, dy: -16, anchor: 'start'  },
-            ollama:      { dx:   0, dy: -16, anchor: 'middle' },
-            anythingllm: { dx: -12, dy: -16, anchor: 'end'    },
-          };
-          const off = labelOffsets[org.id] ?? { dx: 0, dy: -16, anchor: 'middle' };
-
-          return (
-            <g key={org.id}>
-              <a href={`/assurance/index/${org.slug}`}>
-                <circle cx={cx} cy={cy} r={9} className={`ci-map-dot ci-map-dot--${org.quadrant}`} />
-                <text
-                  x={cx + off.dx}
-                  y={cy + off.dy}
-                  className="ci-map-org-label"
-                  textAnchor={off.anchor}
-                  style={{
-                    fontWeight: 700,
-                    filter: 'drop-shadow(0 0 6px rgba(0,0,0,0.9))',
-                  }}
-                >
-                  {org.name}
-                </text>
-              </a>
-            </g>
-          );
-        })}
-      </svg>
-    </div>
-  );
-}
 
 const AssurancePage = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const emergingCandidates = CONSTITUTIONAL_INDEX_ORGANIZATIONS.filter(
-    (o) => o.quadrant === 'sovereignty-first',
+    (o) => o.quadrant === 'sovereignty-pioneers',
   ).sort((a, b) => b.governanceScore + b.sovereigntyScore - (a.governanceScore + a.sovereigntyScore));
 
   return (
@@ -410,41 +286,10 @@ const AssurancePage = () => {
 
       <hr className="assurance-divider" />
 
-      {/* ── Constitutional Map ── */}
+      {/* ── Constitutional Benchmark Explorer ── */}
       <section id="map" className="scroll-mt-20 py-28 px-6">
         <div className="max-w-7xl mx-auto">
-          <header className="mb-12 max-w-2xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
-              Constitutional Matrix
-            </p>
-            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-5">
-              Where organizations stand.
-            </h2>
-            <p className="text-white/60 text-lg leading-relaxed">
-              Each organization is plotted by its Governance score (Y axis) and Sovereignty score
-              (X axis). Position reflects constitutional reality, not aspiration.
-            </p>
-          </header>
-
-          <ConstitutionalMap />
-
-          <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {[
-              { q: 'Constitutional Leaders', desc: 'High Governance · High Sovereignty', cls: 'ci-legend--q1' },
-              { q: 'Trusted Custodians', desc: 'High Governance · Lower Sovereignty', cls: 'ci-legend--q2' },
-              { q: 'Sovereignty First', desc: 'High Sovereignty · Lower Governance', cls: 'ci-legend--q4' },
-              { q: 'Dependency Platforms', desc: 'Moderate Governance · Low Sovereignty', cls: 'ci-legend--q3' },
-            ].map(({ q, desc, cls }) => (
-              <div key={q} className={`ci-legend-card ${cls}`}>
-                <strong>{q}</strong>
-                <span>{desc}</span>
-              </div>
-            ))}
-          </div>
-
-          <p className="mt-6 text-xs text-white/30 text-center">
-            Positions derived from public materials. Governance threshold: 55. Sovereignty threshold: 55.
-          </p>
+          <ConstitutionalBenchmarkExplorer />
         </div>
       </section>
 
@@ -481,8 +326,8 @@ const AssurancePage = () => {
               <dd>{CONSTITUTIONAL_INDEX_ORGANIZATIONS.filter((o) => o.quadrant === 'trusted-custodians').length}</dd>
             </div>
             <div>
-              <dt>Sovereignty First</dt>
-              <dd>{CONSTITUTIONAL_INDEX_ORGANIZATIONS.filter((o) => o.quadrant === 'sovereignty-first').length}</dd>
+              <dt>Sovereignty Pioneers</dt>
+              <dd>{CONSTITUTIONAL_INDEX_ORGANIZATIONS.filter((o) => o.quadrant === 'sovereignty-pioneers').length}</dd>
             </div>
           </dl>
 

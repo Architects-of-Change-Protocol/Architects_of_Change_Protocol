@@ -189,7 +189,7 @@ const QUADRANT_META = {
     borderClass: 'border-orange-500/20',
     bgClass: 'bg-orange-500/5',
   },
-  'sovereignty-first': {
+  'sovereignty-pioneers': {
     label: 'Sovereignty Pioneers',
     color: '#38bdf8',
     textClass: 'text-sky-300',
