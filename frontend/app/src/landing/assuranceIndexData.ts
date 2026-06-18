@@ -2,7 +2,7 @@ export type ConstitutionalQuadrant =
   | 'constitutional-leaders'
   | 'trusted-custodians'
   | 'dependency-platforms'
-  | 'sovereignty-first';
+  | 'sovereignty-pioneers';
 
 export type ConstitutionalIndexOrganization = {
   id: string;
@@ -20,6 +20,12 @@ export type ConstitutionalIndexOrganization = {
   strengths: string[];
   constraints: string[];
   fullAssessmentCheckoutUrl: string;
+  // Extended fields for the Constitutional Benchmark Explorer
+  industries: string[];
+  organizationType?: string;
+  shortSummary: string;
+  publicAssessmentUrl?: string;
+  assessmentStatus?: 'available' | 'coming-soon' | 'private-only';
 };
 
 export const CONSTITUTIONAL_INDEX_ORGANIZATIONS: ConstitutionalIndexOrganization[] = [
@@ -47,6 +53,12 @@ export const CONSTITUTIONAL_INDEX_ORGANIZATIONS: ConstitutionalIndexOrganization
       'Sovereignty is bounded by provider-defined operational parameters',
     ],
     fullAssessmentCheckoutUrl: 'https://buy.stripe.com/3cI7sL88D5xLbs76lAejK00',
+    industries: ['Foundation Models', 'Enterprise AI'],
+    organizationType: 'AI Lab',
+    shortSummary:
+      'High-governance AI lab with strong safety positioning, but limited user sovereignty due to centralized model access and platform dependency.',
+    publicAssessmentUrl: '/assurance/index/anthropic',
+    assessmentStatus: 'available',
   },
   {
     id: 'harvey',
@@ -72,6 +84,12 @@ export const CONSTITUTIONAL_INDEX_ORGANIZATIONS: ConstitutionalIndexOrganization
       'Hosted-platform dependency limits operational sovereignty',
     ],
     fullAssessmentCheckoutUrl: 'https://buy.stripe.com/3cI7sL88D5xLbs76lAejK00',
+    industries: ['Legal AI', 'Enterprise AI'],
+    organizationType: 'Legal AI Platform',
+    shortSummary:
+      'Legal AI platform designed for professional workflows, with meaningful enterprise value but limited public evidence of constitutional sovereignty.',
+    publicAssessmentUrl: '/assurance/index/harvey',
+    assessmentStatus: 'available',
   },
   {
     id: 'writer',
@@ -97,6 +115,12 @@ export const CONSTITUTIONAL_INDEX_ORGANIZATIONS: ConstitutionalIndexOrganization
       'Customer sovereignty relies on contractual and audit evidence',
     ],
     fullAssessmentCheckoutUrl: 'https://buy.stripe.com/3cI7sL88D5xLbs76lAejK00',
+    industries: ['Enterprise AI', 'Agent Platforms'],
+    organizationType: 'Enterprise AI Platform',
+    shortSummary:
+      'Enterprise AI platform with useful operational controls, but still structurally dependent on centralized platform capabilities and vendor-managed governance.',
+    publicAssessmentUrl: '/assurance/index/writer',
+    assessmentStatus: 'available',
   },
   {
     id: 'anythingllm',
@@ -107,8 +131,8 @@ export const CONSTITUTIONAL_INDEX_ORGANIZATIONS: ConstitutionalIndexOrganization
     assessmentDate: '2026-06-15',
     governanceScore: 44,
     sovereigntyScore: 83,
-    quadrant: 'sovereignty-first',
-    quadrantLabel: 'Sovereignty First',
+    quadrant: 'sovereignty-pioneers',
+    quadrantLabel: 'Sovereignty Pioneer',
     constitutionalSummary: 'Maximum user control with limited governance infrastructure.',
     summary:
       'A privacy-focused AI application with strong local deployment and data-control options. AnythingLLM delivers exceptional user sovereignty through local deployment, open-source availability, and flexible model selection. Formal governance infrastructure remains the primary area for constitutional maturation.',
@@ -122,6 +146,12 @@ export const CONSTITUTIONAL_INDEX_ORGANIZATIONS: ConstitutionalIndexOrganization
       'Formal governance infrastructure is less developed relative to sovereignty posture',
     ],
     fullAssessmentCheckoutUrl: 'https://buy.stripe.com/3cI7sL88D5xLbs76lAejK00',
+    industries: ['Open Source AI', 'Agent Platforms', 'Developer Tools'],
+    organizationType: 'AI Workspace',
+    shortSummary:
+      'Sovereignty-oriented AI workspace with local and self-hosted deployment options, while formal governance guarantees depend on deployment configuration.',
+    publicAssessmentUrl: '/assurance/index/anythingllm',
+    assessmentStatus: 'available',
   },
   {
     id: 'ollama',
@@ -132,8 +162,8 @@ export const CONSTITUTIONAL_INDEX_ORGANIZATIONS: ConstitutionalIndexOrganization
     assessmentDate: '2026-06-15',
     governanceScore: 46,
     sovereigntyScore: 86,
-    quadrant: 'sovereignty-first',
-    quadrantLabel: 'Sovereignty First',
+    quadrant: 'sovereignty-pioneers',
+    quadrantLabel: 'Sovereignty Pioneer',
     constitutionalSummary:
       'Exceptional runtime sovereignty with governance maturity as the primary limiting factor.',
     summary:
@@ -148,6 +178,12 @@ export const CONSTITUTIONAL_INDEX_ORGANIZATIONS: ConstitutionalIndexOrganization
       'Formal governance infrastructure is less developed relative to sovereignty posture',
     ],
     fullAssessmentCheckoutUrl: 'https://buy.stripe.com/3cI7sL88D5xLbs76lAejK00',
+    industries: ['Open Source AI', 'Developer Tools'],
+    organizationType: 'Local AI Infrastructure',
+    shortSummary:
+      'Local-first AI infrastructure that materially increases user sovereignty, while governance depends heavily on implementation context.',
+    publicAssessmentUrl: '/assurance/index/ollama',
+    assessmentStatus: 'available',
   },
 ];
 

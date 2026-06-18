@@ -7,7 +7,7 @@ const QUADRANT_META = {
   'constitutional-leaders': { label: 'Constitutional Leaders', textClass: 'text-emerald-300', borderClass: 'border-emerald-500/20', bgClass: 'bg-emerald-500/5' },
   'trusted-custodians':    { label: 'Trusted Custodians',    textClass: 'text-indigo-300',  borderClass: 'border-indigo-500/20',  bgClass: 'bg-indigo-500/5'  },
   'dependency-platforms':  { label: 'Dependency Platforms',  textClass: 'text-orange-300',  borderClass: 'border-orange-500/20',  bgClass: 'bg-orange-500/5'  },
-  'sovereignty-first':     { label: 'Sovereignty Pioneers',  textClass: 'text-sky-300',     borderClass: 'border-sky-500/20',     bgClass: 'bg-sky-500/5'     },
+  'sovereignty-pioneers':  { label: 'Sovereignty Pioneers',  textClass: 'text-sky-300',     borderClass: 'border-sky-500/20',     bgClass: 'bg-sky-500/5'     },
 };
 
 function useAssessmentMeta(orgName: string, slug: string) {
