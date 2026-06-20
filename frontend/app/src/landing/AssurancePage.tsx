@@ -9,12 +9,13 @@ import {
 import { ConstitutionalBenchmarkExplorer } from './components/ConstitutionalBenchmarkExplorer';
 import './assurance.css';
 
-const MOBILE_NAVIGATION_ITEMS = [
-  { label: 'Matrix', href: '#map' },
+const NAV_ITEMS = [
+  { label: 'Risk', href: '#risk' },
+  { label: 'Framework', href: '#framework' },
   { label: 'Index', href: '#index' },
-  { label: 'Leaders', href: '#leaders' },
-  { label: 'Methodology', href: '#methodology' },
-  { label: 'AOC Protocol', href: '/' },
+  { label: 'Assessments', href: '#assessments' },
+  { label: 'FAQ', href: '#faq' },
+  { label: 'Protocol', href: '/' },
 ];
 
 const FOUNDATION_CHECKOUT_URL = 'https://buy.stripe.com/aFa5kD1Kfgcp67N11gejK01';
@@ -22,21 +23,19 @@ const FOUNDER_PROGRAM_CHECKOUT_URL = 'https://buy.stripe.com/3cI7sL88D5xLbs76lAe
 const ENTERPRISE_INTAKE_FORM_URL = 'https://tally.so/r/2ER1M9';
 const FOUNDER_ESSAY_URL = 'https://www.linkedin.com/pulse/i-started-looking-sovereignty-found-constitutional-valverde-checa-hnpye/';
 
-
 const FOOTER_LINK_GROUPS = [
   {
     title: 'Assessments',
     links: [
-      { label: 'Public Constitutional Assessment', href: '#assessments' },
-      { label: 'Founder Constitutional Assessment', href: '#assessments' },
-      { label: 'Enterprise Constitutional Assessment', href: '#assessments' },
+      { label: 'Public Assessment', href: '#assessments' },
+      { label: 'Founder Program', href: '#assessments' },
+      { label: 'Enterprise Assessment', href: '#assessments' },
       { label: 'Constitutional Index', href: '#index' },
     ],
   },
   {
     title: 'Research',
     links: [
-      { label: 'Constitutional Matrix', href: '#map' },
       { label: 'Constitutional Index Methodology', href: '/assurance/methodology' },
       { label: 'Founder Essay', href: FOUNDER_ESSAY_URL, external: true },
       { label: 'Public Research Initiative', href: '/assurance/research' },
@@ -62,6 +61,113 @@ const FOOTER_LINK_GROUPS = [
   },
 ];
 
+const RISK_CARDS = [
+  {
+    title: 'Key Person Risk',
+    body: 'Critical operational knowledge lives inside a handful of employees.',
+  },
+  {
+    title: 'Decision Amnesia',
+    body: 'Important decisions are remembered as outcomes, but the rationale, evidence, tradeoffs, and accountability chain disappear.',
+  },
+  {
+    title: 'Learning Failure',
+    body: 'Teams repeat mistakes because lessons from projects, incidents, and customer work never become institutional capability.',
+  },
+  {
+    title: 'AI Context Risk',
+    body: 'AI systems can access documents, but they do not understand how the business actually works.',
+  },
+  {
+    title: 'Knowledge Fragmentation',
+    body: 'Operational intelligence is scattered across tools, emails, chats, documents, vendors, and people.',
+  },
+  {
+    title: 'Continuity Risk',
+    body: 'Leadership changes, restructuring, and platform migrations erase critical intelligence.',
+  },
+];
+
+const FRAMEWORK_CARDS = [
+  {
+    title: 'Governance preserves ownership.',
+    body: 'Who owns the decision, the context, the knowledge, and the next action?',
+  },
+  {
+    title: 'Accountability preserves trust.',
+    body: 'Can responsibility survive handoffs, leadership changes, vendor transitions, and AI-assisted workflows?',
+  },
+  {
+    title: 'Sovereignty preserves control.',
+    body: 'Does the organization control its intelligence, or is it dependent on people, vendors, undocumented history, and external systems?',
+  },
+];
+
+const ASSESSMENT_DIMENSIONS = [
+  {
+    title: 'Governance',
+    body: 'Visibility into ownership of critical knowledge, decisions, assumptions, and operating context.',
+  },
+  {
+    title: 'Accountability',
+    body: 'Clarity of responsibility across handoffs, reorganizations, vendors, and leadership transitions.',
+  },
+  {
+    title: 'Decision Traceability',
+    body: 'Ability to reconstruct why important decisions were made, what evidence supported them, and who was accountable.',
+  },
+  {
+    title: 'Organizational Learning',
+    body: 'Whether experience from projects, incidents, customers, and operations improves future behavior.',
+  },
+  {
+    title: 'Knowledge Continuity',
+    body: 'How much essential know-how would remain usable if key employees left tomorrow.',
+  },
+  {
+    title: 'Institutional Resilience',
+    body: 'Capacity to keep performing through turnover, restructuring, migrations, and strategic change.',
+  },
+  {
+    title: 'AI Readiness',
+    body: 'Quality of the governed business context available to AI systems, not merely the volume of documents available to them.',
+  },
+  {
+    title: 'Sovereignty',
+    body: 'Control over institutional intelligence instead of dependency on individuals, vendors, tools, or undocumented history.',
+  },
+];
+
+const ASK_YOURSELF_QUESTIONS = [
+  'If your most knowledgeable employee resigned tomorrow, what would be lost?',
+  'Could you reconstruct the last five strategic decisions?',
+  'Does your AI understand your business, or only your documents?',
+  'Is your organization learning, or merely accumulating information?',
+];
+
+const FAQ_ITEMS = [
+  {
+    q: 'Is AOC Assurance a knowledge management tool?',
+    a: 'No. Knowledge management stores information. AOC Assurance measures whether critical organizational intelligence is governed, traceable, resilient, and usable through change.',
+  },
+  {
+    q: 'Is this replacing the Constitutional Index?',
+    a: 'No. The Constitutional Index remains a core AOC evidence layer. The new positioning explains why Governance and Sovereignty matter commercially: they determine whether organizational intelligence can survive change.',
+  },
+  {
+    q: 'Is this a compliance audit?',
+    a: 'No. AOC Assurance is an Institutional Intelligence Risk, Knowledge Loss, Continuity, and Constitutional Resilience assessment. It may support governance and compliance conversations, but it is not positioned as a regulatory certification.',
+  },
+  {
+    q: 'Why does this matter for AI transformation?',
+    a: 'AI systems amplify the quality of the context they receive. If decision lineage, ownership, accountability, and operating assumptions are missing, AI can accelerate confusion instead of intelligence.',
+  },
+  {
+    q: 'Who is this for?',
+    a: 'CEOs, founders, boards, executive teams, AI transformation leaders, and enterprise leaders responsible for continuity, resilience, governance, and strategic learning.',
+  },
+];
+
 function PublicResearchBridge() {
   return (
     <section className="assurance-research-bridge px-6 py-16" aria-labelledby="research-bridge-heading">
@@ -83,8 +189,8 @@ function AssuranceFooter() {
       <div className="max-w-7xl mx-auto assurance-footer-inner">
         <div className="assurance-footer-brand">
           <h2 id="assurance-footer-title">AOC Assurance</h2>
-          <p>A constitutional assessment framework developed by AOC Protocol.</p>
-          <p className="assurance-footer-tagline">Measure Governance.<br />Measure Sovereignty.<br />Understand the Balance.</p>
+          <p>AOC Assurance measures Knowledge Loss, Key Person Dependency, Decision Amnesia, Continuity, and Constitutional Resilience through the AOC Constitutional Framework.</p>
+          <p className="assurance-footer-tagline">Measure Governance.<br />Measure Sovereignty.<br />Understand Resilience.</p>
           <p className="assurance-footer-institutional">AOC Assurance and AOC Protocol are initiatives of OnchainFest LLC.</p>
         </div>
         <nav className="assurance-footer-links" aria-label="AOC Assurance footer navigation">
@@ -94,7 +200,13 @@ function AssuranceFooter() {
               <ul>
                 {group.links.map((link) => (
                   <li key={link.label}>
-                    <a href={link.href} target={link.external ? '_blank' : undefined} rel={link.external ? 'noopener noreferrer' : undefined}>{link.label}</a>
+                    <a
+                      href={link.href}
+                      target={link.external ? '_blank' : undefined}
+                      rel={link.external ? 'noopener noreferrer' : undefined}
+                    >
+                      {link.label}
+                    </a>
                   </li>
                 ))}
               </ul>
@@ -111,114 +223,40 @@ function AssuranceFooter() {
   );
 }
 
-const ASSESSMENT_OFFERINGS = [
-  {
-    key: 'foundation',
-    label: 'PUBLIC ASSESSMENT — MEASURE YOUR CONSTITUTIONAL POSTURE.',
-    price: '$49',
-    priceNote: null,
-    popular: false,
-    comingSoon: false,
-    headline: 'Public Constitutional Assessment',
-    description:
-      'Establish your Governance Score, Sovereignty Score, and Constitutional Position using publicly observable evidence. Designed for organizations seeking an independent constitutional baseline before investing in deeper analysis.',
-    items: [
-      'Governance Score',
-      'Sovereignty Score',
-      'Constitutional Position',
-      'Executive Summary Report',
-      'Public Constitutional Index Listing',
-      'Delivered Within 72 Hours',
-    ],
-    cta: 'Start Assessment — $49',
-    ctaHref: FOUNDATION_CHECKOUT_URL,
-    featured: false,
-  },
-  {
-    key: 'advanced',
-    label: 'FOUNDER PROGRAM — UNDERSTAND YOUR CONSTITUTIONAL POSTURE.',
-    price: '$149',
-    priceNote: 'Future public price: $499',
-    popular: true,
-    comingSoon: false,
-    headline: 'Founder Program',
-    description:
-      'Go beyond the score. Understand why your organization received its constitutional position, identify the governance and sovereignty factors shaping your results, and receive a prioritized improvement roadmap.',
-    items: [
-      'Everything in Public Assessment',
-      'Score Explanation & Findings Review',
-      'Governance Constraint Analysis',
-      'Sovereignty Constraint Analysis',
-      'Evidence Review',
-      'Prioritized Improvement Roadmap',
-      'Quick Wins & Strategic Opportunities',
-      'Constitutional Maturity Projection',
-    ],
-    cta: 'Join Founder Program — $149',
-    ctaHref: FOUNDER_PROGRAM_CHECKOUT_URL,
-    featured: true,
-  },
-  {
-    key: 'sovereign',
-    label: 'CONSTITUTIONAL TRANSFORMATION PROGRAM — IMPROVE YOUR CONSTITUTIONAL POSTURE.',
-    price: 'Contact Sales',
-    priceNote: null,
-    popular: false,
-    comingSoon: false,
-    headline: 'Constitutional Transformation Program',
-    description:
-      'A strategic engagement for organizations seeking measurable constitutional improvement. Benchmark your constitutional posture against the market, identify structural risks, design a transformation roadmap, and increase governance and sovereignty over time.',
-    items: [
-      'Everything in Founder Program',
-      'Competitive Constitutional Benchmark',
-      'Constitutional Risk Register',
-      'Constitutional Architecture Review',
-      'Sovereignty Scenario Analysis',
-      'Executive Workshops',
-      'Constitutional Transformation Roadmap',
-      'Reassessment Planning',
-    ],
-    cta: 'Start Enterprise Intake',
-    ctaHref: ENTERPRISE_INTAKE_FORM_URL,
-    featured: false,
-  },
-];
-
-
 const AssurancePage = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const emergingCandidates = CONSTITUTIONAL_INDEX_ORGANIZATIONS.filter(
     (o) => o.quadrant === 'sovereignty-pioneers',
-  ).sort((a, b) => b.governanceScore + b.sovereigntyScore - (a.governanceScore + a.sovereigntyScore));
+  ).sort((a, b) => (b.governanceScore + b.sovereigntyScore) - (a.governanceScore + a.sovereigntyScore));
 
   return (
     <main className="min-h-screen bg-[#070d0b] text-white font-sans">
 
-      {/* ── Nav ── */}
+      {/* ── Navigation ── */}
       <nav className="sticky top-0 z-30 backdrop-blur bg-[#070d0b]/80 border-b border-white/10">
         <div className="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
           <a href="/" className="flex items-center gap-3">
             <LogoRotating size={28} inverted />
             <div className="flex items-baseline gap-2">
               <span className="text-xl font-semibold tracking-tighter">AOC</span>
-              <span className="text-xs text-emerald-400 uppercase tracking-[0.2em]">Constitutional Index</span>
+              <span className="text-xs text-emerald-400 uppercase tracking-[0.2em]">Assurance</span>
             </div>
           </a>
 
           <div className="hidden md:flex items-center gap-9 text-sm font-medium text-white/70">
-            <a href="#map" className="hover:text-white transition-colors">Map</a>
-            <a href="#index" className="hover:text-white transition-colors">Index</a>
-            <a href="#leaders" className="hover:text-white transition-colors">Leaders</a>
-            <a href="#methodology" className="hover:text-white transition-colors">Methodology</a>
-            <a href="/" className="hover:text-white transition-colors">Protocol</a>
+            {NAV_ITEMS.map((item) => (
+              <a key={item.label} href={item.href} className="hover:text-white transition-colors">
+                {item.label}
+              </a>
+            ))}
           </div>
 
           <a
             href="#assessments"
             className="hidden md:inline-block px-5 py-2 bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-semibold rounded-xl transition-colors"
           >
-            Request Assessment
+            Assess Intelligence Risk
           </a>
 
           <button
@@ -226,7 +264,7 @@ const AssurancePage = () => {
             className="relative flex md:hidden h-10 w-10 items-center justify-center rounded-xl border border-white/15 text-white transition-colors hover:border-white/30 hover:bg-white/5"
             aria-label={isMobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={isMobileMenuOpen}
-            aria-controls="ci-mobile-nav"
+            aria-controls="assurance-mobile-nav"
             onClick={() => setIsMobileMenuOpen((v) => !v)}
           >
             <span className={`absolute h-0.5 w-5 bg-current transition-transform duration-300 ${isMobileMenuOpen ? 'rotate-45' : '-translate-y-1.5'}`} />
@@ -236,13 +274,13 @@ const AssurancePage = () => {
         </div>
 
         <div
-          id="ci-mobile-nav"
+          id="assurance-mobile-nav"
           aria-hidden={!isMobileMenuOpen}
           inert={!isMobileMenuOpen}
           className={`absolute left-0 right-0 top-full overflow-hidden border-b border-white/10 bg-[#070d0b]/95 backdrop-blur-lg transition-[max-height,opacity] duration-300 ease-out md:hidden ${isMobileMenuOpen ? 'max-h-96 opacity-100' : 'pointer-events-none max-h-0 opacity-0'}`}
         >
           <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col gap-1">
-            {MOBILE_NAVIGATION_ITEMS.map((item) => (
+            {NAV_ITEMS.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
@@ -259,43 +297,111 @@ const AssurancePage = () => {
       {/* ── Hero ── */}
       <section className="assurance-hero-glow relative pt-28 pb-32 text-center px-6">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-6">
-          AOC Constitutional Index
+          AOC Assurance
         </p>
         <h1 className="text-5xl md:text-7xl font-semibold tracking-[-2.5px] leading-[1.05] max-w-4xl mx-auto mb-8">
-          Constitutional positioning for AI organizations.
+          Organizations don't fail because they lack data. They fail because they lose intelligence.
         </h1>
         <p className="max-w-2xl mx-auto text-lg md:text-xl text-white/65 leading-relaxed mb-12">
-          Independent evaluation of AI organizations across Governance and Sovereignty dimensions.
-          Understanding constitutional position before your regulator asks.
+          AOC Assurance helps organizations measure Knowledge Loss exposure, uncover Key Person Dependency,
+          and understand whether critical knowledge can survive turnover, AI transformation, vendor changes,
+          platform migrations, and organizational growth.
         </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a
-            href="#map"
-            className="px-10 py-4 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-lg rounded-2xl transition-colors"
-          >
-            Explore the Matrix
-          </a>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
           <a
             href="#assessments"
+            className="px-10 py-4 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-lg rounded-2xl transition-colors"
+          >
+            Assess Intelligence Risk
+          </a>
+          <a
+            href="#framework"
             className="px-10 py-4 border border-white/15 hover:border-white/30 text-white font-semibold text-lg rounded-2xl transition-colors"
           >
-            Request Assessment
+            Explore the Constitutional Framework
           </a>
         </div>
+        <p className="text-xs text-white/40 tracking-wide">
+          Powered by the AOC Constitutional Framework: Governance, Sovereignty, Accountability, Traceability, and Institutional Resilience.
+        </p>
       </section>
 
       <hr className="assurance-divider" />
 
-      {/* ── Constitutional Benchmark Explorer ── */}
-      <section id="map" className="scroll-mt-20 py-28 px-6">
+      {/* ── Risk Section ── */}
+      <section id="risk" className="scroll-mt-20 py-28 px-6">
         <div className="max-w-7xl mx-auto">
-          <ConstitutionalBenchmarkExplorer />
+          <header className="mb-12 max-w-3xl">
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-5">
+              Hidden risks most organizations cannot see.
+            </h2>
+            <p className="text-white/60 text-lg leading-relaxed">
+              Critical knowledge rarely disappears all at once. It erodes through resignations, promotions,
+              retirements, restructurings, vendor transitions, platform migrations, and decisions nobody
+              can reconstruct six months later.
+            </p>
+          </header>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {RISK_CARDS.map((card) => (
+              <div key={card.title} className="rounded-2xl border border-white/10 bg-white/[0.02] p-7">
+                <h3 className="text-lg font-semibold mb-3">{card.title}</h3>
+                <p className="text-white/60 text-sm leading-relaxed">{card.body}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       <hr className="assurance-divider" />
 
-      {/* ── Constitutional Index Table ── */}
+      {/* ── Framework Section ── */}
+      <section id="framework" className="scroll-mt-20 py-28 px-6">
+        <div className="max-w-7xl mx-auto">
+          <header className="mb-12 max-w-3xl">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
+              AOC Constitutional Framework
+            </p>
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-5">
+              These are not just knowledge problems. They are constitutional failures.
+            </h2>
+            <p className="text-white/60 text-lg leading-relaxed">
+              Most organizations do not have a data problem. They have a continuity problem. Intelligence
+              cannot survive without governance. Learning cannot scale without accountability. Resilience
+              cannot exist without sovereignty. AOC Assurance evaluates the constitutional conditions that
+              determine whether organizational intelligence remains durable, traceable, and usable through change.
+            </p>
+          </header>
+
+          <div className="grid md:grid-cols-3 gap-6 mb-14">
+            {FRAMEWORK_CARDS.map((card) => (
+              <div key={card.title} className="rounded-2xl border border-white/10 bg-white/[0.02] p-7">
+                <h3 className="text-lg font-semibold mb-3">{card.title}</h3>
+                <p className="text-white/60 text-sm leading-relaxed">{card.body}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Measurement dimensions */}
+          <div className="mb-4 max-w-3xl">
+            <h3 className="text-2xl md:text-3xl font-semibold tracking-tight mb-5">
+              AOC Assurance measures whether your intelligence can survive change.
+            </h3>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {ASSESSMENT_DIMENSIONS.map((dim) => (
+              <div key={dim.title} className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+                <p className="text-emerald-400 text-sm font-semibold mb-2">{dim.title}</p>
+                <p className="text-white/55 text-sm leading-relaxed">{dim.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <hr className="assurance-divider" />
+
+      {/* ── Constitutional Index Section ── */}
       <section id="index" className="scroll-mt-20 py-28 px-6">
         <div className="max-w-7xl mx-auto">
           <header className="mb-12 max-w-4xl">
@@ -303,130 +409,28 @@ const AssurancePage = () => {
               Constitutional Index
             </p>
             <h2 className="text-4xl md:text-6xl font-semibold tracking-tight mb-5">
-              The Public Index for AI Governance and Sovereignty
+              A public benchmark for Governance and Sovereignty in the AI industry.
             </h2>
             <p className="text-white/60 text-lg leading-relaxed">
-              AOC evaluates AI organizations across Governance and Sovereignty dimensions, helping
-              founders, enterprises, investors, and buyers understand accountability, control,
-              dependency, and constitutional position.
+              The AOC Constitutional Index evaluates AI organizations across Governance and Sovereignty
+              dimensions. It provides a public evidence layer for understanding how organizations balance
+              accountability, control, dependency, and institutional resilience.
             </p>
+            {emergingCandidates.length > 0 && (
+              <p className="mt-4 text-sm text-white/40">
+                {CONSTITUTIONAL_INDEX_ORGANIZATIONS.length} organizations assessed.
+                Closest emerging candidate: {emergingCandidates[0].name}.
+              </p>
+            )}
           </header>
 
-          <dl className="assurance-index-metrics">
-            <div>
-              <dt>Organizations Assessed</dt>
-              <dd>{CONSTITUTIONAL_INDEX_ORGANIZATIONS.length}</dd>
-            </div>
-            <div>
-              <dt>Constitutional Leaders</dt>
-              <dd>{CONSTITUTIONAL_INDEX_ORGANIZATIONS.filter((o) => o.quadrant === 'constitutional-leaders').length}</dd>
-            </div>
-            <div>
-              <dt>Trusted Custodians</dt>
-              <dd>{CONSTITUTIONAL_INDEX_ORGANIZATIONS.filter((o) => o.quadrant === 'trusted-custodians').length}</dd>
-            </div>
-            <div>
-              <dt>Sovereignty Pioneers</dt>
-              <dd>{CONSTITUTIONAL_INDEX_ORGANIZATIONS.filter((o) => o.quadrant === 'sovereignty-pioneers').length}</dd>
-            </div>
-          </dl>
+          <ConstitutionalBenchmarkExplorer />
 
-          <div className="assurance-index-shell">
-            <div className="ci-index-table" role="table" aria-label="AOC Constitutional Index">
-              <div className="ci-index-header" role="row">
-                <span role="columnheader">Organization</span>
-                <span role="columnheader">Governance</span>
-                <span role="columnheader">Sovereignty</span>
-                <span role="columnheader">Constitutional Position</span>
-                <span className="sr-only" role="columnheader">Profile</span>
-              </div>
-
-              {CONSTITUTIONAL_INDEX_ORGANIZATIONS.map((org) => (
-                <div className="ci-index-row" role="row" key={org.id}>
-                  <div className="assurance-index-organization" role="cell">
-                    <span className="assurance-index-monogram" aria-hidden="true">
-                      {org.name.charAt(0)}
-                    </span>
-                    <div>
-                      <strong className="block">{org.name}</strong>
-                      <span className="text-xs text-white/40 font-normal">{org.constitutionalSummary}</span>
-                    </div>
-                  </div>
-                  <div className="ci-index-score-cell" role="cell">
-                    <strong className="ci-score-number">{org.governanceScore}</strong>
-                    <div className="assurance-index-score-track" aria-hidden="true">
-                      <span style={{ width: `${org.governanceScore}%` }} className="ci-score-track--governance" />
-                    </div>
-                  </div>
-                  <div className="ci-index-score-cell" role="cell">
-                    <strong className="ci-score-number ci-score-number--sovereignty">{org.sovereigntyScore}</strong>
-                    <div className="assurance-index-score-track" aria-hidden="true">
-                      <span style={{ width: `${org.sovereigntyScore}%` }} className="ci-score-track--sovereignty" />
-                    </div>
-                  </div>
-                  <div role="cell">
-                    <span className={`ci-position-badge ci-position-badge--${org.quadrant}`}>
-                      {org.quadrantLabel}
-                    </span>
-                  </div>
-                  <div className="assurance-index-action" role="cell">
-                    <a
-                      href={`/assurance/index/${org.slug}`}
-                      className="assurance-index-profile-button"
-                      aria-label={`View ${org.name} constitutional profile`}
-                    >
-                      View Profile
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="assurance-index-footer">
-              <div>
-                <p className="text-sm font-semibold text-white">Go beyond the public signals.</p>
-                <p className="mt-1 text-sm text-white/45">
-                  Request an evidence-backed assessment for a complete constitutional view.
-                </p>
-              </div>
-              <a
-                href={ENTERPRISE_INTAKE_FORM_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="assurance-index-unlock-button"
-              >
-                Unlock Full Assessment
-              </a>
-            </div>
-          </div>
-
-          <p className="mt-6 text-xs text-white/30">
-            Rankings reflect publicly available information and are subject to revision as new evidence is assessed.
-          </p>
-        </div>
-      </section>
-
-      <hr className="assurance-divider" />
-
-      {/* ── Leadership Panels ── */}
-      <section id="leaders" className="scroll-mt-20 py-28 px-6">
-        <div className="max-w-7xl mx-auto">
-          <header className="mb-12 max-w-2xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
-              Index Leaders
-            </p>
-            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-5">
-              Who leads in each dimension.
-            </h2>
-          </header>
-
-          <div className="grid md:grid-cols-3 gap-6">
-
-            {/* Governance Leaders */}
+          <div className="grid md:grid-cols-2 gap-6 mt-10">
             <div className="ci-leader-panel">
-              <p className="ci-leader-panel-title">Governance Leaders</p>
+              <p className="ci-leader-panel-title">Governance Score Leaders</p>
               <ol className="ci-leader-list">
-                {GOVERNANCE_RANKED.map((org, i) => (
+                {GOVERNANCE_RANKED.slice(0, 3).map((org, i) => (
                   <li key={org.id} className="ci-leader-item">
                     <span className="ci-leader-rank">{i + 1}</span>
                     <div className="ci-leader-meta">
@@ -439,11 +443,10 @@ const AssurancePage = () => {
               </ol>
             </div>
 
-            {/* Sovereignty Leaders */}
             <div className="ci-leader-panel">
-              <p className="ci-leader-panel-title">Sovereignty Leaders</p>
+              <p className="ci-leader-panel-title">Sovereignty Score Leaders</p>
               <ol className="ci-leader-list">
-                {SOVEREIGNTY_RANKED.map((org, i) => (
+                {SOVEREIGNTY_RANKED.slice(0, 3).map((org, i) => (
                   <li key={org.id} className="ci-leader-item">
                     <span className="ci-leader-rank">{i + 1}</span>
                     <div className="ci-leader-meta">
@@ -455,257 +458,241 @@ const AssurancePage = () => {
                 ))}
               </ol>
             </div>
-
-            {/* Emerging Constitutional Leaders */}
-            <div className="ci-leader-panel ci-leader-panel--emerging">
-              <p className="ci-leader-panel-title">Emerging Constitutional Leaders</p>
-              <p className="ci-leader-emerging-note">
-                No organization currently qualifies as a Constitutional Leader.
-                Closest candidates by combined constitutional score:
-              </p>
-              <ol className="ci-leader-list mt-4">
-                {emergingCandidates.map((org, i) => (
-                  <li key={org.id} className="ci-leader-item">
-                    <span className="ci-leader-rank">{i + 1}</span>
-                    <div className="ci-leader-meta">
-                      <strong>{org.name}</strong>
-                      <span>Gov {org.governanceScore} · Sov {org.sovereigntyScore}</span>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-              <p className="ci-leader-threshold-note mt-4">
-                Constitutional Leaders require Governance ≥ 70 and Sovereignty ≥ 70.
-              </p>
-            </div>
-
           </div>
         </div>
       </section>
 
       <hr className="assurance-divider" />
 
-      {/* ── Methodology ── */}
-      <section id="methodology" className="scroll-mt-20 py-28 px-6">
+      {/* ── Ask Yourself Section ── */}
+      <section className="scroll-mt-20 py-28 px-6">
         <div className="max-w-7xl mx-auto">
-          <header className="mb-12 max-w-2xl">
+          <header className="mb-12 max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
-              Methodology
+              Ask Yourself
             </p>
             <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-5">
-              How Organizations Are Evaluated
+              The questions that expose Knowledge Loss before it becomes a crisis.
             </h2>
-            <p className="text-white/60 text-lg leading-relaxed">
-              The AOC Constitutional Index evaluates organizations across two independent dimensions.
-              Neither dimension substitutes for the other.
-            </p>
           </header>
 
-          <div className="grid md:grid-cols-2 gap-6 mb-10">
-            <div className="ci-method-card">
-              <p className="ci-method-card-eyebrow">Governance Dimensions</p>
-              <ul className="ci-method-list">
-                {['Accountability', 'Auditability', 'Human Oversight', 'Risk Controls'].map((d) => (
-                  <li key={d}><span aria-hidden="true">—</span>{d}</li>
-                ))}
-              </ul>
-            </div>
-            <div className="ci-method-card">
-              <p className="ci-method-card-eyebrow">Sovereignty Dimensions</p>
-              <ul className="ci-method-list">
-                {['Ownership', 'Portability', 'Runtime Control', 'Exit Feasibility', 'Authority'].map((d) => (
-                  <li key={d}><span aria-hidden="true">—</span>{d}</li>
-                ))}
-              </ul>
-            </div>
+          <div className="grid sm:grid-cols-2 gap-6 mb-10">
+            {ASK_YOURSELF_QUESTIONS.map((q) => (
+              <div key={q} className="rounded-2xl border border-white/10 bg-white/[0.02] p-7">
+                <p className="text-lg text-white/80 leading-relaxed">{q}</p>
+              </div>
+            ))}
           </div>
 
-          <div className="ci-method-highlight">
-            <p>
-              <strong>Strong Governance does not guarantee Sovereignty.</strong>
-            </p>
-            <p>
-              <strong>Strong Sovereignty does not guarantee Governance.</strong>
-            </p>
-            <p className="mt-3 text-white/55 text-sm leading-relaxed">
-              Constitutional position is defined by the intersection of both dimensions.
-              An organization may excel in one area while remaining constitutionally incomplete.
-            </p>
-          </div>
+          <p className="max-w-3xl text-white/55 text-base leading-relaxed">
+            If those answers are unclear, the issue is not a tooling gap. It is a Governance, Accountability,
+            and Sovereignty gap — the reason Knowledge Loss, Key Person Dependency, Decision Amnesia, weak
+            Continuity, and poor Organizational Learning keep returning.
+          </p>
         </div>
       </section>
 
       <hr className="assurance-divider" />
 
-      {/* ── Founder Essay ── */}
-      <section id="founder-essay" className="assurance-editorial-section scroll-mt-20 py-28 px-6" aria-labelledby="founder-essay-heading">
-        <div className="max-w-7xl mx-auto">
-          <div className="assurance-editorial-grid">
-            <div className="assurance-editorial-copy">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
-                Why Governance Alone Is Not Enough
-              </p>
-              <h2 id="founder-essay-heading" className="text-4xl md:text-6xl font-semibold tracking-tight mb-6">
-                AI trust cannot be understood through governance alone.
-              </h2>
-              <div className="assurance-editorial-body">
-                <p>
-                  The AOC Constitutional Index was born from a simple realization: AI trust cannot be
-                  fully understood through governance alone.
-                </p>
-                <p>
-                  Governance shows how an AI system is supervised, controlled, and made accountable.
-                </p>
-                <p>
-                  Sovereignty shows who truly controls the capability, who can move it, replace it,
-                  operate it, and preserve independence over time.
-                </p>
-                <p>When one exists without the other, organizations become exposed.</p>
-              </div>
-              <div className="assurance-editorial-emphasis" aria-label="Governance and sovereignty balance principles">
-                <p>Governance without sovereignty creates dependency.</p>
-                <p>Sovereignty without governance creates chaos.</p>
-                <p>Trust emerges when both exist in balance.</p>
-              </div>
-            </div>
-
-            <aside className="assurance-founder-essay-card" aria-labelledby="founder-essay-card-title">
-              <p className="assurance-founder-essay-card-kicker">Founder Essay</p>
-              <h3 id="founder-essay-card-title">
-                I Started Looking for Sovereignty. I Found a Constitutional Problem.
-              </h3>
-              <p>
-                A founder essay on the origin of the AOC Constitutional Index and why the AI industry
-                may be measuring only half of the constitutional equation.
-              </p>
-              <a
-                href={FOUNDER_ESSAY_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="assurance-founder-essay-link"
-                aria-label="Read the founder essay on LinkedIn in a new tab"
-              >
-                Read the Founder Essay
-                <span aria-hidden="true">↗</span>
-              </a>
-            </aside>
-          </div>
-        </div>
-      </section>
-
-      <hr className="assurance-divider" />
-
-      {/* ── Assessments ── */}
+      {/* ── Assessments Section ── */}
       <section id="assessments" className="scroll-mt-20 py-28 px-6">
         <div className="max-w-7xl mx-auto">
-          <header className="mb-16 max-w-2xl">
+          <header className="mb-16 max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
               Assessments
             </p>
             <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-5">
-              Measure. Understand. Improve.
+              Choose the assessment depth your organization needs.
             </h2>
             <p className="text-white/60 text-lg leading-relaxed">
-              A transparent progression from rapid public measurement to hands-on constitutional improvement.
+              Start with public evidence, go deeper with founder-level analysis, or assess enterprise-wide
+              intelligence continuity risk across teams, vendors, systems, and AI initiatives.
             </p>
           </header>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {ASSESSMENT_OFFERINGS.map((offering) => (
-              <article
-                key={offering.key}
-                className={`rounded-2xl border p-7 flex flex-col relative ${
-                  offering.featured
-                    ? 'border-emerald-500/50 bg-emerald-950/35 shadow-[0_0_40px_rgba(52,211,153,0.08)]'
-                    : 'border-white/10 bg-white/[0.02]'
-                }`}
-              >
-                {offering.featured && (
-                  <div className="absolute inset-0 rounded-2xl pointer-events-none ring-1 ring-emerald-500/20" />
-                )}
-
-                <div className="mb-5">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-emerald-400">
-                      {offering.label}
-                    </span>
-                    {offering.popular && (
-                      <span className="inline-flex items-center text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-amber-300 bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded-full">
-                        Most Popular
-                      </span>
-                    )}
-                    {offering.comingSoon && (
-                      <span className="inline-flex items-center text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-white/40 bg-white/5 border border-white/10 px-2 py-0.5 rounded-full">
-                        Coming Soon
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="mt-4 flex items-baseline gap-3">
-                    <span className={`text-3xl font-semibold ${offering.featured ? 'text-emerald-300' : 'text-white'}`}>
-                      {offering.price}
-                    </span>
-                    {offering.priceNote && (
-                      <span className="text-xs text-white/35 line-through">{offering.priceNote}</span>
-                    )}
-                  </div>
-
-                  {offering.popular && (
-                    <p className="mt-1 text-xs text-amber-300/70 font-medium">
-                      Founder Pricing — Limited to the first 25 organizations
-                    </p>
-                  )}
-
-                  <h3 className="mt-3 text-xl font-semibold">{offering.headline}</h3>
-                  <p className="mt-2 text-sm text-white/55 leading-relaxed">{offering.description}</p>
+            {/* Public Assessment */}
+            <article className="rounded-2xl border border-white/10 bg-white/[0.02] p-7 flex flex-col">
+              <div className="mb-5">
+                <p className="text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-emerald-400">
+                  Public Assessment
+                </p>
+                <div className="mt-4 flex items-baseline gap-3">
+                  <span className="text-3xl font-semibold text-white">$49</span>
                 </div>
+                <h3 className="mt-3 text-xl font-semibold">Public Assessment</h3>
+                <p className="mt-2 text-sm text-white/55 leading-relaxed">
+                  A rapid external assessment of publicly observable signals related to Governance,
+                  Sovereignty, decision traceability, and institutional resilience.
+                </p>
+              </div>
+              <ul className="flex-1 space-y-2 mb-8">
+                {[
+                  'Governance Score',
+                  'Sovereignty Score',
+                  'Constitutional Position',
+                  'Knowledge Loss and Continuity Snapshot',
+                  'Executive Summary',
+                  'Public Index Listing when applicable',
+                  'Delivered within 72 hours',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-sm text-white/70">
+                    <span className="text-emerald-400 mt-0.5 shrink-0">✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <a
+                href={FOUNDATION_CHECKOUT_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="text-center py-3 rounded-xl text-sm font-semibold border border-white/15 hover:border-white/30 text-white transition-colors"
+              >
+                Start Public Assessment
+              </a>
+            </article>
 
-                <ul className="flex-1 space-y-2 mb-8">
-                  {offering.items.map((item) => (
-                    <li key={item} className="flex items-start gap-2 text-sm text-white/70">
-                      <span className="text-emerald-400 mt-0.5 shrink-0">✓</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+            {/* Founder Program */}
+            <article className="rounded-2xl border border-emerald-500/50 bg-emerald-950/35 shadow-[0_0_40px_rgba(52,211,153,0.08)] p-7 flex flex-col relative">
+              <div className="absolute inset-0 rounded-2xl pointer-events-none ring-1 ring-emerald-500/20" />
+              <div className="mb-5">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-emerald-400">
+                    Founder Program
+                  </p>
+                  <span className="inline-flex items-center text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-amber-300 bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded-full">
+                    Most Popular
+                  </span>
+                </div>
+                <div className="mt-4 flex items-baseline gap-3">
+                  <span className="text-3xl font-semibold text-emerald-300">$149</span>
+                  <span className="text-xs text-white/35 line-through">Future public price: $499</span>
+                </div>
+                <p className="mt-1 text-xs text-amber-300/70 font-medium">
+                  Founder Pricing — Limited to the first 25 organizations
+                </p>
+                <h3 className="mt-3 text-xl font-semibold">Founder Program</h3>
+                <p className="mt-2 text-sm text-white/55 leading-relaxed">
+                  A deeper analysis for founders and leadership teams who want to understand where
+                  intelligence continuity, accountability, AI readiness, and sovereignty risks are emerging.
+                </p>
+              </div>
+              <ul className="flex-1 space-y-2 mb-8">
+                {[
+                  'Everything in Public Assessment',
+                  'Knowledge Loss and Key Person Dependency Review',
+                  'Key-Person and Knowledge Continuity Findings',
+                  'Governance and Sovereignty Constraint Analysis',
+                  'Decision Traceability Review',
+                  'AI Readiness Observations',
+                  'Prioritized Improvement Roadmap',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-sm text-white/70">
+                    <span className="text-emerald-400 mt-0.5 shrink-0">✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <a
+                href={FOUNDER_PROGRAM_CHECKOUT_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="text-center py-3 rounded-xl text-sm font-semibold bg-emerald-500 hover:bg-emerald-400 text-black transition-colors"
+              >
+                Join Founder Program
+              </a>
+            </article>
 
-                <a
-                  href={offering.ctaHref}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={`text-center py-3 rounded-xl text-sm font-semibold transition-colors ${
-                    offering.featured
-                      ? 'bg-emerald-500 hover:bg-emerald-400 text-black'
-                      : 'border border-white/15 hover:border-white/30 text-white'
-                  }`}
-                >
-                  {offering.cta}
-                </a>
-              </article>
-            ))}
+            {/* Enterprise Assessment */}
+            <article className="rounded-2xl border border-white/10 bg-white/[0.02] p-7 flex flex-col">
+              <div className="mb-5">
+                <p className="text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-emerald-400">
+                  Enterprise Assessment
+                </p>
+                <div className="mt-4 flex items-baseline gap-3">
+                  <span className="text-3xl font-semibold text-white">Contact Sales</span>
+                </div>
+                <h3 className="mt-3 text-xl font-semibold">Enterprise Assessment</h3>
+                <p className="mt-2 text-sm text-white/55 leading-relaxed">
+                  A strategic assessment for organizations seeking to measure and reduce hidden intelligence
+                  continuity risk across teams, vendors, systems, AI initiatives, and critical operations.
+                </p>
+              </div>
+              <ul className="flex-1 space-y-2 mb-8">
+                {[
+                  'Everything in Founder Program',
+                  'Enterprise Risk Register',
+                  'Knowledge Continuity Review',
+                  'Decision Lineage and Accountability Mapping',
+                  'AI Context and Governance Review',
+                  'Institutional Resilience Roadmap',
+                  'Executive Briefing',
+                  'AOC Enterprise Readiness Plan',
+                ].map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-sm text-white/70">
+                    <span className="text-emerald-400 mt-0.5 shrink-0">✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+              <a
+                href={ENTERPRISE_INTAKE_FORM_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="text-center py-3 rounded-xl text-sm font-semibold border border-white/15 hover:border-white/30 text-white transition-colors"
+              >
+                Request Enterprise Briefing
+              </a>
+            </article>
           </div>
         </div>
       </section>
 
       <hr className="assurance-divider" />
 
-      {/* ── CTA ── */}
+      {/* ── Enterprise Bridge ── */}
       <section className="py-28 px-6 text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-6">
-          Get started
-        </p>
-        <h2 className="text-5xl md:text-6xl font-semibold tracking-tight mb-6 max-w-3xl mx-auto">
-          Know your constitutional position.
-        </h2>
-        <p className="text-white/55 text-lg mb-10 max-w-xl mx-auto leading-relaxed">
-          Reach out to begin your constitutional assessment. First response within one business day.
-        </p>
-        <a
-          href="#assessments"
-          className="inline-flex items-center px-12 py-5 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-lg rounded-2xl transition-colors"
-        >
-          Request Assessment
-        </a>
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-6">
+            Assessment is the first step. Enterprise is how intelligence becomes durable.
+          </h2>
+          <p className="text-white/55 text-lg mb-10 leading-relaxed">
+            AOC Assurance identifies where institutional intelligence is fragile. AOC Enterprise helps
+            organizations build the operating layer required to preserve decisions, govern accountability,
+            improve learning, and maintain sovereignty over critical knowledge as the organization grows.
+          </p>
+          <a
+            href="/?view=enterprise"
+            className="inline-flex items-center px-10 py-4 border border-white/15 hover:border-white/30 text-white font-semibold text-lg rounded-2xl transition-colors"
+          >
+            Explore AOC Enterprise
+          </a>
+        </div>
+      </section>
+
+      <hr className="assurance-divider" />
+
+      {/* ── FAQ Section ── */}
+      <section id="faq" className="scroll-mt-20 py-28 px-6">
+        <div className="max-w-4xl mx-auto">
+          <header className="mb-12">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
+              FAQ
+            </p>
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight">
+              Common questions.
+            </h2>
+          </header>
+
+          <dl className="space-y-8">
+            {FAQ_ITEMS.map((item) => (
+              <div key={item.q} className="rounded-2xl border border-white/10 bg-white/[0.02] p-7">
+                <dt className="text-lg font-semibold mb-3">{item.q}</dt>
+                <dd className="text-white/60 text-base leading-relaxed">{item.a}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
       </section>
 
       <PublicResearchBridge />
