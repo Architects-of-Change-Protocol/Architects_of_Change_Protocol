@@ -248,19 +248,29 @@ const AssurancePage = () => {
     setOpenLearnMore((prev) => (prev === id ? null : id));
 
   return (
-    <main className="min-h-screen bg-[#070d0b] text-white font-sans">
+    <main className="min-h-screen bg-[#070d0b] text-white font-sans pb-[72px] md:pb-0">
 
-      {/* ── Sticky CTA (desktop only, appears after Hero) ── */}
+      {/* ── Mobile sticky CTA bar ── */}
       <div
+        className={`assurance-mobile-cta-bar transition-all duration-300 ${showStickyCta ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'}`}
         aria-hidden={!showStickyCta}
-        className={`fixed bottom-6 right-6 z-50 hidden md:block transition-all duration-300 ${showStickyCta ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
       >
         <a
           href="#assessments"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-sm rounded-2xl shadow-[0_8px_32px_rgba(52,211,153,0.35)] transition-colors"
+          className="flex items-center justify-center w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-sm rounded-xl transition-colors"
         >
           Assess Intelligence Risk
-          <span aria-hidden="true">↑</span>
+        </a>
+      </div>
+
+      {/* ── Desktop sticky CTA (appears after Hero) ── */}
+      <div
+        className={`assurance-sticky-cta transition-all duration-300 ${showStickyCta ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3 pointer-events-none'}`}
+        aria-hidden={!showStickyCta}
+      >
+        <a href="#assessments" className="assurance-sticky-cta-inner">
+          <span className="assurance-sticky-cta-dot" aria-hidden="true" />
+          Assess Intelligence Risk
         </a>
       </div>
 
@@ -412,12 +422,12 @@ const AssurancePage = () => {
         </div>
       </section>
 
-      <hr className="assurance-divider" />
+      <hr className="assurance-section-divider-strong" />
 
       {/* ── Assessments Section ── */}
-      <section id="assessments" className="scroll-mt-20 py-28 px-6">
+      <section id="assessments" className="assurance-assessments-glow scroll-mt-20 py-36 px-6">
         <div className="max-w-7xl mx-auto">
-          <header className="mb-16 max-w-3xl">
+          <header className="mb-6 max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
               Assessments
             </p>
@@ -429,6 +439,18 @@ const AssurancePage = () => {
               intelligence continuity risk across teams, vendors, systems, and AI initiatives.
             </p>
           </header>
+
+          <div className="assurance-conversion-bridge">
+            <p><strong>If any of those questions made you pause</strong> — that is the signal. Start with the Public Assessment and know where you stand in 72 hours.</p>
+            <a
+              href={FOUNDATION_CHECKOUT_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="flex-shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-semibold rounded-xl transition-colors"
+            >
+              Start for $49 →
+            </a>
+          </div>
 
           <div className="grid md:grid-cols-3 gap-6">
             {/* Public Assessment */}
@@ -466,9 +488,9 @@ const AssurancePage = () => {
                 href={FOUNDATION_CHECKOUT_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="text-center py-3 rounded-xl text-sm font-semibold border border-white/15 hover:border-white/30 text-white transition-colors"
+                className="text-center py-3.5 rounded-xl text-sm font-semibold border border-emerald-500/40 hover:border-emerald-400/60 hover:bg-emerald-500/10 text-emerald-300 hover:text-emerald-200 transition-colors"
               >
-                Start Public Assessment
+                Start Public Assessment — $49
               </a>
             </article>
 
@@ -517,9 +539,9 @@ const AssurancePage = () => {
                 href={FOUNDER_PROGRAM_CHECKOUT_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="text-center py-3 rounded-xl text-sm font-semibold bg-emerald-500 hover:bg-emerald-400 text-black transition-colors"
+                className="text-center py-4 rounded-xl text-sm font-bold bg-emerald-500 hover:bg-emerald-400 text-black transition-colors shadow-[0_4px_24px_rgba(52,211,153,0.25)]"
               >
-                Join Founder Program
+                Join Founder Program — $149
               </a>
             </article>
 
@@ -559,7 +581,7 @@ const AssurancePage = () => {
                 href={ENTERPRISE_INTAKE_FORM_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="text-center py-3 rounded-xl text-sm font-semibold border border-white/15 hover:border-white/30 text-white transition-colors"
+                className="text-center py-3.5 rounded-xl text-sm font-semibold border border-white/15 hover:border-white/30 text-white/80 hover:text-white transition-colors"
               >
                 Request Enterprise Briefing
               </a>
@@ -595,152 +617,157 @@ const AssurancePage = () => {
       {/* ── Learn More Section ── */}
       <section id="learn-more" className="scroll-mt-20 py-28 px-6">
         <div className="max-w-4xl mx-auto">
-          <header className="mb-12">
+          <header className="mb-10">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
-              Learn More
+              Research &amp; Framework
             </p>
             <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-4">
-              Learn More
+              Explore the research behind AOC Assurance.
             </h2>
-            <p className="text-white/60 text-lg leading-relaxed">
-              Explore the ideas behind AOC Assurance.
+            <p className="text-white/55 text-lg leading-relaxed max-w-2xl">
+              The framework, the founder's perspective, and the public benchmark — for those who want to understand the thinking before or after purchasing.
             </p>
           </header>
 
-          <div className="space-y-3">
+          <div className="space-y-2">
 
             {/* Card 1: Why does this happen? — Constitutional Framework */}
-            <div className="rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden">
+            <div className={`assurance-learn-more-card${openLearnMore === 'framework' ? ' assurance-learn-more-card--open' : ''}`}>
               <button
                 type="button"
-                className="w-full flex items-center justify-between gap-4 px-7 py-6 text-left hover:bg-white/[0.02] transition-colors"
+                className="assurance-learn-more-trigger"
                 aria-expanded={openLearnMore === 'framework'}
                 onClick={() => toggleLearnMore('framework')}
               >
-                <span className="text-xl font-semibold">Why does this happen?</span>
+                <div className="assurance-learn-more-trigger-text">
+                  <span className="assurance-learn-more-trigger-title">Why does this happen?</span>
+                  <span className="assurance-learn-more-trigger-desc">Explore the Governance, Accountability, and Sovereignty principles behind organizational intelligence loss.</span>
+                </div>
                 <span
                   aria-hidden="true"
-                  className={`flex-shrink-0 text-emerald-400 text-xl font-light transition-transform duration-300 ${openLearnMore === 'framework' ? 'rotate-45' : ''}`}
+                  className={`assurance-learn-more-icon${openLearnMore === 'framework' ? ' assurance-learn-more-icon--open' : ''}`}
                 >
                   +
                 </span>
               </button>
               {openLearnMore === 'framework' && (
-                <div className="px-7 pb-8 border-t border-white/10">
-                  <div className="pt-8">
-                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
-                      AOC Constitutional Framework
-                    </p>
-                    <h3 className="text-2xl md:text-3xl font-semibold tracking-tight mb-5">
-                      These are not just knowledge problems. They are constitutional failures.
-                    </h3>
-                    <p className="text-white/60 text-base leading-relaxed mb-8">
-                      Most organizations do not have a data problem. They have a continuity problem. Intelligence
-                      cannot survive without governance. Learning cannot scale without accountability. Resilience
-                      cannot exist without sovereignty. AOC Assurance evaluates the constitutional conditions that
-                      determine whether organizational intelligence remains durable, traceable, and usable through change.
-                    </p>
+                <div className="assurance-learn-more-body">
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
+                    AOC Constitutional Framework
+                  </p>
+                  <h3 className="text-2xl md:text-3xl font-semibold tracking-tight mb-5">
+                    These are not just knowledge problems. They are constitutional failures.
+                  </h3>
+                  <p className="text-white/60 text-base leading-relaxed mb-8">
+                    Most organizations do not have a data problem. They have a continuity problem. Intelligence
+                    cannot survive without governance. Learning cannot scale without accountability. Resilience
+                    cannot exist without sovereignty. AOC Assurance evaluates the constitutional conditions that
+                    determine whether organizational intelligence remains durable, traceable, and usable through change.
+                  </p>
 
-                    <div className="grid md:grid-cols-3 gap-6 mb-10">
-                      {FRAMEWORK_CARDS.map((card) => (
-                        <div key={card.title} className="rounded-2xl border border-white/10 bg-white/[0.02] p-7">
-                          <h4 className="text-base font-semibold mb-3">{card.title}</h4>
-                          <p className="text-white/60 text-sm leading-relaxed">{card.body}</p>
-                        </div>
-                      ))}
-                    </div>
+                  <div className="grid md:grid-cols-3 gap-5 mb-10">
+                    {FRAMEWORK_CARDS.map((card) => (
+                      <div key={card.title} className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+                        <h4 className="text-base font-semibold mb-3">{card.title}</h4>
+                        <p className="text-white/60 text-sm leading-relaxed">{card.body}</p>
+                      </div>
+                    ))}
+                  </div>
 
-                    <h4 className="text-xl md:text-2xl font-semibold tracking-tight mb-5">
-                      AOC Assurance measures whether your intelligence can survive change.
-                    </h4>
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                      {ASSESSMENT_DIMENSIONS.map((dim) => (
-                        <div key={dim.title} className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
-                          <p className="text-emerald-400 text-sm font-semibold mb-2">{dim.title}</p>
-                          <p className="text-white/55 text-sm leading-relaxed">{dim.body}</p>
-                        </div>
-                      ))}
-                    </div>
+                  <h4 className="text-xl md:text-2xl font-semibold tracking-tight mb-5">
+                    AOC Assurance measures whether your intelligence can survive change.
+                  </h4>
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {ASSESSMENT_DIMENSIONS.map((dim) => (
+                      <div key={dim.title} className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+                        <p className="text-emerald-400 text-sm font-semibold mb-2">{dim.title}</p>
+                        <p className="text-white/55 text-sm leading-relaxed">{dim.body}</p>
+                      </div>
+                    ))}
                   </div>
                 </div>
               )}
             </div>
 
             {/* Card 2: Why did we create AOC? — Founder Essay */}
-            <div className="rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden">
+            <div className={`assurance-learn-more-card${openLearnMore === 'founder-essay' ? ' assurance-learn-more-card--open' : ''}`}>
               <button
                 type="button"
-                className="w-full flex items-center justify-between gap-4 px-7 py-6 text-left hover:bg-white/[0.02] transition-colors"
+                className="assurance-learn-more-trigger"
                 aria-expanded={openLearnMore === 'founder-essay'}
                 onClick={() => toggleLearnMore('founder-essay')}
               >
-                <span className="text-xl font-semibold">Why did we create AOC?</span>
+                <div className="assurance-learn-more-trigger-text">
+                  <span className="assurance-learn-more-trigger-title">Why did we create AOC?</span>
+                  <span className="assurance-learn-more-trigger-desc">Read the founder's essay explaining the constitutional problem behind modern organizational intelligence loss.</span>
+                </div>
                 <span
                   aria-hidden="true"
-                  className={`flex-shrink-0 text-emerald-400 text-xl font-light transition-transform duration-300 ${openLearnMore === 'founder-essay' ? 'rotate-45' : ''}`}
+                  className={`assurance-learn-more-icon${openLearnMore === 'founder-essay' ? ' assurance-learn-more-icon--open' : ''}`}
                 >
                   +
                 </span>
               </button>
               {openLearnMore === 'founder-essay' && (
-                <div className="px-7 pb-8 border-t border-white/10">
-                  <div className="pt-8">
-                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
-                      Founder Essay
+                <div className="assurance-learn-more-body">
+                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
+                    Founder Essay
+                  </p>
+                  <h3 className="text-2xl md:text-3xl font-semibold tracking-tight mb-3">
+                    Why Governance Alone Is Not Enough
+                  </h3>
+                  <p className="text-xl font-medium text-white/70 leading-snug mb-8">
+                    I Started Looking for Sovereignty. I Found a Constitutional Problem.
+                  </p>
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-8 md:p-10">
+                    <p className="text-white/70 text-base leading-relaxed mb-6">
+                      Most organizations believe that if they govern their data well enough, they will be resilient. They invest in policies, frameworks, and tools. They document decisions. They deploy knowledge management systems. They add governance layers on top of governance layers.
                     </p>
-                    <h3 className="text-2xl md:text-3xl font-semibold tracking-tight mb-3">
-                      Why Governance Alone Is Not Enough
-                    </h3>
-                    <p className="text-xl font-medium text-white/70 leading-snug mb-8">
-                      I Started Looking for Sovereignty. I Found a Constitutional Problem.
+                    <p className="text-white/70 text-base leading-relaxed mb-6">
+                      And yet critical intelligence keeps disappearing. Key employees leave and take context with them. Strategic decisions are made again because nobody can reconstruct why the original decision was made. AI systems are deployed but cannot understand the business they are supposed to serve. Organizations grow but do not learn.
                     </p>
-                    <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-8 md:p-10">
-                      <p className="text-white/70 text-base leading-relaxed mb-6">
-                        Most organizations believe that if they govern their data well enough, they will be resilient. They invest in policies, frameworks, and tools. They document decisions. They deploy knowledge management systems. They add governance layers on top of governance layers.
-                      </p>
-                      <p className="text-white/70 text-base leading-relaxed mb-6">
-                        And yet critical intelligence keeps disappearing. Key employees leave and take context with them. Strategic decisions are made again because nobody can reconstruct why the original decision was made. AI systems are deployed but cannot understand the business they are supposed to serve. Organizations grow but do not learn.
-                      </p>
-                      <p className="text-white/70 text-base leading-relaxed mb-6">
-                        When I started investigating why this keeps happening, I expected to find a data problem. What I found instead was a constitutional problem.
-                      </p>
-                      <p className="text-white/70 text-base leading-relaxed mb-8">
-                        Governance defines who owns a decision. Accountability defines who is responsible when it fails. Sovereignty defines whether the organization actually controls its intelligence — or whether that intelligence lives inside people, tools, and vendor relationships it cannot govern. Without all three, organizational intelligence is fragile by design.
-                      </p>
-                      <a
-                        href={FOUNDER_ESSAY_URL}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-semibold text-sm transition-colors"
-                      >
-                        Read the full essay on LinkedIn
-                        <span aria-hidden="true">→</span>
-                      </a>
-                    </div>
+                    <p className="text-white/70 text-base leading-relaxed mb-6">
+                      When I started investigating why this keeps happening, I expected to find a data problem. What I found instead was a constitutional problem.
+                    </p>
+                    <p className="text-white/70 text-base leading-relaxed mb-8">
+                      Governance defines who owns a decision. Accountability defines who is responsible when it fails. Sovereignty defines whether the organization actually controls its intelligence — or whether that intelligence lives inside people, tools, and vendor relationships it cannot govern. Without all three, organizational intelligence is fragile by design.
+                    </p>
+                    <a
+                      href={FOUNDER_ESSAY_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-semibold text-sm transition-colors"
+                    >
+                      Read the full essay on LinkedIn
+                      <span aria-hidden="true">→</span>
+                    </a>
                   </div>
                 </div>
               )}
             </div>
 
             {/* Card 3: See the Public Benchmark — Constitutional Index */}
-            <div className="rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden">
+            <div className={`assurance-learn-more-card${openLearnMore === 'index' ? ' assurance-learn-more-card--open' : ''}`}>
               <button
                 type="button"
-                className="w-full flex items-center justify-between gap-4 px-7 py-6 text-left hover:bg-white/[0.02] transition-colors"
+                className="assurance-learn-more-trigger"
                 aria-expanded={openLearnMore === 'index'}
                 onClick={() => toggleLearnMore('index')}
               >
-                <span className="text-xl font-semibold">See the Public Benchmark</span>
+                <div className="assurance-learn-more-trigger-text">
+                  <span className="assurance-learn-more-trigger-title">See the Public Benchmark</span>
+                  <span className="assurance-learn-more-trigger-desc">Explore how AI organizations compare across Governance and Sovereignty dimensions in the AOC Constitutional Index.</span>
+                </div>
                 <span
                   aria-hidden="true"
-                  className={`flex-shrink-0 text-emerald-400 text-xl font-light transition-transform duration-300 ${openLearnMore === 'index' ? 'rotate-45' : ''}`}
+                  className={`assurance-learn-more-icon${openLearnMore === 'index' ? ' assurance-learn-more-icon--open' : ''}`}
                 >
                   +
                 </span>
               </button>
               {openLearnMore === 'index' && (
-                <div className="px-7 pb-8 border-t border-white/10">
-                  <div id="index" className="scroll-mt-20 pt-8">
+                <div className="assurance-learn-more-body">
+                  <div id="index" className="scroll-mt-20">
                     <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
                       Constitutional Index
                     </p>
