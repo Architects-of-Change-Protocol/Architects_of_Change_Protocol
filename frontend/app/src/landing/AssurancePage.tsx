@@ -429,43 +429,43 @@ const AssurancePage = () => {
         <div className="max-w-7xl mx-auto">
           <header className="mb-6 max-w-3xl">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
-              Assessments
+              Choose Your Assessment
             </p>
             <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-5">
-              Choose the assessment depth your organization needs.
+              The cost of losing intelligence is far greater than the cost of measuring it.
             </h2>
             <p className="text-white/60 text-lg leading-relaxed">
-              Start with public evidence, go deeper with founder-level analysis, or assess enterprise-wide
-              intelligence continuity risk across teams, vendors, systems, and AI initiatives.
+              Start with a benchmark, deepen your analysis with a founder assessment, or engage directly
+              with AOC for an executive-level intelligence risk review.
             </p>
           </header>
 
           <div className="assurance-conversion-bridge">
-            <p><strong>If any of those questions made you pause</strong> — that is the signal. Start with the Public Assessment and know where you stand in 72 hours.</p>
+            <p><strong>If any of those questions made you pause</strong> — that is the signal. Start with the Benchmark Assessment and know where you stand in 72 hours.</p>
             <a
               href={FOUNDATION_CHECKOUT_URL}
               target="_blank"
               rel="noreferrer"
               className="flex-shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-semibold rounded-xl transition-colors"
             >
-              Start for $49 →
+              Start Benchmark Assessment →
             </a>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {/* Public Assessment */}
+            {/* Benchmark Assessment */}
             <article className="rounded-2xl border border-white/10 bg-white/[0.02] p-7 flex flex-col">
               <div className="mb-5">
                 <p className="text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-emerald-400">
-                  Public Assessment
+                  Benchmark Assessment
                 </p>
                 <div className="mt-4 flex items-baseline gap-3">
-                  <span className="text-3xl font-semibold text-white">$49</span>
+                  <span className="text-3xl font-semibold text-white">$99.99</span>
                 </div>
-                <h3 className="mt-3 text-xl font-semibold">Public Assessment</h3>
+                <h3 className="mt-3 text-xl font-semibold">Benchmark Assessment</h3>
                 <p className="mt-2 text-sm text-white/55 leading-relaxed">
-                  A rapid external assessment of publicly observable signals related to Governance,
-                  Sovereignty, decision traceability, and institutional resilience.
+                  A rapid external benchmark against publicly observable Governance, Sovereignty,
+                  Accountability, and Organizational Resilience signals.
                 </p>
               </div>
               <ul className="flex-1 space-y-2 mb-8">
@@ -473,9 +473,9 @@ const AssurancePage = () => {
                   'Governance Score',
                   'Sovereignty Score',
                   'Constitutional Position',
-                  'Knowledge Loss and Continuity Snapshot',
+                  'Organizational Risk Snapshot',
                   'Executive Summary',
-                  'Public Index Listing when applicable',
+                  'Public Index Inclusion (when applicable)',
                   'Delivered within 72 hours',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2 text-sm text-white/70">
@@ -490,44 +490,43 @@ const AssurancePage = () => {
                 rel="noreferrer"
                 className="text-center py-3.5 rounded-xl text-sm font-semibold border border-emerald-500/40 hover:border-emerald-400/60 hover:bg-emerald-500/10 text-emerald-300 hover:text-emerald-200 transition-colors"
               >
-                Start Public Assessment — $49
+                Start Benchmark Assessment
               </a>
             </article>
 
-            {/* Founder Program */}
+            {/* Founder Assessment */}
             <article className="rounded-2xl border border-emerald-500/50 bg-emerald-950/35 shadow-[0_0_40px_rgba(52,211,153,0.08)] p-7 flex flex-col relative">
               <div className="absolute inset-0 rounded-2xl pointer-events-none ring-1 ring-emerald-500/20" />
               <div className="mb-5">
                 <div className="flex items-center gap-2 flex-wrap">
                   <p className="text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-emerald-400">
-                    Founder Program
+                    Founder Assessment
                   </p>
                   <span className="inline-flex items-center text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-amber-300 bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded-full">
                     Most Popular
                   </span>
                 </div>
                 <div className="mt-4 flex items-baseline gap-3">
-                  <span className="text-3xl font-semibold text-emerald-300">$149</span>
-                  <span className="text-xs text-white/35 line-through">Future public price: $499</span>
+                  <span className="text-3xl font-semibold text-emerald-300">$499.99</span>
+                  <span className="text-xs text-white/35 line-through">$999.99</span>
                 </div>
-                <p className="mt-1 text-xs text-amber-300/70 font-medium">
-                  Founder Pricing — Limited to the first 25 organizations
-                </p>
-                <h3 className="mt-3 text-xl font-semibold">Founder Program</h3>
+                <h3 className="mt-3 text-xl font-semibold">Founder Assessment</h3>
                 <p className="mt-2 text-sm text-white/55 leading-relaxed">
-                  A deeper analysis for founders and leadership teams who want to understand where
-                  intelligence continuity, accountability, AI readiness, and sovereignty risks are emerging.
+                  A deeper assessment for founders, executives, and leadership teams seeking to understand
+                  organizational intelligence risk, key-person dependency, decision traceability, and
+                  continuity challenges.
                 </p>
               </div>
               <ul className="flex-1 space-y-2 mb-8">
                 {[
-                  'Everything in Public Assessment',
-                  'Knowledge Loss and Key Person Dependency Review',
-                  'Key-Person and Knowledge Continuity Findings',
-                  'Governance and Sovereignty Constraint Analysis',
+                  'Everything in Benchmark Assessment',
+                  'Knowledge Loss Review',
+                  'Key Person Dependency Analysis',
+                  'Governance Constraint Analysis',
+                  'Sovereignty Constraint Analysis',
                   'Decision Traceability Review',
-                  'AI Readiness Observations',
-                  'Prioritized Improvement Roadmap',
+                  'Organizational Learning Findings',
+                  'Prioritized Executive Roadmap',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2 text-sm text-white/70">
                     <span className="text-emerald-400 mt-0.5 shrink-0">✓</span>
@@ -541,35 +540,37 @@ const AssurancePage = () => {
                 rel="noreferrer"
                 className="text-center py-4 rounded-xl text-sm font-bold bg-emerald-500 hover:bg-emerald-400 text-black transition-colors shadow-[0_4px_24px_rgba(52,211,153,0.25)]"
               >
-                Join Founder Program — $149
+                Start Founder Assessment
               </a>
             </article>
 
-            {/* Enterprise Assessment */}
+            {/* Executive Intelligence Risk Assessment */}
             <article className="rounded-2xl border border-white/10 bg-white/[0.02] p-7 flex flex-col">
               <div className="mb-5">
-                <p className="text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-emerald-400">
-                  Enterprise Assessment
+                <p className="text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-white/40">
+                  Executive Intelligence Risk Assessment
                 </p>
                 <div className="mt-4 flex items-baseline gap-3">
                   <span className="text-3xl font-semibold text-white">Contact Sales</span>
                 </div>
-                <h3 className="mt-3 text-xl font-semibold">Enterprise Assessment</h3>
+                <h3 className="mt-3 text-xl font-semibold">Executive Intelligence Risk Assessment</h3>
                 <p className="mt-2 text-sm text-white/55 leading-relaxed">
-                  A strategic assessment for organizations seeking to measure and reduce hidden intelligence
-                  continuity risk across teams, vendors, systems, AI initiatives, and critical operations.
+                  A strategic assessment for organizations seeking to identify and reduce enterprise-wide
+                  intelligence continuity risks across teams, leadership structures, vendors, systems,
+                  and AI initiatives.
                 </p>
               </div>
               <ul className="flex-1 space-y-2 mb-8">
                 {[
-                  'Everything in Founder Program',
-                  'Enterprise Risk Register',
-                  'Knowledge Continuity Review',
-                  'Decision Lineage and Accountability Mapping',
-                  'AI Context and Governance Review',
+                  'Executive Interviews',
+                  'Organizational Intelligence Risk Register',
+                  'Knowledge Continuity Assessment',
+                  'Decision Lineage Mapping',
+                  'Governance Review',
+                  'Accountability Review',
+                  'AI Context Assessment',
                   'Institutional Resilience Roadmap',
                   'Executive Briefing',
-                  'AOC Enterprise Readiness Plan',
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-2 text-sm text-white/70">
                     <span className="text-emerald-400 mt-0.5 shrink-0">✓</span>
@@ -583,7 +584,7 @@ const AssurancePage = () => {
                 rel="noreferrer"
                 className="text-center py-3.5 rounded-xl text-sm font-semibold border border-white/15 hover:border-white/30 text-white/80 hover:text-white transition-colors"
               >
-                Request Enterprise Briefing
+                Contact Sales
               </a>
             </article>
           </div>
