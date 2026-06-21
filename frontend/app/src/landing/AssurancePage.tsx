@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LogoRotating } from '../components/logo/LogoRotating';
 import {
   CONSTITUTIONAL_INDEX_ORGANIZATIONS,
@@ -11,9 +11,8 @@ import './assurance.css';
 
 const NAV_ITEMS = [
   { label: 'Risk', href: '#risk' },
-  { label: 'Framework', href: '#framework' },
-  { label: 'Index', href: '#index' },
   { label: 'Assessments', href: '#assessments' },
+  { label: 'Learn More', href: '#learn-more' },
   { label: 'FAQ', href: '#faq' },
   { label: 'Protocol', href: '/' },
 ];
@@ -223,15 +222,47 @@ function AssuranceFooter() {
   );
 }
 
+type LearnMoreId = 'framework' | 'founder-essay' | 'index';
+
 const AssurancePage = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [openLearnMore, setOpenLearnMore] = useState<LearnMoreId | null>(null);
+  const [showStickyCta, setShowStickyCta] = useState(false);
+
+  useEffect(() => {
+    const hero = document.querySelector('.assurance-hero-glow');
+    if (!hero) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowStickyCta(!entry.isIntersecting),
+      { threshold: 0 },
+    );
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, []);
 
   const emergingCandidates = CONSTITUTIONAL_INDEX_ORGANIZATIONS.filter(
     (o) => o.quadrant === 'sovereignty-pioneers',
   ).sort((a, b) => (b.governanceScore + b.sovereigntyScore) - (a.governanceScore + a.sovereigntyScore));
 
+  const toggleLearnMore = (id: LearnMoreId) =>
+    setOpenLearnMore((prev) => (prev === id ? null : id));
+
   return (
     <main className="min-h-screen bg-[#070d0b] text-white font-sans">
+
+      {/* ── Sticky CTA (desktop only, appears after Hero) ── */}
+      <div
+        aria-hidden={!showStickyCta}
+        className={`fixed bottom-6 right-6 z-50 hidden md:block transition-all duration-300 ${showStickyCta ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}
+      >
+        <a
+          href="#assessments"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold text-sm rounded-2xl shadow-[0_8px_32px_rgba(52,211,153,0.35)] transition-colors"
+        >
+          Assess Intelligence Risk
+          <span aria-hidden="true">↑</span>
+        </a>
+      </div>
 
       {/* ── Navigation ── */}
       <nav className="sticky top-0 z-30 backdrop-blur bg-[#070d0b]/80 border-b border-white/10">
@@ -313,7 +344,7 @@ const AssurancePage = () => {
             Assess Intelligence Risk
           </a>
           <a
-            href="#framework"
+            href="#learn-more"
             className="px-10 py-4 border border-white/15 hover:border-white/30 text-white font-semibold text-lg rounded-2xl transition-colors"
           >
             Explore the Constitutional Framework
@@ -347,157 +378,6 @@ const AssurancePage = () => {
                 <p className="text-white/60 text-sm leading-relaxed">{card.body}</p>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      <hr className="assurance-divider" />
-
-      {/* ── Framework Section ── */}
-      <section id="framework" className="scroll-mt-20 py-28 px-6">
-        <div className="max-w-7xl mx-auto">
-          <header className="mb-12 max-w-3xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
-              AOC Constitutional Framework
-            </p>
-            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-5">
-              These are not just knowledge problems. They are constitutional failures.
-            </h2>
-            <p className="text-white/60 text-lg leading-relaxed">
-              Most organizations do not have a data problem. They have a continuity problem. Intelligence
-              cannot survive without governance. Learning cannot scale without accountability. Resilience
-              cannot exist without sovereignty. AOC Assurance evaluates the constitutional conditions that
-              determine whether organizational intelligence remains durable, traceable, and usable through change.
-            </p>
-          </header>
-
-          <div className="grid md:grid-cols-3 gap-6 mb-14">
-            {FRAMEWORK_CARDS.map((card) => (
-              <div key={card.title} className="rounded-2xl border border-white/10 bg-white/[0.02] p-7">
-                <h3 className="text-lg font-semibold mb-3">{card.title}</h3>
-                <p className="text-white/60 text-sm leading-relaxed">{card.body}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Measurement dimensions */}
-          <div className="mb-4 max-w-3xl">
-            <h3 className="text-2xl md:text-3xl font-semibold tracking-tight mb-5">
-              AOC Assurance measures whether your intelligence can survive change.
-            </h3>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {ASSESSMENT_DIMENSIONS.map((dim) => (
-              <div key={dim.title} className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
-                <p className="text-emerald-400 text-sm font-semibold mb-2">{dim.title}</p>
-                <p className="text-white/55 text-sm leading-relaxed">{dim.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <hr className="assurance-divider" />
-
-      {/* ── Founder Essay Section ── */}
-      <section className="scroll-mt-20 py-28 px-6">
-        <div className="max-w-4xl mx-auto">
-          <header className="mb-10">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
-              Founder Essay
-            </p>
-            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-5">
-              Why Governance Alone Is Not Enough
-            </h2>
-            <p className="text-2xl md:text-3xl font-medium text-white/70 leading-snug">
-              I Started Looking for Sovereignty. I Found a Constitutional Problem.
-            </p>
-          </header>
-          <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-8 md:p-10">
-            <p className="text-white/70 text-base leading-relaxed mb-6">
-              Most organizations believe that if they govern their data well enough, they will be resilient. They invest in policies, frameworks, and tools. They document decisions. They deploy knowledge management systems. They add governance layers on top of governance layers.
-            </p>
-            <p className="text-white/70 text-base leading-relaxed mb-6">
-              And yet critical intelligence keeps disappearing. Key employees leave and take context with them. Strategic decisions are made again because nobody can reconstruct why the original decision was made. AI systems are deployed but cannot understand the business they are supposed to serve. Organizations grow but do not learn.
-            </p>
-            <p className="text-white/70 text-base leading-relaxed mb-6">
-              When I started investigating why this keeps happening, I expected to find a data problem. What I found instead was a constitutional problem.
-            </p>
-            <p className="text-white/70 text-base leading-relaxed mb-8">
-              Governance defines who owns a decision. Accountability defines who is responsible when it fails. Sovereignty defines whether the organization actually controls its intelligence — or whether that intelligence lives inside people, tools, and vendor relationships it cannot govern. Without all three, organizational intelligence is fragile by design.
-            </p>
-            <a
-              href={FOUNDER_ESSAY_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-semibold text-sm transition-colors"
-            >
-              Read the full essay on LinkedIn
-              <span aria-hidden="true">→</span>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <hr className="assurance-divider" />
-
-      {/* ── Constitutional Index Section ── */}
-      <section id="index" className="scroll-mt-20 py-28 px-6">
-        <div className="max-w-7xl mx-auto">
-          <header className="mb-12 max-w-4xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
-              Constitutional Index
-            </p>
-            <h2 className="text-4xl md:text-6xl font-semibold tracking-tight mb-5">
-              A public benchmark for Governance and Sovereignty in the AI industry.
-            </h2>
-            <p className="text-white/60 text-lg leading-relaxed">
-              The AOC Constitutional Index evaluates AI organizations across Governance and Sovereignty
-              dimensions. It provides a public evidence layer for understanding how organizations balance
-              accountability, control, dependency, and institutional resilience.
-            </p>
-            {emergingCandidates.length > 0 && (
-              <p className="mt-4 text-sm text-white/40">
-                {CONSTITUTIONAL_INDEX_ORGANIZATIONS.length} organizations assessed.
-                Closest emerging candidate: {emergingCandidates[0].name}.
-              </p>
-            )}
-          </header>
-
-          <ConstitutionalBenchmarkExplorer />
-
-          <div className="grid md:grid-cols-2 gap-6 mt-10">
-            <div className="ci-leader-panel">
-              <p className="ci-leader-panel-title">Governance Score Leaders</p>
-              <ol className="ci-leader-list">
-                {GOVERNANCE_RANKED.slice(0, 3).map((org, i) => (
-                  <li key={org.id} className="ci-leader-item">
-                    <span className="ci-leader-rank">{i + 1}</span>
-                    <div className="ci-leader-meta">
-                      <strong>{org.name}</strong>
-                      <span>{org.quadrantLabel}</span>
-                    </div>
-                    <strong className="ci-leader-score">{org.governanceScore}</strong>
-                  </li>
-                ))}
-              </ol>
-            </div>
-
-            <div className="ci-leader-panel">
-              <p className="ci-leader-panel-title">Sovereignty Score Leaders</p>
-              <ol className="ci-leader-list">
-                {SOVEREIGNTY_RANKED.slice(0, 3).map((org, i) => (
-                  <li key={org.id} className="ci-leader-item">
-                    <span className="ci-leader-rank">{i + 1}</span>
-                    <div className="ci-leader-meta">
-                      <strong>{org.name}</strong>
-                      <span>{org.quadrantLabel}</span>
-                    </div>
-                    <strong className="ci-leader-score ci-leader-score--sovereignty">{org.sovereigntyScore}</strong>
-                  </li>
-                ))}
-              </ol>
-            </div>
           </div>
         </div>
       </section>
@@ -707,6 +587,219 @@ const AssurancePage = () => {
           >
             Explore AOC Enterprise
           </a>
+        </div>
+      </section>
+
+      <hr className="assurance-divider" />
+
+      {/* ── Learn More Section ── */}
+      <section id="learn-more" className="scroll-mt-20 py-28 px-6">
+        <div className="max-w-4xl mx-auto">
+          <header className="mb-12">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
+              Learn More
+            </p>
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-4">
+              Learn More
+            </h2>
+            <p className="text-white/60 text-lg leading-relaxed">
+              Explore the ideas behind AOC Assurance.
+            </p>
+          </header>
+
+          <div className="space-y-3">
+
+            {/* Card 1: Why does this happen? — Constitutional Framework */}
+            <div className="rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden">
+              <button
+                type="button"
+                className="w-full flex items-center justify-between gap-4 px-7 py-6 text-left hover:bg-white/[0.02] transition-colors"
+                aria-expanded={openLearnMore === 'framework'}
+                onClick={() => toggleLearnMore('framework')}
+              >
+                <span className="text-xl font-semibold">Why does this happen?</span>
+                <span
+                  aria-hidden="true"
+                  className={`flex-shrink-0 text-emerald-400 text-xl font-light transition-transform duration-300 ${openLearnMore === 'framework' ? 'rotate-45' : ''}`}
+                >
+                  +
+                </span>
+              </button>
+              {openLearnMore === 'framework' && (
+                <div className="px-7 pb-8 border-t border-white/10">
+                  <div className="pt-8">
+                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
+                      AOC Constitutional Framework
+                    </p>
+                    <h3 className="text-2xl md:text-3xl font-semibold tracking-tight mb-5">
+                      These are not just knowledge problems. They are constitutional failures.
+                    </h3>
+                    <p className="text-white/60 text-base leading-relaxed mb-8">
+                      Most organizations do not have a data problem. They have a continuity problem. Intelligence
+                      cannot survive without governance. Learning cannot scale without accountability. Resilience
+                      cannot exist without sovereignty. AOC Assurance evaluates the constitutional conditions that
+                      determine whether organizational intelligence remains durable, traceable, and usable through change.
+                    </p>
+
+                    <div className="grid md:grid-cols-3 gap-6 mb-10">
+                      {FRAMEWORK_CARDS.map((card) => (
+                        <div key={card.title} className="rounded-2xl border border-white/10 bg-white/[0.02] p-7">
+                          <h4 className="text-base font-semibold mb-3">{card.title}</h4>
+                          <p className="text-white/60 text-sm leading-relaxed">{card.body}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <h4 className="text-xl md:text-2xl font-semibold tracking-tight mb-5">
+                      AOC Assurance measures whether your intelligence can survive change.
+                    </h4>
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                      {ASSESSMENT_DIMENSIONS.map((dim) => (
+                        <div key={dim.title} className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+                          <p className="text-emerald-400 text-sm font-semibold mb-2">{dim.title}</p>
+                          <p className="text-white/55 text-sm leading-relaxed">{dim.body}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Card 2: Why did we create AOC? — Founder Essay */}
+            <div className="rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden">
+              <button
+                type="button"
+                className="w-full flex items-center justify-between gap-4 px-7 py-6 text-left hover:bg-white/[0.02] transition-colors"
+                aria-expanded={openLearnMore === 'founder-essay'}
+                onClick={() => toggleLearnMore('founder-essay')}
+              >
+                <span className="text-xl font-semibold">Why did we create AOC?</span>
+                <span
+                  aria-hidden="true"
+                  className={`flex-shrink-0 text-emerald-400 text-xl font-light transition-transform duration-300 ${openLearnMore === 'founder-essay' ? 'rotate-45' : ''}`}
+                >
+                  +
+                </span>
+              </button>
+              {openLearnMore === 'founder-essay' && (
+                <div className="px-7 pb-8 border-t border-white/10">
+                  <div className="pt-8">
+                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
+                      Founder Essay
+                    </p>
+                    <h3 className="text-2xl md:text-3xl font-semibold tracking-tight mb-3">
+                      Why Governance Alone Is Not Enough
+                    </h3>
+                    <p className="text-xl font-medium text-white/70 leading-snug mb-8">
+                      I Started Looking for Sovereignty. I Found a Constitutional Problem.
+                    </p>
+                    <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-8 md:p-10">
+                      <p className="text-white/70 text-base leading-relaxed mb-6">
+                        Most organizations believe that if they govern their data well enough, they will be resilient. They invest in policies, frameworks, and tools. They document decisions. They deploy knowledge management systems. They add governance layers on top of governance layers.
+                      </p>
+                      <p className="text-white/70 text-base leading-relaxed mb-6">
+                        And yet critical intelligence keeps disappearing. Key employees leave and take context with them. Strategic decisions are made again because nobody can reconstruct why the original decision was made. AI systems are deployed but cannot understand the business they are supposed to serve. Organizations grow but do not learn.
+                      </p>
+                      <p className="text-white/70 text-base leading-relaxed mb-6">
+                        When I started investigating why this keeps happening, I expected to find a data problem. What I found instead was a constitutional problem.
+                      </p>
+                      <p className="text-white/70 text-base leading-relaxed mb-8">
+                        Governance defines who owns a decision. Accountability defines who is responsible when it fails. Sovereignty defines whether the organization actually controls its intelligence — or whether that intelligence lives inside people, tools, and vendor relationships it cannot govern. Without all three, organizational intelligence is fragile by design.
+                      </p>
+                      <a
+                        href={FOUNDER_ESSAY_URL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-semibold text-sm transition-colors"
+                      >
+                        Read the full essay on LinkedIn
+                        <span aria-hidden="true">→</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Card 3: See the Public Benchmark — Constitutional Index */}
+            <div className="rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden">
+              <button
+                type="button"
+                className="w-full flex items-center justify-between gap-4 px-7 py-6 text-left hover:bg-white/[0.02] transition-colors"
+                aria-expanded={openLearnMore === 'index'}
+                onClick={() => toggleLearnMore('index')}
+              >
+                <span className="text-xl font-semibold">See the Public Benchmark</span>
+                <span
+                  aria-hidden="true"
+                  className={`flex-shrink-0 text-emerald-400 text-xl font-light transition-transform duration-300 ${openLearnMore === 'index' ? 'rotate-45' : ''}`}
+                >
+                  +
+                </span>
+              </button>
+              {openLearnMore === 'index' && (
+                <div className="px-7 pb-8 border-t border-white/10">
+                  <div id="index" className="scroll-mt-20 pt-8">
+                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
+                      Constitutional Index
+                    </p>
+                    <h3 className="text-2xl md:text-4xl font-semibold tracking-tight mb-5">
+                      A public benchmark for Governance and Sovereignty in the AI industry.
+                    </h3>
+                    <p className="text-white/60 text-base leading-relaxed mb-4">
+                      The AOC Constitutional Index evaluates AI organizations across Governance and Sovereignty
+                      dimensions. It provides a public evidence layer for understanding how organizations balance
+                      accountability, control, dependency, and institutional resilience.
+                    </p>
+                    {emergingCandidates.length > 0 && (
+                      <p className="mb-8 text-sm text-white/40">
+                        {CONSTITUTIONAL_INDEX_ORGANIZATIONS.length} organizations assessed.
+                        Closest emerging candidate: {emergingCandidates[0].name}.
+                      </p>
+                    )}
+
+                    <ConstitutionalBenchmarkExplorer />
+
+                    <div className="grid md:grid-cols-2 gap-6 mt-10">
+                      <div className="ci-leader-panel">
+                        <p className="ci-leader-panel-title">Governance Score Leaders</p>
+                        <ol className="ci-leader-list">
+                          {GOVERNANCE_RANKED.slice(0, 3).map((org, i) => (
+                            <li key={org.id} className="ci-leader-item">
+                              <span className="ci-leader-rank">{i + 1}</span>
+                              <div className="ci-leader-meta">
+                                <strong>{org.name}</strong>
+                                <span>{org.quadrantLabel}</span>
+                              </div>
+                              <strong className="ci-leader-score">{org.governanceScore}</strong>
+                            </li>
+                          ))}
+                        </ol>
+                      </div>
+
+                      <div className="ci-leader-panel">
+                        <p className="ci-leader-panel-title">Sovereignty Score Leaders</p>
+                        <ol className="ci-leader-list">
+                          {SOVEREIGNTY_RANKED.slice(0, 3).map((org, i) => (
+                            <li key={org.id} className="ci-leader-item">
+                              <span className="ci-leader-rank">{i + 1}</span>
+                              <div className="ci-leader-meta">
+                                <strong>{org.name}</strong>
+                                <span>{org.quadrantLabel}</span>
+                              </div>
+                              <strong className="ci-leader-score ci-leader-score--sovereignty">{org.sovereigntyScore}</strong>
+                            </li>
+                          ))}
+                        </ol>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+          </div>
         </div>
       </section>
 
