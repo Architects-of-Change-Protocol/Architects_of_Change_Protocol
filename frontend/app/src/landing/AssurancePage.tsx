@@ -300,12 +300,10 @@ const AssurancePage = () => {
           AOC Assurance
         </p>
         <h1 className="text-5xl md:text-7xl font-semibold tracking-[-2.5px] leading-[1.05] max-w-4xl mx-auto mb-8">
-          Organizations don't fail because they lack data. They fail because they lose intelligence.
+          How much of your company's intelligence would survive tomorrow?
         </h1>
-        <p className="max-w-2xl mx-auto text-lg md:text-xl text-white/65 leading-relaxed mb-12">
-          AOC Assurance helps organizations measure Knowledge Loss exposure, uncover Key Person Dependency,
-          and understand whether critical knowledge can survive turnover, AI transformation, vendor changes,
-          platform migrations, and organizational growth.
+        <p className="max-w-xl mx-auto text-lg md:text-xl text-white/65 leading-relaxed mb-12">
+          Most companies are one resignation away from losing critical intelligence.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
           <a
@@ -322,7 +320,7 @@ const AssurancePage = () => {
           </a>
         </div>
         <p className="text-xs text-white/40 tracking-wide">
-          Powered by the AOC Constitutional Framework: Governance, Sovereignty, Accountability, Traceability, and Institutional Resilience.
+          Powered by the AOC Constitutional Framework
         </p>
       </section>
 
@@ -395,6 +393,48 @@ const AssurancePage = () => {
                 <p className="text-white/55 text-sm leading-relaxed">{dim.body}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <hr className="assurance-divider" />
+
+      {/* ── Founder Essay Section ── */}
+      <section className="scroll-mt-20 py-28 px-6">
+        <div className="max-w-4xl mx-auto">
+          <header className="mb-10">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
+              Founder Essay
+            </p>
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-5">
+              Why Governance Alone Is Not Enough
+            </h2>
+            <p className="text-2xl md:text-3xl font-medium text-white/70 leading-snug">
+              I Started Looking for Sovereignty. I Found a Constitutional Problem.
+            </p>
+          </header>
+          <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-8 md:p-10">
+            <p className="text-white/70 text-base leading-relaxed mb-6">
+              Most organizations believe that if they govern their data well enough, they will be resilient. They invest in policies, frameworks, and tools. They document decisions. They deploy knowledge management systems. They add governance layers on top of governance layers.
+            </p>
+            <p className="text-white/70 text-base leading-relaxed mb-6">
+              And yet critical intelligence keeps disappearing. Key employees leave and take context with them. Strategic decisions are made again because nobody can reconstruct why the original decision was made. AI systems are deployed but cannot understand the business they are supposed to serve. Organizations grow but do not learn.
+            </p>
+            <p className="text-white/70 text-base leading-relaxed mb-6">
+              When I started investigating why this keeps happening, I expected to find a data problem. What I found instead was a constitutional problem.
+            </p>
+            <p className="text-white/70 text-base leading-relaxed mb-8">
+              Governance defines who owns a decision. Accountability defines who is responsible when it fails. Sovereignty defines whether the organization actually controls its intelligence — or whether that intelligence lives inside people, tools, and vendor relationships it cannot govern. Without all three, organizational intelligence is fragile by design.
+            </p>
+            <a
+              href={FOUNDER_ESSAY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-semibold text-sm transition-colors"
+            >
+              Read the full essay on LinkedIn
+              <span aria-hidden="true">→</span>
+            </a>
           </div>
         </div>
       </section>
