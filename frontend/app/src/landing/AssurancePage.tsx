@@ -60,42 +60,167 @@ const FOOTER_LINK_GROUPS = [
   },
 ];
 
-const RISK_CARDS: { title: string; body: string; badge: string; iconPaths: string }[] = [
+const RISK_CARDS: {
+  title: string;
+  body: string;
+  badge: string;
+  iconPaths: string;
+  detail: {
+    headline: string;
+    explanation: string;
+    examples: { scenario: string; consequence: string }[];
+    signal: string;
+  };
+}[] = [
   {
     title: 'Key Person Risk',
     body: 'Critical operational knowledge lives inside a handful of employees. When they leave, the knowledge leaves with them.',
     badge: 'Risk Detected',
     iconPaths: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.5" fill="none"/>',
+    detail: {
+      headline: 'What happens when the person who knows everything leaves?',
+      explanation: 'Every organization has people who carry critical knowledge in their heads — how clients are actually managed, why certain processes work the way they do, which vendor relationships are fragile, what the real constraints are on a given product. When those people leave, retire, or simply become unavailable, that knowledge disappears with them. No document captures it. No system stores it. It is simply gone.',
+      examples: [
+        {
+          scenario: 'Your head of engineering resigns unexpectedly.',
+          consequence: 'The new team discovers he was the only one who understood the architecture decisions made three years ago. Rebuilding that context takes six months and a major incident.',
+        },
+        {
+          scenario: 'A senior account manager takes a new role elsewhere.',
+          consequence: 'The client she managed for five years feels the relationship reset to zero. Three months later they do not renew.',
+        },
+        {
+          scenario: 'The founder steps back from day-to-day operations.',
+          consequence: 'Leadership realizes that most operational decisions were made based on context that lived only in the founder\'s experience — and was never written down.',
+        },
+      ],
+      signal: 'Ask yourself: if that person was unavailable starting tomorrow, how long before operations break down?',
+    },
   },
   {
     title: 'Decision Amnesia',
     body: 'Important decisions are remembered as outcomes, but the rationale, evidence, tradeoffs, and accountability chain disappear.',
     badge: 'Intelligence Gap',
     iconPaths: '<line x1="6" y1="3" x2="6" y2="15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="18" cy="6" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M18 9a9 9 0 0 1-9 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>',
+    detail: {
+      headline: 'You remember what was decided. Not why.',
+      explanation: 'Organizations make hundreds of decisions every year. Most are recorded as outcomes — a policy, a product, a contract, a hire. The reasoning behind them, the alternatives considered, the evidence used, and the person accountable for each: those disappear almost immediately. When the same questions resurface six months later, teams start from scratch — unaware that the work was already done, and why the answer was what it was.',
+      examples: [
+        {
+          scenario: 'A new VP of Product asks why the pricing model is structured the way it is.',
+          consequence: 'Nobody can reconstruct the answer. The original decision was made two years ago by people who have since left. The team spends a quarter re-analyzing a decision that was already made well.',
+        },
+        {
+          scenario: 'A vendor contract comes up for renewal.',
+          consequence: 'The team cannot remember why that vendor was chosen over the alternative. They negotiate from zero context, and make a worse deal than the original.',
+        },
+        {
+          scenario: 'A regulatory inquiry asks for documentation of a compliance decision.',
+          consequence: 'The decision exists in a Slack thread from 18 months ago. The reasoning is scattered across three email chains and a meeting nobody documented.',
+        },
+      ],
+      signal: 'Ask yourself: could you reconstruct the last five major decisions your organization made — the why, not just the what?',
+    },
   },
   {
     title: 'Learning Failure',
     body: 'Teams repeat mistakes because lessons from projects, incidents, and customer work never become institutional capability.',
     badge: 'Risk Detected',
     iconPaths: '<line x1="18" y1="20" x2="18" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="20" x2="12" y2="4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="6" y1="20" x2="6" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+    detail: {
+      headline: 'Your organization experiences things. It does not learn from them.',
+      explanation: 'Experience is only valuable if it changes future behavior. Most organizations accumulate experience without converting it into institutional knowledge. Projects end, incidents are resolved, clients churn — and the lessons that could have changed how the next project, incident, or client relationship was handled are never captured, shared, or embedded into how the organization operates.',
+      examples: [
+        {
+          scenario: 'A product launch goes poorly because of a miscommunication between engineering and sales.',
+          consequence: 'A retrospective is held. Notes are taken. Six months later, a different team repeats the exact same mistake on the next launch.',
+        },
+        {
+          scenario: 'A client churns after 18 months.',
+          consequence: 'The account team debriefs internally. The real reasons — which could have been detected months earlier — are never systematized into the onboarding or check-in process.',
+        },
+        {
+          scenario: 'An infrastructure incident takes 14 hours to resolve.',
+          consequence: 'The fix is implemented. The incident report is written. New engineers who join two months later have no access to what was learned — and encounter the same class of problem again.',
+        },
+      ],
+      signal: 'Ask yourself: is your organization smarter this year than last year because of what it experienced — or just bigger?',
+    },
   },
   {
     title: 'AI Context Risk',
     body: 'AI systems can access documents, but they do not understand how the business actually works.',
     badge: 'Intelligence Gap',
     iconPaths: '<rect x="9" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M15 9V5H9V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M9 15v4h6v-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M5 9H1v6h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M19 9h4v6h-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+    detail: {
+      headline: 'Feeding AI your documents is not the same as giving it your intelligence.',
+      explanation: 'AI systems are only as useful as the context they operate within. Most organizations give AI access to documents, wikis, and databases — and assume that is enough. But documents describe what was decided, not why. They describe processes, not the exceptions that matter. They do not carry the reasoning, the constraints, the relationships, or the institutional knowledge that determines whether an AI output is actually useful or dangerously incomplete.',
+      examples: [
+        {
+          scenario: 'You deploy an AI assistant to help your sales team prepare for client meetings.',
+          consequence: 'It pulls from your CRM and proposal documents. But it has no access to the actual relationship history, the promises made informally, or the client\'s real concerns — so its briefings sound polished but miss what matters.',
+        },
+        {
+          scenario: 'You use AI to help new hires onboard faster.',
+          consequence: 'It answers questions from the employee handbook. But the handbook does not reflect how the organization actually operates — so new hires learn the official version of reality, not the real one.',
+        },
+        {
+          scenario: 'You ask AI to help draft a strategic analysis.',
+          consequence: 'It produces something that looks thorough but omits the three constraints your leadership already knows about — because those constraints were never written down anywhere.',
+        },
+      ],
+      signal: 'Ask yourself: if an AI read everything your organization has written down, would it understand how decisions actually get made here?',
+    },
   },
   {
     title: 'Knowledge Fragmentation',
     body: 'Operational intelligence is scattered across tools, emails, chats, documents, vendors, and people.',
     badge: 'Risk Detected',
     iconPaths: '<circle cx="18" cy="5" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="18" cy="19" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
+    detail: {
+      headline: 'Your intelligence exists. It is just impossible to use.',
+      explanation: 'Most organizations are not short on information. They are short on usable intelligence. Critical knowledge is distributed across dozens of tools, hundreds of email threads, Slack conversations that scroll off into history, vendor systems, and the memories of individuals. No single person — or system — has a complete picture. The organization knows things collectively that no one within it can actually access when it matters.',
+      examples: [
+        {
+          scenario: 'A new executive joins and wants to understand the business.',
+          consequence: 'She needs to talk to seven different people, read through three different systems, and piece together a picture that no single source provides. This takes weeks and is still incomplete.',
+        },
+        {
+          scenario: 'A key vendor relationship is being renegotiated.',
+          consequence: 'The history of that relationship — commitments made, problems encountered, terms evolved over time — is spread across three email accounts, two project management tools, and the memory of someone who left last year.',
+        },
+        {
+          scenario: 'A crisis requires fast decisions.',
+          consequence: 'The team cannot act decisively because nobody has a consolidated view of the relevant context. They spend the first two hours just assembling the information they need.',
+        },
+      ],
+      signal: 'Ask yourself: when you need critical information fast, how long does it actually take to find it — and how confident are you that it is complete?',
+    },
   },
   {
     title: 'Continuity Risk',
     body: 'Leadership changes, restructuring, and platform migrations erase critical intelligence.',
     badge: 'Intelligence Gap',
     iconPaths: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+    detail: {
+      headline: 'Every transition is a moment when intelligence can disappear permanently.',
+      explanation: 'Organizations go through constant change — leadership transitions, team restructurings, platform migrations, acquisitions, strategic pivots. Each of these moments is an opportunity for institutional intelligence to be lost. Context that existed in one person\'s role does not automatically transfer to the next. Knowledge stored in a deprecated system does not migrate with the data. The organization continues operating, but with less understanding of itself than it had before.',
+      examples: [
+        {
+          scenario: 'A CEO transitions to a new hire after three years.',
+          consequence: 'The incoming CEO has access to financials, strategy documents, and an org chart. But the institutional knowledge of why the business operates the way it does — the deals that shaped it, the lessons learned, the constraints that matter — does not transfer.',
+        },
+        {
+          scenario: 'The company migrates from one project management platform to another.',
+          consequence: 'Data is migrated. But the context embedded in conversations, decisions, and informal history inside the old platform is not. Three months later, people are asking questions that were answered two years ago.',
+        },
+        {
+          scenario: 'A department is restructured and three senior managers are moved to different roles.',
+          consequence: 'The institutional knowledge of how their teams operated, what clients expected, and what processes actually worked dissolves in the transition. The new managers rebuild from scratch.',
+        },
+      ],
+      signal: 'Ask yourself: the last time your organization went through a major change, what did you lose that you still have not recovered?',
+    },
   },
 ];
 
@@ -241,6 +366,7 @@ const AssurancePage = () => {
   const [openLearnMore, setOpenLearnMore] = useState<LearnMoreId | null>(null);
   const [showStickyCta, setShowStickyCta] = useState(false);
   const [hoveredRisk, setHoveredRisk] = useState<number | null>(null);
+  const [activeRiskCard, setActiveRiskCard] = useState<number | null>(null);
 
   useEffect(() => {
     const hero = document.querySelector('.assurance-hero-glow');
@@ -252,6 +378,21 @@ const AssurancePage = () => {
     observer.observe(hero);
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (activeRiskCard === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setActiveRiskCard(null);
+      if (e.key === 'ArrowRight') setActiveRiskCard((p) => ((p ?? 0) + 1) % RISK_CARDS.length);
+      if (e.key === 'ArrowLeft') setActiveRiskCard((p) => ((p ?? 0) - 1 + RISK_CARDS.length) % RISK_CARDS.length);
+    };
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+    };
+  }, [activeRiskCard]);
 
   const emergingCandidates = CONSTITUTIONAL_INDEX_ORGANIZATIONS.filter(
     (o) => o.quadrant === 'sovereignty-pioneers',
@@ -419,15 +560,113 @@ const AssurancePage = () => {
                 </div>
                 <h3 className="aoc-risk-card-title">{card.title}</h3>
                 <p className="aoc-risk-card-body">{card.body}</p>
-                <div className="aoc-risk-card-arrow" aria-hidden="true">
+                <button
+                  className="aoc-risk-card-arrow"
+                  onClick={() => setActiveRiskCard(i)}
+                  aria-label={`Learn more about ${card.title}`}
+                >
                   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <line x1="7" y1="17" x2="17" y2="7" />
                     <polyline points="7 7 17 7 17 17" />
                   </svg>
-                </div>
+                </button>
               </article>
             ))}
           </div>
+
+          {/* ── Risk Detail Modal ── */}
+          {activeRiskCard !== null && (() => {
+            const card = RISK_CARDS[activeRiskCard];
+            return (
+              <div
+                className="aoc-risk-modal-backdrop"
+                onClick={() => setActiveRiskCard(null)}
+                role="dialog"
+                aria-modal="true"
+                aria-label={card.title}
+              >
+                <div
+                  className="aoc-risk-modal"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Header */}
+                  <div className="aoc-risk-modal-header">
+                    <div className="aoc-risk-modal-icon-wrap">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        dangerouslySetInnerHTML={{ __html: card.iconPaths }}
+                      />
+                    </div>
+                    <div>
+                      <p className="aoc-risk-modal-badge">{card.badge}</p>
+                      <h2 className="aoc-risk-modal-title">{card.title}</h2>
+                    </div>
+                    <button
+                      className="aoc-risk-modal-close"
+                      onClick={() => setActiveRiskCard(null)}
+                      aria-label="Close"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  {/* Body */}
+                  <div className="aoc-risk-modal-body">
+                    <p className="aoc-risk-modal-headline">{card.detail.headline}</p>
+                    <p className="aoc-risk-modal-explanation">{card.detail.explanation}</p>
+
+                    <p className="aoc-risk-modal-section-label">How it happens</p>
+                    <div className="aoc-risk-modal-examples">
+                      {card.detail.examples.map((ex, j) => (
+                        <div key={j} className="aoc-risk-modal-example">
+                          <p className="aoc-risk-modal-example-scenario">
+                            <span className="aoc-risk-modal-example-num">{j + 1}</span>
+                            {ex.scenario}
+                          </p>
+                          <p className="aoc-risk-modal-example-consequence">{ex.consequence}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="aoc-risk-modal-signal">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+                      </svg>
+                      <p>{card.detail.signal}</p>
+                    </div>
+                  </div>
+
+                  {/* Footer nav */}
+                  <div className="aoc-risk-modal-footer">
+                    <button
+                      className="aoc-risk-modal-nav"
+                      onClick={() => setActiveRiskCard((activeRiskCard - 1 + RISK_CARDS.length) % RISK_CARDS.length)}
+                      aria-label="Previous risk"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                      Previous
+                    </button>
+                    <span className="aoc-risk-modal-counter">{activeRiskCard + 1} / {RISK_CARDS.length}</span>
+                    <button
+                      className="aoc-risk-modal-nav"
+                      onClick={() => setActiveRiskCard((activeRiskCard + 1) % RISK_CARDS.length)}
+                      aria-label="Next risk"
+                    >
+                      Next
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
         </div>
       </section>
 
