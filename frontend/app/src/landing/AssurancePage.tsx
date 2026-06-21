@@ -60,30 +60,42 @@ const FOOTER_LINK_GROUPS = [
   },
 ];
 
-const RISK_CARDS = [
+const RISK_CARDS: { title: string; body: string; badge: string; iconPaths: string }[] = [
   {
     title: 'Key Person Risk',
-    body: 'Critical operational knowledge lives inside a handful of employees.',
+    body: 'Critical operational knowledge lives inside a handful of employees. When they leave, the knowledge leaves with them.',
+    badge: 'Risk Detected',
+    iconPaths: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.5" fill="none"/>',
   },
   {
     title: 'Decision Amnesia',
     body: 'Important decisions are remembered as outcomes, but the rationale, evidence, tradeoffs, and accountability chain disappear.',
+    badge: 'Intelligence Gap',
+    iconPaths: '<line x1="6" y1="3" x2="6" y2="15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="18" cy="6" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="6" cy="18" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M18 9a9 9 0 0 1-9 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>',
   },
   {
     title: 'Learning Failure',
     body: 'Teams repeat mistakes because lessons from projects, incidents, and customer work never become institutional capability.',
+    badge: 'Risk Detected',
+    iconPaths: '<line x1="18" y1="20" x2="18" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="20" x2="12" y2="4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="6" y1="20" x2="6" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
   },
   {
     title: 'AI Context Risk',
     body: 'AI systems can access documents, but they do not understand how the business actually works.',
+    badge: 'Intelligence Gap',
+    iconPaths: '<rect x="9" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M15 9V5H9V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M9 15v4h6v-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M5 9H1v6h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M19 9h4v6h-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
   },
   {
     title: 'Knowledge Fragmentation',
     body: 'Operational intelligence is scattered across tools, emails, chats, documents, vendors, and people.',
+    badge: 'Risk Detected',
+    iconPaths: '<circle cx="18" cy="5" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="6" cy="12" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="18" cy="19" r="3" stroke="currentColor" stroke-width="1.5" fill="none"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>',
   },
   {
     title: 'Continuity Risk',
     body: 'Leadership changes, restructuring, and platform migrations erase critical intelligence.',
+    badge: 'Intelligence Gap',
+    iconPaths: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
   },
 ];
 
@@ -228,6 +240,7 @@ const AssurancePage = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openLearnMore, setOpenLearnMore] = useState<LearnMoreId | null>(null);
   const [showStickyCta, setShowStickyCta] = useState(false);
+  const [hoveredRisk, setHoveredRisk] = useState<number | null>(null);
 
   useEffect(() => {
     const hero = document.querySelector('.assurance-hero-glow');
@@ -382,11 +395,37 @@ const AssurancePage = () => {
           </header>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {RISK_CARDS.map((card) => (
-              <div key={card.title} className="rounded-2xl border border-white/10 bg-white/[0.02] p-7">
-                <h3 className="text-lg font-semibold mb-3">{card.title}</h3>
-                <p className="text-white/60 text-sm leading-relaxed">{card.body}</p>
-              </div>
+            {RISK_CARDS.map((card, i) => (
+              <article
+                key={card.title}
+                className="aoc-risk-card"
+                onMouseEnter={() => setHoveredRisk(i)}
+                onMouseLeave={() => setHoveredRisk(null)}
+              >
+                <div className="aoc-risk-card-sweep" aria-hidden="true" />
+                <div className={`aoc-risk-badge${hoveredRisk === i ? ' aoc-risk-badge--visible' : ''}`}>
+                  {card.badge}
+                </div>
+                <div className="aoc-risk-card-icon-wrap">
+                  <svg
+                    className="aoc-risk-card-icon"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="22"
+                    height="22"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    dangerouslySetInnerHTML={{ __html: card.iconPaths }}
+                  />
+                </div>
+                <h3 className="aoc-risk-card-title">{card.title}</h3>
+                <p className="aoc-risk-card-body">{card.body}</p>
+                <div className="aoc-risk-card-arrow" aria-hidden="true">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="7" y1="17" x2="17" y2="7" />
+                    <polyline points="7 7 17 7 17 17" />
+                  </svg>
+                </div>
+              </article>
             ))}
           </div>
         </div>

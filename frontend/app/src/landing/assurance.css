@@ -226,6 +226,213 @@
 
 
 
+/* ── Interactive Risk Cards ── */
+
+@keyframes aoc-risk-sweep {
+  0%   { transform: translateX(-100%) skewX(-12deg); opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateX(220%) skewX(-12deg); opacity: 0; }
+}
+
+@keyframes aoc-risk-icon-pulse {
+  0%, 100% { transform: scale(1);   opacity: 1; }
+  50%       { transform: scale(1.1); opacity: 0.85; }
+}
+
+@keyframes aoc-risk-badge-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.aoc-risk-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  cursor: default;
+  transition:
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.aoc-risk-card:hover {
+  border-color: rgba(52, 211, 153, 0.45);
+  background: rgba(52, 211, 153, 0.04);
+  transform: translateY(-4px);
+  box-shadow:
+    0 0 0 1px rgba(52, 211, 153, 0.12),
+    0 12px 40px rgba(0, 0, 0, 0.35),
+    0 0 32px rgba(52, 211, 153, 0.1);
+}
+
+/* Gradient sweep — child div approach so it animates on hover via CSS */
+.aoc-risk-card-sweep {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.aoc-risk-card-sweep::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(52, 211, 153, 0.055) 50%,
+    transparent 80%
+  );
+  transform: translateX(-100%) skewX(-12deg);
+  opacity: 0;
+}
+
+.aoc-risk-card:hover .aoc-risk-card-sweep::after {
+  animation: aoc-risk-sweep 0.7s ease-out forwards;
+}
+
+/* Status badge */
+.aoc-risk-badge {
+  position: absolute;
+  top: 1.125rem;
+  right: 1.125rem;
+  padding: 0.25rem 0.625rem;
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  border-radius: 999px;
+  background: rgba(7, 13, 11, 0.88);
+  color: #6ee7b7;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.aoc-risk-badge--visible {
+  animation: aoc-risk-badge-in 0.18s ease forwards;
+  opacity: 1;
+}
+
+/* Icon container */
+.aoc-risk-card-icon-wrap {
+  width: 2.75rem;
+  height: 2.75rem;
+  display: grid;
+  place-items: center;
+  border-radius: 0.875rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.55);
+  margin-bottom: 1.25rem;
+  flex-shrink: 0;
+  transition:
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.aoc-risk-card:hover .aoc-risk-card-icon-wrap {
+  border-color: rgba(52, 211, 153, 0.4);
+  background: rgba(52, 211, 153, 0.09);
+  color: #6ee7b7;
+  box-shadow: 0 0 14px rgba(52, 211, 153, 0.18);
+}
+
+.aoc-risk-card-icon {
+  display: block;
+  transition: transform 0.25s ease;
+}
+
+.aoc-risk-card:hover .aoc-risk-card-icon {
+  animation: aoc-risk-icon-pulse 1.4s ease-in-out infinite;
+}
+
+/* Title */
+.aoc-risk-card-title {
+  font-size: 1.0625rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.625rem;
+  transition: color 0.25s ease;
+}
+
+.aoc-risk-card:hover .aoc-risk-card-title {
+  color: #6ee7b7;
+}
+
+/* Body */
+.aoc-risk-card-body {
+  flex: 1;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+}
+
+/* Arrow button */
+.aoc-risk-card-arrow {
+  width: 2rem;
+  height: 2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.3);
+  align-self: flex-end;
+  transition:
+    border-color 0.25s ease,
+    color 0.25s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+.aoc-risk-card:hover .aoc-risk-card-arrow {
+  border-color: rgba(52, 211, 153, 0.5);
+  color: #6ee7b7;
+  background: rgba(52, 211, 153, 0.1);
+  box-shadow: 0 0 10px rgba(52, 211, 153, 0.2);
+  transform: translate(2px, -2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aoc-risk-card,
+  .aoc-risk-card-icon-wrap,
+  .aoc-risk-card-icon,
+  .aoc-risk-card-title,
+  .aoc-risk-card-arrow,
+  .aoc-risk-badge {
+    transition: none;
+    animation: none;
+  }
+
+  .aoc-risk-card:hover {
+    transform: none;
+  }
+
+  .aoc-risk-card:hover .aoc-risk-card-icon {
+    animation: none;
+  }
+
+  .aoc-risk-card:hover .aoc-risk-card-sweep::after {
+    animation: none;
+  }
+}
+
 /* ── Constitutional Map ── */
 
 .ci-map-shell {
