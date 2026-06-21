@@ -432,48 +432,48 @@ const AssurancePage = () => {
               Choose Your Assessment
             </p>
             <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-5">
-              The cost of losing intelligence is far greater than the cost of measuring it.
+              The most expensive knowledge in your company is the knowledge you cannot replace.
             </h2>
             <p className="text-white/60 text-lg leading-relaxed">
-              Start with a benchmark, deepen your analysis with a founder assessment, or engage directly
-              with AOC for an executive-level intelligence risk review.
+              Understand your exposure to Knowledge Loss, Key Person Dependency, and Organizational
+              Intelligence Risk before they become operational problems.
             </p>
           </header>
 
           <div className="assurance-conversion-bridge">
-            <p><strong>If any of those questions made you pause</strong> — that is the signal. Start with the Benchmark Assessment and know where you stand in 72 hours.</p>
+            <p>Every organization is accumulating knowledge. Very few know how much of it would survive tomorrow. Choose the level of visibility you need.</p>
             <a
               href={FOUNDATION_CHECKOUT_URL}
               target="_blank"
               rel="noreferrer"
               className="flex-shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-semibold rounded-xl transition-colors"
             >
-              Start Benchmark Assessment →
+              Get Intelligence Risk Snapshot →
             </a>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {/* Benchmark Assessment */}
+            {/* Intelligence Risk Snapshot */}
             <article className="rounded-2xl border border-white/10 bg-white/[0.02] p-7 flex flex-col">
               <div className="mb-5">
                 <p className="text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-emerald-400">
-                  Benchmark Assessment
+                  Intelligence Risk Snapshot
                 </p>
                 <div className="mt-4 flex items-baseline gap-3">
                   <span className="text-3xl font-semibold text-white">$99.99</span>
                 </div>
-                <h3 className="mt-3 text-xl font-semibold">Benchmark Assessment</h3>
+                <h3 className="mt-3 text-xl font-semibold">Intelligence Risk Snapshot</h3>
                 <p className="mt-2 text-sm text-white/55 leading-relaxed">
-                  A rapid external benchmark against publicly observable Governance, Sovereignty,
-                  Accountability, and Organizational Resilience signals.
+                  A rapid external review of publicly observable signals that may indicate Knowledge Loss,
+                  Key Person Dependency, governance weaknesses, and Organizational Intelligence Risk.
                 </p>
               </div>
               <ul className="flex-1 space-y-2 mb-8">
                 {[
-                  'Governance Score',
-                  'Sovereignty Score',
-                  'Constitutional Position',
+                  'Knowledge Loss Indicators',
+                  'Key Person Dependency Signals',
                   'Organizational Risk Snapshot',
+                  'Constitutional Position',
                   'Executive Summary',
                   'Public Index Inclusion (when applicable)',
                   'Delivered within 72 hours',
@@ -490,17 +490,17 @@ const AssurancePage = () => {
                 rel="noreferrer"
                 className="text-center py-3.5 rounded-xl text-sm font-semibold border border-emerald-500/40 hover:border-emerald-400/60 hover:bg-emerald-500/10 text-emerald-300 hover:text-emerald-200 transition-colors"
               >
-                Start Benchmark Assessment
+                Get Intelligence Risk Snapshot
               </a>
             </article>
 
-            {/* Founder Assessment */}
+            {/* Organizational Intelligence Assessment */}
             <article className="rounded-2xl border border-emerald-500/50 bg-emerald-950/35 shadow-[0_0_40px_rgba(52,211,153,0.08)] p-7 flex flex-col relative">
               <div className="absolute inset-0 rounded-2xl pointer-events-none ring-1 ring-emerald-500/20" />
               <div className="mb-5">
                 <div className="flex items-center gap-2 flex-wrap">
                   <p className="text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-emerald-400">
-                    Founder Assessment
+                    Organizational Intelligence Assessment
                   </p>
                   <span className="inline-flex items-center text-[0.65rem] font-semibold uppercase tracking-[0.15em] text-amber-300 bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded-full">
                     Most Popular
@@ -510,21 +510,21 @@ const AssurancePage = () => {
                   <span className="text-3xl font-semibold text-emerald-300">$499.99</span>
                   <span className="text-xs text-white/35 line-through">$999.99</span>
                 </div>
-                <h3 className="mt-3 text-xl font-semibold">Founder Assessment</h3>
+                <h3 className="mt-3 text-xl font-semibold">Organizational Intelligence Assessment</h3>
                 <p className="mt-2 text-sm text-white/55 leading-relaxed">
-                  A deeper assessment for founders, executives, and leadership teams seeking to understand
-                  organizational intelligence risk, key-person dependency, decision traceability, and
-                  continuity challenges.
+                  A deeper assessment designed to help founders and leadership teams understand
+                  organizational intelligence risk, knowledge continuity challenges, decision traceability
+                  gaps, and dependency on critical individuals.
                 </p>
               </div>
               <ul className="flex-1 space-y-2 mb-8">
                 {[
-                  'Everything in Benchmark Assessment',
+                  'Everything in Intelligence Risk Snapshot',
                   'Knowledge Loss Review',
                   'Key Person Dependency Analysis',
-                  'Governance Constraint Analysis',
-                  'Sovereignty Constraint Analysis',
+                  'Critical Knowledge Continuity Assessment',
                   'Decision Traceability Review',
+                  'Decision Context Gaps',
                   'Organizational Learning Findings',
                   'Prioritized Executive Roadmap',
                 ].map((item) => (
@@ -540,7 +540,7 @@ const AssurancePage = () => {
                 rel="noreferrer"
                 className="text-center py-4 rounded-xl text-sm font-bold bg-emerald-500 hover:bg-emerald-400 text-black transition-colors shadow-[0_4px_24px_rgba(52,211,153,0.25)]"
               >
-                Start Founder Assessment
+                Start Organizational Intelligence Assessment
               </a>
             </article>
 
@@ -555,9 +555,8 @@ const AssurancePage = () => {
                 </div>
                 <h3 className="mt-3 text-xl font-semibold">Executive Intelligence Risk Assessment</h3>
                 <p className="mt-2 text-sm text-white/55 leading-relaxed">
-                  A strategic assessment for organizations seeking to identify and reduce enterprise-wide
-                  intelligence continuity risks across teams, leadership structures, vendors, systems,
-                  and AI initiatives.
+                  A strategic review for organizations seeking to identify, measure, and reduce
+                  enterprise-wide intelligence continuity risks.
                 </p>
               </div>
               <ul className="flex-1 space-y-2 mb-8">
