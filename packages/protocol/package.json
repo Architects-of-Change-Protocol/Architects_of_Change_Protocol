@@ -2,10 +2,28 @@
   "name": "@aoc/protocol",
   "version": "0.1.0",
   "private": true,
+  "description": "Public contracts, semantics, schemas, and compatibility definitions for AOC Protocol.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Architects-of-Change-Protocol/Architects_of_Change_Protocol.git",
+    "directory": "packages/protocol"
+  },
+  "homepage": "https://github.com/Architects-of-Change-Protocol/Architects_of_Change_Protocol/tree/main/packages/protocol#readme",
+  "bugs": {
+    "url": "https://github.com/Architects-of-Change-Protocol/Architects_of_Change_Protocol/issues"
+  },
   "type": "commonjs",
+  "engines": {
+    "node": ">=20"
+  },
   "main": "./dist/contracts/index.js",
   "types": "./dist/contracts/index.d.ts",
   "exports": {
+    ".": {
+      "types": "./dist/contracts/index.d.ts",
+      "default": "./dist/contracts/index.js"
+    },
     "./contracts": {
       "types": "./dist/contracts/index.d.ts",
       "default": "./dist/contracts/index.js"
@@ -25,7 +43,8 @@
     "./runtime-registry": {
       "types": "./dist/runtime-registry/index.d.ts",
       "default": "./dist/runtime-registry/index.js"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "dist"

@@ -1,0 +1,14 @@
+{
+  "name": "protocol-consumer-typescript-esm",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "External TypeScript/ESM consumer fixture used to validate the @aoc/protocol tarball.",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js"
+  },
+  "devDependencies": {
+    "typescript": "~6.0.2"
+  }
+}

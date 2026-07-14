@@ -1,0 +1,9 @@
+{
+  "name": "protocol-consumer-javascript-cjs",
+  "private": true,
+  "version": "0.0.0",
+  "description": "External plain-JavaScript/CommonJS consumer fixture used to validate the @aoc/protocol tarball.",
+  "scripts": {
+    "start": "node index.js"
+  }
+}
