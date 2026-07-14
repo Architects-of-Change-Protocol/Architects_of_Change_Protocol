@@ -4,6 +4,25 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
 const repo=resolve('.');
+
+const rootPkg = JSON.parse(readFileSync(join(repo, 'package.json'), 'utf8'));
+if (rootPkg.private !== true) {
+  throw new Error('Root package.json must remain private:true to prevent accidental publication from the monorepo root.');
+}
+
+const protocolPkg = JSON.parse(readFileSync(join(repo, 'packages/protocol/package.json'), 'utf8'));
+const metadataErrors = [];
+if (!protocolPkg.license) metadataErrors.push('missing "license"');
+if (!protocolPkg.repository?.url) metadataErrors.push('missing "repository.url"');
+if (!Array.isArray(protocolPkg.files) || !protocolPkg.files.includes('dist')) metadataErrors.push('"files" must include "dist"');
+if (!protocolPkg.exports?.['.']) metadataErrors.push('missing root "." export');
+if (!protocolPkg.exports?.['./package.json']) metadataErrors.push('missing "./package.json" export');
+if (!existsSync(join(repo, 'packages/protocol/README.md'))) metadataErrors.push('missing packages/protocol/README.md');
+if (!existsSync(join(repo, 'packages/protocol/LICENSE'))) metadataErrors.push('missing packages/protocol/LICENSE');
+if (metadataErrors.length) {
+  throw new Error(`@aoc/protocol package metadata is not publishability-ready:\n- ${metadataErrors.join('\n- ')}`);
+}
+
 execSync('npm run build --workspace @aoc/protocol',{stdio:'inherit'});
 const packJson=execSync('npm pack --json ./packages/protocol',{encoding:'utf8'});
 const packMeta=JSON.parse(packJson)[0];
