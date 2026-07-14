@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.auditEventSchemaExample = void 0;
 exports.auditEventSchemaExample = {
-    $id: 'https://aoc.protocol/schemas/audit-event-envelope/1-0-0',
+    $id: 'https://aoc.protocol/schemas/audit-event-envelope/1-1-0',
     type: 'object',
-    required: ['schemaVersion', 'eventId', 'actor', 'action', 'resource', 'timestamp', 'tenantIsolation'],
+    required: ['eventId', 'eventType', 'emittedAt', 'payload'],
 };

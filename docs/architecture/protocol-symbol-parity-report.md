@@ -15,7 +15,7 @@
 
 | Legacy export | Canonical export | Status | Consumers | Migration ready | Priority |
 |---|---|---:|---:|---:|---:|
-| `actor-model.Actor` | `contracts.Actor` | Ready | 7 | Yes | High |
+| `actor-model.Actor` | `contracts.Actor` | Ready | 8 | Yes | High |
 | `actor-model.ActorCapability` | `contracts.ActorCapability` | Ready | 0 | Yes | High |
 | `actor-model.ActorContext` | `contracts.ActorContext` | Ready | 0 | Yes | High |
 | `actor-model.ActorId` | `contracts.ActorId` | Ready | 0 | Yes | High |
@@ -23,7 +23,7 @@
 | `actor-model.ActorReference` | `contracts.ActorReference` | Ready | 0 | Yes | High |
 | `actor-model.ActorScope` | `contracts.ActorScope` | Ready | 0 | Yes | High |
 | `actor-model.ActorType` | `contracts.ActorType` | Ready | 5 | Yes | High |
-| `actor-model.Agent` | `contracts.Agent` | Ready | 9 | Yes | High |
+| `actor-model.Agent` | `contracts.Agent` | Ready | 12 | Yes | High |
 | `actor-model.AgentId` | `contracts.AgentId` | Ready | 2 | Yes | High |
 | `actor-model.AgentRiskLevel` | `contracts.AgentRiskLevel` | Ready | 2 | Yes | High |
 | `actor-model.AgentScope` | `contracts.AgentScope` | Ready | 7 | Yes | High |
@@ -32,21 +32,21 @@
 | `contracts/capability-claims.CapabilityClaimVersion` | `claims.CapabilityClaimVersion` | Ready | 1 | Yes | High |
 | `contracts/capability-claims.ClaimIssuerType` | `claims.ClaimIssuerType` | Ready | 1 | Yes | High |
 | `contracts/capability-claims.ClaimSubjectType` | `claims.ClaimSubjectType` | Ready | 1 | Yes | High |
-| `legacy adapters coverage.AttestationLookup` | `adapters.AttestationLookup` | Ready | 0 | Yes | Medium |
-| `legacy adapters coverage.AuditEventSink` | `adapters.AuditEventSink` | Ready | 2 | Yes | High |
-| `legacy adapters coverage.CapabilityLookup` | `adapters.CapabilityLookup` | Ready | 0 | Yes | Medium |
-| `legacy adapters coverage.CredentialStatusLookup` | `adapters.CredentialStatusLookup` | Ready | 0 | Yes | Medium |
-| `legacy adapters coverage.ExecutionAuthorizationProvider` | `adapters.ExecutionAuthorizationProvider` | Ready | 0 | Yes | Medium |
-| `legacy adapters coverage.GovernanceDecisionProvider` | `adapters.GovernanceDecisionProvider` | Ready | 0 | Yes | Medium |
-| `legacy adapters coverage.ObservabilityEventSink` | `adapters.ObservabilityEventSink` | Ready | 1 | Yes | High |
-| `legacy adapters coverage.PolicyDecisionProvider` | `adapters.PolicyDecisionProvider` | Ready | 0 | Yes | Medium |
-| `legacy adapters coverage.ProtocolEventSink` | `adapters.ProtocolEventSink` | Ready | 1 | Yes | High |
-| `legacy adapters coverage.RegistryLookup` | `adapters.RegistryLookup` | Ready | 2 | Yes | High |
-| `legacy adapters coverage.RevocationLookup` | `adapters.RevocationLookup` | Ready | 0 | Yes | Medium |
-| `legacy adapters coverage.SecurityEventSink` | `adapters.SecurityEventSink` | Ready | 1 | Yes | High |
-| `legacy adapters coverage.TrustRegistryProvider` | `adapters.TrustRegistryProvider` | Ready | 2 | Yes | High |
-| `legacy adapters coverage.VerificationKeyResolver` | `adapters.VerificationKeyResolver` | Ready | 2 | Yes | High |
-| `legacy adapters coverage.VerificationProvider` | `adapters.VerificationProvider` | Ready | 2 | Yes | High |
+| `legacy adapters coverage.AttestationLookup` | `adapters.AttestationLookup` | Ready | 2 | Yes | High |
+| `legacy adapters coverage.AuditEventSink` | `adapters.AuditEventSink` | Ready | 14 | Yes | High |
+| `legacy adapters coverage.CapabilityLookup` | `adapters.CapabilityLookup` | Ready | 2 | Yes | High |
+| `legacy adapters coverage.CredentialStatusLookup` | `adapters.CredentialStatusLookup` | Ready | 2 | Yes | High |
+| `legacy adapters coverage.ExecutionAuthorizationProvider` | `adapters.ExecutionAuthorizationProvider` | Ready | 4 | Yes | High |
+| `legacy adapters coverage.GovernanceDecisionProvider` | `adapters.GovernanceDecisionProvider` | Ready | 2 | Yes | High |
+| `legacy adapters coverage.ObservabilityEventSink` | `adapters.ObservabilityEventSink` | Ready | 5 | Yes | High |
+| `legacy adapters coverage.PolicyDecisionProvider` | `adapters.PolicyDecisionProvider` | Ready | 3 | Yes | High |
+| `legacy adapters coverage.ProtocolEventSink` | `adapters.ProtocolEventSink` | Ready | 6 | Yes | High |
+| `legacy adapters coverage.RegistryLookup` | `adapters.RegistryLookup` | Ready | 7 | Yes | High |
+| `legacy adapters coverage.RevocationLookup` | `adapters.RevocationLookup` | Ready | 4 | Yes | High |
+| `legacy adapters coverage.SecurityEventSink` | `adapters.SecurityEventSink` | Ready | 6 | Yes | High |
+| `legacy adapters coverage.TrustRegistryProvider` | `adapters.TrustRegistryProvider` | Ready | 7 | Yes | High |
+| `legacy adapters coverage.VerificationKeyResolver` | `adapters.VerificationKeyResolver` | Ready | 6 | Yes | High |
+| `legacy adapters coverage.VerificationProvider` | `adapters.VerificationProvider` | Ready | 11 | Yes | High |
 | `legacy audit contracts.AuditActor` | `contracts.AuditActor` | Ready | 2 | Yes | High |
 | `legacy audit contracts.AuditEventCategory` | `contracts.AuditEventCategory` | Ready | 2 | Yes | High |
 | `legacy audit contracts.AuditEventType` | `contracts.AuditEventType` | Ready | 6 | Yes | High |
@@ -69,13 +69,13 @@
 | `legacy claims coverage.RevocationClaim` | `claims.RevocationClaim` | Ready | 0 | Yes | Low |
 | `legacy claims coverage.TrustClaim` | `claims.TrustClaim` | Ready | 0 | Yes | Low |
 | `legacy claims coverage.VerificationClaim` | `claims.VerificationClaim` | Ready | 0 | Yes | Low |
-| `legacy consent contracts.ConsentGrant` | `contracts.ConsentGrant` | Ready | 13 | Yes | High |
+| `legacy consent contracts.ConsentGrant` | `contracts.ConsentGrant` | Ready | 14 | Yes | High |
 | `legacy consent contracts.ConsentStatus` | `contracts.ConsentStatus` | Ready | 2 | Yes | High |
 | `legacy decision contracts.DecisionContext` | `contracts.DecisionContext` | Ready | 4 | Yes | High |
 | `legacy decision contracts.EvaluationSource` | `contracts.EvaluationSource` | Ready | 2 | Yes | High |
 | `legacy decision contracts.PolicyDecision` | `contracts.PolicyDecision` | Ready | 15 | Yes | High |
 | `legacy decision contracts.PolicyReference` | `contracts.PolicyReference` | Ready | 2 | Yes | High |
-| `legacy delegations.Delegation` | `contracts.Delegation` | Ready | 5 | Yes | High |
+| `legacy delegations.Delegation` | `contracts.Delegation` | Ready | 16 | Yes | High |
 | `legacy delegations.DelegationLineage` | `contracts.DelegationLineage` | Ready | 2 | Yes | High |
 | `legacy delegations.DelegationPrincipal` | `contracts.DelegationPrincipal` | Ready | 2 | Yes | High |
 | `legacy delegations.DelegationRevocation` | `contracts.DelegationRevocation` | Ready | 2 | Yes | High |
@@ -93,7 +93,7 @@
 | `legacy errors coverage.RuntimeError` | `errors.RuntimeError` | Ready | 0 | Yes | Low |
 | `legacy errors coverage.TrustError` | `errors.TrustError` | Ready | 0 | Yes | Low |
 | `legacy errors coverage.VerificationError` | `errors.VerificationError` | Ready | 0 | Yes | Low |
-| `legacy policies.Policy` | `contracts.Policy` | Ready | 21 | Yes | High |
+| `legacy policies.Policy` | `contracts.Policy` | Ready | 136 | Yes | High |
 | `legacy policies.PolicyEffect` | `contracts.PolicyEffect` | Ready | 4 | Yes | High |
 | `ports/*.AgentAccessEvaluatorAdapter` | `adapters.ExecutionAuthorizationProvider` | Ready | 1 | Yes | High |
 | `ports/*.AuditSinkAdapter` | `adapters.AuditEventSink` | Ready | 1 | Yes | High |

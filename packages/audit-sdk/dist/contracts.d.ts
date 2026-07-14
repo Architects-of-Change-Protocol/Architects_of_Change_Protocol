@@ -15,8 +15,8 @@ export interface TenantIsolationMetadata {
     readonly isolationMode: 'logical' | 'physical' | 'hybrid';
 }
 export declare const auditEventSchemaExample: {
-    readonly $id: "https://aoc.protocol/schemas/audit-event-envelope/1-0-0";
+    readonly $id: "https://aoc.protocol/schemas/audit-event-envelope/1-1-0";
     readonly type: "object";
-    readonly required: readonly ["schemaVersion", "eventId", "actor", "action", "resource", "timestamp", "tenantIsolation"];
+    readonly required: readonly ["eventId", "eventType", "emittedAt", "payload"];
 };
 //# sourceMappingURL=contracts.d.ts.map
