@@ -57,6 +57,10 @@ export interface ConsentGrant {
     readonly contextualConditions?: readonly ContextCondition[];
 }
 export type PolicyDecision = 'allow' | 'deny' | 'conditional';
+/**
+ * `requestedScope` is the sole canonical scope field on this contract — there is no
+ * deprecated `scope`/`action` alias, and none has ever existed on this type.
+ */
 export interface ScopedAccessRequest {
     readonly principalId: CanonicalId;
     readonly resource: ResourceRef;
@@ -66,9 +70,20 @@ export interface ScopedAccessRequest {
 export interface AuditEventEnvelope {
     readonly eventId: CanonicalId;
     readonly eventType: string;
+    /** When this envelope was created/emitted. */
     readonly emittedAt: UtcDateTime;
+    /** When the underlying fact happened, if known and distinct from `emittedAt` (e.g. backfilled/replayed events). */
+    readonly occurredAt?: UtcDateTime;
+    /** The principal that performed or requested the action this event describes — not the target. */
     readonly actorId?: CanonicalId;
+    /** The entity the event is about, if distinct from the actor. */
+    readonly subject?: ResourceRef;
+    /** Correlates this event with the request/operation it belongs to. */
+    readonly correlationId?: CanonicalId;
+    /** Structured reason codes, not free text — see governance reason-code registries for meaning. */
+    readonly reasonCodes?: readonly string[];
     readonly payload: Readonly<Record<string, unknown>>;
+    readonly schemaVersion?: string;
 }
 export type TrustDomainIdentifier = string;
 export type * from './legacy-contracts';
