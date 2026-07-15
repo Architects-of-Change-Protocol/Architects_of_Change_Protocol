@@ -1,5 +1,4 @@
 import type { ScopeEntry } from '../consent/consent-types';
-import type { ProtocolCapability } from '../capability/capability-types';
 import { parseEnforcementRequest, normalizeEnforcementRequest } from '../enforcement/enforcement-request';
 import type { ExecutionRequest, ExecutionResource, ExecutionTarget, NormalizedExecutionRequest } from './execution-types';
 import { ExecutionRequestParseError } from './execution-errors';
@@ -124,10 +123,6 @@ export function parseExecutionRequest(input: unknown): ExecutionRequest {
     resource: parseResource(record.resource),
     action_context: parseActionContext(record.action_context),
     now: parseNow(record.now),
-    isRevoked:
-      typeof record.isRevoked === 'function'
-        ? (record.isRevoked as (capability: ProtocolCapability) => boolean)
-        : undefined,
   });
 
   return {

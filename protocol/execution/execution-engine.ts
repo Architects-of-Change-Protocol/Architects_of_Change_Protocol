@@ -1,4 +1,5 @@
 import { evaluateEnforcement } from '../enforcement/enforcement-engine';
+import type { RevocationCheckPort } from '../revocation';
 import { EXECUTION_REASON_CODES } from './execution-types';
 import type { ExecutionAuthorizationResult, ExecutionRequest } from './execution-types';
 import { parseExecutionRequest, normalizeExecutionRequest } from './execution-request';
@@ -18,7 +19,10 @@ function resolveExecutionTarget(input: unknown): { adapter: string; operation: s
   };
 }
 
-export function authorizeExecution(request: ExecutionRequest): ExecutionAuthorizationResult {
+export function authorizeExecution(
+  request: ExecutionRequest,
+  checkRevocation: RevocationCheckPort
+): ExecutionAuthorizationResult {
   const now = request.now ?? new Date();
   const fallbackTarget = resolveExecutionTarget((request as unknown as { execution_target?: unknown }).execution_target);
 
@@ -34,18 +38,20 @@ export function authorizeExecution(request: ExecutionRequest): ExecutionAuthoriz
     });
   }
 
-  const enforcementDecision = evaluateEnforcement({
-    capability: normalizedRequest.capability,
-    requested_scope: normalizedRequest.requested_scope,
-    requested_permissions: normalizedRequest.requested_permissions,
-    subject: normalizedRequest.subject,
-    grantee: normalizedRequest.grantee,
-    marketMakerId: normalizedRequest.marketMakerId,
-    resource: normalizedRequest.resource,
-    action_context: normalizedRequest.action_context,
-    now: normalizedRequest.now ?? now,
-    isRevoked: normalizedRequest.isRevoked,
-  });
+  const enforcementDecision = evaluateEnforcement(
+    {
+      capability: normalizedRequest.capability,
+      requested_scope: normalizedRequest.requested_scope,
+      requested_permissions: normalizedRequest.requested_permissions,
+      subject: normalizedRequest.subject,
+      grantee: normalizedRequest.grantee,
+      marketMakerId: normalizedRequest.marketMakerId,
+      resource: normalizedRequest.resource,
+      action_context: normalizedRequest.action_context,
+      now: normalizedRequest.now ?? now,
+    },
+    checkRevocation
+  );
 
   if (!enforcementDecision.allowed || enforcementDecision.normalized_capability === undefined) {
     return buildRejectedExecutionResult({

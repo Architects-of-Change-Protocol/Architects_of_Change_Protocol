@@ -1,5 +1,6 @@
 import { evaluateCapabilityAccess, evaluateCapabilityState, verifyCapability } from '../capability';
 import type { ScopeEntry } from '../consent/consent-types';
+import type { RevocationCheckPort } from '../revocation';
 import { parseEnforcementRequest, normalizeEnforcementRequest } from './enforcement-request';
 import type { EnforcementDecision, EnforcementRequest, NormalizedEnforcementRequest } from './enforcement-types';
 import { ENFORCEMENT_REASON_CODES } from './enforcement-types';
@@ -43,7 +44,7 @@ function findPermissionMismatch(
   return { matched };
 }
 
-export function evaluateEnforcement(request: EnforcementRequest): EnforcementDecision {
+export function evaluateEnforcement(request: EnforcementRequest, checkRevocation: RevocationCheckPort): EnforcementDecision {
   const now = request.now ?? new Date();
 
   let normalizedRequest: NormalizedEnforcementRequest;
@@ -68,7 +69,7 @@ export function evaluateEnforcement(request: EnforcementRequest): EnforcementDec
   const normalizedCapability = verification.normalized;
   const state = evaluateCapabilityState(normalizedCapability, {
     now: normalizedRequest.now ?? now,
-    isRevoked: normalizedRequest.isRevoked,
+    checkRevocation,
   });
 
   if (state.state !== 'active') {
@@ -166,7 +167,7 @@ export function evaluateEnforcement(request: EnforcementRequest): EnforcementDec
     grantee: normalizedRequest.grantee,
     marketMakerId: normalizedRequest.marketMakerId,
     now: normalizedRequest.now ?? now,
-    isRevoked: normalizedRequest.isRevoked,
+    checkRevocation,
   });
 
   if (!accessAllowed) {

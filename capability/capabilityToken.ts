@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 import { ConsentObjectV1, ScopeEntry } from '../consent/types';
 import { canonicalizeCapabilityPayload } from './canonical';
 import { computeCapabilityHash } from './hash';

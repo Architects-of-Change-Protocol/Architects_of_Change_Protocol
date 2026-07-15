@@ -13,7 +13,11 @@ function toScopeKey(entry: ScopeEntry): string {
   return `${entry.type}:${entry.ref}`;
 }
 
-function assertConsentReady(consentInput: unknown, now: Date): ParsedConsentForCapability {
+function assertConsentReady(
+  consentInput: unknown,
+  now: Date,
+  checkRevocation: MintCapabilityInput['checkConsentRevocation']
+): ParsedConsentForCapability {
   const parsed = parseConsent(consentInput);
   const normalized = normalizeConsent(parsed);
   const validation = validateConsent(normalized);
@@ -22,7 +26,7 @@ function assertConsentReady(consentInput: unknown, now: Date): ParsedConsentForC
     throw new CapabilityMintError(`Consent is invalid: ${validation.errors.join(' | ')}`);
   }
 
-  const state = evaluateConsentState(normalized, { now });
+  const state = evaluateConsentState(normalized, { now, checkRevocation });
   if (state.state !== 'active') {
     throw new CapabilityMintError(`Consent must be ACTIVE to mint capability. Current state: ${state.state}.`);
   }
@@ -50,7 +54,7 @@ export function mintCapability(input: MintCapabilityInput): ProtocolCapability {
     throw new CapabilityMintError('issued_at must be parseable date.');
   }
 
-  const { normalized: consent } = assertConsentReady(input.consent, mintNow);
+  const { normalized: consent } = assertConsentReady(input.consent, mintNow, input.checkConsentRevocation);
 
   const requestedScope = input.requested_scope;
   const requestedPermissions = input.requested_permissions;

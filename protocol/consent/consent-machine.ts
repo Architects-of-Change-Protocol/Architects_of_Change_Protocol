@@ -11,7 +11,7 @@ export function doesConsentAllowScope(
 ): boolean {
   const state = evaluateConsentState(consent, {
     now: request.now,
-    isRevoked: request.isRevoked,
+    checkRevocation: request.checkRevocation,
   });
 
   if (state.state !== 'active') {

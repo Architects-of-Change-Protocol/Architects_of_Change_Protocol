@@ -1,6 +1,7 @@
 import { buildConsentObject } from '../../../consent';
 import { mintCapabilityToken } from '../../../capability';
 import { evaluateCapabilityAccess } from '../../../enforcement';
+import { MarketMakerRegistry } from '../../../shared/marketMakerRegistry';
 
 const SUBJECT = 'did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK';
 const EMPLOYER = 'did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH';
@@ -34,6 +35,15 @@ function buildHrKeyCapability() {
 describe('HRKey capability enforcement integration', () => {
   it('evaluates a market-maker-bound access request at the service boundary', () => {
     const { consent, capability } = buildHrKeyCapability();
+    const marketMakerRegistry = new MarketMakerRegistry();
+    marketMakerRegistry.register({
+      id: 'hrkey-v1',
+      name: 'HRKey',
+      version: '1.0.0',
+      capabilities: ['employment'],
+      status: 'active',
+      created_at: '2025-01-15T00:00:00Z'
+    });
 
     const decision = evaluateCapabilityAccess({
       capability,
@@ -41,6 +51,7 @@ describe('HRKey capability enforcement integration', () => {
       action: 'read',
       resource: { type: 'content', ref: CONTENT_REF },
       marketMakerId: 'hrkey-v1',
+      marketMakerRegistry,
       now: '2025-08-01T00:00:00Z',
       metadata: {
         endpoint: 'hrkey.capability.redeem'

@@ -16,6 +16,7 @@ export const capabilityAccessReasonCodes = {
   UNKNOWN_MARKET_MAKER: 'UNKNOWN_MARKET_MAKER',
   MARKET_MAKER_DEPRECATED: 'MARKET_MAKER_DEPRECATED',
   MARKET_MAKER_REVOKED: 'MARKET_MAKER_REVOKED',
+  MARKET_MAKER_TRUST_UNVERIFIABLE: 'MARKET_MAKER_TRUST_UNVERIFIABLE',
   POLICY_DENIED: 'POLICY_DENIED',
   USAGE_DENIED: 'USAGE_DENIED',
   PAYMENT_REQUIRED: 'PAYMENT_REQUIRED',
@@ -49,6 +50,7 @@ export const capabilityReasonCodeTaxonomy = {
     capabilityAccessReasonCodes.UNKNOWN_MARKET_MAKER,
     capabilityAccessReasonCodes.MARKET_MAKER_DEPRECATED,
     capabilityAccessReasonCodes.MARKET_MAKER_REVOKED,
+    capabilityAccessReasonCodes.MARKET_MAKER_TRUST_UNVERIFIABLE,
     capabilityAccessReasonCodes.PAYMENT_REQUIRED
   ] as const,
   policy: [
