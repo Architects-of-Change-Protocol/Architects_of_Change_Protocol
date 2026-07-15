@@ -20,4 +20,5 @@ billing").
 | [`11-migration-and-compatibility.md`](11-migration-and-compatibility.md) | Breaking changes and who was migrated |
 | [`12-rollback.md`](12-rollback.md) | Rollback procedure — never restores fail-open |
 | [`13-final-verdict.md`](13-final-verdict.md) | Executive verdict and next-sprint recommendation (superseded in part by `14`) |
-| [`14-independent-review.md`](14-independent-review.md) | Independent adversarial review of commit `cc0ca97`: empirical vulnerability reproduction, caller audit, mutation testing, corrective commits, and the current readiness verdict |
+| [`14-independent-review.md`](14-independent-review.md) | Independent adversarial review of commit `cc0ca97`: empirical vulnerability reproduction, caller audit, mutation testing, corrective commits, and the READY WITH CONDITIONS verdict |
+| [`15-final-hardening.md`](15-final-hardening.md) | Final hardening iteration: classifies the legacy HMAC capability surface with evidence (dead/legacy/unreachable/live/almost-live), contains it (demoted to `runtime/internal.ts`, gated, documented) rather than building revocation for it, closes the specific typecheck-coverage gap mutation testing found, and re-confirms the verdict — **the current, most up-to-date readiness verdict** |

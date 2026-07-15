@@ -9,6 +9,11 @@ const disallowedPublicExports = [
   "export * from './execution-fabric'",
   "export * from './sovereign-runtime'",
   "export * from './marketplace'",
+  // Revocation-safety (see docs/security/revocation/14-independent-review.md): the HMAC
+  // capability-token authorization path has no revocation check. Must not be re-exported from
+  // the stable surface until it has one.
+  "export * from './enforcement'",
+  "export { createRuntimeServer }",
 ];
 
 const violations = disallowedPublicExports.filter((entry) => runtimeIndex.includes(entry));
