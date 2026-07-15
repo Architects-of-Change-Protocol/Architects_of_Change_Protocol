@@ -5,11 +5,25 @@ import {
   mintCapability,
   verifyCapability,
 } from '..';
+import { createStaticRevocationCheck, revokedStatus, verifiedNotRevokedStatus } from '../../revocation';
 
 const SUBJECT = 'did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK';
 const GRANTEE = 'did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH';
 const REF_A = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
 const REF_B = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
+
+const notRevoked = createStaticRevocationCheck(
+  verifiedNotRevokedStatus({ subjectId: 'fixture', subjectType: 'capability_grant' })
+);
+const revoked = createStaticRevocationCheck(
+  revokedStatus({
+    subjectId: 'fixture',
+    subjectType: 'capability_grant',
+    revocationId: 'rev-1',
+    reasonCode: 'REVOKED',
+    revokedAt: '2026-02-16T00:00:00Z',
+  })
+);
 
 function buildConsent() {
   return buildConsentObject(
@@ -29,21 +43,40 @@ function buildConsent() {
   );
 }
 
+function mintFixture() {
+  return mintCapability({
+    consent: buildConsent(),
+    requested_scope: [{ type: 'content', ref: REF_A }],
+    requested_permissions: ['read'],
+    issued_at: '2026-02-01T00:00:00Z',
+    expires_at: '2026-03-01T00:00:00Z',
+    marketMakerId: 'mm-01',
+    checkConsentRevocation: notRevoked,
+  });
+}
+
 describe('protocol capability lifecycle', () => {
   it('mint válido', () => {
-    const capability = mintCapability({
-      consent: buildConsent(),
-      requested_scope: [{ type: 'content', ref: REF_A }],
-      requested_permissions: ['read'],
-      issued_at: '2026-02-01T00:00:00Z',
-      expires_at: '2026-03-01T00:00:00Z',
-      marketMakerId: 'mm-01',
-    });
+    const capability = mintFixture();
 
     expect(capability.parent_consent_hash).toHaveLength(64);
     expect(capability.capability_hash).toMatch(/^[a-f0-9]{64}$/);
     expect(capability.scope).toEqual([{ type: 'content', ref: REF_A }]);
     expect(capability.permissions).toEqual(['read']);
+  });
+
+  it('mint bloquea cuando el consent padre no puede verificarse como no revocado', () => {
+    expect(() =>
+      mintCapability({
+        consent: buildConsent(),
+        requested_scope: [{ type: 'content', ref: REF_A }],
+        requested_permissions: ['read'],
+        issued_at: '2026-02-01T00:00:00Z',
+        expires_at: '2026-03-01T00:00:00Z',
+        marketMakerId: 'mm-01',
+        checkConsentRevocation: revoked,
+      })
+    ).toThrow(/Consent must be ACTIVE to mint capability/);
   });
 
   it('mint con scope inválido -> throw', () => {
@@ -54,6 +87,7 @@ describe('protocol capability lifecycle', () => {
         requested_permissions: ['read'],
         issued_at: '2026-02-01T00:00:00Z',
         expires_at: '2026-03-01T00:00:00Z',
+        checkConsentRevocation: notRevoked,
       })
     ).toThrow('requested_scope must be a subset of consent.scope.');
   });
@@ -66,6 +100,7 @@ describe('protocol capability lifecycle', () => {
         requested_permissions: ['aggregate'],
         issued_at: '2026-02-01T00:00:00Z',
         expires_at: '2026-03-01T00:00:00Z',
+        checkConsentRevocation: notRevoked,
       })
     ).toThrow('requested_permissions must be a subset of consent.permissions.');
   });
@@ -78,33 +113,20 @@ describe('protocol capability lifecycle', () => {
         requested_permissions: ['read'],
         issued_at: '2026-02-01T00:00:00Z',
         expires_at: '2027-01-01T00:00:00Z',
+        checkConsentRevocation: notRevoked,
       })
     ).toThrow('expires_at cannot exceed consent.expires_at.');
   });
 
   it('verify válido', () => {
-    const capability = mintCapability({
-      consent: buildConsent(),
-      requested_scope: [{ type: 'content', ref: REF_A }],
-      requested_permissions: ['read'],
-      issued_at: '2026-02-01T00:00:00Z',
-      expires_at: '2026-03-01T00:00:00Z',
-      marketMakerId: 'mm-01',
-    });
+    const capability = mintFixture();
 
     const result = verifyCapability(capability);
     expect(result.valid).toBe(true);
   });
 
   it('verify con hash incorrecto -> invalid', () => {
-    const capability = mintCapability({
-      consent: buildConsent(),
-      requested_scope: [{ type: 'content', ref: REF_A }],
-      requested_permissions: ['read'],
-      issued_at: '2026-02-01T00:00:00Z',
-      expires_at: '2026-03-01T00:00:00Z',
-      marketMakerId: 'mm-01',
-    });
+    const capability = mintFixture();
 
     const invalid = {
       ...capability,
@@ -117,30 +139,16 @@ describe('protocol capability lifecycle', () => {
   });
 
   it('evaluate active', () => {
-    const capability = mintCapability({
-      consent: buildConsent(),
-      requested_scope: [{ type: 'content', ref: REF_A }],
-      requested_permissions: ['read'],
-      issued_at: '2026-02-01T00:00:00Z',
-      expires_at: '2026-03-01T00:00:00Z',
-      marketMakerId: 'mm-01',
-    });
+    const capability = mintFixture();
 
-    const state = evaluateCapabilityState(capability, { now: new Date('2026-02-15T00:00:00Z') });
+    const state = evaluateCapabilityState(capability, { now: new Date('2026-02-15T00:00:00Z'), checkRevocation: notRevoked });
     expect(state.state).toBe('active');
   });
 
   it('evaluate expired', () => {
-    const capability = mintCapability({
-      consent: buildConsent(),
-      requested_scope: [{ type: 'content', ref: REF_A }],
-      requested_permissions: ['read'],
-      issued_at: '2026-02-01T00:00:00Z',
-      expires_at: '2026-03-01T00:00:00Z',
-      marketMakerId: 'mm-01',
-    });
+    const capability = mintFixture();
 
-    const state = evaluateCapabilityState(capability, { now: new Date('2026-04-01T00:00:00Z') });
+    const state = evaluateCapabilityState(capability, { now: new Date('2026-04-01T00:00:00Z'), checkRevocation: notRevoked });
     expect(state.state).toBe('expired');
   });
 
@@ -153,39 +161,49 @@ describe('protocol capability lifecycle', () => {
       not_before: '2026-02-10T00:00:00Z',
       expires_at: '2026-03-01T00:00:00Z',
       marketMakerId: 'mm-01',
+      checkConsentRevocation: notRevoked,
     });
 
-    const state = evaluateCapabilityState(capability, { now: new Date('2026-02-05T00:00:00Z') });
+    const state = evaluateCapabilityState(capability, { now: new Date('2026-02-05T00:00:00Z'), checkRevocation: notRevoked });
     expect(state.state).toBe('not_yet_active');
   });
 
-  it('evaluate revoked (mock hook)', () => {
-    const capability = mintCapability({
-      consent: buildConsent(),
-      requested_scope: [{ type: 'content', ref: REF_A }],
-      requested_permissions: ['read'],
-      issued_at: '2026-02-01T00:00:00Z',
-      expires_at: '2026-03-01T00:00:00Z',
-      marketMakerId: 'mm-01',
-    });
+  it('evaluate revoked', () => {
+    const capability = mintFixture();
 
     const state = evaluateCapabilityState(capability, {
       now: new Date('2026-02-15T00:00:00Z'),
-      isRevoked: () => true,
+      checkRevocation: revoked,
     });
 
     expect(state.state).toBe('revoked');
   });
 
-  it('access permitido', () => {
-    const capability = mintCapability({
-      consent: buildConsent(),
-      requested_scope: [{ type: 'content', ref: REF_A }],
-      requested_permissions: ['read'],
-      issued_at: '2026-02-01T00:00:00Z',
-      expires_at: '2026-03-01T00:00:00Z',
-      marketMakerId: 'mm-01',
+  it('FAIL-CLOSED REGRESSION: unknown revocation status blocks even though the capability has not expired', () => {
+    const capability = mintFixture();
+    const unavailable = createStaticRevocationCheck({
+      status: 'unknown',
+      checkedAt: '2026-02-15T00:00:00Z',
+      errorCode: 'REVOCATION_LOOKUP_TIMEOUT',
+      category: 'timeout',
+      retryable: true,
     });
+
+    const state = evaluateCapabilityState(capability, { now: new Date('2026-02-15T00:00:00Z'), checkRevocation: unavailable });
+
+    expect(state.state).toBe('revocation_unknown');
+    expect(
+      evaluateCapabilityAccess(capability, {
+        requested_scope: [{ type: 'content', ref: REF_A }],
+        requested_permissions: ['read'],
+        now: new Date('2026-02-15T00:00:00Z'),
+        checkRevocation: unavailable,
+      })
+    ).toBe(false);
+  });
+
+  it('access permitido', () => {
+    const capability = mintFixture();
 
     expect(
       evaluateCapabilityAccess(capability, {
@@ -195,57 +213,39 @@ describe('protocol capability lifecycle', () => {
         grantee: GRANTEE,
         marketMakerId: 'mm-01',
         now: new Date('2026-02-15T00:00:00Z'),
+        checkRevocation: notRevoked,
       })
     ).toBe(true);
   });
 
   it('access con scope fuera -> deny', () => {
-    const capability = mintCapability({
-      consent: buildConsent(),
-      requested_scope: [{ type: 'content', ref: REF_A }],
-      requested_permissions: ['read'],
-      issued_at: '2026-02-01T00:00:00Z',
-      expires_at: '2026-03-01T00:00:00Z',
-      marketMakerId: 'mm-01',
-    });
+    const capability = mintFixture();
 
     expect(
       evaluateCapabilityAccess(capability, {
         requested_scope: [{ type: 'pack', ref: REF_B }],
         requested_permissions: ['read'],
         now: new Date('2026-02-15T00:00:00Z'),
+        checkRevocation: notRevoked,
       })
     ).toBe(false);
   });
 
   it('access con permission fuera -> deny', () => {
-    const capability = mintCapability({
-      consent: buildConsent(),
-      requested_scope: [{ type: 'content', ref: REF_A }],
-      requested_permissions: ['read'],
-      issued_at: '2026-02-01T00:00:00Z',
-      expires_at: '2026-03-01T00:00:00Z',
-      marketMakerId: 'mm-01',
-    });
+    const capability = mintFixture();
 
     expect(
       evaluateCapabilityAccess(capability, {
         requested_scope: [{ type: 'content', ref: REF_A }],
         requested_permissions: ['derive'],
         now: new Date('2026-02-15T00:00:00Z'),
+        checkRevocation: notRevoked,
       })
     ).toBe(false);
   });
 
   it('binding mismatch -> deny', () => {
-    const capability = mintCapability({
-      consent: buildConsent(),
-      requested_scope: [{ type: 'content', ref: REF_A }],
-      requested_permissions: ['read'],
-      issued_at: '2026-02-01T00:00:00Z',
-      expires_at: '2026-03-01T00:00:00Z',
-      marketMakerId: 'mm-01',
-    });
+    const capability = mintFixture();
 
     expect(
       evaluateCapabilityAccess(capability, {
@@ -253,6 +253,7 @@ describe('protocol capability lifecycle', () => {
         requested_permissions: ['read'],
         subject: 'did:key:z6MkDifferentSubject1234567890abc',
         now: new Date('2026-02-15T00:00:00Z'),
+        checkRevocation: notRevoked,
       })
     ).toBe(false);
   });

@@ -14,6 +14,8 @@ export function mapCapabilityStateToReason(state: CapabilityState): EnforcementR
       return ENFORCEMENT_REASON_CODES.CAPABILITY_EXPIRED;
     case 'revoked':
       return ENFORCEMENT_REASON_CODES.CAPABILITY_REVOKED;
+    case 'revocation_unknown':
+      return ENFORCEMENT_REASON_CODES.CAPABILITY_REVOCATION_UNKNOWN;
     case 'not_yet_active':
       return ENFORCEMENT_REASON_CODES.CAPABILITY_NOT_YET_ACTIVE;
     case 'invalid':

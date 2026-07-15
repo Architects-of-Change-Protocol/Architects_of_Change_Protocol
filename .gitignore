@@ -2,6 +2,12 @@ node_modules/
 *.tsbuildinfo
 *.tgz
 
+# test-consumers/ fixtures are installed/built into temp copies by
+# scripts/validate-protocol-consumer.mjs; local ad-hoc runs inside the
+# checked-in fixture dirs should not leave build/lockfile artifacts behind.
+/test-consumers/*/dist/
+/test-consumers/*/package-lock.json
+
 # ── Stray TypeScript compile outputs in source-only directories ──────────────
 # These directories contain only .ts source; JS is emitted to packages/*/dist/
 # or handled by Vite. If tsc runs without noEmit or a proper outDir these land

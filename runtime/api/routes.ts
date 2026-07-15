@@ -2,6 +2,8 @@
 import { authorizeExecution, type ExecutionAuthorizationResult } from '../../protocol/execution';
 import { evaluateEnforcement, type EnforcementDecision } from '../../protocol/enforcement';
 import { mintCapability, type ProtocolCapability } from '../../protocol/capability';
+import { isRevoked as isCapabilityTokenRevoked } from '../../capability';
+import { ALWAYS_UNKNOWN_REVOCATION_CHECK, createRegistryRevocationCheck, type RevocationCheckPort } from '../../protocol/revocation';
 import { DataAccessService } from '../access/service';
 import type { DataAccessDecision, DataAccessRequestInput } from '../access/types';
 import { RuntimeAuditService, type ListAuditEventsInput, type RuntimeAuditEvent } from '../audit/service';
@@ -20,8 +22,49 @@ import type { ApiResponse, RuntimeEndpoint } from '../types/api-types';
 import { InMemoryUsageService, isMeteredEndpoint } from '../usage';
 import { InMemoryMonetizationService, InMemoryPricingRegistry, type PricingRule } from '../monetization';
 import type { MeteredRuntimeEndpoint, UsageSummaryResult } from '../usage';
-import { ControlPlaneService, type AccessRequest, type ConsentDecision, type GrantedAccess } from '../controlPlane';
+import {
+  ControlPlaneService,
+  RevocationIdempotencyConflictError,
+  type AccessRequest,
+  type ConsentDecision,
+  type GrantedAccess,
+  type RevokeGrantResult,
+} from '../controlPlane';
 import { normalizePolicyDecision } from '../policy';
+import { normalizeReasonCode } from '../governance/reason-codes';
+
+/**
+ * Canonical revocation check for the capability-token subsystem (see
+ * docs/security/revocation/04-status-contract.md). This is the ONLY place a revocation
+ * determination may be injected into `evaluateEnforcement`/`authorizeExecution` — it is resolved
+ * server-side against the canonical registry, never accepted from client-supplied JSON (a
+ * function cannot cross a JSON boundary, and a client-asserted "not revoked" would be
+ * meaningless from a security standpoint).
+ */
+const capabilityRevocationCheck: RevocationCheckPort = createRegistryRevocationCheck({
+  isRevoked: (subjectId) => isCapabilityTokenRevoked(subjectId),
+});
+
+/**
+ * No canonical consent-hash revocation registry exists in this codebase yet (see
+ * docs/security/revocation/13-final-verdict.md — building one is next-sprint work). Until it
+ * does, `/capability/mint` deliberately and explicitly cannot verify a parent consent's
+ * revocation status, so it must always resolve to `unknown` and block — never silently allow
+ * because the check was left unwired. This makes that fail-closed behavior an intentional,
+ * tested design decision instead of an implicit side effect of an uncaught TypeError.
+ */
+const consentRevocationCheck: RevocationCheckPort = ALWAYS_UNKNOWN_REVOCATION_CHECK;
+
+/**
+ * ADR §13 / docs/security/revocation/08-billing-safety-override.md: security containment
+ * operations must never be blocked by billing or entitlement state. `/access/grant/revoke` is
+ * deliberately absent from DEFAULT_PRICING_RULES and from `isMeteredEndpoint` — do not add it.
+ */
+const CONTAINMENT_ENDPOINTS: readonly RuntimeEndpoint[] = ['/access/grant/revoke'];
+
+export function isContainmentEndpoint(endpoint: RuntimeEndpoint): boolean {
+  return CONTAINMENT_ENDPOINTS.includes(endpoint);
+}
 
 export type RuntimeCore = {
   evaluateEnforcement: typeof evaluateEnforcement;
@@ -240,6 +283,7 @@ export function executeRoute(
   | { request: AccessRequest; decision: ConsentDecision; grant?: GrantedAccess }
   | GrantedAccess
   | GrantedAccess[]
+  | RevokeGrantResult
   | { received: true; reason_code: string }
   | { events: RuntimeAuditEvent[] }
   | UsageSummaryResult
@@ -247,11 +291,26 @@ export function executeRoute(
   try {
     switch (endpoint) {
       case '/enforcement/evaluate':
-        return success(core.evaluateEnforcement(reviveNow(payload as Parameters<typeof evaluateEnforcement>[0])));
+        return success(
+          core.evaluateEnforcement(
+            reviveNow(payload as Parameters<typeof evaluateEnforcement>[0]),
+            capabilityRevocationCheck
+          )
+        );
       case '/execution/authorize':
-        return success(core.authorizeExecution(reviveNow(payload as Parameters<typeof authorizeExecution>[0])));
+        return success(
+          core.authorizeExecution(
+            reviveNow(payload as Parameters<typeof authorizeExecution>[0]),
+            capabilityRevocationCheck
+          )
+        );
       case '/capability/mint':
-        return success(core.mintCapability(payload as Parameters<typeof mintCapability>[0]));
+        return success(
+          core.mintCapability({
+            ...(payload as Parameters<typeof mintCapability>[0]),
+            checkConsentRevocation: consentRevocationCheck,
+          })
+        );
       case '/access/request': {
         const request = payload as {
           subject_id?: string;
@@ -281,7 +340,7 @@ export function executeRoute(
             requester_id: request.requester_id,
             dataset_id: request.dataset_id,
             purpose: request.purpose,
-            requested_scope: request.requested_scope,
+            requested_scope: request.requested_scope ?? [],
           })
         );
       }
@@ -325,17 +384,35 @@ export function executeRoute(
         return success(core.controlPlaneService.listActiveGrants({ subject_id: request.subject_id, requester_id: request.requester_id }));
       }
       case '/access/grant/revoke': {
-        const request = payload as { grant_id?: string; subject_id?: string; requester_id?: string };
+        // Security containment: this handler must never consult usageService/monetizationService
+        // or any billing/entitlement state before calling revokeGrant (ADR §13,
+        // docs/security/revocation/08-billing-safety-override.md).
+        const request = payload as {
+          grant_id?: string;
+          subject_id?: string;
+          requester_id?: string;
+          reason?: string;
+          idempotency_key?: string;
+        };
         if (!isNonEmptyString(request.grant_id)) {
           return failure(ROUTE_ERRORS.invalidRequest, 'grant_id is required.');
         }
-        return success(
-          core.controlPlaneService.revokeGrant({
-            grant_id: request.grant_id,
-            subject_id: request.subject_id,
-            requester_id: request.requester_id,
-          })
-        );
+        try {
+          return success(
+            core.controlPlaneService.revokeGrant({
+              grant_id: request.grant_id,
+              subject_id: request.subject_id,
+              requester_id: request.requester_id,
+              reason: request.reason,
+              idempotency_key: request.idempotency_key,
+            })
+          );
+        } catch (error) {
+          if (error instanceof RevocationIdempotencyConflictError) {
+            return failure('IDEMPOTENCY_CONFLICT', error.message);
+          }
+          throw error;
+        }
       }
       case '/payout/execute': {
         const request = payload as Partial<RlusdWithdrawalRequest>;
@@ -366,7 +443,9 @@ export function executeRoute(
       case '/trust/credential/register':
         return success(core.trustService.registerCredential(payload as RegisterCredentialInput));
       case '/trust/verify':
-        return success(core.trustService.verifyIdentity(reviveNow(payload as VerifyIdentityInput)));
+        return success(
+          core.trustService.verifyIdentity(reviveNow(payload as Record<string, unknown>) as unknown as VerifyIdentityInput)
+        );
       case '/trust/consent/grant':
         return success(core.trustService.grantConsent(payload as GrantConsentInput));
       case '/data/access': {

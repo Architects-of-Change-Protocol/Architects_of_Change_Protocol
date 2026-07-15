@@ -1,10 +1,12 @@
 import type { ProtocolConsent, ScopeEntry } from '../consent/consent-types';
+import type { RevocationCheckPort, RevocationStatus } from '../revocation';
 
 export type CapabilityState =
   | 'active'
   | 'expired'
   | 'not_yet_active'
   | 'revoked'
+  | 'revocation_unknown'
   | 'invalid';
 
 export type ProtocolCapability = {
@@ -30,6 +32,8 @@ export type MintCapabilityInput = {
   not_before?: string;
   marketMakerId?: string;
   metadata?: Record<string, unknown>;
+  /** Minting is a material operation: the parent consent's revocation status must be proven. */
+  checkConsentRevocation: RevocationCheckPort;
 };
 
 export type CapabilityVerificationResult = {
@@ -40,12 +44,17 @@ export type CapabilityVerificationResult = {
 
 export type EvaluateCapabilityStateOptions = {
   now?: Date;
-  isRevoked?: (capability: ProtocolCapability) => boolean;
+  /**
+   * Mandatory: every material evaluation must present an explicit revocation determination.
+   * There is no default — omission is a compile-time error, not a silent "not revoked".
+   */
+  checkRevocation: RevocationCheckPort;
 };
 
 export type CapabilityStateResult = {
   state: CapabilityState;
   reasons: string[];
+  revocationStatus?: RevocationStatus;
 };
 
 export type CapabilityAccessRequest = {
@@ -55,7 +64,7 @@ export type CapabilityAccessRequest = {
   grantee?: string;
   marketMakerId?: string;
   now?: Date;
-  isRevoked?: (capability: ProtocolCapability) => boolean;
+  checkRevocation: RevocationCheckPort;
 };
 
 export type ParsedConsentForCapability = {

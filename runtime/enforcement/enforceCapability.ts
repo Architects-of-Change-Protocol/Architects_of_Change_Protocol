@@ -87,6 +87,13 @@ function buildAudit(result: CapabilityAuthorizationResult, context: CapabilityRe
   return result.allowed ? buildCapabilityAuthorizedEvent(builderInput) : buildCapabilityDeniedEvent(builderInput);
 }
 
+/**
+ * SECURITY WARNING: delegates to `authorizeWithCapability`, which has no revocation check (see
+ * that function's docstring). In 'soft' mode, a request with NO capability token is allowed
+ * through entirely (`CAPABILITY_SOFT_ALLOW_MISSING`). Not exported from the stable
+ * `runtime/index.ts` surface — see `runtime/internal.ts` and
+ * docs/security/revocation/14-independent-review.md.
+ */
 export function enforceCapabilityAccess(context: CapabilityRequestContext): CapabilityEnforcementResult {
   const token = extractCapabilityToken(context);
   const tokenPresent = token !== undefined;

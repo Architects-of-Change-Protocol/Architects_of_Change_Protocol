@@ -161,7 +161,21 @@ function evaluateMarketMakerTrust(
   const registry = request.marketMakerRegistry;
 
   if (!registry) {
-    return null;
+    // The capability declares a marketMakerId binding but the caller has not wired a registry to
+    // verify its trust status. Absence of a check is not proof the market maker is trustworthy —
+    // fail closed instead of silently passing (see docs/security/revocation).
+    checks.marketMaker = 'fail';
+    return denyDecision(
+      evaluatedAt,
+      capabilityAccessReasonCodes.MARKET_MAKER_TRUST_UNVERIFIABLE,
+      'Capability is bound to a marketMakerId but no marketMakerRegistry was provided to verify its trust status.',
+      checks,
+      {
+        failureStage: 'marketMaker',
+        ...metadata,
+        boundMarketMakerId: marketMakerId
+      }
+    );
   }
 
   if (!registry.exists(marketMakerId)) {
@@ -427,6 +441,10 @@ export function evaluateCapabilityAccess(
       checks.resource = 'pass';
 
       if (normalized.capability.marketMakerId !== null) {
+        // Trust verification of the capability's OWN bound market maker runs first, regardless
+        // of what the request asks for: if we cannot prove the bound market maker is trustworthy
+        // (no registry, unknown, deprecated, revoked), that is reason enough to deny before ever
+        // comparing it against the request's requested marketMakerId.
         const marketMakerTrustDecision = evaluateMarketMakerTrust(
           normalized.capability.marketMakerId,
           input,

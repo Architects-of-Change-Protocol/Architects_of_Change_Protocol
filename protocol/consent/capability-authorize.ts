@@ -16,6 +16,14 @@ function deny(reason_code: CapabilityReasonCode, capability_id: string | null): 
   };
 }
 
+/**
+ * SECURITY WARNING: this function validates capability shape, hash, HMAC signature, and
+ * expiry ONLY. It has no revocation check — there is no `checkRevocation`/`RevocationCheckPort`
+ * parameter, and no revoke mechanism exists anywhere in this codebase for the `capability_id`
+ * key space this function authorizes. Do not use this to authorize material operations without
+ * first adding canonical revocation checking (see protocol/revocation and
+ * docs/security/revocation/14-independent-review.md).
+ */
 export function authorizeWithCapability(
   request: CapabilityAuthorizationRequest,
   token: unknown,

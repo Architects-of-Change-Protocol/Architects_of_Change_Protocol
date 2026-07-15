@@ -10,7 +10,7 @@ function toScopeKey(entry: ScopeEntry): string {
 export function evaluateCapabilityAccess(capabilityInput: unknown, request: CapabilityAccessRequest): boolean {
   const state = evaluateCapabilityState(capabilityInput, {
     now: request.now,
-    isRevoked: request.isRevoked,
+    checkRevocation: request.checkRevocation,
   });
 
   if (state.state !== 'active') {

@@ -1,7 +1,7 @@
 import { AudienceRing } from '../components/enterprise/AudienceRing';
 import { useAccessRequests } from '../hooks/useAccessRequests';
 import { useGrants } from '../hooks/useGrants';
-import { MOCK_REQUESTER_ID, MOCK_SUBJECT_ID } from '../lib/runtimeClient';
+import { MOCK_REQUESTER_ID, MOCK_SUBJECT_ID } from '../aoc/runtime-consumer';
 
 type EventType = 'access' | 'consent' | 'scope_expiry' | 'revocation' | 'agent';
 type EventStatus = 'verified' | 'warning' | 'blocked';
