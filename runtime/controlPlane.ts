@@ -115,7 +115,16 @@ function nowIso(): string {
 }
 
 function fingerprintRevokeInput(input: RevokeGrantInput): string {
-  return JSON.stringify({ grant_id: input.grant_id, reason: input.reason ?? null });
+  // Must include every field that gates authorization (subject_id/requester_id), not just the
+  // fields that change what gets written — otherwise a replay of a known idempotency_key with a
+  // different (mismatched) subject_id would return the cached result without ever re-running the
+  // subject-mismatch check below, since a cache hit short-circuits before that check runs.
+  return JSON.stringify({
+    grant_id: input.grant_id,
+    reason: input.reason ?? null,
+    subject_id: input.subject_id ?? null,
+    requester_id: input.requester_id ?? null,
+  });
 }
 
 export type CreateAccessRequestInput = Omit<AccessRequest, 'request_id' | 'status' | 'created_at' | 'updated_at'>;

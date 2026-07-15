@@ -93,6 +93,44 @@ describe('runtime/api/routes.ts — /enforcement/evaluate and /execution/authori
   });
 });
 
+describe('runtime/api/routes.ts — /capability/mint fail-closed on unverifiable consent revocation', () => {
+  it('REGRESSION FIX: /capability/mint deterministically denies (no consent revocation registry exists yet), rather than throwing an uncaught TypeError', () => {
+    const consent = buildConsentObject(SUBJECT, GRANTEE, 'grant', [{ type: 'content', ref: REF_A }], ['read'], {
+      now: new Date('2026-01-01T00:00:00Z'),
+      expires_at: '2026-12-31T00:00:00Z',
+    });
+
+    const result = executeRoute('/capability/mint', {
+      consent,
+      requested_scope: [{ type: 'content', ref: REF_A }],
+      requested_permissions: ['read'],
+      issued_at: '2026-02-01T00:00:00Z',
+      expires_at: '2026-03-01T00:00:00Z',
+    });
+
+    expect(result.success).toBe(false);
+    expect(result.error?.message).toMatch(/revocation_unknown/);
+  });
+
+  it('a client-supplied checkConsentRevocation field cannot force an allow', () => {
+    const consent = buildConsentObject(SUBJECT, GRANTEE, 'grant', [{ type: 'content', ref: REF_A }], ['read'], {
+      now: new Date('2026-01-01T00:00:00Z'),
+      expires_at: '2026-12-31T00:00:00Z',
+    });
+
+    const result = executeRoute('/capability/mint', {
+      consent,
+      requested_scope: [{ type: 'content', ref: REF_A }],
+      requested_permissions: ['read'],
+      issued_at: '2026-02-01T00:00:00Z',
+      expires_at: '2026-03-01T00:00:00Z',
+      checkConsentRevocation: () => ({ status: 'verified_not_revoked' }), // attempted spoof; must be overwritten server-side
+    } as unknown);
+
+    expect(result.success).toBe(false);
+  });
+});
+
 describe('runtime/api/routes.ts — billing safety override (ADR §13)', () => {
   it('/access/grant/revoke is a containment endpoint and is never metered/priced', () => {
     expect(isContainmentEndpoint('/access/grant/revoke')).toBe(true);

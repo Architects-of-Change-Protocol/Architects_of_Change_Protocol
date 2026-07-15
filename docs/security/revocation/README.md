@@ -19,4 +19,5 @@ billing").
 | [`10-test-evidence.md`](10-test-evidence.md) | Real commands and real results, including the DB-backed-test limitation |
 | [`11-migration-and-compatibility.md`](11-migration-and-compatibility.md) | Breaking changes and who was migrated |
 | [`12-rollback.md`](12-rollback.md) | Rollback procedure — never restores fail-open |
-| [`13-final-verdict.md`](13-final-verdict.md) | Executive verdict and next-sprint recommendation |
+| [`13-final-verdict.md`](13-final-verdict.md) | Executive verdict and next-sprint recommendation (superseded in part by `14`) |
+| [`14-independent-review.md`](14-independent-review.md) | Independent adversarial review of commit `cc0ca97`: empirical vulnerability reproduction, caller audit, mutation testing, corrective commits, and the current readiness verdict |

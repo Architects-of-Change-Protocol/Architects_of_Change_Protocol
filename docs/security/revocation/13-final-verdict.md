@@ -1,5 +1,12 @@
 # 13 — Final Verdict
 
+> **This document was written by the same sprint it evaluates and its claims were unverified at
+> the time. An independent adversarial review was performed afterward — see
+> [`14-independent-review.md`](14-independent-review.md) for the corrected readiness verdict,
+> which supersedes the "PR Readiness" and "Remaining Risks" sections below. The rest of this
+> document (root cause, fix description, scope) held up under independent verification and is
+> left as originally written.**
+
 ## Was there a real fail-open bug?
 
 Yes — but not the shape the sprint brief hypothesized (no `catch { return data?.reason ?? null }`

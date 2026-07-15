@@ -93,6 +93,22 @@ describe('ControlPlaneService.revokeGrant — canonical revocation write path', 
       expect(service.listActiveGrants({ subject_id: 'subject-b' })).toHaveLength(1);
     });
 
+    it('REGRESSION FIX: same idempotency_key + same grant_id but a mismatched subject_id is a conflict, not a silent cached replay', () => {
+      // Before the fix, the idempotency fingerprint only covered {grant_id, reason}, so a second
+      // caller who guessed/knew a valid idempotency_key could resend it with a different
+      // subject_id and receive the cached (already-authorized) result without ever going through
+      // the subject-mismatch check — a minor information-disclosure/bypass-of-validation gap.
+      const service = new ControlPlaneService();
+      const grant = grantFixture(service, 'subject-legit');
+
+      const first = service.revokeGrant({ grant_id: grant.grant_id, idempotency_key: 'idem-subj-1', subject_id: 'subject-legit' });
+      expect(first.idempotentReplay).toBe(false);
+
+      expect(() =>
+        service.revokeGrant({ grant_id: grant.grant_id, idempotency_key: 'idem-subj-1', subject_id: 'someone-else' })
+      ).toThrow(RevocationIdempotencyConflictError);
+    });
+
     it('retry after a hypothetical timeout (no idempotency_key reused, same grant) does not duplicate revocation state', () => {
       // Simulates: caller times out waiting for the first revokeGrant response and retries.
       // Even without an idempotency key, revoking an already-revoked grant must be stable.

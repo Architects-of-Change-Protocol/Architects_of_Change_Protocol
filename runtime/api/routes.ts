@@ -3,7 +3,7 @@ import { authorizeExecution, type ExecutionAuthorizationResult } from '../../pro
 import { evaluateEnforcement, type EnforcementDecision } from '../../protocol/enforcement';
 import { mintCapability, type ProtocolCapability } from '../../protocol/capability';
 import { isRevoked as isCapabilityTokenRevoked } from '../../capability';
-import { createRegistryRevocationCheck, type RevocationCheckPort } from '../../protocol/revocation';
+import { ALWAYS_UNKNOWN_REVOCATION_CHECK, createRegistryRevocationCheck, type RevocationCheckPort } from '../../protocol/revocation';
 import { DataAccessService } from '../access/service';
 import type { DataAccessDecision, DataAccessRequestInput } from '../access/types';
 import { RuntimeAuditService, type ListAuditEventsInput, type RuntimeAuditEvent } from '../audit/service';
@@ -44,6 +44,16 @@ import { normalizeReasonCode } from '../governance/reason-codes';
 const capabilityRevocationCheck: RevocationCheckPort = createRegistryRevocationCheck({
   isRevoked: (subjectId) => isCapabilityTokenRevoked(subjectId),
 });
+
+/**
+ * No canonical consent-hash revocation registry exists in this codebase yet (see
+ * docs/security/revocation/13-final-verdict.md — building one is next-sprint work). Until it
+ * does, `/capability/mint` deliberately and explicitly cannot verify a parent consent's
+ * revocation status, so it must always resolve to `unknown` and block — never silently allow
+ * because the check was left unwired. This makes that fail-closed behavior an intentional,
+ * tested design decision instead of an implicit side effect of an uncaught TypeError.
+ */
+const consentRevocationCheck: RevocationCheckPort = ALWAYS_UNKNOWN_REVOCATION_CHECK;
 
 /**
  * ADR §13 / docs/security/revocation/08-billing-safety-override.md: security containment
@@ -295,7 +305,12 @@ export function executeRoute(
           )
         );
       case '/capability/mint':
-        return success(core.mintCapability(payload as Parameters<typeof mintCapability>[0]));
+        return success(
+          core.mintCapability({
+            ...(payload as Parameters<typeof mintCapability>[0]),
+            checkConsentRevocation: consentRevocationCheck,
+          })
+        );
       case '/access/request': {
         const request = payload as {
           subject_id?: string;

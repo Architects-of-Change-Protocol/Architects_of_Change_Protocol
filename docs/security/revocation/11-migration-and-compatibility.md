@@ -28,12 +28,34 @@ fail-open"). Every real caller was migrated in the same change.
   scoped change. See `13-final-verdict.md`.
 - `protocol/consent/capability-authorize.ts` (`authorizeWithCapability`) and its caller
   `runtime/enforcement/enforceCapability.ts` — a sixth capability-token format with no revocation
-  check. Its only consumer, `runtime/api/server.ts`, does not compile/run today for unrelated
-  reasons (see `10-test-evidence.md`), so it wasn't patched blind.
+  check, gating live `POST /data/access`/`POST /payout/execute` traffic via `runtime/api/server.ts`
+  (exported from `runtime/index.ts`'s "stable" public surface). **Correction (independent
+  review)**: this is not safely inert — see `02-threat-model.md` and `14-independent-review.md`
+  for why the prior framing here understated the risk.
 - `runtime/sdk/client.ts` was updated for type consistency (it's a real caller of the changed
   functions) but its own test (`runtime/__tests__/runtimeHosted.test.ts`) is not enabled in CI —
   it fails to compile for a pre-existing, unrelated reason (`runtime/types/transport.ts` doesn't
-  actually export `RUNTIME_TRANSPORT_VERSION`, which `runtime/index.ts` tries to re-export).
+  actually export `RUNTIME_TRANSPORT_VERSION`, which `runtime/index.ts` tries to re-export). **The
+  independent review confirmed this concretely**: a deliberately introduced one-line regression in
+  this file (dropping the `checkRevocation` argument from the local-mode `evaluateEnforcement`
+  call) was caught by **neither** `npm run typecheck` nor `npm test` — see
+  `14-independent-review.md` §Mutation Testing.
+
+## Corrections made during independent review (commits after `cc0ca97`)
+
+- `runtime/api/routes.ts` — `/capability/mint` now explicitly passes
+  `checkConsentRevocation: ALWAYS_UNKNOWN_REVOCATION_CHECK` instead of leaving the field unset.
+  Previously the endpoint always failed (safely, but by accident — via an uncaught `TypeError`
+  from calling `undefined` as a function, caught by `resolveConsentRevocationStatus`'s try/catch).
+  Behavior is unchanged (still always denies, since no consent-revocation registry exists), but it
+  is now a deliberate, tested, documented decision instead of an implicit side effect.
+- `runtime/controlPlane.ts` — `fingerprintRevokeInput` now includes `subject_id`/`requester_id` in
+  addition to `grant_id`/`reason`. Previously, replaying a known `idempotency_key` with a
+  different `subject_id` against the same `grant_id`/`reason` returned the cached
+  (already-authorized) result without re-running the subject-mismatch check, because a cache hit
+  short-circuits before that check runs. Minor information-disclosure-adjacent gap, no
+  state-mutation risk (the grant was already correctly revoked on the first call) — fixed anyway
+  since it was a confirmed, cheaply-fixable defect.
 
 ## Auxiliary fixes made to unblock revocation test coverage
 

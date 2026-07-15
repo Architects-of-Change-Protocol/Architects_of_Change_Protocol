@@ -39,11 +39,30 @@ in-memory implementations:
 
 5. **`protocol/consent/capability-authorize.ts`** (`authorizeWithCapability`) — a sixth,
    HMAC-signed capability-token format (`capability_id`/`consent_id`/subject/requester/resource/
-   action) used by `runtime/enforcement/enforceCapability.ts` and the (currently non-functional)
-   `runtime/api/server.ts` HTTP layer. Has **no revocation check of any kind**. **Not fixed in this
-   sprint** — the HTTP server layer it serves does not compile/run today for reasons unrelated to
-   revocation (see `10-test-evidence.md`), so this is documented as a residual risk rather than
-   patched blind.
+   action). `validateCapabilityToken` checks shape, hash, signature, and `expires_at` only —
+   **there is no `checkRevocation` parameter, and no revoke function exists anywhere for this
+   `capability_id` key space.** Its sole caller, `runtime/enforcement/enforceCapability.ts`
+   (`enforceCapabilityAccess`), is in turn called by `runtime/api/server.ts` to gate every
+   `POST /data/access` and `POST /payout/execute` request that carries a capability header —
+   both real, monetized, HTTP-reachable endpoints, wired via `runtime/index.ts` (the package's
+   documented "Public Runtime Surface (stable)"). **This is architecturally the exact same bug
+   class this sprint fixed elsewhere** (revocation checking absent from a live authorization
+   path), on a code path this sprint did not touch.
+   >
+   > **Corrected severity note (independent review, see `14-independent-review.md`)**: an earlier
+   > version of this document characterized this as "the HTTP server layer it serves does not
+   > compile/run today ... documented as a residual risk rather than patched blind," implying the
+   > gap was low-risk because the code is inert. That is misleading. `runtime/api/server.ts` and
+   > `runtime/enforcement/enforceCapability.ts` currently fail to type-check — but only because of
+   > **unrelated, pre-existing compile errors** (`protocol/audit/builders.ts` type mismatches,
+   > `runtime/api/server.ts` endpoint-comparison errors, an `AuditEventBuilderInput` mismatch in
+   > `enforceCapability.ts`, and a missing `RUNTIME_TRANSPORT_VERSION` export). **No CI gate in
+   > this repository ever runs `tsc` against `runtime/index.ts` or `runtime/api/server.ts`** —
+   > `scripts/check-runtime-export-governance.mjs` and `scripts/check-runtime-boundaries.mjs` are
+   > both text/existence checks, not type-checks — so this protection is accidental and
+   > unmonitored. An unrelated PR that fixes those compile errors (they look shallow) would make
+   > this revocation-blind, HTTP-reachable path live with zero warning from any existing tooling.
+   > Treat this as a **P1 finding requiring urgent follow-up**, not a low-priority residual risk.
 
 6. **`runtime/controlPlane.ts`** (`ControlPlaneService.revokeGrant`) — the one write path already
    wired to a real API route (`/access/grant/revoke`). Pre-sprint: direct field mutation
