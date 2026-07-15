@@ -52,5 +52,6 @@
   "scripts": {
     "build": "tsc -b",
     "typecheck": "tsc -b --pretty false"
-  }
+  },
+  "license": "Apache-2.0"
 }

@@ -64,3 +64,14 @@ enforced automatically by `__tests__/architecture/protocol-purity.test.ts` and
 package is packable, installable from a tarball, and importable via its declared `exports` map without
 any monorepo-only paths or aliases — see `packages/protocol/README.md` for consumer-facing usage and
 compatibility details.
+
+## License
+
+Except where expressly stated otherwise, AOC Protocol is licensed under the
+Apache License, Version 2.0. See [LICENSE](./LICENSE) and [NOTICE](./NOTICE).
+
+The contents of [`enterprise/`](./enterprise/) are proprietary, are expressly
+excluded from the Apache License, Version 2.0, and may not be used, copied,
+modified, distributed, sublicensed, published, or commercialized without a
+separate written agreement with the copyright owner. See
+[`enterprise/LICENSE`](./enterprise/LICENSE).

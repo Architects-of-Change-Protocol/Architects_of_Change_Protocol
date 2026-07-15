@@ -227,5 +227,6 @@
       "default": "./runtime/experimental.js"
     },
     "./package.json": "./package.json"
-  }
+  },
+  "license": "Apache-2.0"
 }
