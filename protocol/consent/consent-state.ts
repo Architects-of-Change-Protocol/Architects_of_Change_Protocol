@@ -1,9 +1,22 @@
 import type { ConsentEvaluationOptions, ConsentStateResult, ProtocolConsent } from './consent-types';
 import { validateConsent } from './consent-validator';
+import { revocationLookupFailedStatus } from '../revocation';
+
+function resolveConsentRevocationStatus(consent: ProtocolConsent, checkRevocation: ConsentEvaluationOptions['checkRevocation']) {
+  try {
+    const status = checkRevocation({ subjectId: consent.consent_hash, subjectType: 'consent_grant' });
+    if (!status || typeof status.status !== 'string') {
+      return revocationLookupFailedStatus({ subjectId: consent.consent_hash, subjectType: 'consent_grant' });
+    }
+    return status;
+  } catch {
+    return revocationLookupFailedStatus({ subjectId: consent.consent_hash, subjectType: 'consent_grant' });
+  }
+}
 
 export function evaluateConsentState(
   consent: ProtocolConsent,
-  opts: ConsentEvaluationOptions = {}
+  opts: ConsentEvaluationOptions
 ): ConsentStateResult {
   if (consent.action !== 'grant' && consent.action !== 'revoke') {
     return { state: 'invalid', reasons: ['Consent action is invalid.'] };
@@ -18,8 +31,16 @@ export function evaluateConsentState(
     return { state: 'invalid', reasons: ['Consent action must be grant for active evaluation.'] };
   }
 
-  if (opts.isRevoked?.(consent) === true) {
-    return { state: 'revoked', reasons: ['Consent was revoked by registry hook.'] };
+  const revocationStatus = resolveConsentRevocationStatus(consent, opts.checkRevocation);
+  if (revocationStatus.status === 'revoked') {
+    return { state: 'revoked', reasons: ['Consent was revoked.'], revocationStatus };
+  }
+  if (revocationStatus.status === 'unknown') {
+    return {
+      state: 'revocation_unknown',
+      reasons: [`Consent revocation status could not be verified (${revocationStatus.errorCode}).`],
+      revocationStatus,
+    };
   }
 
   const now = opts.now ?? new Date();
@@ -33,6 +54,7 @@ export function evaluateConsentState(
     return {
       state: 'inactive',
       reasons: ['Consent issued_at is in the future for evaluation time.'],
+      revocationStatus,
     };
   }
 
@@ -44,17 +66,17 @@ export function evaluateConsentState(
     }
 
     if (now.getTime() >= expiresAt) {
-      return { state: 'expired', reasons: ['Consent is expired.'] };
+      return { state: 'expired', reasons: ['Consent is expired.'], revocationStatus };
     }
   }
 
-  return { state: 'active', reasons: [] };
+  return { state: 'active', reasons: [], revocationStatus };
 }
 
-export function isConsentActive(consent: ProtocolConsent, opts: ConsentEvaluationOptions = {}): boolean {
+export function isConsentActive(consent: ProtocolConsent, opts: ConsentEvaluationOptions): boolean {
   return evaluateConsentState(consent, opts).state === 'active';
 }
 
-export function isConsentRevoked(consent: ProtocolConsent, opts: ConsentEvaluationOptions = {}): boolean {
+export function isConsentRevoked(consent: ProtocolConsent, opts: ConsentEvaluationOptions): boolean {
   return evaluateConsentState(consent, opts).state === 'revoked';
 }

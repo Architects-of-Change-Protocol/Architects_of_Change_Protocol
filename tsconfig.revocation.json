@@ -1,0 +1,24 @@
+{
+  "extends": "./tsconfig.test.json",
+  "compilerOptions": { "noEmit": true },
+  "files": [
+    "protocol/revocation/index.ts",
+    "protocol/revocation/revocation-types.ts",
+    "protocol/revocation/revocation-policy.ts",
+    "protocol/revocation/revocation-check.ts",
+    "protocol/revocation/revocation-telemetry.ts",
+    "protocol/capability/capability-mint.ts",
+    "protocol/capability/capability-state.ts",
+    "protocol/capability/capability-machine.ts",
+    "protocol/consent/consent-state.ts",
+    "protocol/consent/consent-machine.ts",
+    "protocol/enforcement/enforcement-engine.ts",
+    "protocol/enforcement/enforcement-policy.ts",
+    "protocol/execution/execution-engine.ts",
+    "runtime/api/routes.ts",
+    "runtime/controlPlane.ts",
+    "runtime/sdk/client.ts",
+    "aoc/capabilities/core/evaluateCapabilityAccess.ts",
+    "aoc/capabilities/legacy/capabilityEnforcer.ts"
+  ]
+}

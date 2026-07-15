@@ -5,6 +5,7 @@ export const ENFORCEMENT_REASON_CODES = {
   CAPABILITY_INVALID: 'CAPABILITY_INVALID',
   CAPABILITY_EXPIRED: 'CAPABILITY_EXPIRED',
   CAPABILITY_REVOKED: 'CAPABILITY_REVOKED',
+  CAPABILITY_REVOCATION_UNKNOWN: 'CAPABILITY_REVOCATION_UNKNOWN',
   CAPABILITY_NOT_YET_ACTIVE: 'CAPABILITY_NOT_YET_ACTIVE',
   SCOPE_NOT_ALLOWED: 'SCOPE_NOT_ALLOWED',
   PERMISSION_NOT_ALLOWED: 'PERMISSION_NOT_ALLOWED',
@@ -22,6 +23,12 @@ export type EnforcementResource = {
   ref: string;
 };
 
+/**
+ * Wire-safe request shape. Deliberately has no revocation field: revocation status can never be
+ * trusted from client-supplied JSON (a function cannot cross a JSON boundary, and a client-sent
+ * status would be meaningless from a security standpoint). The trusted caller supplies a
+ * `RevocationCheckPort` as a separate argument to `evaluateEnforcement`.
+ */
 export type EnforcementRequest = {
   capability: unknown;
   requested_scope: ScopeEntry[];
@@ -32,7 +39,6 @@ export type EnforcementRequest = {
   resource?: EnforcementResource | null;
   action_context?: Record<string, unknown>;
   now?: Date;
-  isRevoked?: (capability: ProtocolCapability) => boolean;
 };
 
 export type NormalizedEnforcementRequest = {
@@ -45,7 +51,6 @@ export type NormalizedEnforcementRequest = {
   resource?: EnforcementResource | null;
   action_context?: Record<string, unknown>;
   now?: Date;
-  isRevoked?: (capability: ProtocolCapability) => boolean;
 };
 
 export type EnforcementDecision = {

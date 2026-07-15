@@ -19,6 +19,19 @@ const TOKEN_NOW = new Date('2025-06-15T10:00:00Z');
 const CONSENT_EXPIRES = '2026-01-15T14:30:00Z';
 const TOKEN_EXPIRES = '2025-12-31T23:59:59Z';
 
+function buildTrustedMarketMakerRegistry(id: string): MarketMakerRegistry {
+  const registry = new MarketMakerRegistry();
+  registry.register({
+    id,
+    name: 'HRKey',
+    version: '1.0.0',
+    capabilities: ['employment'],
+    status: 'active',
+    created_at: '2025-01-15T00:00:00Z'
+  });
+  return registry;
+}
+
 function buildConsent(marketMakerId?: string) {
   return buildConsentObject(
     SUBJECT,
@@ -260,6 +273,7 @@ describe('evaluateCapabilityAccess', () => {
       action: 'share',
       resource: { type: 'content', ref: CONTENT_REF },
       marketMakerId: 'hrkey-v1',
+      marketMakerRegistry: buildTrustedMarketMakerRegistry('hrkey-v1'),
       now: '2025-08-01T00:00:00Z'
     });
 
@@ -298,6 +312,7 @@ describe('evaluateCapabilityAccess', () => {
       action: 'read',
       resource: `content:${CONTENT_REF}`,
       marketMakerId: 'hrkey-v1',
+      marketMakerRegistry: buildTrustedMarketMakerRegistry('hrkey-v1'),
       now: '2025-08-01T00:00:00Z'
     });
 
@@ -311,10 +326,24 @@ describe('evaluateCapabilityAccess', () => {
       capability,
       action: 'read',
       resource: `content:${CONTENT_REF}`,
+      marketMakerRegistry: buildTrustedMarketMakerRegistry('hrkey-v1'),
       now: '2025-08-01T00:00:00Z'
     });
 
     expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.MARKET_MAKER_REQUIRED);
+  });
+
+  it('denies when a bound market maker cannot be verified because no registry was provided', () => {
+    const { capability } = buildCapability({ marketMakerId: 'hrkey-v1' });
+    const decision = evaluateCapabilityAccess({
+      capability,
+      action: 'read',
+      resource: `content:${CONTENT_REF}`,
+      now: '2025-08-01T00:00:00Z'
+    });
+
+    expect(decision.allowed).toBe(false);
+    expect(decision.reasonCode).toBe(capabilityAccessReasonCodes.MARKET_MAKER_TRUST_UNVERIFIABLE);
   });
 
 
@@ -421,6 +450,7 @@ describe('evaluateCapabilityAccess', () => {
       action: 'read',
       resource: `content:${CONTENT_REF}`,
       marketMakerId: 'other-maker',
+      marketMakerRegistry: buildTrustedMarketMakerRegistry('hrkey-v1'),
       now: '2025-08-01T00:00:00Z'
     });
 

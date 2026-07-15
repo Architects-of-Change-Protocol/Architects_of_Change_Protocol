@@ -1,5 +1,4 @@
 import type { ScopeEntry } from '../consent/consent-types';
-import type { ProtocolCapability } from '../capability/capability-types';
 import type { EnforcementDecision, EnforcementReasonCode } from '../enforcement/enforcement-types';
 
 export const EXECUTION_REASON_CODES = {
@@ -7,6 +6,7 @@ export const EXECUTION_REASON_CODES = {
     CAPABILITY_INVALID: 'CAPABILITY_INVALID',
     CAPABILITY_EXPIRED: 'CAPABILITY_EXPIRED',
     CAPABILITY_REVOKED: 'CAPABILITY_REVOKED',
+    CAPABILITY_REVOCATION_UNKNOWN: 'CAPABILITY_REVOCATION_UNKNOWN',
     CAPABILITY_NOT_YET_ACTIVE: 'CAPABILITY_NOT_YET_ACTIVE',
     SCOPE_NOT_ALLOWED: 'SCOPE_NOT_ALLOWED',
     PERMISSION_NOT_ALLOWED: 'PERMISSION_NOT_ALLOWED',
@@ -46,7 +46,6 @@ export type ExecutionRequest = {
   action_context?: Record<string, unknown>;
   payload?: Record<string, unknown> | null;
   now?: Date;
-  isRevoked?: (capability: ProtocolCapability) => boolean;
 };
 
 export type NormalizedExecutionRequest = {
@@ -61,7 +60,6 @@ export type NormalizedExecutionRequest = {
   action_context?: Record<string, unknown>;
   payload?: Record<string, unknown> | null;
   now?: Date;
-  isRevoked?: (capability: ProtocolCapability) => boolean;
 };
 
 export type ExecutionContract = {

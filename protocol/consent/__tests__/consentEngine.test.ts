@@ -8,10 +8,32 @@ import {
   parseConsent,
   validateConsent,
 } from '..';
+import {
+  createStaticRevocationCheck,
+  revocationLookupFailedStatus,
+  revokedStatus,
+  verifiedNotRevokedStatus,
+} from '../../revocation';
 
 const SUBJECT = 'did:key:z6MkhaXgBZDvotDkL5257faiztiGiC2QtKLGpbnnEGta2doK';
 const GRANTEE = 'did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH';
 const REF_A = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+
+const notRevoked = createStaticRevocationCheck(
+  verifiedNotRevokedStatus({ subjectId: 'consent-fixture', subjectType: 'consent_grant' })
+);
+const revoked = createStaticRevocationCheck(
+  revokedStatus({
+    subjectId: 'consent-fixture',
+    subjectType: 'consent_grant',
+    revocationId: 'rev-1',
+    reasonCode: 'REVOKED',
+    revokedAt: '2025-01-02T00:00:00Z',
+  })
+);
+const unavailable = createStaticRevocationCheck(
+  revocationLookupFailedStatus({ subjectId: 'consent-fixture', subjectType: 'consent_grant' })
+);
 
 describe('protocol consent core extraction', () => {
   it('accepts a valid active consent', () => {
@@ -30,16 +52,17 @@ describe('protocol consent core extraction', () => {
     const parsed = parseConsent(consent);
     const normalized = normalizeConsent(parsed);
     const validation = validateConsent(normalized);
-    const state = evaluateConsentState(normalized, { now: new Date('2025-06-01T00:00:00Z') });
+    const state = evaluateConsentState(normalized, { now: new Date('2025-06-01T00:00:00Z'), checkRevocation: notRevoked });
 
     expect(validation.valid).toBe(true);
     expect(state.state).toBe('active');
-    expect(isConsentActive(normalized, { now: new Date('2025-06-01T00:00:00Z') })).toBe(true);
+    expect(isConsentActive(normalized, { now: new Date('2025-06-01T00:00:00Z'), checkRevocation: notRevoked })).toBe(true);
     expect(
       doesConsentAllowScope(normalized, {
         scope: [{ type: 'content', ref: REF_A }],
         permissions: ['read'],
         now: new Date('2025-06-01T00:00:00Z'),
+        checkRevocation: notRevoked,
       })
     ).toBe(true);
   });
@@ -57,18 +80,19 @@ describe('protocol consent core extraction', () => {
       }
     );
 
-    const state = evaluateConsentState(consent, { now: new Date('2025-01-03T00:00:00Z') });
+    const state = evaluateConsentState(consent, { now: new Date('2025-01-03T00:00:00Z'), checkRevocation: notRevoked });
     expect(state.state).toBe('expired');
     expect(
       doesConsentAllowScope(consent, {
         scope: [{ type: 'content', ref: REF_A }],
         permissions: ['read'],
         now: new Date('2025-01-03T00:00:00Z'),
+        checkRevocation: notRevoked,
       })
     ).toBe(false);
   });
 
-  it('marks consent as revoked by revocation hook', () => {
+  it('marks consent as revoked when the canonical revocation check reports revoked', () => {
     const consent = buildConsentObject(
       SUBJECT,
       GRANTEE,
@@ -80,11 +104,62 @@ describe('protocol consent core extraction', () => {
 
     const state = evaluateConsentState(consent, {
       now: new Date('2025-01-03T00:00:00Z'),
-      isRevoked: () => true,
+      checkRevocation: revoked,
     });
 
     expect(state.state).toBe('revoked');
-    expect(isConsentRevoked(consent, { isRevoked: () => true })).toBe(true);
+    expect(state.revocationStatus?.status).toBe('revoked');
+    expect(isConsentRevoked(consent, { checkRevocation: revoked })).toBe(true);
+  });
+
+  it('FAIL-CLOSED REGRESSION: an unavailable revocation source blocks, never "not revoked"', () => {
+    // This is the negative proof required by the sprint: a revocation lookup failure must never
+    // collapse into "active". The naive anti-pattern (`return data?.reason ?? null` on a DB
+    // error) would make this consent look active; the canonical model must not.
+    const consent = buildConsentObject(
+      SUBJECT,
+      GRANTEE,
+      'grant',
+      [{ type: 'content', ref: REF_A }],
+      ['read'],
+      { now: new Date('2025-01-01T00:00:00Z'), expires_at: '2025-12-31T00:00:00Z' }
+    );
+
+    const state = evaluateConsentState(consent, { now: new Date('2025-06-01T00:00:00Z'), checkRevocation: unavailable });
+
+    expect(state.state).not.toBe('active');
+    expect(state.state).toBe('revocation_unknown');
+    expect(state.revocationStatus?.status).toBe('unknown');
+
+    expect(isConsentActive(consent, { now: new Date('2025-06-01T00:00:00Z'), checkRevocation: unavailable })).toBe(false);
+    expect(
+      doesConsentAllowScope(consent, {
+        scope: [{ type: 'content', ref: REF_A }],
+        permissions: ['read'],
+        now: new Date('2025-06-01T00:00:00Z'),
+        checkRevocation: unavailable,
+      })
+    ).toBe(false);
+  });
+
+  it('FAIL-CLOSED REGRESSION: a checkRevocation port that throws blocks instead of leaking the exception into an allow', () => {
+    const consent = buildConsentObject(
+      SUBJECT,
+      GRANTEE,
+      'grant',
+      [{ type: 'content', ref: REF_A }],
+      ['read'],
+      { now: new Date('2025-01-01T00:00:00Z'), expires_at: '2025-12-31T00:00:00Z' }
+    );
+
+    const throwingCheck = () => {
+      throw new Error('registry connection reset');
+    };
+
+    const state = evaluateConsentState(consent, { now: new Date('2025-06-01T00:00:00Z'), checkRevocation: throwingCheck });
+
+    expect(state.state).toBe('revocation_unknown');
+    expect(state.revocationStatus?.status).toBe('unknown');
   });
 
   it('fails closed on invalid or incomplete scope requests', () => {
@@ -102,6 +177,7 @@ describe('protocol consent core extraction', () => {
         scope: [],
         permissions: ['read'],
         now: new Date('2025-01-01T01:00:00Z'),
+        checkRevocation: notRevoked,
       })
     ).toBe(false);
 
@@ -110,6 +186,7 @@ describe('protocol consent core extraction', () => {
         scope: [{ type: 'content', ref: '' }],
         permissions: ['read'],
         now: new Date('2025-01-01T01:00:00Z'),
+        checkRevocation: notRevoked,
       })
     ).toBe(false);
   });
@@ -128,6 +205,7 @@ describe('protocol consent core extraction', () => {
       doesConsentAllowScope(consent, {
         scope: [{ type: 'content', ref: REF_A }],
         permissions: ['store'],
+        checkRevocation: notRevoked,
       })
     ).toBe(false);
 
@@ -135,6 +213,7 @@ describe('protocol consent core extraction', () => {
       doesConsentAllowScope(consent, {
         scope: [{ type: 'content', ref: REF_A }],
         permissions: [''],
+        checkRevocation: notRevoked,
       })
     ).toBe(false);
   });
@@ -154,6 +233,7 @@ describe('protocol consent core extraction', () => {
         scope: [{ type: 'content', ref: REF_A }],
         permissions: ['read'],
         subject: 'did:key:z6MkDifferentSubject1234567890abc',
+        checkRevocation: notRevoked,
       })
     ).toBe(false);
 
@@ -162,6 +242,7 @@ describe('protocol consent core extraction', () => {
         scope: [{ type: 'content', ref: REF_A }],
         permissions: ['read'],
         grantee: 'did:key:z6MkDifferentGrantee1234567890abc',
+        checkRevocation: notRevoked,
       })
     ).toBe(false);
 
@@ -170,6 +251,7 @@ describe('protocol consent core extraction', () => {
         scope: [{ type: 'content', ref: REF_A }],
         permissions: ['read'],
         marketMakerId: 'another-mm',
+        checkRevocation: notRevoked,
       })
     ).toBe(false);
   });
@@ -221,6 +303,7 @@ describe('protocol consent core extraction', () => {
 
     const state = evaluateConsentState(malformed, {
       now: new Date('2025-01-01T00:00:00Z'),
+      checkRevocation: notRevoked,
     });
 
     expect(state.state).toBe('invalid');
@@ -228,6 +311,7 @@ describe('protocol consent core extraction', () => {
       doesConsentAllowScope(malformed, {
         scope: [{ type: 'content', ref: REF_A }],
         permissions: ['read'],
+        checkRevocation: notRevoked,
       })
     ).toBe(false);
   });

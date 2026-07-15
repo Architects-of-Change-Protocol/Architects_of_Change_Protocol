@@ -87,6 +87,7 @@ function mapReasonCode(reasonCode: string): EnforceCapabilityDecision['code'] {
     case capabilityAccessReasonCodes.UNKNOWN_MARKET_MAKER:
     case capabilityAccessReasonCodes.MARKET_MAKER_DEPRECATED:
     case capabilityAccessReasonCodes.MARKET_MAKER_REVOKED:
+    case capabilityAccessReasonCodes.MARKET_MAKER_TRUST_UNVERIFIABLE:
       return 'REQUEST_CONTEXT_MISMATCH';
     case capabilityAccessReasonCodes.POLICY_DENIED:
     case capabilityAccessReasonCodes.USAGE_DENIED:

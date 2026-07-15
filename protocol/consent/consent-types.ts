@@ -1,3 +1,5 @@
+import type { RevocationCheckPort, RevocationStatus } from '../revocation';
+
 export type ScopeEntry = {
   type: 'field' | 'content' | 'pack';
   ref: string;
@@ -29,6 +31,7 @@ export type ConsentState =
   | 'active'
   | 'expired'
   | 'revoked'
+  | 'revocation_unknown'
   | 'inactive'
   | 'invalid';
 
@@ -40,11 +43,16 @@ export type ConsentValidationResult = {
 export type ConsentStateResult = {
   state: ConsentState;
   reasons: string[];
+  revocationStatus?: RevocationStatus;
 };
 
 export type ConsentEvaluationOptions = {
   now?: Date;
-  isRevoked?: (consent: ProtocolConsent) => boolean;
+  /**
+   * Mandatory: every material evaluation must present an explicit revocation determination.
+   * There is no default — omission is a compile-time error, not a silent "not revoked".
+   */
+  checkRevocation: RevocationCheckPort;
 };
 
 export type ConsentScopeRequest = {
@@ -54,5 +62,5 @@ export type ConsentScopeRequest = {
   grantee?: string;
   marketMakerId?: string;
   now?: Date;
-  isRevoked?: (consent: ProtocolConsent) => boolean;
+  checkRevocation: RevocationCheckPort;
 };

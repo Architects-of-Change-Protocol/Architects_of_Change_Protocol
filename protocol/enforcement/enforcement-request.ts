@@ -1,7 +1,6 @@
 import { EnforcementRequestParseError } from './enforcement-errors';
 import type { EnforcementRequest, EnforcementResource, NormalizedEnforcementRequest } from './enforcement-types';
 import type { ScopeEntry } from '../consent/consent-types';
-import type { ProtocolCapability } from '../capability/capability-types';
 
 const VALID_SCOPE_TYPES = new Set<ScopeEntry['type']>(['field', 'content', 'pack']);
 
@@ -136,10 +135,6 @@ export function parseEnforcementRequest(input: unknown): EnforcementRequest {
     resource: parseResource(record.resource),
     action_context: parseActionContext(record.action_context),
     now: parseNow(record.now),
-    isRevoked:
-      typeof record.isRevoked === 'function'
-        ? (record.isRevoked as (capability: ProtocolCapability) => boolean)
-        : undefined,
   };
 }
 

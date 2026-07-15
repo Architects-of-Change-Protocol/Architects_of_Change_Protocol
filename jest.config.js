@@ -4,7 +4,32 @@ module.exports = {
   transform: {
     '^.+\\.tsx?$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.test.json' }]
   },
-  testMatch: ['<rootDir>/tests/contracts/**/*.test.ts', '<rootDir>/__tests__/contracts/**/*.test.ts', '<rootDir>/__tests__/architecture/**/*.test.ts', '<rootDir>/__tests__/constitution/**/*.test.ts'],
+  testMatch: [
+    '<rootDir>/tests/contracts/**/*.test.ts',
+    '<rootDir>/__tests__/contracts/**/*.test.ts',
+    '<rootDir>/__tests__/architecture/**/*.test.ts',
+    '<rootDir>/__tests__/constitution/**/*.test.ts',
+    // Revocation-safety sprint: these are enabled deliberately (see
+    // docs/security/revocation/10-test-evidence.md) rather than via a blanket rewrite of
+    // testMatch, because most other __tests__ directories in this repo currently fail to
+    // type-check for reasons unrelated to revocation and are out of this sprint's scope.
+    '<rootDir>/protocol/revocation/**/*.test.ts',
+    '<rootDir>/protocol/consent/__tests__/**/*.test.ts',
+    '<rootDir>/protocol/capability/__tests__/**/*.test.ts',
+    '<rootDir>/protocol/enforcement/__tests__/**/*.test.ts',
+    '<rootDir>/protocol/execution/__tests__/**/*.test.ts',
+    '<rootDir>/protocol/capabilities/__tests__/**/*.test.ts',
+    '<rootDir>/capability/__tests__/**/*.test.ts',
+    '<rootDir>/consent/__tests__/**/*.test.ts',
+    '<rootDir>/enforcement/__tests__/**/*.test.ts',
+    '<rootDir>/vault/__tests__/**/*.test.ts',
+    '<rootDir>/integration/hrkey/__tests__/aocVaultAdapter.test.ts',
+    '<rootDir>/integration/hrkey/__tests__/capabilityEnforcement.test.ts',
+    '<rootDir>/interpreter/__tests__/**/*.test.ts',
+    '<rootDir>/aoc/capabilities/core/__tests__/**/*.test.ts',
+    '<rootDir>/runtime/__tests__/controlPlaneRevocation.test.ts',
+    '<rootDir>/runtime/api/__tests__/routesRevocation.test.ts',
+  ],
   moduleNameMapper: {
     '^@aoc/protocol/contracts$': '<rootDir>/packages/protocol/src/contracts',
     '^@aoc/protocol/claims$': '<rootDir>/packages/protocol/src/claims',
