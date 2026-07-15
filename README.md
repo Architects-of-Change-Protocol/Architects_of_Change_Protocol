@@ -47,7 +47,9 @@ npm run protocol:release:manifest # record checksums, file list, and SPDX SBOM u
 ```
 
 New consumers should start at
-[`docs/getting-started/QUICK_START.md`](docs/getting-started/QUICK_START.md).
+[`docs/getting-started/QUICK_START.md`](docs/getting-started/QUICK_START.md); the complete
+operating reference (pinning, upgrades, rollback, stability tiers) is
+[`docs/guides/CONSUMER_GUIDE.md`](docs/guides/CONSUMER_GUIDE.md).
 
 ### Release process
 

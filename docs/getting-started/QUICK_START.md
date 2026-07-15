@@ -1,7 +1,8 @@
 # @aoc/protocol Quick Start
 
 This guide takes a new consumer from zero to a compiled, running program against the real
-`@aoc/protocol` package. Every import and symbol below is taken from the governed public surface
+`@aoc/protocol` package. (For the full operating reference — version pinning, upgrade and rollback
+procedures, stability tiers — see [`docs/guides/CONSUMER_GUIDE.md`](../guides/CONSUMER_GUIDE.md).) Every import and symbol below is taken from the governed public surface
 (`docs/protocol/PUBLIC_API.md`) and is exercised verbatim by the consumer fixtures under
 `test-consumers/` on every CI run — nothing here is aspirational.
 

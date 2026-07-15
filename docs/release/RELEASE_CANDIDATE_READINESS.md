@@ -113,3 +113,18 @@ resolved by the founder / release authority, in writing:
 
 Until this gate is passed, the supported distribution mechanism remains the checksummed internal
 tarball (`npm run protocol:pack`), exactly as consumed by AOC Enterprise today.
+
+## 6. Completion addenda (same sprint, second pass)
+
+The readiness deliverable set was completed with: a full consumer guide
+([`../guides/CONSUMER_GUIDE.md`](../guides/CONSUMER_GUIDE.md)), the 0.1.x→0.2.x migration guide
+([`MIGRATION_GUIDE_0.2.md`](MIGRATION_GUIDE_0.2.md)), registry readiness
+([`REGISTRY_READINESS.md`](REGISTRY_READINESS.md)), release authority
+([`RELEASE_AUTHORITY.md`](RELEASE_AUTHORITY.md)), a root [`CHANGELOG.md`](../../CHANGELOG.md) with
+the Unreleased state, draft release notes ([`RELEASE_NOTES_0.2.0.md`](RELEASE_NOTES_0.2.0.md)),
+reference-consumer evidence ([`REFERENCE_CONSUMER_EVIDENCE.md`](REFERENCE_CONSUMER_EVIDENCE.md)),
+a rollback plan ([`ROLLBACK_PLAN.md`](ROLLBACK_PLAN.md)), known limitations
+([`KNOWN_LIMITATIONS.md`](KNOWN_LIMITATIONS.md)), and the blocking RC gate
+`npm run protocol:rc:check` (`scripts/validate-release-candidate.mjs`, run by
+`.github/workflows/rc-validation.yml`). Changeset-version, publish, and security dry-run evidence:
+[`evidence/rc-dry-run-2026-07-15.md`](evidence/rc-dry-run-2026-07-15.md).

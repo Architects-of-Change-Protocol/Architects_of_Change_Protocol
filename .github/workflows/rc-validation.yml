@@ -1,0 +1,23 @@
+name: RC Validation
+
+# Blocking release-candidate gate: build, tests, typecheck, governance, Changesets,
+# package metadata, private-publication block, tarball reproducibility, evidence
+# freshness, consumer fixtures, and release-documentation completeness.
+# No publish step exists here, no credentials are used, and no step may carry
+# continue-on-error.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  rc-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - run: npm run protocol:rc:check
