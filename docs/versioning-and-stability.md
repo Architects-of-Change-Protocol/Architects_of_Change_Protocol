@@ -36,6 +36,11 @@
   (`cjs-module-lexer`), not because a separate ESM build exists.
 - Node.js `>=20` (matches `packages/protocol/package.json` `engines` and repo-wide CI).
 
+## Prerelease channels
+Prerelease versions (`-rc.N` / `-next.N`), their authorization, immutability, and rollback rules are
+governed by [`docs/release/PRERELEASE_POLICY.md`](release/PRERELEASE_POLICY.md). No prerelease has
+been published.
+
 ## Deprecation
 Deprecated symbols are retained for at least one minor cycle before removal in a major release.
 Currently deprecated: `Claim`/`LegacyClaim` (`./claims`), the `legacy-contracts` re-exports

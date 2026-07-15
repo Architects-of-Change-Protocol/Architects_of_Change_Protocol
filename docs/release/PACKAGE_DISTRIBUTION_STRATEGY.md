@@ -36,7 +36,9 @@ has not been performed here. Do not assume availability. Verifying this is a pre
    different one.
 4. **Prerelease registry publication** — publish a `0.x` or tagged prerelease (e.g. `0.2.0-rc.0`) to
    whichever registry is chosen above, gated on the npm-name/GitHub-Packages requirements being
-   resolved and a founder sign-off to flip `private: false`.
+   resolved and a founder sign-off to flip `private: false`. Prerelease channels, authorization, and
+   rollback rules are governed by [`PRERELEASE_POLICY.md`](PRERELEASE_POLICY.md); the concrete
+   approval gate is in [`RELEASE_CANDIDATE_READINESS.md`](RELEASE_CANDIDATE_READINESS.md).
 5. **Stabilization** — accumulate real external (or Enterprise/PMFreak-as-first-consumer) usage
    feedback against the prerelease; resolve the open "decisions requiring founder" items (see the
    package README and this sprint's final deliverable) before committing to a stable surface.

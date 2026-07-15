@@ -1,0 +1,61 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "aoc-runtime@0.1.0",
+  "documentNamespace": "http://spdx.org/spdxdocs/aoc-runtime-0.1.0-18686c34-eaf1-466d-b058-67b2e0c37a8a",
+  "creationInfo": {
+    "created": "2026-07-15T17:25:59.733Z",
+    "creators": [
+      "Tool: npm/cli-10.9.7"
+    ]
+  },
+  "documentDescribes": [
+    "SPDXRef-Package-aoc-runtime-0.1.0"
+  ],
+  "packages": [
+    {
+      "name": "aoc-runtime",
+      "SPDXID": "SPDXRef-Package-aoc-runtime-0.1.0",
+      "versionInfo": "0.1.0",
+      "packageFileName": "",
+      "primaryPackagePurpose": "LIBRARY",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "homepage": "NOASSERTION",
+      "licenseDeclared": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:npm/aoc-runtime@0.1.0"
+        }
+      ]
+    },
+    {
+      "name": "@aoc/protocol",
+      "SPDXID": "SPDXRef-Package-aoc.protocol-0.1.0",
+      "versionInfo": "0.1.0",
+      "packageFileName": "node_modules/@aoc/protocol",
+      "description": "Public contracts, semantics, schemas, and compatibility definitions for AOC Protocol.",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "homepage": "https://github.com/Architects-of-Change-Protocol/Architects_of_Change_Protocol/tree/main/packages/protocol#readme",
+      "licenseDeclared": "MIT",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:npm/%40aoc/protocol@0.1.0"
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relatedSpdxElement": "SPDXRef-Package-aoc-runtime-0.1.0",
+      "relationshipType": "DESCRIBES"
+    }
+  ]
+}

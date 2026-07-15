@@ -42,8 +42,12 @@ npm test                         # repo-wide jest suite, includes protocol archi
 npm run protocol:pack            # npm pack ./packages/protocol
 npm run protocol:pack:check      # build + pack + install into a fixture + typecheck + import-boundary checks
 npm run protocol:consumer:check  # install the tarball into test-consumers/* and run them
-npm run protocol:release:check   # both of the above
+npm run protocol:release:check   # all of the above + tarball reproducibility check
+npm run protocol:release:manifest # record checksums, file list, and SPDX SBOM under docs/release/evidence/
 ```
+
+New consumers should start at
+[`docs/getting-started/QUICK_START.md`](docs/getting-started/QUICK_START.md).
 
 ### Release process
 
@@ -52,7 +56,11 @@ Changes to `@aoc/protocol`'s public contracts are tracked with [Changesets](.cha
 `npm run validate:release` (also run in CI) before merging. No publish, tag, or GitHub release is
 performed automatically — see `.changeset/README.md` and
 [`docs/release/PACKAGE_DISTRIBUTION_STRATEGY.md`](docs/release/PACKAGE_DISTRIBUTION_STRATEGY.md) for
-the sequencing this repository intends to follow before any registry publish.
+the sequencing this repository intends to follow before any registry publish. Prerelease channels,
+rollback, and version-immutability rules are governed by
+[`docs/release/PRERELEASE_POLICY.md`](docs/release/PRERELEASE_POLICY.md); the current
+release-candidate evidence and the publication approval gate live in
+[`docs/release/RELEASE_CANDIDATE_READINESS.md`](docs/release/RELEASE_CANDIDATE_READINESS.md).
 
 ## Current status
 
