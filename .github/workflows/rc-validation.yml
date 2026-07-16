@@ -1,0 +1,32 @@
+name: RC Validation
+
+# Blocking release-candidate gate: build, tests, typecheck, governance, Changesets,
+# package metadata, private-publication block, tarball reproducibility, evidence
+# freshness, consumer fixtures, and release-documentation completeness.
+# No publish step exists here, no credentials are used, and no step may carry
+# continue-on-error.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  rc-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # changeset status (inside protocol:rc:check) diffs against the main
+          # ref, which a shallow default checkout does not carry — same pattern
+          # as changeset-validation.yml.
+          fetch-depth: 0
+      - name: Ensure main ref exists for Changesets
+        run: |
+          git fetch origin main:refs/remotes/origin/main
+          git branch --force main origin/main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - run: npm ci
+      - run: npm run protocol:rc:check

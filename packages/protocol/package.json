@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "Public contracts, semantics, schemas, and compatibility definitions for AOC Protocol.",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Architects-of-Change-Protocol/Architects_of_Change_Protocol.git",
@@ -47,11 +47,11 @@
     "./package.json": "./package.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "NOTICE"
   ],
   "scripts": {
     "build": "tsc -b",
     "typecheck": "tsc -b --pretty false"
-  },
-  "license": "Apache-2.0"
+  }
 }

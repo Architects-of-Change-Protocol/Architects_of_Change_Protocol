@@ -11,3 +11,4 @@ jobs:
       - run: npm ci
       - run: npm run validate:publishability
       - run: npm run protocol:consumer:check
+      - run: npm run protocol:release:manifest:check
