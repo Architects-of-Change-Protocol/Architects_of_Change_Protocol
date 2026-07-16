@@ -105,10 +105,22 @@ try {
   writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
   console.log(`wrote ${manifestPath}`);
 
-  const sbom = run('npm sbom --sbom-format spdx --workspace @aoc/protocol');
+  // Generate the SBOM from the extracted tarball itself (not the monorepo root) so the
+  // SPDX document's `documentDescribes` points at @aoc/protocol — the artifact being
+  // distributed — rather than at the private aoc-runtime workspace root.
+  const sbomDir = join(temp, 'sbom');
+  mkdirSync(sbomDir, { recursive: true });
+  execSync(`tar -xzf ${JSON.stringify(first.path)} -C ${JSON.stringify(sbomDir)}`);
+  const sbomCwd = join(sbomDir, 'package');
+  execSync('npm install --package-lock-only --no-audit --no-fund', { cwd: sbomCwd, stdio: 'pipe' });
+  const sbom = execSync('npm sbom --sbom-format spdx', { cwd: sbomCwd, encoding: 'utf8' });
+  const sbomDoc = JSON.parse(sbom);
+  if (!(sbomDoc.documentDescribes ?? []).some((id) => id.includes('aoc.protocol'))) {
+    throw new Error(`SBOM documentDescribes does not reference @aoc/protocol: ${JSON.stringify(sbomDoc.documentDescribes)}`);
+  }
   const sbomPath = join(evidenceDir, `aoc-protocol-${pkg.version}.sbom.spdx.json`);
   writeFileSync(sbomPath, sbom.endsWith('\n') ? sbom : `${sbom}\n`);
-  console.log(`wrote ${sbomPath}`);
+  console.log(`wrote ${sbomPath} (describes @aoc/protocol@${pkg.version})`);
 
   if (!manifest.source.protocolWorkspaceClean) {
     console.warn('WARNING: packages/protocol had uncommitted changes; this manifest does not describe a pure commit.');

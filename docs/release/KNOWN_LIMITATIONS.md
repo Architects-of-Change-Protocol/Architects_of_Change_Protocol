@@ -36,3 +36,16 @@ Consumers and decision-makers should read this alongside
     (go-to-definition falls back to `.d.ts`). Decide before 1.0: ship `src` or stop emitting maps
     in the package build. Changing this now would change the tarball hash, so it is deliberately
     deferred.
+11. **The Apache-2.0 relicense broke byte-identity with the Enterprise-validated artifact —
+    intentionally.** PR #319 (2026-07-16) appended `"license": "Apache-2.0"` to
+    `packages/protocol/package.json`; forensic diff confirms that is the only file and only line
+    that changed in the tarball (old: `4e5289b7…96b27`, new: `d4a8b67d…c7704`). Enterprise's
+    pinned tarball and compatibility lock still reference the pre-relicense artifact and will need
+    revalidation at the next version cut.
+12. **Two license-metadata inconsistencies inside the package, introduced by PR #319, are pending
+    cleanup.** (a) `packages/protocol/package.json` carries a duplicate `license` key — the
+    original `"MIT"` near the top was not removed when `"Apache-2.0"` was appended at the bottom
+    (JSON parsers take the last value, so tooling reports Apache-2.0, but the raw file ships both);
+    (b) `packages/protocol/LICENSE` still contains the MIT license text. Both must be fixed — with
+    a patch Changeset, per `docs/protocol/PUBLIC_API.md` governance — before any distribution.
+    Deliberately not fixed in the RC-readiness PR, which does not modify `packages/protocol/**`.

@@ -13,7 +13,7 @@ invented.
 | --- | --- |
 | Name | `@aoc/protocol` |
 | Current version | `0.1.0` (proposed next: `0.2.0` via Changesets — not yet cut) |
-| License | MIT |
+| License | Apache-2.0 (relicensed from MIT by PR #319; two in-package metadata inconsistencies are pending cleanup — see [`docs/release/KNOWN_LIMITATIONS.md`](../release/KNOWN_LIMITATIONS.md)) |
 | Repository | `Architects-of-Change-Protocol/Architects_of_Change_Protocol`, directory `packages/protocol` |
 | Module system | CommonJS (`"type": "commonjs"`), single build |
 | Runtime dependencies | None |
@@ -36,10 +36,14 @@ npm install ./aoc-protocol-<version>.tgz
 [`docs/release/evidence/`](../release/evidence/):
 
 ```bash
-sha256sum aoc-protocol-0.1.0.tgz
-# must equal the recorded value, currently:
-# 4e5289b74bc30bcbd63afe87cd00d5417aa6bc665fe50d7c9c1b845bf1896b27
+sha256sum aoc-protocol-<version>.tgz
+# must equal the value recorded in the release manifest for that build, e.g.
+# docs/release/evidence/aoc-protocol-0.1.0-release-manifest.json
 ```
+
+Note that the checksum is per-build: the artifact AOC Enterprise pinned hashes
+`4e5289b7…96b27`, while a build after the Apache-2.0 relicense (PR #319) hashes
+`d4a8b67d…c7704` — always compare against the manifest entry for the build you were handed.
 
 Vendor the tarball in your repository (as AOC Enterprise does under `vendor/`) so installs are
 reproducible and auditable.

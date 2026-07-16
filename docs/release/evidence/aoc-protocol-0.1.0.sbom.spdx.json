@@ -2,46 +2,29 @@
   "spdxVersion": "SPDX-2.3",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "name": "aoc-runtime@0.1.0",
-  "documentNamespace": "http://spdx.org/spdxdocs/aoc-runtime-0.1.0-6c175cec-b3b2-40e5-b01b-054fe2fb3a96",
+  "name": "@aoc/protocol@0.1.0",
+  "documentNamespace": "http://spdx.org/spdxdocs/@aoc%2fprotocol-0.1.0-9717ce7e-ee0c-4356-a398-fbe8a7ebae56",
   "creationInfo": {
-    "created": "2026-07-15T17:43:00.558Z",
+    "created": "2026-07-16T06:25:03.409Z",
     "creators": [
       "Tool: npm/cli-10.9.7"
     ]
   },
   "documentDescribes": [
-    "SPDXRef-Package-aoc-runtime-0.1.0"
+    "SPDXRef-Package-aoc.protocol-0.1.0"
   ],
   "packages": [
-    {
-      "name": "aoc-runtime",
-      "SPDXID": "SPDXRef-Package-aoc-runtime-0.1.0",
-      "versionInfo": "0.1.0",
-      "packageFileName": "",
-      "primaryPackagePurpose": "LIBRARY",
-      "downloadLocation": "NOASSERTION",
-      "filesAnalyzed": false,
-      "homepage": "NOASSERTION",
-      "licenseDeclared": "NOASSERTION",
-      "externalRefs": [
-        {
-          "referenceCategory": "PACKAGE-MANAGER",
-          "referenceType": "purl",
-          "referenceLocator": "pkg:npm/aoc-runtime@0.1.0"
-        }
-      ]
-    },
     {
       "name": "@aoc/protocol",
       "SPDXID": "SPDXRef-Package-aoc.protocol-0.1.0",
       "versionInfo": "0.1.0",
-      "packageFileName": "node_modules/@aoc/protocol",
+      "packageFileName": "",
       "description": "Public contracts, semantics, schemas, and compatibility definitions for AOC Protocol.",
+      "primaryPackagePurpose": "LIBRARY",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
       "homepage": "https://github.com/Architects-of-Change-Protocol/Architects_of_Change_Protocol/tree/main/packages/protocol#readme",
-      "licenseDeclared": "MIT",
+      "licenseDeclared": "Apache-2.0",
       "externalRefs": [
         {
           "referenceCategory": "PACKAGE-MANAGER",
@@ -54,7 +37,7 @@
   "relationships": [
     {
       "spdxElementId": "SPDXRef-DOCUMENT",
-      "relatedSpdxElement": "SPDXRef-Package-aoc-runtime-0.1.0",
+      "relatedSpdxElement": "SPDXRef-Package-aoc.protocol-0.1.0",
       "relationshipType": "DESCRIBES"
     }
   ]

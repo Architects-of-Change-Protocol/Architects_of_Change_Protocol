@@ -54,10 +54,20 @@ check('package metadata', () => {
   if (missing.length) throw new Error(missing.join('; '));
 });
 check('private publication block', () => {
-  if (protocolPkg.private !== true) {
-    throw new Error('packages/protocol/package.json must remain "private": true until a founder-authorized publish decision');
+  // Default posture: @aoc/protocol must be unpublishable. The one exception is the
+  // founder-authorized release commit itself, where private:false is required by the
+  // publication approval gate — that run must set AOC_PUBLISH_AUTHORIZED=1 explicitly
+  // (never set in CI workflows; see docs/release/RELEASE_AUTHORITY.md).
+  const publishAuthorized = process.env.AOC_PUBLISH_AUTHORIZED === '1';
+  if (protocolPkg.private !== true && !publishAuthorized) {
+    throw new Error(
+      'packages/protocol/package.json must remain "private": true until a founder-authorized publish decision (set AOC_PUBLISH_AUTHORIZED=1 only on the authorized release commit)',
+    );
   }
-  if (rootPkg.private !== true) throw new Error('root package.json must remain "private": true');
+  if (protocolPkg.private === true && publishAuthorized) {
+    throw new Error('AOC_PUBLISH_AUTHORIZED=1 is set but the package is still private — remove the override or flip the flag deliberately');
+  }
+  if (rootPkg.private !== true) throw new Error('root package.json must remain "private": true in every scenario');
 });
 
 // --- tarball generation, contents, reproducibility, evidence freshness ---

@@ -22,7 +22,11 @@ have not been designated.
 ## Required approvals per release
 
 1. Written founder authorization (version + dist-tag + channel).
-2. Green `npm run protocol:rc:check` (the RC gate) on the exact release commit.
+2. Green `npm run protocol:rc:check` (the RC gate) on the exact release commit. The gate requires
+   `"private": true` by default; on the authorized release commit — where the approval gate
+   requires the flag flipped — the release owner runs it with `AOC_PUBLISH_AUTHORIZED=1`, an
+   explicit, human-set override that is never configured in CI workflows and fails the gate if set
+   while the package is still private.
 3. Evidence regenerated for that commit (`npm run protocol:release:manifest`) and committed under
    [`evidence/`](evidence/).
 4. The publication approval gate in
