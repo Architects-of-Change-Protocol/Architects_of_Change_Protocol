@@ -32,11 +32,12 @@ Pending changesets (verified via `npx changeset status --verbose`):
 
 No exports were removed or renamed. No breaking changes.
 
-Additionally, merged work on `main` not yet covered by a changeset: PR #319 relicensed the
-repository (and `@aoc/protocol`'s package metadata) from MIT to **Apache-2.0**. Two in-package
-metadata inconsistencies from that change (duplicate `license` key; package-local `LICENSE` still
-MIT text) are pending cleanup with their own patch changeset — see
-`docs/release/KNOWN_LIMITATIONS.md`.
+Additionally, merged work on `main`: PR #319 relicensed the repository (and `@aoc/protocol`'s
+package metadata) from MIT to **Apache-2.0**. The relicense was completed inside the package on
+the RC-readiness branch — single `license` key, packaged `LICENSE` replaced with the official
+Apache License 2.0 text, and the `NOTICE` attribution now ships in the tarball. No version was
+changed and nothing was published; the artifact identity history is recorded in
+`docs/release/RELEASE_CANDIDATE_READINESS.md`.
 
 ### `@aoc/audit-sdk` — pending **patch** (0.1.0 → proposed 0.1.1)
 

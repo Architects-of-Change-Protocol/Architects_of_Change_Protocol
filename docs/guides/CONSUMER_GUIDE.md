@@ -13,7 +13,7 @@ invented.
 | --- | --- |
 | Name | `@aoc/protocol` |
 | Current version | `0.1.0` (proposed next: `0.2.0` via Changesets — not yet cut) |
-| License | Apache-2.0 (relicensed from MIT by PR #319; two in-package metadata inconsistencies are pending cleanup — see [`docs/release/KNOWN_LIMITATIONS.md`](../release/KNOWN_LIMITATIONS.md)) |
+| License | Apache-2.0 (relicensed from MIT by PR #319; the tarball ships the official Apache-2.0 `LICENSE` and the `NOTICE` attribution) |
 | Repository | `Architects-of-Change-Protocol/Architects_of_Change_Protocol`, directory `packages/protocol` |
 | Module system | CommonJS (`"type": "commonjs"`), single build |
 | Runtime dependencies | None |
@@ -42,8 +42,9 @@ sha256sum aoc-protocol-<version>.tgz
 ```
 
 Note that the checksum is per-build: the artifact AOC Enterprise pinned hashes
-`4e5289b7…96b27`, while a build after the Apache-2.0 relicense (PR #319) hashes
-`d4a8b67d…c7704` — always compare against the manifest entry for the build you were handed.
+`4e5289b7…96b27` (pre-relicense), while the current Apache-2.0 RC build hashes
+`7d0d42a5…d9841` — always compare against the manifest entry for the build you were handed
+(full history in [`docs/release/RELEASE_CANDIDATE_READINESS.md`](../release/RELEASE_CANDIDATE_READINESS.md)).
 
 Vendor the tarball in your repository (as AOC Enterprise does under `vendor/`) so installs are
 reproducible and auditable.

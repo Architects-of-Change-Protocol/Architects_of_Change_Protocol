@@ -39,8 +39,98 @@ check('symbol parity', () => run('npm run check:symbol-parity'));
 check('version graph', () => run('npm run check:version-graph'));
 check('Changeset status', () => run('npx changeset status'));
 
+// Rejects duplicate keys anywhere in a JSON document. JSON.parse silently keeps the last
+// value for a duplicated key, so license-metadata ambiguity (e.g. "license" declared twice
+// with different values) survives a plain parse — this walker does not.
+const assertNoDuplicateJsonKeys = (text, label) => {
+  let i = 0;
+  const fail = (msg) => {
+    throw new Error(`${label}: ${msg} (offset ${i})`);
+  };
+  const ws = () => {
+    while (i < text.length && /\s/.test(text[i])) i += 1;
+  };
+  const parseString = () => {
+    if (text[i] !== '"') fail('expected string');
+    i += 1;
+    let out = '';
+    while (i < text.length && text[i] !== '"') {
+      if (text[i] === '\\') i += 1;
+      out += text[i];
+      i += 1;
+    }
+    if (i >= text.length) fail('unterminated string');
+    i += 1;
+    return out;
+  };
+  const parseArray = () => {
+    i += 1;
+    ws();
+    if (text[i] === ']') {
+      i += 1;
+      return;
+    }
+    for (;;) {
+      parseValue();
+      ws();
+      if (text[i] === ',') {
+        i += 1;
+        continue;
+      }
+      if (text[i] === ']') {
+        i += 1;
+        return;
+      }
+      fail('malformed array');
+    }
+  };
+  const parseObject = () => {
+    i += 1;
+    ws();
+    const seen = new Set();
+    if (text[i] === '}') {
+      i += 1;
+      return;
+    }
+    for (;;) {
+      ws();
+      const key = parseString();
+      if (seen.has(key)) fail(`duplicate JSON key "${key}"`);
+      seen.add(key);
+      ws();
+      if (text[i] !== ':') fail('expected ":"');
+      i += 1;
+      parseValue();
+      ws();
+      if (text[i] === ',') {
+        i += 1;
+        continue;
+      }
+      if (text[i] === '}') {
+        i += 1;
+        return;
+      }
+      fail('malformed object');
+    }
+  };
+  const parseValue = () => {
+    ws();
+    const c = text[i];
+    if (c === '{') return parseObject();
+    if (c === '[') return parseArray();
+    if (c === '"') return parseString();
+    while (i < text.length && !/[,\]}\s]/.test(text[i])) i += 1;
+    return undefined;
+  };
+  ws();
+  parseValue();
+  ws();
+  if (i < text.length) fail('trailing content after JSON document');
+};
+
 // --- package metadata and the private-publication block ---
-const protocolPkg = JSON.parse(readFileSync(join(repo, 'packages/protocol/package.json'), 'utf8'));
+const protocolPkgRaw = readFileSync(join(repo, 'packages/protocol/package.json'), 'utf8');
+const protocolPkg = JSON.parse(protocolPkgRaw);
 const rootPkg = JSON.parse(readFileSync(join(repo, 'package.json'), 'utf8'));
 check('package metadata', () => {
   const missing = [];
@@ -52,6 +142,36 @@ check('package metadata', () => {
   if (!protocolPkg.exports?.['.']) missing.push('missing root "." export');
   if (!Array.isArray(protocolPkg.files) || !protocolPkg.files.includes('dist')) missing.push('"files" must include "dist"');
   if (missing.length) throw new Error(missing.join('; '));
+});
+check('license consistency', () => {
+  // Strict JSON validity + no duplicate keys anywhere (JSON.parse alone would hide them).
+  assertNoDuplicateJsonKeys(protocolPkgRaw, 'packages/protocol/package.json');
+  const licenseKeyCount = (protocolPkgRaw.match(/"license"\s*:/g) ?? []).length;
+  if (licenseKeyCount !== 1) {
+    throw new Error(`packages/protocol/package.json must declare "license" exactly once (found ${licenseKeyCount})`);
+  }
+  if (protocolPkg.license !== 'Apache-2.0') {
+    throw new Error(`effective package license must be "Apache-2.0", found "${protocolPkg.license}"`);
+  }
+  const licenseText = readFileSync(join(repo, 'packages/protocol/LICENSE'), 'utf8');
+  if (!licenseText.includes('Apache License') || !licenseText.includes('Version 2.0')) {
+    throw new Error('packages/protocol/LICENSE is not the Apache License 2.0 text');
+  }
+  if (/MIT License|Permission is hereby granted, free of charge/i.test(licenseText)) {
+    throw new Error('packages/protocol/LICENSE still contains MIT license text');
+  }
+  const sbomPath = join(repo, `docs/release/evidence/aoc-protocol-${protocolPkg.version}.sbom.spdx.json`);
+  if (existsSync(sbomPath)) {
+    const sbom = JSON.parse(readFileSync(sbomPath, 'utf8'));
+    const entry = (sbom.packages ?? []).find((p) => p.name === '@aoc/protocol');
+    if (!entry) throw new Error('SBOM has no @aoc/protocol package entry');
+    if (entry.licenseDeclared !== protocolPkg.license) {
+      throw new Error(`SBOM licenseDeclared ("${entry.licenseDeclared}") does not match package metadata ("${protocolPkg.license}")`);
+    }
+    if (/\bMIT\b/.test(entry.licenseDeclared ?? '')) {
+      throw new Error('SBOM reports MIT as the effective package license');
+    }
+  }
 });
 check('private publication block', () => {
   // Default posture: @aoc/protocol must be unpublishable. The one exception is the
@@ -92,8 +212,8 @@ try {
       .map((line) => line.replace(/^package\//, ''));
     const leaked = entries.filter((entry) => /__tests__|__snapshots__|fixture|\.env|secret|coverage|(^|\/)src\//i.test(entry));
     if (leaked.length) throw new Error(`disallowed entries in tarball: ${leaked.join(', ')}`);
-    if (!entries.includes('LICENSE') || !entries.includes('README.md')) {
-      throw new Error('tarball must include LICENSE and README.md');
+    if (!entries.includes('LICENSE') || !entries.includes('README.md') || !entries.includes('NOTICE')) {
+      throw new Error('tarball must include LICENSE, NOTICE, and README.md');
     }
   });
   check('reproducibility', () => {
