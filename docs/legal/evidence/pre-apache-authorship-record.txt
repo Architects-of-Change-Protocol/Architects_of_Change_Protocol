@@ -1,0 +1,48 @@
+# AOC Protocol — Pre-relicensing authorship record
+
+Generated: 2026-07-15T20:02:19Z
+Repository: https://github.com/Architects-of-Change-Protocol/Architects_of_Change_Protocol
+HEAD: 55566e4bc37637577630a58942c047203af4d6a9
+
+## Authors
+   381	vicvalch <36937201+vicvalch@users.noreply.github.com>
+    18	Claude <noreply@anthropic.com>
+     1	Victor Valverde <victor@hrkey.ai>
+     1	Victor Valverde <vicvalch@gmail.com>
+
+## Committers
+Claude <noreply@anthropic.com>
+GitHub <noreply@github.com>
+Victor Valverde <victor@hrkey.ai>
+Victor Valverde <vicvalch@gmail.com>
+vicvalch <36937201+vicvalch@users.noreply.github.com>
+
+## Remote branches
+  origin/HEAD -> origin/main
+  origin/chore/wire-assurance-stripe-links
+  origin/claude/add-aoc-landing-page-URv0X
+  origin/claude/aoc-consent-spec-JfRNZ
+  origin/claude/aoc-protocol-design-9nGho
+  origin/claude/audit-patent-architecture-jkrj2
+  origin/claude/exciting-noether-IXouk
+  origin/claude/fix-field-manifest-created-at-Whhgl
+  origin/claude/sdl-parser-resolver-jKXmg
+  origin/claude/temporal-consent-control-YBYNx
+  origin/claude/vault-orchestrator-v0.1-IJJDy
+  origin/claude/wallet-identity-model-UXS7Z
+  origin/codex/harden-runtime-security-and-startup-behavior
+  origin/codex/implement-usage-metering-and-fee-engine
+  origin/codex/implement-usage-metering-and-fee-engine-02w52d
+  origin/codex/optimize-mobile-layout-for-aoc-landing
+  origin/codex/task-title
+  origin/codex/task-title-26h1ae
+  origin/codex/transform-how-it-works-section
+  origin/feat/identity-lite-signatures
+  origin/fix/assurance-duplicate-classname
+  origin/fix/assurance-final-tally-links
+  origin/fix/sem-no-direct-verify
+  origin/main
+  origin/master
+  origin/vicvalch-patch-1
+
+## Tags
