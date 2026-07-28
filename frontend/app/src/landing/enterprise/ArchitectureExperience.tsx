@@ -2,19 +2,30 @@ import { useState } from 'react';
 import { ARCHITECTURE_PATTERNS } from './content';
 import { ArchitectureBuilder } from './ArchitectureBuilder';
 import { CapabilityComposer } from './CapabilityComposer';
+import { FlowRail, SectionHeader } from './primitives';
 
 /**
- * The conceptual heart of the homepage: one shared selection drives both the
- * architecture builder (choose the center of gravity) and the capability
- * composer (see what powers that choice implies) — a single continuous
- * interaction rather than two disconnected sections.
+ * The homepage's interactive centerpiece: one shared selection drives both the
+ * architecture picker (choose the center of gravity) and the capability
+ * composer (see what powers that choice implies). This is also the reserved
+ * future home of Architecture Compass — the layout and #composition anchor
+ * are structured so that component can later replace or extend this panel
+ * without reshaping the surrounding narrative.
  */
 export function ArchitectureExperience() {
   const [selectedId, setSelectedId] = useState(ARCHITECTURE_PATTERNS[0].id);
   const selected = ARCHITECTURE_PATTERNS.find((pattern) => pattern.id === selectedId) ?? ARCHITECTURE_PATTERNS[0];
 
   return (
-    <section id="architecture" className="scroll-mt-16 max-w-7xl mx-auto px-6 py-20 border-t border-white/10">
+    <section id="composition" className="scroll-mt-16 max-w-7xl mx-auto px-6 py-20 border-t border-white/10">
+      <FlowRail current="Protocol Capabilities" />
+
+      <SectionHeader
+        eyebrow="Capability Composition"
+        title="AOC Enterprise composes protocol capabilities into your architecture."
+        description="AOC Protocol defines the capabilities — identity, authority, delegation, evidence, and more. AOC Enterprise is where an organization chooses what its architecture is sovereign around, and composes the capabilities that architecture actually needs."
+      />
+
       <ArchitectureBuilder selected={selected} onSelect={setSelectedId} />
       <CapabilityComposer pattern={selected} />
     </section>
