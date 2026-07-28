@@ -12,10 +12,10 @@ export function CapabilityComposer({ pattern }: { pattern: ArchitecturePattern }
         </p>
         <div className="space-y-2">
           {enabled.map((id) => (
-            <CapabilityCheckItem key={id} name={CAPABILITY_CATALOG[id].name} summary={CAPABILITY_CATALOG[id].summary} checked />
+            <CapabilityCheckItem key={id} capability={id} name={CAPABILITY_CATALOG[id].name} summary={CAPABILITY_CATALOG[id].summary} checked />
           ))}
           {available.map((id) => (
-            <CapabilityCheckItem key={id} name={CAPABILITY_CATALOG[id].name} summary={CAPABILITY_CATALOG[id].summary} checked={false} />
+            <CapabilityCheckItem key={id} capability={id} name={CAPABILITY_CATALOG[id].name} summary={CAPABILITY_CATALOG[id].summary} checked={false} />
           ))}
         </div>
       </div>

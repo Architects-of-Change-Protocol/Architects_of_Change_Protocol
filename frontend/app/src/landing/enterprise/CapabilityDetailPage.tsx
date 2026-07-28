@@ -1,6 +1,7 @@
 import { ProtocolFooter } from '../components/ProtocolFooter';
 import { EnterpriseNav } from './Nav';
 import { EXPLORE_CAPABILITIES } from './content';
+import { CapabilityCrystal } from '../../components/capability-crystal/CapabilityCrystal';
 
 export function CapabilityDetailPage({ slug }: { slug: string }) {
   const capability = EXPLORE_CAPABILITIES.find((c) => c.slug === slug);
@@ -15,7 +16,8 @@ export function CapabilityDetailPage({ slug }: { slug: string }) {
         </a>
 
         <p className="mt-8 text-[11px] uppercase tracking-[0.22em] text-cyan-300/80 font-mono">Capability</p>
-        <h1 className="mt-3 text-4xl font-semibold tracking-tight text-white">
+        <h1 className="mt-3 flex items-center gap-3 text-4xl font-semibold tracking-tight text-white">
+          {capability ? <CapabilityCrystal capability={capability.slug} size={18} /> : null}
           {capability?.name ?? slug}
         </h1>
         {capability ? (

@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import type { ArchitectureShape, FlowStage } from './content';
 import { FLOW } from './content';
+import { CapabilityCrystal, type CapabilityCrystalId } from '../../components/capability-crystal/CapabilityCrystal';
 
 export function Eyebrow({ children }: { children: ReactNode }) {
   return (
@@ -118,10 +119,12 @@ export function FlowRail({ current, size = 'dense' }: { current?: FlowStage; siz
 
 /** A single capability row in a checklist — checked (enabled) or hollow (available to add). */
 export function CapabilityCheckItem({
+  capability,
   name,
   summary,
   checked,
 }: {
+  capability: CapabilityCrystalId;
   name: string;
   summary?: string;
   checked: boolean;
@@ -137,7 +140,10 @@ export function CapabilityCheckItem({
         {checked ? '✓' : ''}
       </span>
       <div>
-        <p className={`text-sm font-medium ${checked ? 'text-white' : 'text-white/45'}`}>{name}</p>
+        <p className={`flex items-center gap-2 text-sm font-medium ${checked ? 'text-white' : 'text-white/45'}`}>
+          <CapabilityCrystal capability={capability} size={16} className={checked ? '' : 'opacity-60'} />
+          {name}
+        </p>
         {summary ? <p className={`mt-0.5 text-xs leading-relaxed ${checked ? 'text-white/50' : 'text-white/35'}`}>{summary}</p> : null}
       </div>
     </div>

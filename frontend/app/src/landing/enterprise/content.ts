@@ -5,6 +5,8 @@
 // composes the subset of those capabilities its own architecture needs.
 // Governance is what that composition produces, not where it starts.
 
+import type { CapabilityCrystalId } from '../../components/capability-crystal/CapabilityCrystal';
+
 export type Maturity = 'Stable' | 'Beta' | 'Preview';
 
 // The conceptual flow the whole homepage is structured around. It recurs as a
@@ -177,7 +179,7 @@ export const ARCHITECTURE_PATTERNS: ArchitecturePattern[] = [
 // The homepage's only entry point into capability detail — plain navigation,
 // not explanation. Each of these owns its own dedicated page.
 export type ExploreCapability = {
-  slug: string;
+  slug: CapabilityCrystalId;
   name: string;
   summary: string;
 };
