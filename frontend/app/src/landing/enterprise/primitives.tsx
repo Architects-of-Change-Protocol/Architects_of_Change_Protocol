@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import type { ArchitectureShape, HierarchyStage } from './content';
-import { HIERARCHY } from './content';
+import type { ArchitectureShape, FlowStage } from './content';
+import { FLOW } from './content';
 
 export function Eyebrow({ children }: { children: ReactNode }) {
   return (
@@ -30,18 +30,8 @@ export function SectionHeader({
 
 const statusToneMap: Record<string, string> = {
   Stable: 'text-emerald-300 border-emerald-400/30 bg-emerald-400/10',
-  Active: 'text-emerald-300 border-emerald-400/30 bg-emerald-400/10',
-  Healthy: 'text-emerald-300 border-emerald-400/30 bg-emerald-400/10',
-  Available: 'text-emerald-300 border-emerald-400/30 bg-emerald-400/10',
-  Core: 'text-emerald-300 border-emerald-400/30 bg-emerald-400/10',
   Beta: 'text-cyan-300 border-cyan-400/30 bg-cyan-400/10',
-  Partial: 'text-cyan-300 border-cyan-400/30 bg-cyan-400/10',
-  Developing: 'text-cyan-300 border-cyan-400/30 bg-cyan-400/10',
-  Attention: 'text-amber-300 border-amber-400/30 bg-amber-400/10',
   Preview: 'text-amber-300 border-amber-400/30 bg-amber-400/10',
-  Early: 'text-amber-300 border-amber-400/30 bg-amber-400/10',
-  Planned: 'text-white/50 border-white/15 bg-white/[0.03]',
-  'Coming soon': 'text-white/50 border-white/15 bg-white/[0.03]',
 };
 
 export function StatusPill({ label }: { label: string }) {
@@ -51,10 +41,6 @@ export function StatusPill({ label }: { label: string }) {
       {label}
     </span>
   );
-}
-
-export function ComingSoonTag() {
-  return <StatusPill label="Coming soon" />;
 }
 
 /** Small geometric node glyph used for architecture pattern cards — deliberately abstract
@@ -100,23 +86,30 @@ export function NodeGlyph({ shape }: { shape: ArchitectureShape }) {
   );
 }
 
-/** Persistent reminder of the platform's mental model: Architecture -> Capabilities ->
- * Governance -> Evidence -> Assurance -> Operations. Highlights the current stage. */
-export function HierarchyRail({ current, dense = false }: { current?: HierarchyStage; dense?: boolean }) {
+/** The recurring structural diagram: Business Needs -> Protocol Capabilities ->
+ * Business Architecture -> Governance. Reused at different sizes throughout the
+ * homepage so the narrative stays visible while scrolling. `current` highlights
+ * the stage the surrounding section corresponds to. */
+export function FlowRail({ current, size = 'dense' }: { current?: FlowStage; size?: 'dense' | 'large' }) {
+  const isLarge = size === 'large';
   return (
-    <div className={`flex flex-wrap items-center gap-x-1.5 gap-y-2 font-mono ${dense ? 'text-[11px]' : 'text-xs'}`}>
-      {HIERARCHY.map((stage, idx) => (
+    <div
+      className={`flex flex-wrap items-center font-mono ${
+        isLarge ? 'gap-x-2.5 gap-y-3 text-xs md:text-sm' : 'gap-x-1.5 gap-y-2 text-[11px]'
+      }`}
+    >
+      {FLOW.map((stage, idx) => (
         <span key={stage} className="flex items-center gap-1.5">
           <span
             className={
               stage === current
-                ? 'rounded-md border border-cyan-300/40 bg-cyan-300/10 px-2 py-1 text-cyan-200'
-                : 'px-2 py-1 text-white/40'
+                ? `rounded-md border border-cyan-300/40 bg-cyan-300/10 text-cyan-200 ${isLarge ? 'px-3 py-1.5' : 'px-2 py-1'}`
+                : `text-white/40 ${isLarge ? 'px-3 py-1.5' : 'px-2 py-1'}`
             }
           >
             {stage}
           </span>
-          {idx < HIERARCHY.length - 1 ? <span className="text-white/20">&rarr;</span> : null}
+          {idx < FLOW.length - 1 ? <span className="text-white/20">&rarr;</span> : null}
         </span>
       ))}
     </div>
@@ -147,16 +140,6 @@ export function CapabilityCheckItem({
         <p className={`text-sm font-medium ${checked ? 'text-white' : 'text-white/45'}`}>{name}</p>
         {summary ? <p className={`mt-0.5 text-xs leading-relaxed ${checked ? 'text-white/50' : 'text-white/35'}`}>{summary}</p> : null}
       </div>
-    </div>
-  );
-}
-
-export function Stat({ label, value, detail }: { label: string; value: string; detail?: string }) {
-  return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
-      <p className="text-[11px] uppercase tracking-[0.18em] text-white/45 font-mono">{label}</p>
-      <p className="mt-2.5 text-2xl font-semibold text-white tracking-tight">{value}</p>
-      {detail ? <p className="mt-1.5 text-sm text-white/50">{detail}</p> : null}
     </div>
   );
 }
