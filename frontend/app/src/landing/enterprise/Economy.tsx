@@ -5,9 +5,9 @@ export function Economy() {
   return (
     <section id="economy" className="scroll-mt-16 max-w-7xl mx-auto px-6 py-20 border-t border-white/10">
       <SectionHeader
-        eyebrow="Stage 6 · Operations"
-        title="Economic governance for capability consumption."
-        description="As architectures move into production, consumption becomes a governed quantity of its own — metered, billed, and shared across the ecosystem that produced the capability."
+        eyebrow="Stage 7 · Operations"
+        title="The platform economy AOC Enterprise is already built for."
+        description="As architectures move into production, consumption becomes a governed quantity of its own — metered, billed, and shared across the ecosystem that produced the capability. Not yet implemented, but the architecture already anticipates it."
       />
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">

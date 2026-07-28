@@ -1,9 +1,9 @@
 import { ProtocolFooter } from './components/ProtocolFooter';
 import { EnterpriseNav } from './enterprise/Nav';
 import { Hero } from './enterprise/Hero';
-import { GovernanceOverview } from './enterprise/GovernanceOverview';
-import { Architectures } from './enterprise/Architectures';
-import { Capabilities } from './enterprise/Capabilities';
+import { ArchitectureExperience } from './enterprise/ArchitectureExperience';
+import { ProtocolVsEnterprise } from './enterprise/ProtocolVsEnterprise';
+import { HierarchyStrip } from './enterprise/HierarchyStrip';
 import { Governance } from './enterprise/Governance';
 import { Assurance } from './enterprise/Assurance';
 import { Audit } from './enterprise/Audit';
@@ -15,9 +15,9 @@ export const renderEnterprisePage = () => {
     <main className="min-h-screen bg-[#090b11] text-white font-sans">
       <EnterpriseNav />
       <Hero />
-      <GovernanceOverview />
-      <Architectures />
-      <Capabilities />
+      <ArchitectureExperience />
+      <ProtocolVsEnterprise />
+      <HierarchyStrip />
       <Governance />
       <Assurance />
       <Audit />
@@ -26,7 +26,7 @@ export const renderEnterprisePage = () => {
 
       <section className="max-w-7xl mx-auto px-6 py-20 border-t border-white/10 text-center">
         <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-white max-w-2xl mx-auto">
-          Govern the architecture. Not just the application.
+          Design the architecture. Then govern it.
         </h2>
         <a
           href="mailto:hello@aocprotocol.xyz?subject=AOC%20Enterprise%20Governance%20Walkthrough"

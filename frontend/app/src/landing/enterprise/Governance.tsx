@@ -5,8 +5,8 @@ export function Governance() {
   return (
     <section id="governance" className="scroll-mt-16 max-w-7xl mx-auto px-6 py-20 border-t border-white/10">
       <SectionHeader
-        eyebrow="Stage 3 · Governance"
-        title="Capabilities define powers. Governance defines how they're used."
+        eyebrow="Stage 4 · Governance"
+        title="Capabilities define powers. Governance defines how they're exercised."
         description="Governance is a distinct layer from capability enablement. It expresses the rules, constraints, and decision paths that determine when a capability may actually be exercised."
       />
 

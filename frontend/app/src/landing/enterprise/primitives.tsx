@@ -33,10 +33,13 @@ const statusToneMap: Record<string, string> = {
   Active: 'text-emerald-300 border-emerald-400/30 bg-emerald-400/10',
   Healthy: 'text-emerald-300 border-emerald-400/30 bg-emerald-400/10',
   Available: 'text-emerald-300 border-emerald-400/30 bg-emerald-400/10',
+  Core: 'text-emerald-300 border-emerald-400/30 bg-emerald-400/10',
   Beta: 'text-cyan-300 border-cyan-400/30 bg-cyan-400/10',
   Partial: 'text-cyan-300 border-cyan-400/30 bg-cyan-400/10',
+  Developing: 'text-cyan-300 border-cyan-400/30 bg-cyan-400/10',
   Attention: 'text-amber-300 border-amber-400/30 bg-amber-400/10',
   Preview: 'text-amber-300 border-amber-400/30 bg-amber-400/10',
+  Early: 'text-amber-300 border-amber-400/30 bg-amber-400/10',
   Planned: 'text-white/50 border-white/15 bg-white/[0.03]',
   'Coming soon': 'text-white/50 border-white/15 bg-white/[0.03]',
 };
@@ -116,6 +119,34 @@ export function HierarchyRail({ current, dense = false }: { current?: HierarchyS
           {idx < HIERARCHY.length - 1 ? <span className="text-white/20">&rarr;</span> : null}
         </span>
       ))}
+    </div>
+  );
+}
+
+/** A single capability row in a checklist — checked (enabled) or hollow (available to add). */
+export function CapabilityCheckItem({
+  name,
+  summary,
+  checked,
+}: {
+  name: string;
+  summary?: string;
+  checked: boolean;
+}) {
+  return (
+    <div className={`flex items-start gap-3 rounded-xl border px-3.5 py-3 ${checked ? 'border-white/10 bg-white/[0.02]' : 'border-white/5 bg-transparent'}`}>
+      <span
+        className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-[4px] border text-[10px] ${
+          checked ? 'border-cyan-300/60 bg-cyan-300/15 text-cyan-200' : 'border-white/20 text-transparent'
+        }`}
+        aria-hidden
+      >
+        {checked ? '✓' : ''}
+      </span>
+      <div>
+        <p className={`text-sm font-medium ${checked ? 'text-white' : 'text-white/45'}`}>{name}</p>
+        {summary ? <p className={`mt-0.5 text-xs leading-relaxed ${checked ? 'text-white/50' : 'text-white/35'}`}>{summary}</p> : null}
+      </div>
     </div>
   );
 }

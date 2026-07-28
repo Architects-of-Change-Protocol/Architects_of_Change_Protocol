@@ -5,9 +5,9 @@ export function Audit() {
   return (
     <section id="audit" className="scroll-mt-16 max-w-7xl mx-auto px-6 py-20 border-t border-white/10">
       <SectionHeader
-        eyebrow="Stage 4 · Evidence"
-        title="Operational history, kept separate from evaluation."
-        description="Audit is the raw, immutable record of what happened. Assurance interprets that record to evaluate governance maturity — the two are deliberately distinct layers."
+        eyebrow="Stage 5 · Evidence"
+        title="Operational history, kept separate from governance quality."
+        description="Audit is the raw, immutable record of what happened. Assurance interprets that record to evaluate governance quality — the two are deliberately distinct layers."
       />
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">

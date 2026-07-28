@@ -5,9 +5,9 @@ export function Assurance() {
   return (
     <section id="assurance" className="scroll-mt-16 max-w-7xl mx-auto px-6 py-20 border-t border-white/10">
       <SectionHeader
-        eyebrow="Stage 5 · Assurance"
-        title="A governance control tower, not a compliance checklist."
-        description="Assurance evaluates how well an architecture is actually governed — coverage, evidence quality, open findings, and a scored trajectory over time."
+        eyebrow="Stage 6 · Assurance"
+        title="A governance control plane, not a compliance checklist."
+        description="Assurance continuously evaluates how well an architecture is actually governed — coverage, evidence quality, open findings, and a scored trajectory over time."
       />
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -29,7 +29,7 @@ export function Assurance() {
           href="/?view=assurance"
           className="shrink-0 inline-flex items-center rounded-xl border border-cyan-300/35 px-4 py-2.5 text-sm font-medium text-cyan-200 hover:bg-cyan-300/10 transition-colors"
         >
-          Open the Assurance control tower
+          Open the Assurance control plane
         </a>
       </div>
     </section>
