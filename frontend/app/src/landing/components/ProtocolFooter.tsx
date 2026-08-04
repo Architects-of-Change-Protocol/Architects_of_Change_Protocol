@@ -8,9 +8,9 @@ type FooterItem = {
 
 const protocolLinks: FooterItem[] = [
   { label: 'Architecture' },
-  { label: 'Consent Engine' },
+  { label: 'Digital Assets' },
   { label: 'Capability Model' },
-  { label: 'Audit Layer' },
+  { label: 'Sovereignty' },
 ]
 
 const navigationLinks: FooterItem[] = [
@@ -42,7 +42,7 @@ export function ProtocolFooter({ accent = 'cyan' }: { accent?: 'cyan' | 'indigo'
         <div className="footer-fade rounded-3xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01))] px-4 sm:px-6 py-8 text-center md:px-10 md:py-12">
           <p className={`text-[11px] uppercase tracking-[0.24em] ${tone.eyebrow}`}>Protocol handoff</p>
           <h2 className="mx-auto mt-4 max-w-2xl text-3xl font-semibold tracking-tight text-white md:text-4xl">
-            Ship access systems with explicit control semantics.
+            Ship digital assets with identity, integrity and capabilities built in.
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-white/65 md:text-base">
             Explore the docs, review enterprise positioning, or contact the protocol directly.
@@ -67,7 +67,8 @@ export function ProtocolFooter({ accent = 'cyan' }: { accent?: 'cyan' | 'indigo'
               <h3 className="text-base font-semibold tracking-tight text-white">AOC Protocol</h3>
               <div className={`mt-4 h-px w-16 ${tone.divider}`} />
               <p className="mt-4 text-sm leading-6 text-white/62">
-                Programmable control layer for consent-aware access, capability control, and auditable machine interaction.
+                An open, provider-neutral protocol for digital assets — identity, integrity,
+                provenance and capabilities that compatible systems can interpret.
               </p>
             </div>
 
