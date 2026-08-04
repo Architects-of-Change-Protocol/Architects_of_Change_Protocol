@@ -1,6 +1,16 @@
+import { Breadcrumbs } from './components/Breadcrumbs';
+
 export const renderDocsPage = () => {
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white font-sans">
+      <Breadcrumbs
+        items={[
+          { label: 'Protocol', href: '/' },
+          { label: 'Enterprise', href: '/?view=enterprise' },
+          { label: 'Developers' },
+        ]}
+      />
+
       <section className="border-b border-white/10">
         <div className="mx-auto max-w-6xl px-6 py-20 md:py-24">
           <p className="text-[11px] uppercase tracking-[0.24em] text-cyan-300/70">

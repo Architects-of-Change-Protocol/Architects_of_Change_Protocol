@@ -9,8 +9,10 @@ import { AssessmentPlaceholderPage } from './landing/AssessmentPlaceholderPage';
 import { WhatIsAiSovereigntyPage } from './landing/WhatIsAiSovereigntyPage';
 import { renderEnterprisePage } from './landing/EnterprisePage';
 import { CapabilityDetailPage } from './landing/enterprise/CapabilityDetailPage';
+import { GovernedAccessPage } from './landing/enterprise/GovernedAccessPage';
 import { renderDocsPage } from './landing/DocsPage';
 import { renderContactPage } from './landing/ContactPage';
+import { renderAboutPage } from './landing/AboutPage';
 
 function getView() {
   const params = new URLSearchParams(window.location.search);
@@ -59,11 +61,13 @@ export default function App() {
   if (view === 'assurance') return renderAssurancePage();
   if (view === 'docs') return renderDocsPage();
   if (view === 'enterprise') return renderEnterprisePage();
+  if (view === 'governed-access') return <GovernedAccessPage />;
   if (view === 'capability') {
     const slug = new URLSearchParams(window.location.search).get('slug') ?? '';
     return <CapabilityDetailPage slug={slug} />;
   }
   if (view === 'contact') return renderContactPage();
+  if (view === 'about') return renderAboutPage();
 
   return <AocLandingPage />;
 }

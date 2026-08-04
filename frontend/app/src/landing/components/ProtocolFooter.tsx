@@ -14,8 +14,9 @@ const protocolLinks: FooterItem[] = [
 ]
 
 const navigationLinks: FooterItem[] = [
-  { label: 'Docs', href: '/?view=docs' },
   { label: 'Enterprise', href: '/?view=enterprise' },
+  { label: 'Docs', href: '/?view=docs' },
+  { label: 'About', href: '/?view=about' },
   { label: 'Contact Us', href: '/?view=contact' },
   { label: 'GitHub', href: REPO_URL, external: true },
 ]
