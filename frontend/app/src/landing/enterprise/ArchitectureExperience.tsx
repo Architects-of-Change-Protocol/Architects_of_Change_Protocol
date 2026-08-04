@@ -17,7 +17,7 @@ export function ArchitectureExperience() {
   const selected = ARCHITECTURE_PATTERNS.find((pattern) => pattern.id === selectedId) ?? ARCHITECTURE_PATTERNS[0];
 
   return (
-    <section id="composition" className="scroll-mt-16 max-w-7xl mx-auto px-6 py-20 border-t border-white/10">
+    <section id="composition" className="scroll-mt-16 max-w-7xl mx-auto px-6 py-20 border-t border-slate-200">
       <FlowRail current="Protocol Capabilities" />
 
       <SectionHeader

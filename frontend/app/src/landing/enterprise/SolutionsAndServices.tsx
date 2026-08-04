@@ -1,42 +1,62 @@
-import { Eyebrow } from './primitives';
+import { SectionHeader } from './primitives';
 
-// AOC Enterprise is the commercial umbrella; Solutions and Services are the
-// categories of what it sells. Each currently holds exactly one live
-// offering. This section gives those offerings a body-level presence (not
-// just a nav entry), pointing toward their own dedicated pages rather than
-// explaining them in full — those pages get their own refactor later.
+// AOC Enterprise is the commercial umbrella; Solutions, Services, and
+// Architecture are the three pieces the One Pager breaks the platform into
+// ("The solution." / "The service." / "The foundation."). Copy below is
+// taken from that One Pager's pill row, extended here with links into each
+// piece's own page — the interactive upgrade over a static document.
+const PILLS = [
+  {
+    tag: 'Governed Access',
+    tone: 'solution' as const,
+    href: '/?view=governed-access',
+    lead: 'The solution.',
+    body: 'Policy-driven, time-bound, approval-gated access with evidence and revocation built in.',
+  },
+  {
+    tag: 'Assurance',
+    tone: 'service' as const,
+    href: '/?view=assurance',
+    lead: 'The service.',
+    body: 'Our team integrates and continuously validates the system against your policies and audits.',
+  },
+  {
+    tag: 'Architecture',
+    tone: 'foundation' as const,
+    href: '#architecture',
+    lead: 'The foundation.',
+    body: 'Proven reference patterns on the open AOC Protocol standards — provider-neutral, never locked in.',
+  },
+];
+
+const TAG_TONE: Record<(typeof PILLS)[number]['tone'], string> = {
+  solution: 'bg-indigo-600 text-white',
+  service: 'bg-indigo-800 text-white',
+  foundation: 'bg-slate-500 text-white',
+};
+
 export function SolutionsAndServices() {
   return (
-    <section id="solutions-services" className="scroll-mt-16 max-w-7xl mx-auto px-6 py-20 border-t border-white/10">
-      <Eyebrow>Built on AOC Enterprise</Eyebrow>
-      <h2 className="mt-4 text-2xl md:text-3xl font-semibold tracking-tight text-white">
-        Packaged on top of the platform.
-      </h2>
+    <section id="solutions-services" className="scroll-mt-16 max-w-5xl mx-auto px-6 py-20 border-t border-slate-200">
+      <SectionHeader
+        eyebrow="What AOC Enterprise Is"
+        title="The complete governed access lifecycle — delivered, not assembled."
+      />
 
-      <div className="mt-8 grid md:grid-cols-2 gap-5">
-        <a
-          href="/?view=governed-access"
-          className="group block rounded-2xl border border-white/10 bg-white/[0.02] p-6 transition-colors hover:border-cyan-300/40 hover:bg-white/[0.035]"
-        >
-          <p className="text-[11px] uppercase tracking-[0.2em] text-cyan-300/80 font-mono">Solution</p>
-          <h3 className="mt-3 text-lg font-semibold text-white group-hover:text-cyan-200">Governed Access</h3>
-          <p className="mt-2 text-sm text-white/55 leading-relaxed">
-            AOC Enterprise&apos;s first packaged commercial solution: governed access over externally
-            stored digital assets, built on the identity, consent, and capability primitives above.
-          </p>
-        </a>
-
-        <a
-          href="/?view=assurance"
-          className="group block rounded-2xl border border-white/10 bg-white/[0.02] p-6 transition-colors hover:border-cyan-300/40 hover:bg-white/[0.035]"
-        >
-          <p className="text-[11px] uppercase tracking-[0.2em] text-cyan-300/80 font-mono">Service</p>
-          <h3 className="mt-3 text-lg font-semibold text-white group-hover:text-cyan-200">Assurance</h3>
-          <p className="mt-2 text-sm text-white/55 leading-relaxed">
-            An assessment and advisory service that evaluates an organization&apos;s sovereignty,
-            governance, and operational maturity — often the first step toward implementation.
-          </p>
-        </a>
+      <div className="grid md:grid-cols-3 gap-5">
+        {PILLS.map((pill) => (
+          <a
+            key={pill.tag}
+            href={pill.href}
+            className="group block rounded-2xl border border-slate-200 bg-slate-50 p-6 transition-colors hover:border-indigo-300 hover:bg-white"
+          >
+            <span className={`inline-flex rounded-md px-2.5 py-1 text-[11px] font-bold tracking-wide ${TAG_TONE[pill.tone]}`}>
+              {pill.tag}
+            </span>
+            <p className="mt-4 text-base font-bold text-slate-900">{pill.lead}</p>
+            <p className="mt-2 text-sm text-slate-500 leading-relaxed">{pill.body}</p>
+          </a>
+        ))}
       </div>
     </section>
   );

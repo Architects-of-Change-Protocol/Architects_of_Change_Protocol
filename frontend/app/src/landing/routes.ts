@@ -17,7 +17,7 @@ export const ROUTES = {
   docs: '/?view=docs',
   enterprise: {
     overview: '/?view=enterprise',
-    architecture: '/?view=enterprise#composition',
+    architecture: '/?view=enterprise#architecture',
     developers: '/?view=docs',
     solutions: {
       governedAccess: '/?view=governed-access',

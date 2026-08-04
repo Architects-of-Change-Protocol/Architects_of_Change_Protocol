@@ -36,7 +36,7 @@ export const ENTERPRISE_NAV_ITEMS: NavEntry[] = [
   { label: 'Overview', href: '/?view=enterprise#overview' },
   { label: 'Solutions', children: [{ label: 'Governed Access', href: '/?view=governed-access' }] },
   { label: 'Services', children: [{ label: 'Assurance', href: '/?view=assurance' }] },
-  { label: 'Architecture', href: '/?view=enterprise#composition' },
+  { label: 'Architecture', href: '/?view=enterprise#architecture' },
   { label: 'Developers', href: '/?view=docs' },
 ];
 
