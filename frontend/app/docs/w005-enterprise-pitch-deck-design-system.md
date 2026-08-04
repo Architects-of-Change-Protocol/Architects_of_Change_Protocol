@@ -6,28 +6,32 @@ site (Protocol, Assurance, Contact, etc. keep their existing look — see
 
 ## Why
 
-AOC now has canonical commercial collateral maintained *outside* this
-repository: the SK005 HTML pitch deck and the AOC Enterprise One Pager.
-Both are commercial artifacts, not website source, so they are not checked
-into this repo — this document is where their design tokens and narrative
-are transcribed for engineering use. AOC Enterprise's homepage previously
-had its own, unrelated dark/cyan visual language and a broader narrative
-(a multi-vertical "control plane" story) that predates the deck. This PR
-makes Enterprise the interactive web version of the deck: same visual
-language, same 12-slide narrative sequence, same terminology, richer
-interaction than a static document can offer.
+AOC has canonical commercial collateral for Enterprise: the SK005 HTML
+pitch deck and the AOC Enterprise One Pager. Both were originally supplied
+as external source material for this task and are now imported verbatim
+into this repository (see "Canonical sources" below) via SK005.1, a
+dedicated documentation-only import PR — this document is where their
+design tokens and narrative are transcribed for engineering use. AOC
+Enterprise's homepage previously had its own, unrelated dark/cyan visual
+language and a broader narrative (a multi-vertical "control plane" story)
+that predates the deck. This PR makes Enterprise the interactive web
+version of the deck: same visual language, same 12-slide narrative
+sequence, same terminology, richer interaction than a static document can
+offer.
 
-## Canonical sources (external, provided as source material for this task)
+## Canonical sources
 
-| Artifact | Format | Role |
-|---|---|---|
-| SK005 AOC Enterprise Pitch Deck | standalone HTML (12 `<section class="slide">` blocks) | Canonical visual language + primary narrative sequence |
-| AOC Enterprise One Pager | standalone HTML (single A4 page) | Canonical short-form messaging (solution/service/foundation split, "why not build it yourself", audience tags, CTA copy) |
+| Artifact | Format | Role | Location |
+|---|---|---|---|
+| SK005 AOC Enterprise Pitch Deck | standalone HTML (12 `<section class="slide">` blocks) | Canonical visual language + primary narrative sequence | [`docs/commercial/SK005-AOC-ENTERPRISE-PITCH-DECK.html`](./commercial/SK005-AOC-ENTERPRISE-PITCH-DECK.html) |
+| AOC Enterprise One Pager | standalone HTML (single A4 page) | Canonical short-form messaging (solution/service/foundation split, "why not build it yourself", audience tags, CTA copy) | [`docs/commercial/SK006-AOC-ENTERPRISE-ONE-PAGER.html`](./commercial/SK006-AOC-ENTERPRISE-ONE-PAGER.html) |
 
-Per instruction, neither file was recreated or copied into this repository
-— they remain external commercial collateral. Everything below is this
-repo's engineering interpretation of them, expressed as React components
-and Tailwind tokens.
+These are imported byte-for-byte from the original source files (see
+`docs/commercial/README.md` for the import's integrity validation) — not
+recreated, rewritten, or redesigned. Everything below is this repo's
+engineering interpretation of them, expressed as React components and
+Tailwind tokens; the HTML files above remain the source of truth if the
+two ever disagree.
 
 ## Design tokens — transcribed, not invented
 
@@ -108,14 +112,16 @@ not redesigned, recolored, or replaced — and now appears consistently
 across the Enterprise experience: the sticky nav (as before), the Hero
 (new), matching how it already anchors the Protocol homepage nav.
 
-The pitch deck and one-pager are commercial collateral maintained outside
-this repository, so this PR cannot add the logo to those files directly.
-**Follow-up for whoever maintains that collateral:** both currently ship
-without the official mark (the one-pager draws its own generic CSS
-"mark" square, the deck has none at all) — recommend adding
-`LogoRotating`'s mark (or a static export of it) to both, matching the
-site's placement/sizing, so the mark is the one constant across
-Website / Pitch Deck / One Pager / any future Executive Brief.
+The pitch deck and one-pager are imported verbatim as source-of-truth
+commercial collateral (see `docs/commercial/README.md` — "must not be
+silently rewritten"), so editing them to add the logo is out of scope for
+this PR. **Follow-up, tracked as a distinct future change to
+`docs/commercial/`:** both currently ship without the official mark (the
+one-pager draws its own generic CSS "mark" square, the deck has none at
+all) — recommend adding `LogoRotating`'s mark (or a static export of it)
+to both, matching the site's placement/sizing, so the mark is the one
+constant across Website / Pitch Deck / One Pager / any future Executive
+Brief.
 
 ## What this PR intentionally did not touch
 
