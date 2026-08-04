@@ -1,21 +1,16 @@
 import { useState } from 'react';
 import { ProtocolFooter } from './components/ProtocolFooter'
-import { AocInfrastructureAnimated } from './components/AocInfrastructureAnimated'
-import { HowItWorksFlow } from './components/HowItWorksFlow';
 import { LogoRotating } from '../components/logo/LogoRotating';
-import { ProblemCard } from './components/ProblemCard';
-import { DataPipelineAnimation } from './components/DataPipelineAnimation';
-import { ImplicitConsentAnimation } from './components/ImplicitConsentAnimation';
-import { InvisibleAccessAnimation } from './components/InvisibleAccessAnimation';
-import { BlindTrustAnimation } from './components/BlindTrustAnimation';
-import { ModularPermissionsAnimation } from './components/ModularPermissionsAnimation';
-import { ExplicitConsentAnimation } from './components/ExplicitConsentAnimation';
-import { VerifiableInteractionsAnimation } from './components/VerifiableInteractionsAnimation';
-import { FullControlAnimation } from './components/FullControlAnimation';
 
 // Top-level site navigation: Protocol / Enterprise / About. Assurance and
 // Documentation now live one level down, under Enterprise (Services and
 // Developers respectively) — see enterprise/Nav.tsx for that hierarchy.
+//
+// W003 note: the former in-page Problem / Solution / How It Works sections
+// (and their nav anchors) were migrated to AOC Enterprise — see
+// enterprise/GovernanceGap.tsx and enterprise/GovernanceEmerges.tsx. This
+// page temporarily carries a short "foundation" bridge in their place until
+// Protocol's own sovereignty-focused refactor (W003 Step 2).
 const mobileNavigationItems = [
   { label: 'Protocol', href: '/' },
   { label: 'Enterprise', href: '/?view=enterprise' },
@@ -44,14 +39,8 @@ export const AocLandingPage = () => {
             </div>
 
             <div className="hidden md:flex items-center gap-10 text-sm font-medium">
-              <a href="#problem" className="hover:text-white transition">
-                Problem
-              </a>
-              <a href="#solution" className="hover:text-white transition">
-                Solution
-              </a>
-              <a href="#how" className="hover:text-white transition">
-                How it works
+              <a href="#foundation" className="hover:text-white transition">
+                Foundation
               </a>
               <a href="/?view=enterprise" className="hover:text-white transition text-white/70">
                 Enterprise
@@ -148,7 +137,7 @@ export const AocLandingPage = () => {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a
-              href="#solution"
+              href="#foundation"
               className="px-12 py-5 bg-[#00f0ff] hover:bg-[#00d4e0] text-black font-semibold text-xl rounded-2xl transition-all active:scale-[0.98] inline-block"
             >
               Enter the new model →
@@ -164,169 +153,44 @@ export const AocLandingPage = () => {
         </div>
       </section>
 
-      <section id="problem" className="scroll-mt-24 py-40 border-t border-white/10">
-        <div className="max-w-6xl mx-auto px-6">
-          <header className="text-center mb-20">
-            <h2 className="text-5xl md:text-6xl font-semibold tracking-tight">
-              The current model is broken.
-            </h2>
-          </header>
-
-          <div className="grid md:grid-cols-2 gap-10">
-            <div>
-              <ProblemCard title={<>Your data is copied. Stored. Resold.</>}>
-                <DataPipelineAnimation />
-              </ProblemCard>
-            </div>
-
-            <div>
-              <ProblemCard title={<>Consent is implied. Not explicit.</>}>
-                <ImplicitConsentAnimation />
-              </ProblemCard>
-            </div>
-
-            <div>
-              <ProblemCard title={<>You never see who accessed what.</>}>
-                <InvisibleAccessAnimation />
-              </ProblemCard>
-            </div>
-
-            <div>
-              <ProblemCard title={<>Trust is a blind assumption.</>}>
-                <BlindTrustAnimation />
-              </ProblemCard>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="solution" className="scroll-mt-24 py-40 border-t border-white/10">
-        <div className="max-w-5xl mx-auto px-6 text-center">
-          <header className="mb-24">
-            <h2 className="text-5xl md:text-6xl font-semibold mb-6">
-              What if access required permission?
-            </h2>
-            <p className="text-xl text-white">
-              Not assumed. Not inherited. Not silently granted.
-            </p>
-          </header>
-
-          <div className="grid md:grid-cols-2 gap-8">
-            <article className="bg-white/[0.03] border border-white/10 rounded-3xl p-8 hover:-translate-y-1 transition min-h-[320px] flex flex-col">
-              <div className="text-sm text-white/60 mb-4">Explicit consent</div>
-              <div className="flex-1 flex items-center justify-center">
-                <ExplicitConsentAnimation />
-              </div>
-            </article>
-            <article className="bg-white/[0.03] border border-white/10 rounded-3xl p-8 hover:-translate-y-1 transition min-h-[320px] flex flex-col">
-              <div className="text-sm text-white/60 mb-4">Modular permissions</div>
-              <div className="flex-1 flex items-center justify-center">
-                <ModularPermissionsAnimation />
-              </div>
-            </article>
-            <article className="bg-white/[0.03] border border-white/10 rounded-3xl p-8 hover:-translate-y-1 transition min-h-[320px] flex flex-col">
-              <div className="text-sm text-white/60 mb-4">Verifiable interactions</div>
-              <div className="flex-1 flex items-center justify-center">
-                <VerifiableInteractionsAnimation />
-              </div>
-            </article>
-            <article className="bg-white/[0.03] border border-white/10 rounded-3xl p-8 hover:-translate-y-1 transition min-h-[320px] flex flex-col">
-              <div className="text-sm text-white/60 mb-4">Full control remains with the user</div>
-              <div className="flex-1 flex items-center justify-center">
-                <FullControlAnimation />
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section id="how" className="scroll-mt-24 py-32 border-t border-white/10">
-        <div className="max-w-6xl mx-auto px-6 text-center">
-          <h2 className="text-5xl md:text-6xl font-semibold mb-4">How it works</h2>
-
-          <p className="max-w-2xl mx-auto text-base sm:text-lg leading-7 text-white/60 mb-10">
-            AOC enforces access in real time. Every request is evaluated against explicit
-            permissions, then granted or denied, and permanently recorded.
+      {/*
+        W003 bridge section — temporary. The governance-oriented Problem,
+        Solution, How It Works, and infrastructure-diagram sections that
+        used to live here were migrated to AOC Enterprise (see
+        enterprise/GovernanceGap.tsx and enterprise/GovernanceEmerges.tsx).
+        This is intentionally a short, neutral transition, not Protocol's
+        final sovereignty-focused narrative — that rewrite is W003 Step 2.
+      */}
+      <section id="foundation" className="scroll-mt-24 py-32 border-t border-white/10">
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <p className="text-xs uppercase tracking-[0.3em] text-cyan-300/80">The Foundation</p>
+          <h2 className="mt-4 text-4xl md:text-5xl font-semibold tracking-tight">
+            AOC Protocol is the open foundation.
+          </h2>
+          <p className="mt-6 text-lg text-white/65 leading-relaxed">
+            Protocol defines what a digital asset can be — identifiable, portable, verifiable, and
+            interoperable across systems. AOC Enterprise builds on that foundation to operationalize
+            governance: policy, consent, delegation, and audit for organizations that need to control
+            how those assets are actually used.
           </p>
 
-          <div className="w-full h-[550px] sm:h-[420px] md:h-[460px] flex items-center justify-center bg-black relative before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_center,rgba(0,240,255,0.07)_0%,transparent_70%)] before:animate-pulse">
-            <div className="relative w-full max-w-5xl h-full rounded-3xl border border-white/10 bg-white/[0.02] p-4 sm:p-6 md:p-8">
-              <div className="absolute left-5 top-[104px] w-[165px] sm:hidden text-left pointer-events-none">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-300/80">
-                  Step 1
-                </p>
-                <p className="mt-1 text-base font-semibold text-white">
-                  Define Permissions
-                </p>
-              </div>
-
-              <div className="absolute left-5 top-[258px] w-[165px] sm:hidden text-left pointer-events-none">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-300/80">
-                  Step 2
-                </p>
-                <p className="mt-1 text-base font-semibold text-white">
-                  Evaluate Request
-                </p>
-              </div>
-
-              <div className="absolute left-5 top-[422px] w-[165px] sm:hidden text-left pointer-events-none">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-300/80">
-                  Step 3
-                </p>
-                <p className="mt-1 text-base font-semibold text-white">
-                  Grant &amp; Audit Access
-                </p>
-              </div>
-
-              <div className="w-full h-full flex items-center justify-center pl-[138px] sm:pl-0">
-                <div className="w-full h-full transform rotate-90 sm:rotate-0 scale-[2.8] sm:scale-100 origin-center">
-                  <HowItWorksFlow />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-10 grid grid-cols-1 gap-5 sm:gap-6 md:grid-cols-3">
-            <article className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-300/80">
-                Step 1
-              </p>
-              <h3 className="mt-2 text-lg font-semibold text-white">
-                Define Permissions
-              </h3>
-              <p className="mt-2 text-sm leading-6 text-white/60">
-                Every interaction starts with explicit rules. Who can access what, under which conditions.
-              </p>
-            </article>
-
-            <article className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-300/80">
-                Step 2
-              </p>
-              <h3 className="mt-2 text-lg font-semibold text-white">
-                Evaluate Request
-              </h3>
-              <p className="mt-2 text-sm leading-6 text-white/60">
-                Each request is checked in real time against permissions, context, and policy.
-              </p>
-            </article>
-
-            <article className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-left">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-cyan-300/80">
-                Step 3
-              </p>
-              <h3 className="mt-2 text-lg font-semibold text-white">
-                Grant &amp; Audit Access
-              </h3>
-              <p className="mt-2 text-sm leading-6 text-white/60">
-                Approved actions execute. Every outcome is recorded for transparency and auditability.
-              </p>
-            </article>
+          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="/?view=enterprise"
+              className="px-8 py-4 bg-[#00f0ff] hover:bg-[#00d4e0] text-black font-semibold rounded-2xl transition-all active:scale-[0.98] inline-block"
+            >
+              See how Enterprise governs it →
+            </a>
+            <a
+              href="/?view=docs#getting-started"
+              className="px-8 py-4 border border-white/15 hover:border-white/30 text-white font-semibold rounded-2xl transition-all active:scale-[0.98] inline-block"
+            >
+              Read the docs
+            </a>
           </div>
         </div>
       </section>
 
-      <AocInfrastructureAnimated />
       <ProtocolFooter />
 
       <section className="py-32 border-t border-white/10 text-center">
