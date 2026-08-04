@@ -10,7 +10,7 @@ export function CapabilityDetailPage({ slug }: { slug: string }) {
       <EnterpriseNav />
 
       <div className="max-w-3xl mx-auto px-6 py-24">
-        <a href="/?view=enterprise#capabilities" className="text-sm text-white/40 hover:text-white/70 transition-colors">
+        <a href="/?view=enterprise#platform-status" className="text-sm text-white/40 hover:text-white/70 transition-colors">
           &larr; Back to Enterprise
         </a>
 

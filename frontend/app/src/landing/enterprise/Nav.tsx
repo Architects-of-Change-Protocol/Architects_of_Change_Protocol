@@ -201,10 +201,10 @@ export function EnterpriseNav() {
 
           <div className="flex items-center gap-3 ml-auto lg:ml-0 shrink-0">
             <a
-              href="mailto:hello@aocprotocol.xyz?subject=AOC%20Enterprise%20Governance%20Walkthrough"
-              className="hidden md:inline-flex items-center rounded-xl bg-cyan-300 px-4 py-2 text-sm font-semibold text-black hover:bg-cyan-200 transition-colors whitespace-nowrap"
+              href="mailto:hello@aocprotocol.xyz?subject=AOC%20Enterprise%20%E2%80%94%20Technical%20Assessment%20Request"
+              className="hidden md:inline-flex items-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500 transition-colors whitespace-nowrap"
             >
-              Talk to architecture
+              Request Technical Assessment
             </a>
             <button
               type="button"
@@ -228,10 +228,10 @@ export function EnterpriseNav() {
                 <MobileNavEntry key={entry.label} entry={entry} onNavigate={() => setOpen(false)} />
               ))}
               <a
-                href="mailto:hello@aocprotocol.xyz?subject=AOC%20Enterprise%20Governance%20Walkthrough"
-                className="mt-2 inline-flex items-center justify-center rounded-xl bg-cyan-300 px-4 py-2.5 text-sm font-semibold text-black"
+                href="mailto:hello@aocprotocol.xyz?subject=AOC%20Enterprise%20%E2%80%94%20Technical%20Assessment%20Request"
+                className="mt-2 inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white"
               >
-                Talk to architecture
+                Request Technical Assessment
               </a>
             </div>
           </div>
