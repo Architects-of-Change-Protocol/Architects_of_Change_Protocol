@@ -1,4 +1,5 @@
 import { ProtocolFooter } from './components/ProtocolFooter';
+import { Breadcrumbs } from './components/Breadcrumbs';
 import { EnterpriseNav } from './enterprise/Nav';
 import { Hero } from './enterprise/Hero';
 import { BusinessNeeds } from './enterprise/BusinessNeeds';
@@ -10,6 +11,7 @@ export const renderEnterprisePage = () => {
   return (
     <main className="min-h-screen bg-[#090b11] text-white font-sans">
       <EnterpriseNav />
+      <Breadcrumbs items={[{ label: 'Protocol', href: '/' }, { label: 'Enterprise' }]} />
       <Hero />
       <BusinessNeeds />
       <ArchitectureExperience />

@@ -17,12 +17,27 @@ export type NavItem = {
   href: string;
 };
 
-export const NAV_ITEMS: NavItem[] = [
-  { label: 'Business Needs', href: '#business-needs' },
-  { label: 'Composition', href: '#composition' },
-  { label: 'Governance', href: '#governance' },
-  { label: 'Capabilities', href: '#capabilities' },
-  { label: 'Developer', href: '/?view=docs' },
+// A top-level nav entry is either a direct link, or a group (Solutions,
+// Services) that discloses child links. Groups model the approved
+// Enterprise IA: Enterprise is the commercial umbrella, Solutions and
+// Services are the categories of what it sells, and each currently holds
+// exactly one live offering (Governed Access, Assurance respectively) with
+// room to grow.
+export type NavGroup = {
+  label: string;
+  children: NavItem[];
+};
+
+export type NavEntry = NavItem | NavGroup;
+
+export const isNavGroup = (entry: NavEntry): entry is NavGroup => 'children' in entry;
+
+export const ENTERPRISE_NAV_ITEMS: NavEntry[] = [
+  { label: 'Overview', href: '/?view=enterprise#overview' },
+  { label: 'Solutions', children: [{ label: 'Governed Access', href: '/?view=governed-access' }] },
+  { label: 'Services', children: [{ label: 'Assurance', href: '/?view=assurance' }] },
+  { label: 'Architecture', href: '/?view=enterprise#composition' },
+  { label: 'Developers', href: '/?view=docs' },
 ];
 
 // The capability catalog — a flat set of governed powers an architecture can be

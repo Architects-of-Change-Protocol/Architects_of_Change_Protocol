@@ -13,11 +13,13 @@ import { ExplicitConsentAnimation } from './components/ExplicitConsentAnimation'
 import { VerifiableInteractionsAnimation } from './components/VerifiableInteractionsAnimation';
 import { FullControlAnimation } from './components/FullControlAnimation';
 
+// Top-level site navigation: Protocol / Enterprise / About. Assurance and
+// Documentation now live one level down, under Enterprise (Services and
+// Developers respectively) — see enterprise/Nav.tsx for that hierarchy.
 const mobileNavigationItems = [
   { label: 'Protocol', href: '/' },
   { label: 'Enterprise', href: '/?view=enterprise' },
-  { label: 'Assurance', href: '/?view=assurance' },
-  { label: 'Documentation', href: '/?view=docs' },
+  { label: 'About', href: '/?view=about' },
 ];
 
 export const AocLandingPage = () => {
@@ -51,8 +53,11 @@ export const AocLandingPage = () => {
               <a href="#how" className="hover:text-white transition">
                 How it works
               </a>
-              <a href="/?view=assurance" className="hover:text-white transition text-white/70">
-                Assurance
+              <a href="/?view=enterprise" className="hover:text-white transition text-white/70">
+                Enterprise
+              </a>
+              <a href="/?view=about" className="hover:text-white transition text-white/70">
+                About
               </a>
             </div>
 

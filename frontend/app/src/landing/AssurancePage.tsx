@@ -7,14 +7,18 @@ import {
   SOVEREIGNTY_RANKED,
 } from './assuranceIndexData';
 import { ConstitutionalBenchmarkExplorer } from './components/ConstitutionalBenchmarkExplorer';
+import { Breadcrumbs } from './components/Breadcrumbs';
 import './assurance.css';
 
+// Assurance is an Enterprise Service, not an independent product — its own
+// nav therefore points back up to Enterprise (its parent), not directly to
+// Protocol. See routes.ts / enterprise/Nav.tsx for the approved hierarchy.
 const NAV_ITEMS = [
   { label: 'Risk', href: '#risk' },
   { label: 'Assessments', href: '#assessments' },
   { label: 'Learn More', href: '#learn-more' },
   { label: 'FAQ', href: '#faq' },
-  { label: 'Protocol', href: '/' },
+  { label: 'Enterprise', href: '/?view=enterprise' },
 ];
 
 const FOUNDATION_CHECKOUT_URL = 'https://buy.stripe.com/aFa5kD1Kfgcp67N11gejK01';
@@ -44,6 +48,7 @@ const FOOTER_LINK_GROUPS = [
     title: 'Company',
     links: [
       { label: 'About AOC Assurance', href: '/assurance/about' },
+      { label: 'AOC Enterprise', href: '/?view=enterprise' },
       { label: 'About AOC Protocol', href: '/' },
       { label: 'Privacy Policy', href: '/assurance/privacy' },
       { label: 'Terms of Service', href: '/assurance/terms' },
@@ -488,6 +493,15 @@ const AssurancePage = () => {
           </div>
         </div>
       </nav>
+
+      <Breadcrumbs
+        items={[
+          { label: 'Protocol', href: '/' },
+          { label: 'Enterprise', href: '/?view=enterprise' },
+          { label: 'Services' },
+          { label: 'Assurance' },
+        ]}
+      />
 
       {/* ── Hero ── */}
       <section className="assurance-hero-glow relative pt-28 pb-32 text-center px-6">
