@@ -1,11 +1,8 @@
-import { ASSESSMENT_MAILTO } from './content';
+import { ASSESSMENT_MAILTO, CLOSING_FLOW } from './content';
 
-// Closing section: single commercial CTA (dark bookend, matching
-// ../governed-access/Assessment.tsx) — no secondary "Contact Sales" /
-// "Book Demo" links, per brief. Also carries the one safety-net link this
-// page needs: anyone who bookmarked the old /?view=assurance URL before
-// W007A split Assurance from AOC Intelligence Risk lands here now, so we
-// point them to where their product actually lives.
+// Section 9 — closing section: single commercial CTA (dark bookend,
+// matching ../governed-access/Assessment.tsx) — no secondary "Contact
+// Sales" / "Book Demo" links, per brief.
 export function Cta() {
   return (
     <section className="scroll-mt-16 bg-[#0B1220] px-6 py-24 md:py-28 text-center">
@@ -14,9 +11,18 @@ export function Cta() {
           Request a Technical Assessment
         </h2>
         <p className="mt-4 max-w-xl text-base md:text-lg text-slate-400">
-          A scoped review of your architecture against the SAF-001 control catalog. No commitment beyond the
-          assessment itself.
+          A scoped evaluation of your architecture's sovereignty and governance capabilities. No commitment
+          beyond the assessment itself.
         </p>
+
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-x-2 gap-y-2 text-sm text-slate-400 tracking-wide font-mono">
+          {CLOSING_FLOW.map((step, i) => (
+            <span key={step} className="flex items-center gap-2">
+              {step}
+              {i < CLOSING_FLOW.length - 1 ? <span aria-hidden>&rarr;</span> : null}
+            </span>
+          ))}
+        </div>
 
         <a
           href={ASSESSMENT_MAILTO}
@@ -27,13 +33,6 @@ export function Cta() {
             <path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z" />
           </svg>
         </a>
-
-        <p className="mt-8 text-xs text-slate-500">
-          Looking for AOC Intelligence Risk (Knowledge Loss, Key Person Dependency, the Constitutional Index)?{' '}
-          <a href="/?view=intelligence-risk" className="text-indigo-300 hover:text-indigo-200 underline underline-offset-2">
-            Go there instead
-          </a>
-        </p>
       </div>
     </section>
   );

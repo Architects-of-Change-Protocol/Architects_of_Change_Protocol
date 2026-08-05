@@ -15,12 +15,11 @@ const STATS = [
 ];
 
 // Deck slide 7. This section is the deck's own Assurance slide, summarizing
-// the SAF-based engagement model; the full page lives at
-// enterprise/AssurancePage.tsx (see docs/w007a-assurance-commercial-audit.md).
-// AOC Intelligence Risk (landing/IntelligenceRiskPage.tsx — constitutional
-// index, benchmarking, checkout links) is a separate, distinct commercial
-// offering that used to share the "Assurance" name with this section; W007A
-// split them.
+// the engagement model; the full canonical page — evaluating every Protocol
+// sovereignty capability and every Enterprise governance capability, with
+// Intelligence Risk folded in as one specialized assessment module — lives
+// at enterprise/AssurancePage.tsx. See
+// docs/audits/w007-assurance-canonical-refactor.md.
 export function AssuranceSection() {
   return (
     <section id="assurance" className="scroll-mt-16 max-w-5xl mx-auto px-6 py-20 border-t border-slate-200">

@@ -10,13 +10,17 @@ import { ConstitutionalBenchmarkExplorer } from './components/ConstitutionalBenc
 import { Breadcrumbs } from './components/Breadcrumbs';
 import './intelligenceRisk.css';
 
-// AOC Intelligence Risk is a distinct commercial offering under the AOC
-// Enterprise umbrella (own nav identity, own route) — separate from AOC
-// Assurance (enterprise/AssurancePage.tsx), which is the SAF-based
-// continuous governance-posture validation service. The two used to share
-// the name "Assurance"; see docs/audits/w007a-assurance-commercial-audit.md
-// for why they were split. Nav points back up to Enterprise (its parent),
-// not directly to Protocol. See routes.ts / enterprise/Nav.tsx.
+// AOC Intelligence Risk is one specialized assessment module WITHIN AOC
+// Assurance (enterprise/AssurancePage.tsx) — the canonical layer that
+// evaluates and continuously monitors every Protocol sovereignty capability
+// and every Enterprise governance capability. This page (its content,
+// pricing, Constitutional Index, and benchmark explorer) is preserved
+// unchanged; only its position in the hierarchy was corrected — it used to
+// be framed as a co-equal top-level offering (W007A), which was wrong. See
+// docs/audits/w007-assurance-canonical-refactor.md. Own route/nav own
+// identity remain (this page is a real, self-contained experience), but it
+// is reached from within the Assurance page's "Intelligence Risk" section,
+// not from top-level Enterprise nav. See routes.ts / enterprise/Nav.tsx.
 const NAV_ITEMS = [
   { label: 'Risk', href: '#risk' },
   { label: 'Assessments', href: '#assessments' },
@@ -502,6 +506,7 @@ const IntelligenceRiskPage = () => {
         items={[
           { label: 'Protocol', href: '/' },
           { label: 'Enterprise', href: '/?view=enterprise' },
+          { label: 'Assurance', href: '/?view=assurance' },
           { label: 'Intelligence Risk' },
         ]}
       />

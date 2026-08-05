@@ -3,9 +3,7 @@ import { ASSESSMENT_MAILTO } from './content';
 
 // Dark bookend, matching the visual rhythm of ../Hero.tsx (Enterprise) and
 // ../governed-access/Hero.tsx: light-primary page, dark hero + closing CTA.
-// See docs/audits/w007a-assurance-commercial-audit.md for why Assurance
-// needed its own page rather than only the homepage's AssuranceSection.tsx
-// summary.
+// Copy is the canonical W007 definition, verbatim.
 export function Hero() {
   return (
     <section id="overview" className="scroll-mt-16 bg-[#0B1220] px-6 pt-20 pb-24 md:pt-28 md:pb-32 text-center">
@@ -18,12 +16,12 @@ export function Hero() {
         </div>
 
         <h1 className="mt-7 text-[40px] md:text-6xl font-extrabold tracking-tight text-white leading-[1.1]">
-          Prove your governance and sovereignty posture, continuously
+          Know how governed your digital architecture really is.
         </h1>
 
         <p className="mt-6 max-w-xl text-lg md:text-xl text-slate-400">
-          A technical assessment of whether your architecture is actually Enterprise-ready — followed by
-          continuous validation as you evolve.
+          AOC Assurance continuously evaluates every sovereignty capability defined by AOC Protocol and every
+          governance capability implemented by AOC Enterprise.
         </p>
 
         <a
@@ -32,18 +30,6 @@ export function Hero() {
         >
           Request Technical Assessment
         </a>
-
-        <div className="mt-16 flex flex-wrap items-center justify-center gap-x-2 gap-y-2 text-sm text-slate-400 tracking-wide font-mono">
-          <span>Assessment</span>
-          <span aria-hidden>&rarr;</span>
-          <span>Recommendations</span>
-          <span aria-hidden>&rarr;</span>
-          <span>Implementation</span>
-          <span aria-hidden>&rarr;</span>
-          <span>Validation</span>
-          <span aria-hidden>&rarr;</span>
-          <span>Continuous Assurance</span>
-        </div>
       </div>
     </section>
   );

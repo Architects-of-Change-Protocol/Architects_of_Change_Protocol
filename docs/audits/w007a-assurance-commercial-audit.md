@@ -1,5 +1,18 @@
 # W007A — AOC Assurance Commercial UX Audit
 
+> **Superseded by W007** (`docs/audits/w007-assurance-canonical-refactor.md`).
+> This audit's central finding — that the Enterprise homepage's Assurance
+> promise and the live `AssurancePage.tsx` described two unrelated products
+> — was correct and drove real action. Its proposed resolution (Path B:
+> split into two co-equal top-level offerings, "Assurance" and "AOC
+> Intelligence Risk") was implemented, then corrected by W007: Intelligence
+> Risk is not a peer of Assurance, it is one specialized assessment module
+> *within* Assurance, which is the canonical layer that evaluates and
+> continuously monitors every Protocol sovereignty capability and every
+> Enterprise governance capability. The findings and reasoning below are
+> preserved as the historical record of that audit; treat W007 as the
+> current source of truth for Assurance's positioning.
+
 | Field | Value |
 |---|---|
 | Document ID | W007A |

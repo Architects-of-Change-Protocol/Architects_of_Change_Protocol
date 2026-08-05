@@ -7,15 +7,18 @@
 //
 // Information architecture (approved): Protocol is the open foundation.
 // Enterprise is the commercial umbrella built on Protocol, and owns
-// Solutions (Governed Access), Services (Assurance), Intelligence Risk,
-// Architecture, and Developers. See ROUTES.enterprise.* for that hierarchy.
+// Solutions (Governed Access), Services (Assurance), Architecture, and
+// Developers. See ROUTES.enterprise.* for that hierarchy.
 //
-// Intelligence Risk (AOC Intelligence Risk — Institutional Intelligence
-// Risk / Knowledge Loss / the Constitutional Index) is a distinct
-// commercial offering from Assurance (the SAF-based governance-posture
-// validation service). The two used to share the "Assurance" name and
-// route; W007A split them. See
-// docs/audits/w007a-assurance-commercial-audit.md.
+// Assurance is the canonical assessment layer — it evaluates and
+// continuously monitors every Protocol sovereignty capability and every
+// Enterprise governance capability. AOC Intelligence Risk
+// (ROUTES.enterprise.intelligenceRisk) is one specialized assessment
+// module WITHIN Assurance, not a peer top-level offering — it keeps its
+// own route/page (preserved as-is) but is reached from within the
+// Assurance page rather than from top-level nav. See
+// docs/audits/w007-assurance-canonical-refactor.md (supersedes W007A's
+// earlier framing).
 
 export const ROUTES = {
   protocol: '/',
