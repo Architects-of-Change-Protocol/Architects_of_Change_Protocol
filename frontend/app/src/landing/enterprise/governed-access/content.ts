@@ -72,7 +72,7 @@ export type Capability = {
 };
 
 // Simple stroke icons (24x24, currentColor) — same authoring convention as
-// the risk-card icons on AssurancePage, chosen over freehand filled-path
+// the risk-card icons on IntelligenceRiskPage, chosen over freehand filled-path
 // glyphs to keep new icon geometry easy to verify by hand.
 export const CAPABILITIES: Capability[] = [
   {

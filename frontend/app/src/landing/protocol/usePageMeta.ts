@@ -7,7 +7,7 @@ const DESCRIPTION =
 
 // Per-page metadata injection so the root URL's live document head matches
 // the Protocol thesis instead of the static index.html defaults (which are
-// scoped to AOC Assurance for social scrapers that don't execute JS — see
+// scoped to AOC Intelligence Risk for social scrapers that don't execute JS — see
 // the index.html edits in the same change for that fallback). Mirrors the
 // pattern already used by GovVsSovPage / WhatIsAiSovereigntyPage.
 export function usePageMeta() {

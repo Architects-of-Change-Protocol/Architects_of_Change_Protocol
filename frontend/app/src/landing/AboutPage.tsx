@@ -1,8 +1,8 @@
 // Top-level "About" page for the AOC ecosystem as a whole — distinct from
-// the Assurance-specific About page in AssuranceSupportPages.tsx. Its job
-// is to make the Protocol -> Enterprise -> Solutions/Services hierarchy
-// legible in one page, since that hierarchy is otherwise only implied by
-// the nav menu structure.
+// the AOC Intelligence Risk-specific About page in
+// IntelligenceRiskSupportPages.tsx. Its job is to make the Protocol ->
+// Enterprise -> Solutions/Services hierarchy legible in one page, since that
+// hierarchy is otherwise only implied by the nav menu structure.
 export const renderAboutPage = () => {
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white font-sans">

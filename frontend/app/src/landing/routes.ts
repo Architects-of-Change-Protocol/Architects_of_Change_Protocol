@@ -9,6 +9,16 @@
 // Enterprise is the commercial umbrella built on Protocol, and owns
 // Solutions (Governed Access), Services (Assurance), Architecture, and
 // Developers. See ROUTES.enterprise.* for that hierarchy.
+//
+// Assurance is the canonical assessment layer — it evaluates and
+// continuously monitors every Protocol sovereignty capability and every
+// Enterprise governance capability. AOC Intelligence Risk
+// (ROUTES.enterprise.intelligenceRisk) is one specialized assessment
+// module WITHIN Assurance, not a peer top-level offering — it keeps its
+// own route/page (preserved as-is) but is reached from within the
+// Assurance page rather than from top-level nav. See
+// docs/audits/w007-assurance-canonical-refactor.md (supersedes W007A's
+// earlier framing).
 
 export const ROUTES = {
   protocol: '/',
@@ -25,5 +35,6 @@ export const ROUTES = {
     services: {
       assurance: '/?view=assurance',
     },
+    intelligenceRisk: '/?view=intelligence-risk',
   },
 } as const;

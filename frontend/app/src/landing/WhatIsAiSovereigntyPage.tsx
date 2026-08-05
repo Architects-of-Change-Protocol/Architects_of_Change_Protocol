@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { LogoRotating } from '../components/logo/LogoRotating';
-import './assurance.css';
+import './intelligenceRisk.css';
 
 const PAGE_URL = 'https://www.aocprotocol.org/what-is-ai-sovereignty';
 
@@ -36,21 +36,21 @@ function usePageMeta() {
       return { el, prevHref, created };
     };
 
-    document.title = 'What is AI Sovereignty? | AOC Assurance';
+    document.title = 'What is AI Sovereignty? | AOC Intelligence Risk';
 
     setMeta(
       'description',
-      'AI Sovereignty is the ability of an organization to control, operate, move, replace, and preserve independence over its AI capabilities. Learn how AOC Assurance measures AI Sovereignty.',
+      'AI Sovereignty is the ability of an organization to control, operate, move, replace, and preserve independence over its AI capabilities. Learn how AOC Intelligence Risk measures AI Sovereignty.',
     );
     setMeta(
       'keywords',
-      'What is AI Sovereignty, AI Sovereignty, Sovereign AI, AI Sovereignty Framework, AI Sovereignty Assessment, AI Sovereignty Score, AI Independence, AI Vendor Lock-in, Constitutional AI, AOC Assurance, AOC Constitutional Index',
+      'What is AI Sovereignty, AI Sovereignty, Sovereign AI, AI Sovereignty Framework, AI Sovereignty Assessment, AI Sovereignty Score, AI Independence, AI Vendor Lock-in, Constitutional AI, AOC Intelligence Risk, AOC Constitutional Index',
     );
     setMeta('robots', 'index, follow');
 
     const { el: canonicalEl, prevHref: prevCanonical } = setLink('canonical', PAGE_URL);
 
-    setMeta('og:title', 'What is AI Sovereignty? | AOC Assurance', true);
+    setMeta('og:title', 'What is AI Sovereignty? | AOC Intelligence Risk', true);
     setMeta(
       'og:description',
       'AI Sovereignty measures how much control an organization truly has over its AI capabilities, infrastructure, data, continuity, and operational independence.',
@@ -59,10 +59,10 @@ function usePageMeta() {
     setMeta('og:url', PAGE_URL, true);
     setMeta('og:type', 'article', true);
     setMeta('og:image', 'https://www.aocprotocol.org/og-image.png', true);
-    setMeta('og:site_name', 'AOC Assurance', true);
+    setMeta('og:site_name', 'AOC Intelligence Risk', true);
 
     setMeta('twitter:card', 'summary_large_image');
-    setMeta('twitter:title', 'What is AI Sovereignty? | AOC Assurance');
+    setMeta('twitter:title', 'What is AI Sovereignty? | AOC Intelligence Risk');
     setMeta(
       'twitter:description',
       'AI Sovereignty measures how much control an organization truly has over its AI capabilities, infrastructure, data, continuity, and operational independence.',
@@ -107,7 +107,7 @@ const FAQS = [
   },
   {
     q: 'How is AI Sovereignty measured?',
-    a: 'AOC Assurance measures AI Sovereignty through evidence related to infrastructure control, data control, model optionality, portability, continuity, operational independence, and provider dependency.',
+    a: 'AOC Intelligence Risk measures AI Sovereignty through evidence related to infrastructure control, data control, model optionality, portability, continuity, operational independence, and provider dependency.',
   },
   {
     q: 'What creates vendor lock-in in AI systems?',
@@ -124,7 +124,7 @@ function buildJsonLd() {
     {
       '@context': 'https://schema.org',
       '@type': 'WebPage',
-      name: 'What is AI Sovereignty? | AOC Assurance',
+      name: 'What is AI Sovereignty? | AOC Intelligence Risk',
       description:
         'AI Sovereignty is the ability of an organization to control, operate, move, replace, and preserve independence over its AI capabilities.',
       url: PAGE_URL,
@@ -132,13 +132,13 @@ function buildJsonLd() {
         '@type': 'BreadcrumbList',
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.aocprotocol.org' },
-          { '@type': 'ListItem', position: 2, name: 'AOC Assurance', item: 'https://www.aocprotocol.org/?view=assurance' },
+          { '@type': 'ListItem', position: 2, name: 'AOC Intelligence Risk', item: 'https://www.aocprotocol.org/?view=intelligence-risk' },
           { '@type': 'ListItem', position: 3, name: 'What is AI Sovereignty?', item: PAGE_URL },
         ],
       },
       publisher: {
         '@type': 'Organization',
-        name: 'AOC Assurance',
+        name: 'AOC Intelligence Risk',
         url: 'https://www.aocprotocol.org',
         logo: { '@type': 'ImageObject', url: 'https://www.aocprotocol.org/og-image.png' },
       },
@@ -153,12 +153,12 @@ function buildJsonLd() {
       image: 'https://www.aocprotocol.org/og-image.png',
       author: {
         '@type': 'Organization',
-        name: 'AOC Assurance',
+        name: 'AOC Intelligence Risk',
         url: 'https://www.aocprotocol.org',
       },
       publisher: {
         '@type': 'Organization',
-        name: 'AOC Assurance',
+        name: 'AOC Intelligence Risk',
         url: 'https://www.aocprotocol.org',
       },
       about: [
@@ -185,10 +185,10 @@ function buildJsonLd() {
         'Constitutional assessments evaluating AI Governance and AI Sovereignty to establish constitutional posture and trust.',
       provider: {
         '@type': 'Organization',
-        name: 'AOC Assurance',
+        name: 'AOC Intelligence Risk',
         url: 'https://www.aocprotocol.org',
       },
-      url: 'https://www.aocprotocol.org/?view=assurance',
+      url: 'https://www.aocprotocol.org/?view=intelligence-risk',
     },
   ];
 }
@@ -244,9 +244,9 @@ function PageNav() {
       className="sticky top-0 z-40 flex items-center justify-between gap-4 border-b border-white/8 bg-[#070d0b]/90 px-4 py-3 backdrop-blur-md sm:px-6"
       aria-label="Page navigation"
     >
-      <a href="/?view=assurance" className="flex items-center gap-2.5" aria-label="AOC Assurance home">
+      <a href="/?view=intelligence-risk" className="flex items-center gap-2.5" aria-label="AOC Intelligence Risk home">
         <LogoRotating size={26} inverted />
-        <span className="text-sm font-semibold text-white/90">AOC Assurance</span>
+        <span className="text-sm font-semibold text-white/90">AOC Intelligence Risk</span>
       </a>
       <div className="flex items-center gap-4">
         <a href="/research" className="hidden sm:inline text-xs text-white/50 hover:text-white/80 transition-colors">
@@ -259,7 +259,7 @@ function PageNav() {
           Governance vs Sovereignty
         </a>
         <a
-          href="/?view=assurance"
+          href="/?view=intelligence-risk"
           className="rounded-xl border border-white/15 px-3.5 py-1.5 text-xs font-medium text-white/75 transition-colors hover:border-white/30 hover:text-white"
         >
           View Index
@@ -287,14 +287,14 @@ function PageFooter() {
             <a href="/assurance/methodology" className="text-sm text-white/50 hover:text-white/80 transition-colors">
               Assessment Methodology →
             </a>
-            <a href="/?view=assurance#index" className="text-sm text-white/50 hover:text-white/80 transition-colors">
+            <a href="/?view=intelligence-risk#index" className="text-sm text-white/50 hover:text-white/80 transition-colors">
               Constitutional Index →
             </a>
           </div>
         </div>
         <div className="text-left sm:text-right">
           <p className="text-xs text-white/25">© 2026 AOC Protocol / OnchainFest LLC</p>
-          <p className="text-xs text-white/20 mt-1">AOC Assurance</p>
+          <p className="text-xs text-white/20 mt-1">AOC Intelligence Risk</p>
         </div>
       </div>
     </footer>
@@ -322,7 +322,7 @@ export function WhatIsAiSovereigntyPage() {
         <div className="relative mx-auto max-w-3xl">
           <nav aria-label="Breadcrumb" className="mb-8">
             <ol className="flex items-center gap-2 text-xs text-white/30">
-              <li><a href="/?view=assurance" className="hover:text-white/55 transition-colors">AOC Assurance</a></li>
+              <li><a href="/?view=intelligence-risk" className="hover:text-white/55 transition-colors">AOC Intelligence Risk</a></li>
               <li aria-hidden="true">/</li>
               <li className="text-white/50">What is AI Sovereignty?</li>
             </ol>
@@ -343,13 +343,13 @@ export function WhatIsAiSovereigntyPage() {
           </p>
           <div className="mt-10 flex flex-col items-start gap-3 sm:flex-row">
             <a
-              href="/?view=assurance"
+              href="/?view=intelligence-risk"
               className="inline-flex w-full sm:w-auto items-center justify-center rounded-2xl bg-cyan-300/90 px-7 py-3.5 text-sm font-semibold text-[#031018] transition-colors hover:bg-cyan-200"
             >
-              Explore AOC Assurance
+              Explore AOC Intelligence Risk
             </a>
             <a
-              href="/?view=assurance#map"
+              href="/?view=intelligence-risk#map"
               className="inline-flex w-full sm:w-auto items-center justify-center rounded-2xl border border-white/20 px-7 py-3.5 text-sm font-medium text-white/80 transition-colors hover:border-white/35 hover:text-white"
             >
               View Constitutional Matrix
@@ -627,10 +627,10 @@ export function WhatIsAiSovereigntyPage() {
           </ul>
           <div className="mt-10">
             <a
-              href="/?view=assurance"
+              href="/?view=intelligence-risk"
               className="inline-flex items-center justify-center rounded-2xl bg-cyan-300/90 px-7 py-3.5 text-sm font-semibold text-[#031018] transition-colors hover:bg-cyan-200"
             >
-              Explore AOC Assurance
+              Explore AOC Intelligence Risk
             </a>
           </div>
         </section>
@@ -663,7 +663,7 @@ export function WhatIsAiSovereigntyPage() {
           </ul>
           <div className="mt-10">
             <a
-              href="/?view=assurance#map"
+              href="/?view=intelligence-risk#map"
               className="inline-flex items-center justify-center rounded-2xl border border-white/20 px-7 py-3.5 text-sm font-medium text-white/80 transition-colors hover:border-white/35 hover:text-white"
             >
               View the Constitutional Matrix
@@ -700,13 +700,13 @@ export function WhatIsAiSovereigntyPage() {
           </p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <a
-              href="/?view=assurance"
+              href="/?view=intelligence-risk"
               className="inline-flex w-full sm:w-auto items-center justify-center rounded-2xl bg-cyan-300/90 px-7 py-3.5 text-sm font-semibold text-[#031018] transition-colors hover:bg-cyan-200"
             >
-              Explore AOC Assurance
+              Explore AOC Intelligence Risk
             </a>
             <a
-              href="/?view=assurance#index"
+              href="/?view=intelligence-risk#index"
               className="inline-flex w-full sm:w-auto items-center justify-center rounded-2xl border border-white/20 px-7 py-3.5 text-sm font-medium text-white/80 transition-colors hover:border-white/35 hover:text-white"
             >
               View Constitutional Index

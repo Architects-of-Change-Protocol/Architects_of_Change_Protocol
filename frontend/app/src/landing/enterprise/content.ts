@@ -32,6 +32,16 @@ export type NavEntry = NavItem | NavGroup;
 
 export const isNavGroup = (entry: NavEntry): entry is NavGroup => 'children' in entry;
 
+// Assurance is the canonical assessment layer that evaluates and
+// continuously monitors every Protocol sovereignty capability and every
+// Enterprise governance capability (see
+// docs/audits/w007-assurance-canonical-refactor.md — this supersedes
+// W007A's earlier framing, which incorrectly treated Intelligence Risk as
+// a co-equal top-level offering). AOC Intelligence Risk
+// (landing/IntelligenceRiskPage.tsx, ?view=intelligence-risk) is one
+// specialized assessment module WITHIN Assurance, not a peer of it — so it
+// does not get its own top-level nav entry. It's reachable from Assurance's
+// own "Intelligence Risk" section and keeps its dedicated route/page.
 export const ENTERPRISE_NAV_ITEMS: NavEntry[] = [
   { label: 'Overview', href: '/?view=enterprise#overview' },
   { label: 'Solutions', children: [{ label: 'Governed Access', href: '/?view=governed-access' }] },

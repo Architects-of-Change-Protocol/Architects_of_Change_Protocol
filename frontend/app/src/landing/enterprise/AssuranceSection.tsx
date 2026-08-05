@@ -14,11 +14,12 @@ const STATS = [
   { num: '3', label: 'eligibility tiers' },
 ];
 
-// Deck slide 7. Deliberately a summary, not a rewrite of the full
-// AssurancePage (1,100+ lines: constitutional index, benchmarking,
-// checkout links) — that page keeps its own dedicated-refactor scope per
-// the W003 migration notes. This section is the deck's own Assurance slide,
-// with a link into the full page for depth.
+// Deck slide 7. This section is the deck's own Assurance slide, summarizing
+// the engagement model; the full canonical page — evaluating every Protocol
+// sovereignty capability and every Enterprise governance capability, with
+// Intelligence Risk folded in as one specialized assessment module — lives
+// at enterprise/AssurancePage.tsx. See
+// docs/audits/w007-assurance-canonical-refactor.md.
 export function AssuranceSection() {
   return (
     <section id="assurance" className="scroll-mt-16 max-w-5xl mx-auto px-6 py-20 border-t border-slate-200">

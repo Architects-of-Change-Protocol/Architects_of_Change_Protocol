@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { LogoRotating } from '../components/logo/LogoRotating';
 import { CONSTITUTIONAL_INDEX_ORGANIZATIONS } from './assuranceIndexData';
-import './assurance.css';
+import './intelligenceRisk.css';
 
 const PAGE_URL = 'https://www.aocprotocol.org/research';
 const FOUNDER_ESSAY_URL =
@@ -40,7 +40,7 @@ function usePageMeta() {
     };
 
     document.title =
-      'AI Governance, Sovereignty & Constitutional AI Research | AOC Assurance';
+      'AI Governance, Sovereignty & Constitutional AI Research | AOC Intelligence Risk';
 
     setMeta(
       'description',
@@ -48,13 +48,13 @@ function usePageMeta() {
     );
     setMeta(
       'keywords',
-      'AI Governance Research, AI Sovereignty Research, AI Constitutional Assessment, Constitutional AI, AI Governance Framework, AI Sovereignty Framework, AI Trust Assessment, Governance Score, Sovereignty Score, AI Constitutional Index, AI Risk Assessment, AI Governance Benchmark, AOC Assurance',
+      'AI Governance Research, AI Sovereignty Research, AI Constitutional Assessment, Constitutional AI, AI Governance Framework, AI Sovereignty Framework, AI Trust Assessment, Governance Score, Sovereignty Score, AI Constitutional Index, AI Risk Assessment, AI Governance Benchmark, AOC Intelligence Risk',
     );
     setMeta('robots', 'index, follow');
 
     const { el: canonicalEl, prevHref: prevCanonical } = setLink('canonical', PAGE_URL);
 
-    setMeta('og:title', 'The Constitutional AI Research Hub | AOC Assurance', true);
+    setMeta('og:title', 'The Constitutional AI Research Hub | AOC Intelligence Risk', true);
     setMeta(
       'og:description',
       'Research, assessments, essays, and benchmarks exploring Governance, Sovereignty, and Constitutional AI.',
@@ -63,10 +63,10 @@ function usePageMeta() {
     setMeta('og:url', PAGE_URL, true);
     setMeta('og:type', 'website', true);
     setMeta('og:image', 'https://www.aocprotocol.org/og-image.png', true);
-    setMeta('og:site_name', 'AOC Assurance', true);
+    setMeta('og:site_name', 'AOC Intelligence Risk', true);
 
     setMeta('twitter:card', 'summary_large_image');
-    setMeta('twitter:title', 'The Constitutional AI Research Hub | AOC Assurance');
+    setMeta('twitter:title', 'The Constitutional AI Research Hub | AOC Intelligence Risk');
     setMeta(
       'twitter:description',
       'Research, assessments, essays, and benchmarks exploring Governance, Sovereignty, and Constitutional AI.',
@@ -93,13 +93,13 @@ function buildJsonLd() {
     {
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',
-      name: 'The Constitutional AI Research Hub | AOC Assurance',
+      name: 'The Constitutional AI Research Hub | AOC Intelligence Risk',
       description:
         'Research, public assessments, constitutional frameworks, governance analysis, and sovereignty benchmarks for AI systems and organizations.',
       url: PAGE_URL,
       publisher: {
         '@type': 'Organization',
-        name: 'AOC Assurance',
+        name: 'AOC Intelligence Risk',
         url: 'https://www.aocprotocol.org',
         logo: {
           '@type': 'ImageObject',
@@ -109,7 +109,7 @@ function buildJsonLd() {
       breadcrumb: {
         '@type': 'BreadcrumbList',
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'AOC Assurance', item: 'https://www.aocprotocol.org' },
+          { '@type': 'ListItem', position: 1, name: 'AOC Intelligence Risk', item: 'https://www.aocprotocol.org' },
           { '@type': 'ListItem', position: 2, name: 'Research Hub', item: PAGE_URL },
         ],
       },
@@ -118,7 +118,7 @@ function buildJsonLd() {
       '@context': 'https://schema.org',
       '@type': 'ItemList',
       name: 'AOC Research Resources',
-      description: 'Constitutional AI research, essays, and methodology resources from AOC Assurance.',
+      description: 'Constitutional AI research, essays, and methodology resources from AOC Intelligence Risk.',
       url: PAGE_URL,
       itemListElement: [
         {
@@ -157,10 +157,10 @@ function buildJsonLd() {
     {
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      name: 'AOC Assurance',
+      name: 'AOC Intelligence Risk',
       url: 'https://www.aocprotocol.org',
       description:
-        'AOC Assurance provides constitutional assessments of AI systems, evaluating Governance and Sovereignty to establish constitutional posture and trust.',
+        'AOC Intelligence Risk provides constitutional assessments of AI systems, evaluating Governance and Sovereignty to establish constitutional posture and trust.',
     },
   ];
 }
@@ -361,9 +361,9 @@ function ResearchNav() {
       className="sticky top-0 z-40 flex items-center justify-between gap-4 border-b border-white/8 bg-[#070d0b]/90 px-4 py-3 backdrop-blur-md sm:px-6"
       aria-label="Research Hub navigation"
     >
-      <a href="/?view=assurance" className="flex items-center gap-2.5" aria-label="Back to AOC Assurance">
+      <a href="/?view=intelligence-risk" className="flex items-center gap-2.5" aria-label="Back to AOC Intelligence Risk">
         <LogoRotating size={26} inverted />
-        <span className="text-sm font-semibold text-white/90">AOC Assurance</span>
+        <span className="text-sm font-semibold text-white/90">AOC Intelligence Risk</span>
       </a>
       <div className="flex items-center gap-4">
         <a href="#assessments" className="hidden sm:inline text-xs text-white/50 hover:text-white/80 transition-colors">Assessments</a>
@@ -425,10 +425,10 @@ function ResearchFooter() {
             </ul>
           </div>
           <div>
-            <h4 className="text-xs font-medium uppercase tracking-[0.18em] text-white/40">AOC Assurance</h4>
+            <h4 className="text-xs font-medium uppercase tracking-[0.18em] text-white/40">AOC Intelligence Risk</h4>
             <ul className="mt-4 space-y-2.5">
               {[
-                { label: 'Constitutional Index', href: '/?view=assurance' },
+                { label: 'Constitutional Index', href: '/?view=intelligence-risk' },
                 { label: 'About', href: '/assurance/about' },
                 { label: 'Contact', href: '/?view=contact' },
                 { label: 'Privacy Policy', href: '/assurance/privacy' },
@@ -445,7 +445,7 @@ function ResearchFooter() {
         </div>
         <div className="mt-10 border-t border-white/8 pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <p className="text-xs text-white/30">© 2026 AOC Protocol / OnchainFest LLC</p>
-          <p className="text-xs text-white/30">AOC Assurance Research Hub</p>
+          <p className="text-xs text-white/30">AOC Intelligence Risk Research Hub</p>
         </div>
       </div>
     </footer>
@@ -693,7 +693,7 @@ export function ResearchHubPage() {
               </ul>
               <div className="mt-8">
                 <a
-                  href="/?view=assurance#map"
+                  href="/?view=intelligence-risk#map"
                   className="inline-flex items-center justify-center rounded-2xl border border-white/20 px-6 py-3 text-sm font-medium text-white/80 transition-colors hover:border-white/35 hover:text-white"
                 >
                   Explore the Constitutional Matrix
@@ -722,7 +722,7 @@ export function ResearchHubPage() {
             Research Methodology
           </h2>
           <p className="mt-6 text-base text-white/65 leading-relaxed">
-            AOC Assurance evaluates publicly observable evidence, technical architecture,
+            AOC Intelligence Risk evaluates publicly observable evidence, technical architecture,
             operational disclosures, documentation, governance signals, portability indicators,
             and dependency characteristics.
           </p>
@@ -795,7 +795,7 @@ export function ResearchHubPage() {
               href="/?view=contact"
               className="inline-flex items-center justify-center rounded-2xl bg-cyan-300/90 px-8 py-4 text-base font-semibold text-[#031018] transition-colors hover:bg-cyan-200"
             >
-              Contact AOC Assurance
+              Contact AOC Intelligence Risk
             </a>
           </div>
         </div>

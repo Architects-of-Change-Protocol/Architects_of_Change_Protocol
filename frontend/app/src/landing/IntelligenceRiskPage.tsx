@@ -8,11 +8,19 @@ import {
 } from './assuranceIndexData';
 import { ConstitutionalBenchmarkExplorer } from './components/ConstitutionalBenchmarkExplorer';
 import { Breadcrumbs } from './components/Breadcrumbs';
-import './assurance.css';
+import './intelligenceRisk.css';
 
-// Assurance is an Enterprise Service, not an independent product — its own
-// nav therefore points back up to Enterprise (its parent), not directly to
-// Protocol. See routes.ts / enterprise/Nav.tsx for the approved hierarchy.
+// AOC Intelligence Risk is one specialized assessment module WITHIN AOC
+// Assurance (enterprise/AssurancePage.tsx) — the canonical layer that
+// evaluates and continuously monitors every Protocol sovereignty capability
+// and every Enterprise governance capability. This page (its content,
+// pricing, Constitutional Index, and benchmark explorer) is preserved
+// unchanged; only its position in the hierarchy was corrected — it used to
+// be framed as a co-equal top-level offering (W007A), which was wrong. See
+// docs/audits/w007-assurance-canonical-refactor.md. Own route/nav own
+// identity remain (this page is a real, self-contained experience), but it
+// is reached from within the Assurance page's "Intelligence Risk" section,
+// not from top-level Enterprise nav. See routes.ts / enterprise/Nav.tsx.
 const NAV_ITEMS = [
   { label: 'Risk', href: '#risk' },
   { label: 'Assessments', href: '#assessments' },
@@ -47,7 +55,7 @@ const FOOTER_LINK_GROUPS = [
   {
     title: 'Company',
     links: [
-      { label: 'About AOC Assurance', href: '/assurance/about' },
+      { label: 'About AOC Intelligence Risk', href: '/assurance/about' },
       { label: 'AOC Enterprise', href: '/?view=enterprise' },
       { label: 'About AOC Protocol', href: '/' },
       { label: 'Privacy Policy', href: '/assurance/privacy' },
@@ -288,8 +296,8 @@ const ASK_YOURSELF_QUESTIONS = [
 
 const FAQ_ITEMS = [
   {
-    q: 'Is AOC Assurance a knowledge management tool?',
-    a: 'No. Knowledge management stores information. AOC Assurance measures whether critical organizational intelligence is governed, traceable, resilient, and usable through change.',
+    q: 'Is AOC Intelligence Risk a knowledge management tool?',
+    a: 'No. Knowledge management stores information. AOC Intelligence Risk measures whether critical organizational intelligence is governed, traceable, resilient, and usable through change.',
   },
   {
     q: 'Is this replacing the Constitutional Index?',
@@ -297,7 +305,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Is this a compliance audit?',
-    a: 'No. AOC Assurance is an Institutional Intelligence Risk, Knowledge Loss, Continuity, and Constitutional Resilience assessment. It may support governance and compliance conversations, but it is not positioned as a regulatory certification.',
+    a: 'No. AOC Intelligence Risk evaluates Institutional Intelligence Risk, Knowledge Loss, Continuity, and Constitutional Resilience. It may support governance and compliance conversations, but it is not positioned as a regulatory certification.',
   },
   {
     q: 'Why does this matter for AI transformation?',
@@ -316,7 +324,7 @@ function PublicResearchBridge() {
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">PUBLIC RESEARCH INITIATIVE</p>
           <h2 id="research-bridge-heading">Mapping the constitutional posture of the AI industry.</h2>
-          <p>AOC Assurance continuously evaluates AI organizations using publicly observable evidence to better understand the evolving relationship between Governance and Sovereignty across the industry.</p>
+          <p>AOC Intelligence Risk continuously evaluates AI organizations using publicly observable evidence to better understand the evolving relationship between Governance and Sovereignty across the industry.</p>
         </div>
         <a href="/assurance/research" className="assurance-research-bridge-link">Explore the Research Initiative</a>
       </div>
@@ -324,17 +332,17 @@ function PublicResearchBridge() {
   );
 }
 
-function AssuranceFooter() {
+function IntelligenceRiskFooter() {
   return (
     <footer className="assurance-footer px-6" aria-labelledby="assurance-footer-title">
       <div className="max-w-7xl mx-auto assurance-footer-inner">
         <div className="assurance-footer-brand">
-          <h2 id="assurance-footer-title">AOC Assurance</h2>
-          <p>AOC Assurance measures Knowledge Loss, Key Person Dependency, Decision Amnesia, Continuity, and Constitutional Resilience through the AOC Constitutional Framework.</p>
+          <h2 id="assurance-footer-title">AOC Intelligence Risk</h2>
+          <p>AOC Intelligence Risk measures Knowledge Loss, Key Person Dependency, Decision Amnesia, Continuity, and Constitutional Resilience through the AOC Constitutional Framework.</p>
           <p className="assurance-footer-tagline">Measure Governance.<br />Measure Sovereignty.<br />Understand Resilience.</p>
-          <p className="assurance-footer-institutional">AOC Assurance and AOC Protocol are initiatives of OnchainFest LLC.</p>
+          <p className="assurance-footer-institutional">AOC Intelligence Risk and AOC Protocol are initiatives of OnchainFest LLC.</p>
         </div>
-        <nav className="assurance-footer-links" aria-label="AOC Assurance footer navigation">
+        <nav className="assurance-footer-links" aria-label="AOC Intelligence Risk footer navigation">
           {FOOTER_LINK_GROUPS.map((group) => (
             <section key={group.title} aria-labelledby={`footer-${group.title.toLowerCase()}`}>
               <h3 id={`footer-${group.title.toLowerCase()}`}>{group.title}</h3>
@@ -356,7 +364,7 @@ function AssuranceFooter() {
         </nav>
         <div className="assurance-footer-legal">
           <p>© 2026 OnchainFest LLC. All rights reserved.</p>
-          <p>AOC Assurance does not certify organizations as safe, secure, compliant, trustworthy, or risk-free.</p>
+          <p>AOC Intelligence Risk does not certify organizations as safe, secure, compliant, trustworthy, or risk-free.</p>
           <p>The Constitutional Index is an evidence-based assessment framework designed to evaluate governance and sovereignty characteristics using publicly observable and/or supplied evidence. Constitutional scores represent analytical assessments and should not be interpreted as guarantees, certifications, or endorsements.</p>
         </div>
       </div>
@@ -366,7 +374,7 @@ function AssuranceFooter() {
 
 type LearnMoreId = 'framework' | 'founder-essay' | 'index';
 
-const AssurancePage = () => {
+const IntelligenceRiskPage = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openLearnMore, setOpenLearnMore] = useState<LearnMoreId | null>(null);
   const [showStickyCta, setShowStickyCta] = useState(false);
@@ -440,7 +448,7 @@ const AssurancePage = () => {
             <LogoRotating size={28} inverted />
             <div className="flex items-baseline gap-2">
               <span className="text-xl font-semibold tracking-tighter">AOC</span>
-              <span className="text-xs text-emerald-400 uppercase tracking-[0.2em]">Assurance</span>
+              <span className="text-xs text-emerald-400 uppercase tracking-[0.2em]">Intelligence Risk</span>
             </div>
           </a>
 
@@ -498,15 +506,15 @@ const AssurancePage = () => {
         items={[
           { label: 'Protocol', href: '/' },
           { label: 'Enterprise', href: '/?view=enterprise' },
-          { label: 'Services' },
-          { label: 'Assurance' },
+          { label: 'Assurance', href: '/?view=assurance' },
+          { label: 'Intelligence Risk' },
         ]}
       />
 
       {/* ── Hero ── */}
       <section className="assurance-hero-glow relative pt-28 pb-32 text-center px-6">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-6">
-          AOC Assurance
+          AOC Intelligence Risk
         </p>
         <h1 className="text-5xl md:text-7xl font-semibold tracking-[-2.5px] leading-[1.05] max-w-4xl mx-auto mb-8">
           How much of your company's intelligence would survive tomorrow?
@@ -891,7 +899,7 @@ const AssurancePage = () => {
             Assessment is the first step. Enterprise is how intelligence becomes durable.
           </h2>
           <p className="text-white/55 text-lg mb-10 leading-relaxed">
-            AOC Assurance identifies where institutional intelligence is fragile. AOC Enterprise helps
+            AOC Intelligence Risk identifies where institutional intelligence is fragile. AOC Enterprise helps
             organizations build the operating layer required to preserve decisions, govern accountability,
             improve learning, and maintain sovereignty over critical knowledge as the organization grows.
           </p>
@@ -914,7 +922,7 @@ const AssurancePage = () => {
               Research &amp; Framework
             </p>
             <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-4">
-              Explore the research behind AOC Assurance.
+              Explore the research behind AOC Intelligence Risk.
             </h2>
             <p className="text-white/55 text-lg leading-relaxed max-w-2xl">
               The framework, the founder's perspective, and the public benchmark — for those who want to understand the thinking before or after purchasing.
@@ -953,7 +961,7 @@ const AssurancePage = () => {
                   <p className="text-white/60 text-base leading-relaxed mb-8">
                     Most organizations do not have a data problem. They have a continuity problem. Intelligence
                     cannot survive without governance. Learning cannot scale without accountability. Resilience
-                    cannot exist without sovereignty. AOC Assurance evaluates the constitutional conditions that
+                    cannot exist without sovereignty. AOC Intelligence Risk evaluates the constitutional conditions that
                     determine whether organizational intelligence remains durable, traceable, and usable through change.
                   </p>
 
@@ -967,7 +975,7 @@ const AssurancePage = () => {
                   </div>
 
                   <h4 className="text-xl md:text-2xl font-semibold tracking-tight mb-5">
-                    AOC Assurance measures whether your intelligence can survive change.
+                    AOC Intelligence Risk measures whether your intelligence can survive change.
                   </h4>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {ASSESSMENT_DIMENSIONS.map((dim) => (
@@ -1148,10 +1156,10 @@ const AssurancePage = () => {
       </section>
 
       <PublicResearchBridge />
-      <AssuranceFooter />
+      <IntelligenceRiskFooter />
 
     </main>
   );
 };
 
-export const renderAssurancePage = () => <AssurancePage />;
+export const renderIntelligenceRiskPage = () => <IntelligenceRiskPage />;

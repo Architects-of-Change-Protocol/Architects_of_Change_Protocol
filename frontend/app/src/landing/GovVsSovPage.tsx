@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { LogoRotating } from '../components/logo/LogoRotating';
-import './assurance.css';
+import './intelligenceRisk.css';
 
 const PAGE_URL = 'https://www.aocprotocol.org/ai-governance-vs-ai-sovereignty';
 const FOUNDER_ESSAY_URL =
@@ -38,23 +38,23 @@ function usePageMeta() {
       return { el, prevHref, created };
     };
 
-    document.title = 'AI Governance vs AI Sovereignty | AOC Assurance';
+    document.title = 'AI Governance vs AI Sovereignty | AOC Intelligence Risk';
 
     setMeta('description', 'AI Governance defines how AI systems are supervised, controlled, and made accountable. AI Sovereignty defines who controls, owns, moves, replaces, and operates the underlying AI capability.');
-    setMeta('keywords', 'AI Governance vs AI Sovereignty, What is AI Sovereignty, What is AI Governance, AI Governance Score, AI Sovereignty Score, AI Trust Assessment, AI Constitutional Assessment, Constitutional AI Operations, AOC Assurance, AOC Constitutional Index');
+    setMeta('keywords', 'AI Governance vs AI Sovereignty, What is AI Sovereignty, What is AI Governance, AI Governance Score, AI Sovereignty Score, AI Trust Assessment, AI Constitutional Assessment, Constitutional AI Operations, AOC Intelligence Risk, AOC Constitutional Index');
     setMeta('robots', 'index, follow');
 
     const { el: canonicalEl, prevHref: prevCanonical } = setLink('canonical', PAGE_URL);
 
-    setMeta('og:title', 'AI Governance vs AI Sovereignty | AOC Assurance', true);
+    setMeta('og:title', 'AI Governance vs AI Sovereignty | AOC Intelligence Risk', true);
     setMeta('og:description', 'Governance explains how AI is supervised. Sovereignty explains who truly controls the capability. Trust requires both.', true);
     setMeta('og:url', PAGE_URL, true);
     setMeta('og:type', 'article', true);
     setMeta('og:image', 'https://www.aocprotocol.org/og-image.png', true);
-    setMeta('og:site_name', 'AOC Assurance', true);
+    setMeta('og:site_name', 'AOC Intelligence Risk', true);
 
     setMeta('twitter:card', 'summary_large_image');
-    setMeta('twitter:title', 'AI Governance vs AI Sovereignty | AOC Assurance');
+    setMeta('twitter:title', 'AI Governance vs AI Sovereignty | AOC Intelligence Risk');
     setMeta('twitter:description', 'Governance explains how AI is supervised. Sovereignty explains who truly controls the capability. Trust requires both.');
     setMeta('twitter:site', '@archofchange');
 
@@ -97,15 +97,15 @@ function buildJsonLd() {
     },
     {
       q: 'What is the AOC Constitutional Index?',
-      a: 'The AOC Constitutional Index is a public evaluation framework developed by AOC Assurance that measures the Governance Score and Sovereignty Score of AI systems and positions them in the Constitutional Matrix across four quadrants.',
+      a: 'The AOC Constitutional Index is a public evaluation framework developed by AOC Intelligence Risk that measures the Governance Score and Sovereignty Score of AI systems and positions them in the Constitutional Matrix across four quadrants.',
     },
     {
       q: 'What is an AI Constitutional Assessment?',
       a: 'An AI Constitutional Assessment evaluates the structural balance between governance and sovereignty to understand the trust posture of an AI system. It produces a Governance Score, Sovereignty Score, and Constitutional Position.',
     },
     {
-      q: 'How does AOC Assurance measure AI trust?',
-      a: 'AOC Assurance evaluates public evidence, documentation, product architecture, policy disclosures, operational signals, and technical posture to estimate an organization\'s Governance Score and Sovereignty Score — producing a Constitutional Position in the AOC Constitutional Matrix.',
+      q: 'How does AOC Intelligence Risk measure AI trust?',
+      a: 'AOC Intelligence Risk evaluates public evidence, documentation, product architecture, policy disclosures, operational signals, and technical posture to estimate an organization\'s Governance Score and Sovereignty Score — producing a Constitutional Position in the AOC Constitutional Matrix.',
     },
   ];
 
@@ -115,7 +115,7 @@ function buildJsonLd() {
       {
         '@type': 'Organization',
         '@id': 'https://www.aocprotocol.org/#organization',
-        name: 'AOC Assurance',
+        name: 'AOC Intelligence Risk',
         alternateName: 'AOC Protocol',
         url: 'https://www.aocprotocol.org/',
         logo: { '@type': 'ImageObject', url: 'https://www.aocprotocol.org/og-image.png' },
@@ -130,7 +130,7 @@ function buildJsonLd() {
         '@type': 'WebPage',
         '@id': `${PAGE_URL}#webpage`,
         url: PAGE_URL,
-        name: 'AI Governance vs AI Sovereignty | AOC Assurance',
+        name: 'AI Governance vs AI Sovereignty | AOC Intelligence Risk',
         description: 'AI Governance defines how AI systems are supervised, controlled, and made accountable. AI Sovereignty defines who controls, owns, moves, replaces, and operates the underlying AI capability.',
         isPartOf: { '@id': 'https://www.aocprotocol.org/#website' },
         about: { '@id': 'https://www.aocprotocol.org/#organization' },
@@ -170,7 +170,7 @@ function buildJsonLd() {
         '@id': `${PAGE_URL}#breadcrumb`,
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.aocprotocol.org/' },
-          { '@type': 'ListItem', position: 2, name: 'AOC Assurance', item: 'https://www.aocprotocol.org/?view=assurance' },
+          { '@type': 'ListItem', position: 2, name: 'AOC Intelligence Risk', item: 'https://www.aocprotocol.org/?view=intelligence-risk' },
           { '@type': 'ListItem', position: 3, name: 'AI Governance vs AI Sovereignty', item: PAGE_URL },
         ],
       },
@@ -181,7 +181,7 @@ function buildJsonLd() {
         serviceType: 'AI Governance Assessment',
         description: 'A constitutional assessment framework that evaluates AI systems across Governance and Sovereignty dimensions.',
         provider: { '@id': 'https://www.aocprotocol.org/#organization' },
-        url: 'https://www.aocprotocol.org/?view=assurance',
+        url: 'https://www.aocprotocol.org/?view=intelligence-risk',
       },
     ],
   };
@@ -387,15 +387,15 @@ const FAQ_ITEMS = [
   },
   {
     q: 'What is the AOC Constitutional Index?',
-    a: 'The AOC Constitutional Index is a public evaluation framework developed by AOC Assurance that measures the Governance Score and Sovereignty Score of AI systems, positioning them in the Constitutional Matrix across four quadrants: Constitutional Leaders, Trusted Custodians, Sovereignty Pioneers, and Dependency Platforms.',
+    a: 'The AOC Constitutional Index is a public evaluation framework developed by AOC Intelligence Risk that measures the Governance Score and Sovereignty Score of AI systems, positioning them in the Constitutional Matrix across four quadrants: Constitutional Leaders, Trusted Custodians, Sovereignty Pioneers, and Dependency Platforms.',
   },
   {
     q: 'What is an AI Constitutional Assessment?',
     a: 'An AI Constitutional Assessment evaluates the structural balance between governance and sovereignty to understand the trust posture of an AI system. It produces a Governance Score, Sovereignty Score, and Constitutional Position within the AOC Constitutional Matrix.',
   },
   {
-    q: 'How does AOC Assurance measure AI trust?',
-    a: 'AOC Assurance evaluates public evidence, documentation, product architecture, policy disclosures, operational signals, and technical posture to estimate an organization\'s Governance Score and Sovereignty Score — producing a Constitutional Position that identifies trust posture, dependency risk, and improvement priorities.',
+    q: 'How does AOC Intelligence Risk measure AI trust?',
+    a: 'AOC Intelligence Risk evaluates public evidence, documentation, product architecture, policy disclosures, operational signals, and technical posture to estimate an organization\'s Governance Score and Sovereignty Score — producing a Constitutional Position that identifies trust posture, dependency risk, and improvement priorities.',
   },
 ];
 
@@ -430,23 +430,23 @@ function GovSovNav() {
   return (
     <nav className="sticky top-0 z-30 backdrop-blur bg-[#070d0b]/80 border-b border-white/10">
       <div className="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
-        <a href="/?view=assurance" className="flex items-center gap-3">
+        <a href="/?view=intelligence-risk" className="flex items-center gap-3">
           <LogoRotating size={28} inverted />
           <div className="flex items-baseline gap-2">
             <span className="text-xl font-semibold tracking-tighter">AOC</span>
-            <span className="text-xs text-emerald-400 uppercase tracking-[0.2em]">Assurance</span>
+            <span className="text-xs text-emerald-400 uppercase tracking-[0.2em]">Intelligence Risk</span>
           </div>
         </a>
 
         <div className="hidden md:flex items-center gap-7 text-sm font-medium text-white/70">
-          <a href="/?view=assurance#map" className="hover:text-white transition-colors">Constitutional Map</a>
-          <a href="/?view=assurance#index" className="hover:text-white transition-colors">Index</a>
+          <a href="/?view=intelligence-risk#map" className="hover:text-white transition-colors">Constitutional Map</a>
+          <a href="/?view=intelligence-risk#index" className="hover:text-white transition-colors">Index</a>
           <a href="/assurance/methodology" className="hover:text-white transition-colors">Methodology</a>
           <a href="/" className="hover:text-white transition-colors">Protocol</a>
         </div>
 
         <a
-          href="/?view=assurance#assessments"
+          href="/?view=intelligence-risk#assessments"
           className="hidden md:inline-block px-5 py-2 bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-semibold rounded-xl transition-colors"
         >
           Request Assessment
@@ -471,8 +471,8 @@ function GovSovNav() {
       >
         <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col gap-1">
           {[
-            { label: 'Constitutional Map', href: '/?view=assurance#map' },
-            { label: 'Index', href: '/?view=assurance#index' },
+            { label: 'Constitutional Map', href: '/?view=intelligence-risk#map' },
+            { label: 'Index', href: '/?view=intelligence-risk#index' },
             { label: 'Methodology', href: '/assurance/methodology' },
             { label: 'AOC Protocol', href: '/' },
           ].map((item) => (
@@ -498,15 +498,15 @@ function GovSovFooter() {
     {
       title: 'Assessments',
       links: [
-        { label: 'Request Assessment', href: '/?view=assurance#assessments' },
-        { label: 'Constitutional Index', href: '/?view=assurance#index' },
-        { label: 'Constitutional Map', href: '/?view=assurance#map' },
+        { label: 'Request Assessment', href: '/?view=intelligence-risk#assessments' },
+        { label: 'Constitutional Index', href: '/?view=intelligence-risk#index' },
+        { label: 'Constitutional Map', href: '/?view=intelligence-risk#map' },
       ],
     },
     {
       title: 'Research',
       links: [
-        { label: 'Constitutional Matrix', href: '/?view=assurance#map' },
+        { label: 'Constitutional Matrix', href: '/?view=intelligence-risk#map' },
         { label: 'Methodology', href: '/assurance/methodology' },
         { label: 'Founder Essay', href: FOUNDER_ESSAY_URL, external: true },
         { label: 'Public Research', href: '/assurance/research' },
@@ -515,7 +515,7 @@ function GovSovFooter() {
     {
       title: 'Company',
       links: [
-        { label: 'About AOC Assurance', href: '/assurance/about' },
+        { label: 'About AOC Intelligence Risk', href: '/assurance/about' },
         { label: 'AOC Protocol', href: '/' },
         { label: 'Privacy Policy', href: '/assurance/privacy' },
         { label: 'Terms of Service', href: '/assurance/terms' },
@@ -536,10 +536,10 @@ function GovSovFooter() {
     <footer className="assurance-footer px-6" aria-labelledby="gov-sov-footer-title">
       <div className="max-w-7xl mx-auto assurance-footer-inner">
         <div className="assurance-footer-brand">
-          <h2 id="gov-sov-footer-title">AOC Assurance</h2>
+          <h2 id="gov-sov-footer-title">AOC Intelligence Risk</h2>
           <p>A constitutional assessment framework developed by AOC Protocol.</p>
           <p className="assurance-footer-tagline">Measure Governance.<br />Measure Sovereignty.<br />Understand the Balance.</p>
-          <p className="assurance-footer-institutional">AOC Assurance and AOC Protocol are initiatives of OnchainFest LLC.</p>
+          <p className="assurance-footer-institutional">AOC Intelligence Risk and AOC Protocol are initiatives of OnchainFest LLC.</p>
         </div>
         <nav className="assurance-footer-links" aria-label="Footer navigation">
           {footerGroups.map((group) => (
@@ -563,7 +563,7 @@ function GovSovFooter() {
         </nav>
         <div className="assurance-footer-legal">
           <p>© 2026 OnchainFest LLC. All rights reserved.</p>
-          <p>AOC Assurance does not certify organizations as safe, secure, compliant, trustworthy, or risk-free.</p>
+          <p>AOC Intelligence Risk does not certify organizations as safe, secure, compliant, trustworthy, or risk-free.</p>
           <p>The Constitutional Index is an evidence-based assessment framework designed to evaluate governance and sovereignty characteristics using publicly observable and/or supplied evidence. Constitutional scores represent analytical assessments and should not be interpreted as guarantees, certifications, or endorsements.</p>
         </div>
       </div>
@@ -591,8 +591,8 @@ export function GovVsSovPage() {
           </li>
           <li aria-hidden="true">/</li>
           <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-            <a href="/?view=assurance" className="hover:text-white/60 transition-colors" itemProp="item">
-              <span itemProp="name">AOC Assurance</span>
+            <a href="/?view=intelligence-risk" className="hover:text-white/60 transition-colors" itemProp="item">
+              <span itemProp="name">AOC Intelligence Risk</span>
             </a>
             <meta itemProp="position" content="2" />
           </li>
@@ -618,10 +618,10 @@ export function GovVsSovPage() {
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <a
-            href="/?view=assurance"
+            href="/?view=intelligence-risk"
             className="inline-flex items-center justify-center px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-semibold rounded-xl transition-colors w-full sm:w-auto"
           >
-            Explore AOC Assurance
+            Explore AOC Intelligence Risk
           </a>
           <a
             href={FOUNDER_ESSAY_URL}
@@ -744,7 +744,7 @@ export function GovVsSovPage() {
 
         <div className="mt-8 text-center">
           <a
-            href="/?view=assurance#map"
+            href="/?view=intelligence-risk#map"
             className="inline-flex items-center gap-2 text-sm text-emerald-400 hover:text-emerald-300 transition-colors font-medium"
           >
             View the live Constitutional Map →
@@ -752,14 +752,14 @@ export function GovVsSovPage() {
         </div>
       </section>
 
-      {/* ── Section 5: How AOC Assurance measures both ── */}
+      {/* ── Section 5: How AOC Intelligence Risk measures both ── */}
       <section className="max-w-4xl mx-auto px-6 py-16" aria-labelledby="measures-heading">
         <h2 id="measures-heading" className="text-2xl sm:text-3xl font-bold tracking-tight mb-6">
-          How AOC Assurance measures Governance and Sovereignty
+          How AOC Intelligence Risk measures Governance and Sovereignty
         </h2>
         <div className="space-y-5 text-base text-white/65 leading-relaxed">
           <p>
-            AOC Assurance evaluates public evidence, documentation, product architecture, policy disclosures, operational
+            AOC Intelligence Risk evaluates public evidence, documentation, product architecture, policy disclosures, operational
             signals, and technical posture to estimate an organization's Governance Score and Sovereignty Score.
           </p>
           <p>The goal is not only to produce a score.</p>
@@ -780,13 +780,13 @@ export function GovVsSovPage() {
         </ul>
         <div className="mt-10 flex flex-col sm:flex-row gap-3">
           <a
-            href="/?view=assurance#assessments"
+            href="/?view=intelligence-risk#assessments"
             className="inline-flex items-center justify-center px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-semibold rounded-xl transition-colors"
           >
             Request a Constitutional Assessment
           </a>
           <a
-            href="/?view=assurance#index"
+            href="/?view=intelligence-risk#index"
             className="inline-flex items-center justify-center px-6 py-3 border border-white/20 hover:border-white/35 text-white/80 hover:text-white text-sm font-medium rounded-xl transition-colors"
           >
             Explore the Constitutional Index
@@ -844,14 +844,14 @@ export function GovVsSovPage() {
             Understand your constitutional position.
           </h2>
           <p className="text-white/55 max-w-xl mx-auto leading-relaxed mb-8">
-            AOC Assurance produces a Governance Score, Sovereignty Score, and Constitutional Position for your organization.
+            AOC Intelligence Risk produces a Governance Score, Sovereignty Score, and Constitutional Position for your organization.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <a
-              href="/?view=assurance#assessments"
+              href="/?view=intelligence-risk#assessments"
               className="inline-flex items-center justify-center px-7 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-semibold rounded-xl transition-colors w-full sm:w-auto"
             >
-              Explore AOC Assurance
+              Explore AOC Intelligence Risk
             </a>
             <a
               href={FOUNDER_ESSAY_URL}
