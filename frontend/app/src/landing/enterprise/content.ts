@@ -32,10 +32,18 @@ export type NavEntry = NavItem | NavGroup;
 
 export const isNavGroup = (entry: NavEntry): entry is NavGroup => 'children' in entry;
 
+// Intelligence Risk is a distinct top-level entry, not a Services child —
+// it is AOC Intelligence Risk (Institutional Intelligence Risk / Knowledge
+// Loss / the Constitutional Index), a separate commercial offering with its
+// own pricing, checkout flow, and public research initiative. It used to
+// share the "Assurance" name and nav slot with the SAF-based service below;
+// W007A split them into distinct routes/identities. See
+// docs/audits/w007a-assurance-commercial-audit.md.
 export const ENTERPRISE_NAV_ITEMS: NavEntry[] = [
   { label: 'Overview', href: '/?view=enterprise#overview' },
   { label: 'Solutions', children: [{ label: 'Governed Access', href: '/?view=governed-access' }] },
   { label: 'Services', children: [{ label: 'Assurance', href: '/?view=assurance' }] },
+  { label: 'Intelligence Risk', href: '/?view=intelligence-risk' },
   { label: 'Architecture', href: '/?view=enterprise#architecture' },
   { label: 'Developers', href: '/?view=docs' },
 ];

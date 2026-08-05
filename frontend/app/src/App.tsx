@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { AocLandingPage } from './landing/AocLandingPage';
-import { renderAssurancePage } from './landing/AssurancePage';
-import { AssuranceProfilePage } from './landing/AssuranceProfilePage';
-import { AboutPage, MethodologyPage, PrivacyPage, ResearchPage, TermsPage } from './landing/AssuranceSupportPages';
+import { renderIntelligenceRiskPage } from './landing/IntelligenceRiskPage';
+import { IntelligenceRiskProfilePage } from './landing/IntelligenceRiskProfilePage';
+import { AboutPage, MethodologyPage, PrivacyPage, ResearchPage, TermsPage } from './landing/IntelligenceRiskSupportPages';
 import { GovVsSovPage } from './landing/GovVsSovPage';
 import { ResearchHubPage } from './landing/ResearchHubPage';
 import { AssessmentPlaceholderPage } from './landing/AssessmentPlaceholderPage';
 import { WhatIsAiSovereigntyPage } from './landing/WhatIsAiSovereigntyPage';
 import { renderEnterprisePage } from './landing/EnterprisePage';
+import { renderAssurancePage } from './landing/enterprise/AssurancePage';
 import { CapabilityDetailPage } from './landing/enterprise/CapabilityDetailPage';
 import { GovernedAccessPage } from './landing/enterprise/GovernedAccessPage';
 import { renderDocsPage } from './landing/DocsPage';
@@ -42,7 +43,7 @@ export default function App() {
   }, []);
 
   if (assuranceProfileMatch) {
-    return <AssuranceProfilePage slug={decodeURIComponent(assuranceProfileMatch[1])} />;
+    return <IntelligenceRiskProfilePage slug={decodeURIComponent(assuranceProfileMatch[1])} />;
   }
   if (researchAssessmentMatch) {
     const slug = decodeURIComponent(researchAssessmentMatch[1]);
@@ -59,6 +60,7 @@ export default function App() {
   if (pathname === '/research') return <ResearchHubPage />;
   if (pathname === '/what-is-ai-sovereignty') return <WhatIsAiSovereigntyPage />;
   if (view === 'assurance') return renderAssurancePage();
+  if (view === 'intelligence-risk') return renderIntelligenceRiskPage();
   if (view === 'docs') return renderDocsPage();
   if (view === 'enterprise') return renderEnterprisePage();
   if (view === 'governed-access') return <GovernedAccessPage />;
