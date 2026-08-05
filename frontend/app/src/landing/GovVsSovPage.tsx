@@ -170,7 +170,7 @@ function buildJsonLd() {
         '@id': `${PAGE_URL}#breadcrumb`,
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.aocprotocol.org/' },
-          { '@type': 'ListItem', position: 2, name: 'AOC Assurance', item: 'https://www.aocprotocol.org/?view=assurance' },
+          { '@type': 'ListItem', position: 2, name: 'AOC Assurance', item: 'https://www.aocprotocol.org/assurance/intelligence-risk' },
           { '@type': 'ListItem', position: 3, name: 'AI Governance vs AI Sovereignty', item: PAGE_URL },
         ],
       },
@@ -181,7 +181,7 @@ function buildJsonLd() {
         serviceType: 'AI Governance Assessment',
         description: 'A constitutional assessment framework that evaluates AI systems across Governance and Sovereignty dimensions.',
         provider: { '@id': 'https://www.aocprotocol.org/#organization' },
-        url: 'https://www.aocprotocol.org/?view=assurance',
+        url: 'https://www.aocprotocol.org/assurance/intelligence-risk',
       },
     ],
   };
@@ -430,7 +430,7 @@ function GovSovNav() {
   return (
     <nav className="sticky top-0 z-30 backdrop-blur bg-[#070d0b]/80 border-b border-white/10">
       <div className="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
-        <a href="/?view=assurance" className="flex items-center gap-3">
+        <a href="/assurance/intelligence-risk" className="flex items-center gap-3">
           <LogoRotating size={28} inverted />
           <div className="flex items-baseline gap-2">
             <span className="text-xl font-semibold tracking-tighter">AOC</span>
@@ -439,14 +439,14 @@ function GovSovNav() {
         </a>
 
         <div className="hidden md:flex items-center gap-7 text-sm font-medium text-white/70">
-          <a href="/?view=assurance#map" className="hover:text-white transition-colors">Constitutional Map</a>
-          <a href="/?view=assurance#index" className="hover:text-white transition-colors">Index</a>
+          <a href="/assurance/intelligence-risk#map" className="hover:text-white transition-colors">Constitutional Map</a>
+          <a href="/assurance/intelligence-risk#index" className="hover:text-white transition-colors">Index</a>
           <a href="/assurance/methodology" className="hover:text-white transition-colors">Methodology</a>
           <a href="/" className="hover:text-white transition-colors">Protocol</a>
         </div>
 
         <a
-          href="/?view=assurance#assessments"
+          href="/assurance/intelligence-risk#assessments"
           className="hidden md:inline-block px-5 py-2 bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-semibold rounded-xl transition-colors"
         >
           Request Assessment
@@ -471,8 +471,8 @@ function GovSovNav() {
       >
         <div className="max-w-7xl mx-auto px-6 py-5 flex flex-col gap-1">
           {[
-            { label: 'Constitutional Map', href: '/?view=assurance#map' },
-            { label: 'Index', href: '/?view=assurance#index' },
+            { label: 'Constitutional Map', href: '/assurance/intelligence-risk#map' },
+            { label: 'Index', href: '/assurance/intelligence-risk#index' },
             { label: 'Methodology', href: '/assurance/methodology' },
             { label: 'AOC Protocol', href: '/' },
           ].map((item) => (
@@ -498,15 +498,15 @@ function GovSovFooter() {
     {
       title: 'Assessments',
       links: [
-        { label: 'Request Assessment', href: '/?view=assurance#assessments' },
-        { label: 'Constitutional Index', href: '/?view=assurance#index' },
-        { label: 'Constitutional Map', href: '/?view=assurance#map' },
+        { label: 'Request Assessment', href: '/assurance/intelligence-risk#assessments' },
+        { label: 'Constitutional Index', href: '/assurance/intelligence-risk#index' },
+        { label: 'Constitutional Map', href: '/assurance/intelligence-risk#map' },
       ],
     },
     {
       title: 'Research',
       links: [
-        { label: 'Constitutional Matrix', href: '/?view=assurance#map' },
+        { label: 'Constitutional Matrix', href: '/assurance/intelligence-risk#map' },
         { label: 'Methodology', href: '/assurance/methodology' },
         { label: 'Founder Essay', href: FOUNDER_ESSAY_URL, external: true },
         { label: 'Public Research', href: '/assurance/research' },
@@ -591,7 +591,7 @@ export function GovVsSovPage() {
           </li>
           <li aria-hidden="true">/</li>
           <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-            <a href="/?view=assurance" className="hover:text-white/60 transition-colors" itemProp="item">
+            <a href="/assurance/intelligence-risk" className="hover:text-white/60 transition-colors" itemProp="item">
               <span itemProp="name">AOC Assurance</span>
             </a>
             <meta itemProp="position" content="2" />
@@ -618,7 +618,7 @@ export function GovVsSovPage() {
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <a
-            href="/?view=assurance"
+            href="/assurance/intelligence-risk"
             className="inline-flex items-center justify-center px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-semibold rounded-xl transition-colors w-full sm:w-auto"
           >
             Explore AOC Assurance
@@ -744,7 +744,7 @@ export function GovVsSovPage() {
 
         <div className="mt-8 text-center">
           <a
-            href="/?view=assurance#map"
+            href="/assurance/intelligence-risk#map"
             className="inline-flex items-center gap-2 text-sm text-emerald-400 hover:text-emerald-300 transition-colors font-medium"
           >
             View the live Constitutional Map →
@@ -780,13 +780,13 @@ export function GovVsSovPage() {
         </ul>
         <div className="mt-10 flex flex-col sm:flex-row gap-3">
           <a
-            href="/?view=assurance#assessments"
+            href="/assurance/intelligence-risk#assessments"
             className="inline-flex items-center justify-center px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-semibold rounded-xl transition-colors"
           >
             Request a Constitutional Assessment
           </a>
           <a
-            href="/?view=assurance#index"
+            href="/assurance/intelligence-risk#index"
             className="inline-flex items-center justify-center px-6 py-3 border border-white/20 hover:border-white/35 text-white/80 hover:text-white text-sm font-medium rounded-xl transition-colors"
           >
             Explore the Constitutional Index
@@ -848,7 +848,7 @@ export function GovVsSovPage() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <a
-              href="/?view=assurance#assessments"
+              href="/assurance/intelligence-risk#assessments"
               className="inline-flex items-center justify-center px-7 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-semibold rounded-xl transition-colors w-full sm:w-auto"
             >
               Explore AOC Assurance
