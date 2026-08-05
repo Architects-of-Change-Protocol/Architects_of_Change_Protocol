@@ -16,7 +16,31 @@ const EASE = [0.33, 1, 0.68, 1] as const;
 export function CapabilityFamilies() {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isTouch, setIsTouch] = useState(false);
+  const [isReflowing, setIsReflowing] = useState(false);
   const gridRef = useRef<HTMLDivElement>(null);
+  const reflowCount = useRef(0);
+  // A tap focuses its element before its click fires. Without this flag the
+  // resulting onFocus would set activeId, then the same tap's onClick would
+  // read that as "already active" and immediately toggle it back off — so a
+  // card never visibly expanded until a second tap. Set on pointerdown,
+  // consumed by the very next onFocus, so real keyboard-driven focus (no
+  // preceding pointerdown) is unaffected.
+  const pointerActivatedRef = useRef(false);
+
+  // While the active card's column span animates, every sibling's bounding
+  // box moves too (Framer Motion's `layout` reflow). Chromium re-hit-tests
+  // elements that pass under a stationary cursor during that reflow and
+  // fires real mouseenter/mouseleave on whatever card ends up there, which
+  // can silently activate a card the pointer never intentionally entered.
+  // Suppressing pointer events for the reflow's duration prevents that.
+  const startReflow = () => {
+    reflowCount.current += 1;
+    setIsReflowing(true);
+  };
+  const endReflow = () => {
+    reflowCount.current = Math.max(0, reflowCount.current - 1);
+    if (reflowCount.current === 0) setIsReflowing(false);
+  };
 
   useEffect(() => {
     const mq = window.matchMedia('(hover: none)');
@@ -51,6 +75,7 @@ export function CapabilityFamilies() {
         <div
           ref={gridRef}
           className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5"
+          style={{ pointerEvents: isReflowing ? 'none' : 'auto' }}
           onMouseLeave={() => !isTouch && setActiveId(null)}
         >
           {CAPABILITY_FAMILIES.map((family) => {
@@ -65,15 +90,30 @@ export function CapabilityFamilies() {
                 layout
                 data-capability-card
                 transition={{ layout: { duration: isActive ? 0.32 : 0.25, ease: EASE } }}
+                onLayoutAnimationStart={startReflow}
+                onLayoutAnimationComplete={endReflow}
                 className={isActive ? 'sm:col-span-2 lg:col-span-2' : undefined}
                 onMouseEnter={() => !isTouch && setActiveId(family.id)}
-                onFocus={() => setActiveId(family.id)}
+                onPointerDown={() => {
+                  pointerActivatedRef.current = true;
+                }}
+                onFocus={() => {
+                  if (isTouch && pointerActivatedRef.current) {
+                    pointerActivatedRef.current = false;
+                    return;
+                  }
+                  setActiveId(family.id);
+                }}
                 onBlur={() => setActiveId((current) => (current === family.id ? null : current))}
                 onClick={() => isTouch && setActiveId((current) => (current === family.id ? null : family.id))}
                 onKeyDown={(event) => {
                   if (event.key === 'Escape') {
                     setActiveId(null);
                     event.currentTarget.blur();
+                  } else if (event.key === ' ' || event.key === 'Spacebar') {
+                    // The card isn't a native button; without this, Space
+                    // falls through to the browser's default page-scroll.
+                    event.preventDefault();
                   }
                 }}
                 tabIndex={0}
