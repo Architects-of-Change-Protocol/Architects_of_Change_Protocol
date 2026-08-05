@@ -1,11 +1,29 @@
+import { useRef } from 'react';
+import { motion, type Variants } from 'framer-motion';
 import { Card, SectionHeader } from '../enterprise/primitives';
 import { MINERALS } from '../enterprise/minerals';
+import { TransformationCore } from './TransformationCore';
+import { useTransformationPhase } from './useTransformationPhase';
 
 const FILE_TRAITS = ['Content', 'Format', 'Location'];
 const ASSET_TRAITS = ['Identity', 'Integrity', 'Provenance', 'Capabilities', 'References', 'Portability'];
 const m = MINERALS.amethyst;
 
+const traitListVariants: Variants = {
+  hidden: { transition: { staggerChildren: 0.07 } },
+  visible: { transition: { staggerChildren: 0.07 } },
+};
+
+const traitItemVariants: Variants = {
+  hidden: { opacity: 0, x: -6 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.32, ease: [0.22, 1, 0.36, 1] } },
+};
+
 export function FileToAsset() {
+  const stageRef = useRef<HTMLDivElement>(null);
+  const { phase, reduceMotion } = useTransformationPhase(stageRef);
+  const traitsRevealed = reduceMotion || phase === 'emit' || phase === 'rest';
+
   return (
     <section id="digital-asset" className="scroll-mt-16 max-w-7xl mx-auto px-6 py-20 border-t border-slate-200">
       <SectionHeader
@@ -15,38 +33,49 @@ export function FileToAsset() {
         mineral="amethyst"
       />
 
-      <div className="grid md:grid-cols-[1fr_auto_1fr] gap-6 items-center">
-        <Card className="p-6 md:p-7">
-          <p className="text-[11px] uppercase tracking-[0.2em] text-slate-500 font-mono">A File</p>
-          <p className="mt-2 font-mono text-slate-700 text-sm">photo.jpg</p>
-          <ul className="mt-5 space-y-2.5">
-            {FILE_TRAITS.map((trait) => (
-              <li key={trait} className="flex items-center gap-2.5 text-sm text-slate-500">
-                <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-slate-300" />
-                {trait}
-              </li>
-            ))}
-          </ul>
-        </Card>
+      <div ref={stageRef} className="grid md:grid-cols-[1fr_auto_1fr] gap-2 md:gap-0 items-center">
+        <motion.div
+          animate={reduceMotion ? undefined : { y: [0, -2, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <Card className="p-6 md:p-7">
+            <p className="text-[11px] uppercase tracking-[0.2em] text-slate-500 font-mono">A File</p>
+            <p className="mt-2 font-mono text-slate-700 text-sm">photo.jpg</p>
+            <ul className="mt-5 space-y-2.5">
+              {FILE_TRAITS.map((trait) => (
+                <li key={trait} className="flex items-center gap-2.5 text-sm text-slate-500">
+                  <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-slate-300" />
+                  {trait}
+                </li>
+              ))}
+            </ul>
+          </Card>
+        </motion.div>
 
-        <div className="flex items-center justify-center text-slate-300" aria-hidden>
-          <span className="hidden md:inline text-2xl">&rarr;</span>
-          <span className="md:hidden text-2xl">&darr;</span>
-        </div>
+        <TransformationCore phase={phase} reduceMotion={reduceMotion} />
 
         <div className={`rounded-2xl border ${m.border} ${m.soft} p-6 md:p-7`}>
           <p className={`text-[11px] uppercase tracking-[0.2em] font-mono ${m.text}`}>
             AOC-Compatible Digital Asset
           </p>
           <p className="mt-2 font-mono text-slate-700 text-sm">photo.jpg + protocol context</p>
-          <ul className="mt-5 space-y-2.5">
+          <motion.ul
+            className="mt-5 space-y-2.5"
+            variants={traitListVariants}
+            animate={traitsRevealed ? 'visible' : 'hidden'}
+            initial={reduceMotion ? false : 'hidden'}
+          >
             {ASSET_TRAITS.map((trait) => (
-              <li key={trait} className="flex items-center gap-2.5 text-sm text-slate-900">
+              <motion.li
+                key={trait}
+                className="flex items-center gap-2.5 text-sm text-slate-900"
+                variants={traitItemVariants}
+              >
                 <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${m.dot}`} />
                 {trait}
-              </li>
+              </motion.li>
             ))}
-          </ul>
+          </motion.ul>
         </div>
       </div>
 
