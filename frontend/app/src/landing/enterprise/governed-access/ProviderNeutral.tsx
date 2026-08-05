@@ -20,7 +20,7 @@ export function ProviderNeutral() {
           <div
             key={provider.name}
             className={`rounded-[10px] px-3 py-4 text-center ${
-              provider.status === 'live' ? 'bg-indigo-600 shadow-[0_8px_24px_rgba(15,23,42,0.08)]' : 'bg-slate-100'
+              provider.status === 'live' ? 'bg-teal-600 shadow-[0_8px_24px_rgba(15,23,42,0.08)]' : 'bg-slate-100'
             }`}
           >
             <span className={`block text-[13.5px] font-bold ${provider.status === 'live' ? 'text-white' : 'text-slate-900'}`}>
@@ -28,7 +28,7 @@ export function ProviderNeutral() {
             </span>
             <span
               className={`mt-1.5 block text-[9px] font-extrabold tracking-[0.1em] ${
-                provider.status === 'live' ? 'text-indigo-200' : 'text-slate-400'
+                provider.status === 'live' ? 'text-teal-200' : 'text-slate-400'
               }`}
             >
               {provider.status === 'live' ? 'LIVE' : 'ROADMAP'}

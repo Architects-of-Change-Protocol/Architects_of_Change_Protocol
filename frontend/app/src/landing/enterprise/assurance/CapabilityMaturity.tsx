@@ -18,12 +18,12 @@ export function CapabilityMaturity() {
         description="Every capability in scope is rated on this five-level scale — not certified, not pass/fail."
       />
 
-      <PipelineRail steps={RAIL_STEPS} activeIndex={-1} />
+      <PipelineRail steps={RAIL_STEPS} activeIndex={-1} mineral="emerald" />
 
       <div className="mt-12 grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {MATURITY_LEVELS.map((level) => (
           <div key={level.level} className="rounded-xl border border-slate-200 bg-slate-50 p-5">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-indigo-600">Level {level.level}</p>
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-emerald-600">Level {level.level}</p>
             <h4 className="mt-1.5 text-[14.5px] font-extrabold text-slate-900">{level.name}</h4>
             <p className="mt-2.5 text-[12.5px] leading-relaxed text-slate-500">{level.definition}</p>
           </div>

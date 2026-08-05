@@ -52,7 +52,7 @@ export const renderEnterprisePage = () => {
       <BusinessNeeds />
       <ArchitectureExperience />
       <CtaSection />
-      <ProtocolFooter accent="indigo" />
+      <ProtocolFooter accent="sapphire" />
     </main>
   );
 };

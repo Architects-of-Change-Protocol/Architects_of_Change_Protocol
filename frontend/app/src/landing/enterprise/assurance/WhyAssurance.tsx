@@ -24,11 +24,11 @@ export function WhyAssurance() {
           </div>
         </div>
         <div className="rounded-2xl border border-slate-200 bg-white p-6">
-          <p className="text-xs font-bold uppercase tracking-[0.14em] text-indigo-600 mb-4">What implementation alone does not prove</p>
+          <p className="text-xs font-bold uppercase tracking-[0.14em] text-emerald-600 mb-4">What implementation alone does not prove</p>
           <ul className="space-y-2.5">
             {PROOF_GAPS.map((gap) => (
               <li key={gap} className="flex items-start gap-2.5 text-sm text-slate-700">
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-400" aria-hidden />
+                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400" aria-hidden />
                 {gap}
               </li>
             ))}

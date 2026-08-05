@@ -17,12 +17,12 @@ export function Methodology() {
         description="Each stage produces a specific output and defines what we need from you to produce it."
       />
 
-      <PipelineRail steps={RAIL_STEPS} activeIndex={0} />
+      <PipelineRail steps={RAIL_STEPS} activeIndex={0} mineral="emerald" />
 
       <div className="mt-14 grid sm:grid-cols-2 gap-5">
         {METHODOLOGY_STAGES.map((stage, i) => (
           <Card key={stage.label} className="p-6">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-indigo-600">
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-emerald-600">
               {i + 1}. {stage.label}
             </p>
             <dl className="mt-4 space-y-3">

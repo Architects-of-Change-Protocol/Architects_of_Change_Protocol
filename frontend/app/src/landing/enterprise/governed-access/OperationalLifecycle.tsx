@@ -38,12 +38,12 @@ export function OperationalLifecycle() {
             ) : null}
             <div
               className={`relative z-10 flex h-[52px] w-[52px] items-center justify-center rounded-full text-[17px] font-extrabold transition-colors ${
-                active === i ? 'bg-indigo-600 text-white shadow-[0_8px_24px_rgba(15,23,42,0.08)]' : 'bg-indigo-50 text-indigo-600'
+                active === i ? 'bg-teal-600 text-white shadow-[0_8px_24px_rgba(15,23,42,0.08)]' : 'bg-teal-50 text-teal-600'
               }`}
             >
               {i + 1}
             </div>
-            <div className={`mt-4 text-[12.5px] font-bold leading-tight ${active === i ? 'text-indigo-800' : 'text-slate-900'}`}>
+            <div className={`mt-4 text-[12.5px] font-bold leading-tight ${active === i ? 'text-teal-800' : 'text-slate-900'}`}>
               {stage.label}
             </div>
           </button>
@@ -51,7 +51,7 @@ export function OperationalLifecycle() {
       </div>
 
       <Card className="mt-12 max-w-3xl mx-auto px-8 py-7 min-h-[100px] flex flex-col justify-center">
-        <p className="text-xs font-bold uppercase tracking-[0.14em] text-indigo-600">
+        <p className="text-xs font-bold uppercase tracking-[0.14em] text-teal-600">
           {active >= 0 ? LIFECYCLE_STAGES[active].label : 'Every stage'}
         </p>
         <p className="mt-3 text-[15px] leading-relaxed text-slate-900">

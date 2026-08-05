@@ -48,7 +48,7 @@ export function GovernedAccessPage() {
       <Examples />
       <Assessment />
 
-      <ProtocolFooter accent="indigo" />
+      <ProtocolFooter accent="turquoise" />
     </main>
   );
 }

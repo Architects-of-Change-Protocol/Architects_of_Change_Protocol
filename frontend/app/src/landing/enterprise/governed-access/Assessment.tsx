@@ -19,7 +19,7 @@ export function Assessment() {
           description="Four steps from first conversation to a validated, production-bound rollout."
         />
 
-        <PipelineRail steps={ASSESSMENT_STEPS} activeIndex={0} />
+        <PipelineRail steps={ASSESSMENT_STEPS} activeIndex={0} mineral="turquoise" />
       </section>
 
       <section className="scroll-mt-16 bg-[#0B1220] px-6 py-24 md:py-28 text-center">
@@ -33,7 +33,7 @@ export function Assessment() {
 
           <a
             href={CTA_HREF}
-            className="mt-10 inline-flex items-center gap-2.5 rounded-full bg-indigo-600 px-8 py-4 text-sm font-bold text-white shadow-[0_8px_24px_rgba(15,23,42,0.08)] transition-transform hover:-translate-y-0.5 hover:bg-indigo-500"
+            className="mt-10 inline-flex items-center gap-2.5 rounded-full bg-teal-600 px-8 py-4 text-sm font-bold text-white shadow-[0_8px_24px_rgba(15,23,42,0.08)] transition-transform hover:-translate-y-0.5 hover:bg-teal-500"
           >
             Request Technical Assessment
             <svg viewBox="0 0 256 256" className="h-[18px] w-[18px]" fill="currentColor" aria-hidden="true">

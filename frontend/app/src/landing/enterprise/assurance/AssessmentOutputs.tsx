@@ -22,7 +22,7 @@ export function AssessmentOutputs() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {ASSESSMENT_OUTPUTS.map((output) => (
           <div key={output} className="flex items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
-            <IconCircle size="sm">
+            <IconCircle size="sm" mineral="emerald">
               <svg viewBox="0 0 24 24" aria-hidden="true" dangerouslySetInnerHTML={{ __html: CHECK_ICON }} />
             </IconCircle>
             <p className="mt-2.5 text-[13.5px] font-semibold text-slate-900">{output}</p>

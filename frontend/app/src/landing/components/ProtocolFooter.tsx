@@ -1,3 +1,5 @@
+import type { Mineral } from '../enterprise/primitives';
+
 const REPO_URL = 'https://github.com/Architects-of-Change-Protocol/Architects_of_Change_Protocol'
 
 type FooterItem = {
@@ -21,20 +23,41 @@ const navigationLinks: FooterItem[] = [
   { label: 'GitHub', href: REPO_URL, external: true },
 ]
 
-const ACCENT_CLASSES = {
-  cyan: {
-    eyebrow: 'text-cyan-200/60',
-    divider: 'bg-cyan-200/20',
-    primaryButton: 'border-cyan-300/35 bg-cyan-300/90 text-[#031018] hover:bg-cyan-200',
+// Every AOC surface renders the same footer component (shared layout,
+// copy structure and interaction model) — only its Capability Mineral
+// accent changes, per surface: Protocol -> Amethyst, Enterprise ->
+// Sapphire, Governed Access -> Turquoise, Assurance -> Emerald. Amber
+// (reserved for a future AI Governance surface) is defined for
+// completeness even though nothing renders it yet.
+const ACCENT_CLASSES: Record<Mineral, { eyebrow: string; divider: string; primaryButton: string }> = {
+  amethyst: {
+    eyebrow: 'text-violet-200/60',
+    divider: 'bg-violet-200/20',
+    primaryButton: 'border-violet-400/40 bg-violet-500 text-white hover:bg-violet-400',
   },
-  indigo: {
+  sapphire: {
     eyebrow: 'text-indigo-300/70',
     divider: 'bg-indigo-300/20',
     primaryButton: 'border-indigo-400/40 bg-indigo-500 text-white hover:bg-indigo-400',
   },
+  turquoise: {
+    eyebrow: 'text-teal-200/60',
+    divider: 'bg-teal-200/20',
+    primaryButton: 'border-teal-400/40 bg-teal-500 text-white hover:bg-teal-400',
+  },
+  emerald: {
+    eyebrow: 'text-emerald-200/60',
+    divider: 'bg-emerald-200/20',
+    primaryButton: 'border-emerald-400/40 bg-emerald-500 text-white hover:bg-emerald-400',
+  },
+  amber: {
+    eyebrow: 'text-amber-200/60',
+    divider: 'bg-amber-200/20',
+    primaryButton: 'border-amber-400/40 bg-amber-500 text-white hover:bg-amber-400',
+  },
 } as const;
 
-export function ProtocolFooter({ accent = 'cyan' }: { accent?: 'cyan' | 'indigo' }) {
+export function ProtocolFooter({ accent = 'sapphire' }: { accent?: Mineral }) {
   const tone = ACCENT_CLASSES[accent];
   return (
     <section className="border-t border-white/10 bg-[#050816]">

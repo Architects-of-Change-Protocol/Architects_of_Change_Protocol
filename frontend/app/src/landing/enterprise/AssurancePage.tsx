@@ -64,7 +64,7 @@ function AssurancePageContent() {
       <EngagementJourney />
       <Cta />
 
-      <ProtocolFooter accent="indigo" />
+      <ProtocolFooter accent="emerald" />
     </main>
   );
 }

@@ -16,7 +16,7 @@ export function WhoBenefits() {
       <div className="grid md:grid-cols-2 gap-x-10 gap-y-9">
         {AUDIENCES.map((audience) => (
           <div key={audience.title} className="flex items-start gap-5">
-            <IconCircle>
+            <IconCircle mineral="turquoise">
               <svg viewBox="0 0 24 24" aria-hidden="true" dangerouslySetInnerHTML={{ __html: audience.icon }} />
             </IconCircle>
             <div>
