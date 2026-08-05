@@ -15,7 +15,7 @@ export function Capabilities() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {CAPABILITIES.map((capability) => (
           <div key={capability.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
-            <IconCircle size="sm">
+            <IconCircle size="sm" mineral="turquoise">
               <svg viewBox="0 0 24 24" aria-hidden="true" dangerouslySetInnerHTML={{ __html: capability.icon }} />
             </IconCircle>
             <h4 className="mt-3 text-[14.5px] font-extrabold text-slate-900">{capability.title}</h4>

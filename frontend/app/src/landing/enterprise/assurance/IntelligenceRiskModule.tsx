@@ -29,7 +29,7 @@ export function IntelligenceRiskModule() {
         </div>
 
         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
-          <p className="text-xs font-bold uppercase tracking-[0.14em] text-indigo-600 mb-2">Where it sits</p>
+          <p className="text-xs font-bold uppercase tracking-[0.14em] text-emerald-600 mb-2">Where it sits</p>
           <p className="text-[13.5px] leading-relaxed text-slate-600">
             AOC Enterprise
             <br />
@@ -39,7 +39,7 @@ export function IntelligenceRiskModule() {
           </p>
           <a
             href="/assurance/intelligence-risk"
-            className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 hover:text-indigo-500"
+            className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-600 hover:text-emerald-500"
           >
             Explore the Intelligence Risk module
             <span aria-hidden="true">&rarr;</span>

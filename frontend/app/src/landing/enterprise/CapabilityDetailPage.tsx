@@ -29,7 +29,7 @@ export function CapabilityDetailPage({ slug }: { slug: string }) {
         </div>
       </div>
 
-      <ProtocolFooter />
+      <ProtocolFooter accent="sapphire" />
     </main>
   );
 }

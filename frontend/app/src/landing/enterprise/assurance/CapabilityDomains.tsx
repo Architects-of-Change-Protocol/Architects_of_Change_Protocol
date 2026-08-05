@@ -1,4 +1,4 @@
-import { SectionHeader, StatusPill } from '../primitives';
+import { SectionHeader, StatusPill, MineralBadge } from '../primitives';
 import { CAPABILITY_CATALOG, type CapabilityId } from '../content';
 import { CAPABILITY_FAMILIES } from '../../protocol/content';
 
@@ -21,7 +21,10 @@ export function CapabilityDomains() {
 
       <div className="mb-14">
         <div className="flex items-baseline justify-between gap-4 mb-5">
-          <h3 className="text-xl font-extrabold tracking-tight text-slate-900">Domain A &middot; Protocol Sovereignty</h3>
+          <div className="flex items-center gap-3">
+            <h3 className="text-xl font-extrabold tracking-tight text-slate-900">Domain A &middot; Protocol Sovereignty</h3>
+            <MineralBadge mineral="amethyst" />
+          </div>
           <p className="text-xs text-slate-500">{CAPABILITY_FAMILIES.length} capability families</p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -39,7 +42,10 @@ export function CapabilityDomains() {
 
       <div>
         <div className="flex items-baseline justify-between gap-4 mb-5">
-          <h3 className="text-xl font-extrabold tracking-tight text-slate-900">Domain B &middot; Enterprise Governance</h3>
+          <div className="flex items-center gap-3">
+            <h3 className="text-xl font-extrabold tracking-tight text-slate-900">Domain B &middot; Enterprise Governance</h3>
+            <MineralBadge mineral="sapphire" />
+          </div>
           <p className="text-xs text-slate-500">{GOVERNANCE_CAPABILITY_IDS.length} capabilities</p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">

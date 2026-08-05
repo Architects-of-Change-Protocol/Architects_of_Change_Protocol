@@ -13,7 +13,7 @@ export function Hero() {
       <div className="max-w-3xl mx-auto flex flex-col items-center">
         <div className="flex items-center gap-2.5">
           <LogoRotating size={18} inverted />
-          <p className="text-xs font-bold uppercase tracking-[0.14em] text-indigo-300">
+          <p className="text-xs font-bold uppercase tracking-[0.14em] text-teal-300">
             AOC Enterprise &middot; Governed Access
           </p>
         </div>
@@ -28,7 +28,7 @@ export function Hero() {
           Every access request becomes an auditable, revocable and provable operational decision.
         </p>
 
-        <div className="mt-8 flex items-center gap-3 text-[13px] font-bold tracking-[0.16em] text-indigo-300">
+        <div className="mt-8 flex items-center gap-3 text-[13px] font-bold tracking-[0.16em] text-teal-300">
           <span>PROVABLE</span>
           <span className="text-slate-600">&middot;</span>
           <span>REVOCABLE</span>
@@ -38,7 +38,7 @@ export function Hero() {
 
         <a
           href={CTA_HREF}
-          className="mt-10 inline-flex items-center justify-center rounded-full bg-indigo-600 px-7 py-3.5 text-sm font-semibold text-white hover:bg-indigo-500 transition-colors"
+          className="mt-10 inline-flex items-center justify-center rounded-full bg-teal-600 px-7 py-3.5 text-sm font-semibold text-white hover:bg-teal-500 transition-colors"
         >
           Request Technical Assessment
         </a>

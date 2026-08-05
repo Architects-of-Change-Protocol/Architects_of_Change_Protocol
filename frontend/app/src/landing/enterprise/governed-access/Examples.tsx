@@ -17,7 +17,7 @@ export function Examples() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {EXAMPLE_SCENARIOS.map((example) => (
           <div key={example.title} className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
-            <p className="text-[10.5px] font-extrabold uppercase tracking-[0.12em] text-indigo-600">Example Scenario</p>
+            <p className="text-[10.5px] font-extrabold uppercase tracking-[0.12em] text-teal-600">Example Scenario</p>
             <h4 className="mt-2.5 text-[15.5px] font-extrabold text-slate-900">{example.title}</h4>
             <p className="mt-2 text-[12.5px] leading-relaxed text-slate-500">{example.body}</p>
           </div>

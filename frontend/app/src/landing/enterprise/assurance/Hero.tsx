@@ -14,7 +14,7 @@ export function Hero() {
       <div className="max-w-3xl mx-auto flex flex-col items-center">
         <div className="flex items-center gap-2.5">
           <LogoRotating size={18} inverted />
-          <p className="text-xs font-bold uppercase tracking-[0.14em] text-indigo-300">
+          <p className="text-xs font-bold uppercase tracking-[0.14em] text-emerald-300">
             AOC Enterprise &middot; Assurance
           </p>
         </div>
@@ -30,7 +30,7 @@ export function Hero() {
 
         <a
           href={CTA_HREF}
-          className="mt-10 inline-flex items-center justify-center rounded-full bg-indigo-600 px-7 py-3.5 text-sm font-semibold text-white hover:bg-indigo-500 transition-colors"
+          className="mt-10 inline-flex items-center justify-center rounded-full bg-emerald-600 px-7 py-3.5 text-sm font-semibold text-white hover:bg-emerald-500 transition-colors"
         >
           Request Technical Assessment
         </a>

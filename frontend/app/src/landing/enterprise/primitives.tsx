@@ -1,6 +1,9 @@
 import type { ReactNode } from 'react';
 import type { ArchitectureShape, FlowStage } from './content';
 import { FLOW } from './content';
+import { MINERALS, type Mineral } from './minerals';
+
+export type { Mineral, MineralTokens } from './minerals';
 
 // ---------------------------------------------------------------------------
 // AOC Enterprise design system — ported from the canonical commercial
@@ -26,11 +29,25 @@ import { FLOW } from './content';
 // slides (hero, closing CTA); Enterprise follows the same rhythm.
 // ---------------------------------------------------------------------------
 
-export function Eyebrow({ children, tone = 'muted' }: { children: ReactNode; tone?: 'muted' | 'accent' }) {
+/** A small labeled dot-and-text identifier for a capability domain — the
+ * literal "Capability Mineral" badge, used wherever a section or capability
+ * list needs to name which domain it belongs to (e.g. Assurance's two
+ * capability domains, each sourced from a different surface). */
+export function MineralBadge({ mineral, children }: { mineral: Mineral; children?: ReactNode }) {
+  const m = MINERALS[mineral];
+  return (
+    <span className={`inline-flex items-center gap-1.5 rounded-full border ${m.border} ${m.soft} px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide ${m.text}`}>
+      <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${m.dot}`} />
+      {children ?? m.label}
+    </span>
+  );
+}
+
+export function Eyebrow({ children, tone = 'muted', mineral = 'sapphire' }: { children: ReactNode; tone?: 'muted' | 'accent'; mineral?: Mineral }) {
   return (
     <p
       className={`text-xs font-bold uppercase tracking-[0.14em] ${
-        tone === 'accent' ? 'text-indigo-600' : 'text-slate-500'
+        tone === 'accent' ? MINERALS[mineral].text : 'text-slate-500'
       }`}
     >
       {children}
@@ -44,16 +61,18 @@ export function SectionHeader({
   description,
   align = 'left',
   tone = 'muted',
+  mineral = 'sapphire',
 }: {
   eyebrow: ReactNode;
   title: ReactNode;
   description?: ReactNode;
   align?: 'left' | 'center';
   tone?: 'muted' | 'accent';
+  mineral?: Mineral;
 }) {
   return (
     <div className={`max-w-2xl mb-10 md:mb-11 ${align === 'center' ? 'mx-auto text-center' : ''}`}>
-      <Eyebrow tone={tone}>{eyebrow}</Eyebrow>
+      <Eyebrow tone={tone} mineral={mineral}>{eyebrow}</Eyebrow>
       <h2 className="mt-3.5 text-3xl md:text-[2.5rem] font-extrabold tracking-tight text-slate-900 leading-[1.15]">
         {title}
       </h2>
@@ -72,23 +91,25 @@ export function Card({ children, className = '' }: { children: ReactNode; classN
 }
 
 /** Small circular icon badge — the deck's `.icon-circle`. */
-export function IconCircle({ children, size = 'md' }: { children: ReactNode; size?: 'sm' | 'md' }) {
+export function IconCircle({ children, size = 'md', mineral = 'sapphire' }: { children: ReactNode; size?: 'sm' | 'md'; mineral?: Mineral }) {
   const dims = size === 'sm' ? 'h-12 w-12' : 'h-[60px] w-[60px]';
   const iconDims = size === 'sm' ? '[&_svg]:h-[22px] [&_svg]:w-[22px]' : '[&_svg]:h-7 [&_svg]:w-7';
+  const m = MINERALS[mineral];
   return (
-    <div className={`flex items-center justify-center rounded-full bg-indigo-50 text-indigo-600 ${dims} ${iconDims}`}>
+    <div className={`flex items-center justify-center rounded-full ${m.soft} ${m.text} ${dims} ${iconDims}`}>
       {children}
     </div>
   );
 }
 
 /** Pill/chip — the deck's `.chip` (muted or accent-filled). */
-export function Chip({ children, tone = 'muted' }: { children: ReactNode; tone?: 'muted' | 'accent' }) {
+export function Chip({ children, tone = 'muted', mineral = 'sapphire' }: { children: ReactNode; tone?: 'muted' | 'accent'; mineral?: Mineral }) {
+  const m = MINERALS[mineral];
   return (
     <span
       className={`inline-flex items-center rounded-[10px] px-5 py-3 text-[15px] font-bold ${
         tone === 'accent'
-          ? 'bg-indigo-600 text-white shadow-[0_8px_24px_rgba(15,23,42,0.08)]'
+          ? `${m.solid} text-white shadow-[0_8px_24px_rgba(15,23,42,0.08)]`
           : 'bg-slate-100 text-slate-500'
       }`}
     >
@@ -101,10 +122,13 @@ export function Chip({ children, tone = 'muted' }: { children: ReactNode; tone?:
 export function PipelineRail({
   steps,
   activeIndex,
+  mineral = 'sapphire',
 }: {
   steps: { label: string; sub?: string }[];
   activeIndex: number;
+  mineral?: Mineral;
 }) {
+  const m = MINERALS[mineral];
   return (
     <div className="flex items-start flex-wrap md:flex-nowrap gap-y-8">
       {steps.map((step, i) => (
@@ -115,13 +139,13 @@ export function PipelineRail({
           <div
             className={`relative z-10 flex h-[52px] w-[52px] items-center justify-center rounded-full text-[17px] font-extrabold ${
               i === activeIndex
-                ? 'bg-indigo-600 text-white shadow-[0_8px_24px_rgba(15,23,42,0.08)]'
-                : 'bg-indigo-50 text-indigo-600'
+                ? `${m.solid} text-white shadow-[0_8px_24px_rgba(15,23,42,0.08)]`
+                : `${m.soft} ${m.text}`
             }`}
           >
             {i + 1}
           </div>
-          <div className={`mt-4 text-[13.5px] font-bold ${i === activeIndex ? 'text-indigo-800' : 'text-slate-900'}`}>
+          <div className={`mt-4 text-[13.5px] font-bold ${i === activeIndex ? m.textDeep : 'text-slate-900'}`}>
             {step.label}
           </div>
           {step.sub ? <div className="mt-1.5 text-[11.5px] italic text-slate-500">{step.sub}</div> : null}
@@ -132,16 +156,44 @@ export function PipelineRail({
 }
 
 /** Three-number statistic row — the deck's `.stat-row`. */
-export function StatRow({ stats }: { stats: { num: string; label: string }[] }) {
+export function StatRow({ stats, mineral = 'sapphire' }: { stats: { num: string; label: string }[]; mineral?: Mineral }) {
+  const m = MINERALS[mineral];
   return (
     <div className="mt-7 grid grid-cols-3">
       {stats.map((stat) => (
         <div key={stat.label} className="text-center">
-          <div className="text-[44px] md:text-[56px] font-extrabold leading-none text-indigo-600">{stat.num}</div>
+          <div className={`text-[44px] md:text-[56px] font-extrabold leading-none ${m.text}`}>{stat.num}</div>
           <div className="mt-2.5 text-[13px] text-slate-500">{stat.label}</div>
         </div>
       ))}
     </div>
+  );
+}
+
+/** Light-themed vertical numbered step flow — the light-primary counterpart
+ * to PipelineRail's horizontal layout, for narratives that read top-to-bottom
+ * (asset-creation and worked-example flows). Mineral-aware like every other
+ * shared primitive. */
+export function StepFlow({ steps, mineral = 'sapphire' }: { steps: { label: string; detail: string }[]; mineral?: Mineral }) {
+  const m = MINERALS[mineral];
+  return (
+    <ol className="space-y-0">
+      {steps.map((step, idx) => (
+        <li key={step.label} className="relative pl-9">
+          {idx < steps.length - 1 ? (
+            <span aria-hidden className="absolute left-[11px] top-7 bottom-[-4px] w-px bg-slate-200" />
+          ) : null}
+          <span
+            aria-hidden
+            className={`absolute left-0 top-0.5 flex h-[22px] w-[22px] items-center justify-center rounded-full ${m.soft} text-[11px] font-mono ${m.text}`}
+          >
+            {idx + 1}
+          </span>
+          <p className="text-sm font-semibold text-slate-900">{step.label}</p>
+          <p className="mt-1 mb-6 text-sm leading-relaxed text-slate-500">{step.detail}</p>
+        </li>
+      ))}
+    </ol>
   );
 }
 
@@ -167,7 +219,8 @@ export function StatusPill({ label }: { label: string }) {
 
 /** Small geometric node glyph used for architecture pattern cards — deliberately abstract
  * (a hub-and-spoke diagram) rather than illustrative, so it reads as architecture, not iconography. */
-export function NodeGlyph({ shape }: { shape: ArchitectureShape }) {
+export function NodeGlyph({ shape, mineral = 'sapphire' }: { shape: ArchitectureShape; mineral?: Mineral }) {
+  const m = MINERALS[mineral];
   const hub = (() => {
     switch (shape) {
       case 'circle':
@@ -194,7 +247,7 @@ export function NodeGlyph({ shape }: { shape: ArchitectureShape }) {
   ];
 
   return (
-    <svg viewBox="0 0 36 36" width="36" height="36" className="text-indigo-500">
+    <svg viewBox="0 0 36 36" width="36" height="36" className={m.text}>
       {satellites.map(([x, y]) => (
         <line key={`${x}-${y}`} x1="18" y1="18" x2={x} y2={y} stroke="currentColor" strokeOpacity="0.35" strokeWidth="1" />
       ))}

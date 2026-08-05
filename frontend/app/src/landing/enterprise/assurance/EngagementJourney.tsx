@@ -16,7 +16,7 @@ export function EngagementJourney() {
         description="The Technical Assessment is the first engagement — and it stands on its own. Findings and a roadmap are useful even if you never move to implementation with us."
       />
 
-      <PipelineRail steps={RAIL_STEPS} activeIndex={0} />
+      <PipelineRail steps={RAIL_STEPS} activeIndex={0} mineral="emerald" />
 
       <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {ENGAGEMENT_JOURNEY.map((stage) => (
