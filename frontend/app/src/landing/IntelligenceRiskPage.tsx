@@ -8,17 +8,20 @@ import {
 } from './assuranceIndexData';
 import { ConstitutionalBenchmarkExplorer } from './components/ConstitutionalBenchmarkExplorer';
 import { Breadcrumbs } from './components/Breadcrumbs';
+import { useIntelligenceRiskPageMeta } from './useIntelligenceRiskPageMeta';
 import './assurance.css';
 
-// Assurance is an Enterprise Service, not an independent product — its own
-// nav therefore points back up to Enterprise (its parent), not directly to
-// Protocol. See routes.ts / enterprise/Nav.tsx for the approved hierarchy.
+// Intelligence Risk is a specialized assessment module inside AOC Assurance
+// (see docs/w007-assurance-canonical-assessment-layer.md) — not a top-level
+// Enterprise offering. Its own nav therefore points back up to Assurance
+// (its immediate parent), not directly to Enterprise or Protocol. See
+// routes.ts / enterprise/Nav.tsx for the approved hierarchy.
 const NAV_ITEMS = [
   { label: 'Risk', href: '#risk' },
   { label: 'Assessments', href: '#assessments' },
   { label: 'Learn More', href: '#learn-more' },
   { label: 'FAQ', href: '#faq' },
-  { label: 'Enterprise', href: '/?view=enterprise' },
+  { label: 'Assurance', href: '/?view=assurance' },
 ];
 
 const FOUNDATION_CHECKOUT_URL = 'https://buy.stripe.com/aFa5kD1Kfgcp67N11gejK01';
@@ -48,6 +51,7 @@ const FOOTER_LINK_GROUPS = [
     title: 'Company',
     links: [
       { label: 'About AOC Assurance', href: '/assurance/about' },
+      { label: 'AOC Assurance', href: '/?view=assurance' },
       { label: 'AOC Enterprise', href: '/?view=enterprise' },
       { label: 'About AOC Protocol', href: '/' },
       { label: 'Privacy Policy', href: '/assurance/privacy' },
@@ -288,6 +292,10 @@ const ASK_YOURSELF_QUESTIONS = [
 
 const FAQ_ITEMS = [
   {
+    q: 'Is Intelligence Risk a separate product from AOC Assurance?',
+    a: 'No. Intelligence Risk is one specialized assessment module inside AOC Assurance, focused on institutional knowledge continuity. AOC Assurance itself evaluates the full sovereignty capability surface defined by AOC Protocol and the governance capability surface operated by AOC Enterprise — see the AOC Assurance overview.',
+  },
+  {
     q: 'Is AOC Assurance a knowledge management tool?',
     a: 'No. Knowledge management stores information. AOC Assurance measures whether critical organizational intelligence is governed, traceable, resilient, and usable through change.',
   },
@@ -366,7 +374,8 @@ function AssuranceFooter() {
 
 type LearnMoreId = 'framework' | 'founder-essay' | 'index';
 
-const AssurancePage = () => {
+const IntelligenceRiskPage = () => {
+  useIntelligenceRiskPageMeta();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [openLearnMore, setOpenLearnMore] = useState<LearnMoreId | null>(null);
   const [showStickyCta, setShowStickyCta] = useState(false);
@@ -440,7 +449,7 @@ const AssurancePage = () => {
             <LogoRotating size={28} inverted />
             <div className="flex items-baseline gap-2">
               <span className="text-xl font-semibold tracking-tighter">AOC</span>
-              <span className="text-xs text-emerald-400 uppercase tracking-[0.2em]">Assurance</span>
+              <span className="text-xs text-emerald-400 uppercase tracking-[0.2em]">Intelligence Risk</span>
             </div>
           </a>
 
@@ -499,14 +508,15 @@ const AssurancePage = () => {
           { label: 'Protocol', href: '/' },
           { label: 'Enterprise', href: '/?view=enterprise' },
           { label: 'Services' },
-          { label: 'Assurance' },
+          { label: 'Assurance', href: '/?view=assurance' },
+          { label: 'Intelligence Risk' },
         ]}
       />
 
       {/* ── Hero ── */}
       <section className="assurance-hero-glow relative pt-28 pb-32 text-center px-6">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-6">
-          AOC Assurance
+          AOC Assurance &middot; Intelligence Risk Module
         </p>
         <h1 className="text-5xl md:text-7xl font-semibold tracking-[-2.5px] leading-[1.05] max-w-4xl mx-auto mb-8">
           How much of your company's intelligence would survive tomorrow?
@@ -1154,4 +1164,4 @@ const AssurancePage = () => {
   );
 };
 
-export const renderAssurancePage = () => <AssurancePage />;
+export const renderIntelligenceRiskPage = () => <IntelligenceRiskPage />;

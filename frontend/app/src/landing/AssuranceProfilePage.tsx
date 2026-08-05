@@ -47,7 +47,7 @@ function ProfileContent({ organization }: { organization: ConstitutionalIndexOrg
     <>
       <header className="assurance-profile-header">
         <div>
-          <a className="assurance-profile-back" href="/?view=assurance#index">
+          <a className="assurance-profile-back" href="/assurance/intelligence-risk#index">
             <span aria-hidden="true">←</span> Constitutional Index
           </a>
           <p className="assurance-profile-eyebrow">Public Constitutional Profile</p>
@@ -156,14 +156,14 @@ export function AssuranceProfilePage({ slug }: { slug: string }) {
     <main className="min-h-screen bg-[#070d0b] text-white font-sans">
       <nav className="sticky top-0 z-30 backdrop-blur bg-[#070d0b]/80 border-b border-white/10">
         <div className="max-w-7xl mx-auto h-16 px-6 flex items-center justify-between">
-          <a href="/?view=assurance" className="flex items-center gap-3">
+          <a href="/assurance/intelligence-risk" className="flex items-center gap-3">
             <LogoRotating size={28} inverted />
             <div className="flex items-baseline gap-2">
               <span className="text-xl font-semibold tracking-tighter">AOC</span>
               <span className="text-xs text-emerald-400 uppercase tracking-[0.2em]">Constitutional Index</span>
             </div>
           </a>
-          <a className="assurance-profile-nav-link" href="/?view=assurance#index">
+          <a className="assurance-profile-nav-link" href="/assurance/intelligence-risk#index">
             Constitutional Index
           </a>
         </div>
@@ -177,7 +177,7 @@ export function AssuranceProfilePage({ slug }: { slug: string }) {
             <p className="assurance-profile-eyebrow">Public Constitutional Profile</p>
             <h1>Organization not found</h1>
             <p>This organization does not have a public AOC Constitutional Index profile.</p>
-            <a className="assurance-profile-primary-cta" href="/?view=assurance#index">
+            <a className="assurance-profile-primary-cta" href="/assurance/intelligence-risk#index">
               Return to the Index
             </a>
           </section>

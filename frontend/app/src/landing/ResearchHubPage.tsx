@@ -361,7 +361,7 @@ function ResearchNav() {
       className="sticky top-0 z-40 flex items-center justify-between gap-4 border-b border-white/8 bg-[#070d0b]/90 px-4 py-3 backdrop-blur-md sm:px-6"
       aria-label="Research Hub navigation"
     >
-      <a href="/?view=assurance" className="flex items-center gap-2.5" aria-label="Back to AOC Assurance">
+      <a href="/assurance/intelligence-risk" className="flex items-center gap-2.5" aria-label="Back to AOC Assurance">
         <LogoRotating size={26} inverted />
         <span className="text-sm font-semibold text-white/90">AOC Assurance</span>
       </a>
@@ -428,7 +428,7 @@ function ResearchFooter() {
             <h4 className="text-xs font-medium uppercase tracking-[0.18em] text-white/40">AOC Assurance</h4>
             <ul className="mt-4 space-y-2.5">
               {[
-                { label: 'Constitutional Index', href: '/?view=assurance' },
+                { label: 'Constitutional Index', href: '/assurance/intelligence-risk' },
                 { label: 'About', href: '/assurance/about' },
                 { label: 'Contact', href: '/?view=contact' },
                 { label: 'Privacy Policy', href: '/assurance/privacy' },
@@ -693,7 +693,7 @@ export function ResearchHubPage() {
               </ul>
               <div className="mt-8">
                 <a
-                  href="/?view=assurance#map"
+                  href="/assurance/intelligence-risk#map"
                   className="inline-flex items-center justify-center rounded-2xl border border-white/20 px-6 py-3 text-sm font-medium text-white/80 transition-colors hover:border-white/35 hover:text-white"
                 >
                   Explore the Constitutional Matrix

@@ -24,6 +24,10 @@ export const ROUTES = {
     },
     services: {
       assurance: '/?view=assurance',
+      // Intelligence Risk is a specialized module inside Assurance, not a
+      // peer service — nested under a path, not its own ROUTES.enterprise
+      // .services entry. See docs/w007-assurance-canonical-assessment-layer.md.
+      assuranceIntelligenceRisk: '/assurance/intelligence-risk',
     },
   },
 } as const;

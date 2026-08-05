@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AocLandingPage } from './landing/AocLandingPage';
-import { renderAssurancePage } from './landing/AssurancePage';
+import { renderAssurancePage } from './landing/enterprise/AssurancePage';
+import { renderIntelligenceRiskPage } from './landing/IntelligenceRiskPage';
 import { AssuranceProfilePage } from './landing/AssuranceProfilePage';
 import { AboutPage, MethodologyPage, PrivacyPage, ResearchPage, TermsPage } from './landing/AssuranceSupportPages';
 import { GovVsSovPage } from './landing/GovVsSovPage';
@@ -50,6 +51,7 @@ export default function App() {
       return <AssessmentPlaceholderPage slug={slug} />;
     }
   }
+  if (pathname === '/assurance/intelligence-risk') return renderIntelligenceRiskPage();
   if (pathname === '/assurance/privacy') return <PrivacyPage />;
   if (pathname === '/assurance/terms') return <TermsPage />;
   if (pathname === '/assurance/methodology') return <MethodologyPage />;

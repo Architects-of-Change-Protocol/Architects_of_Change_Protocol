@@ -149,6 +149,11 @@ const statusToneMap: Record<string, string> = {
   Stable: 'text-emerald-600 border-emerald-400/40 bg-emerald-50',
   Beta: 'text-indigo-600 border-indigo-400/40 bg-indigo-50',
   Preview: 'text-amber-600 border-amber-400/40 bg-amber-50',
+  // AOC Protocol's ClaimStatus values (landing/protocol/content.ts) — reused
+  // here so AOC Assurance can render Protocol's own capability-status
+  // labels verbatim instead of inventing a parallel badge vocabulary.
+  'Reference Model': 'text-indigo-600 border-indigo-400/40 bg-indigo-50',
+  'Future Direction': 'text-amber-600 border-amber-400/40 bg-amber-50',
 };
 
 export function StatusPill({ label }: { label: string }) {
