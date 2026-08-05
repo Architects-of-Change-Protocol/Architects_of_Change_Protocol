@@ -27,7 +27,10 @@ const PHASE_AT = { gather: 0, assemble: 900, pulse: 1200, emit: 1420, rest: 2200
 
 export function useTransformationPhase(ref: React.RefObject<Element | null>) {
   const inView = useInView(ref, { amount: 0.35 });
-  const reduceMotion = useReducedMotion();
+  // useReducedMotion() returns null until it can read the media query client
+  // side; treat "not yet known" as "motion allowed" rather than propagating
+  // a nullable flag through components that expect a plain boolean.
+  const reduceMotion = useReducedMotion() ?? false;
   const [sequencePhase, setSequencePhase] = useState<TransformPhase>('idle');
   const timers = useRef<number[]>([]);
 
