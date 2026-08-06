@@ -29,6 +29,18 @@ module.exports = {
     '<rootDir>/aoc/capabilities/core/__tests__/**/*.test.ts',
     '<rootDir>/runtime/__tests__/controlPlaneRevocation.test.ts',
     '<rootDir>/runtime/api/__tests__/routesRevocation.test.ts',
+    // Sovereign Asset Protocol Slice 0 (SAP-GAP-008 / SAP-GAP-010): activate
+    // the existing asset/content foundation and the crypto engine's own
+    // tests into the real build/test graph. These suites already passed
+    // when run directly — they were simply excluded from testMatch and so
+    // invisible to CI. See docs/architecture/asset-layer-canonicalization.md.
+    '<rootDir>/crypto/__tests__/**/*.test.ts',
+    '<rootDir>/content/__tests__/**/*.test.ts',
+    '<rootDir>/pack/__tests__/**/*.test.ts',
+    '<rootDir>/field/__tests__/**/*.test.ts',
+    '<rootDir>/storage/__tests__/**/*.test.ts',
+    '<rootDir>/resolver/__tests__/**/*.test.ts',
+    '<rootDir>/sdl/__tests__/**/*.test.ts',
   ],
   moduleNameMapper: {
     '^@aoc/protocol/contracts$': '<rootDir>/packages/protocol/src/contracts',

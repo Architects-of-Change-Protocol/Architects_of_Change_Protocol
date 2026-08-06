@@ -3,6 +3,14 @@ import { computeContentHash } from './hash';
 import { BuildContentOptions, ContentManifestV1 } from './types';
 import { StoragePointer } from '../storage/types';
 
+/**
+ * Builds the LEGACY/CURRENT content manifest and its `content_hash`. This
+ * is deliberately preserved as-is by AOC Protocol Slice 0 even though the
+ * hash includes `storage` (violating the future Sovereign Asset principle
+ * that content identity must not depend on where the bytes are stored) —
+ * that redesign belongs to a future sovereign-identity slice, not this
+ * one. See content/contentId.ts for the corresponding note.
+ */
 export function buildContentManifest(
   subject: string,
   content_type: string,

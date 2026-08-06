@@ -1,5 +1,6 @@
 import { createCipheriv, createDecipheriv, createHash, generateKeyPairSync, randomBytes, sign, verify } from 'node:crypto';
 
+import { canonicalizeJSON } from './canonicalize';
 import type { EncryptedObject, GovernanceSignature, RuntimeAuthorityIdentity } from './types';
 
 const NONCE_LENGTH = 12;
@@ -17,19 +18,15 @@ const assertKeyLength = (key: Uint8Array): void => {
   }
 };
 
-const canonicalize = (value: unknown): unknown => {
-  if (value === null || value === undefined) return value;
-  if (Array.isArray(value)) return value.map(canonicalize);
-  if (typeof value !== 'object') return value;
-
-  const obj = value as Record<string, unknown>;
-  return Object.keys(obj).sort().reduce<Record<string, unknown>>((acc, key) => {
-    acc[key] = canonicalize(obj[key]);
-    return acc;
-  }, {});
-};
-
-export const canonicalSerialize = (value: unknown): string => JSON.stringify(canonicalize(value));
+/**
+ * The crypto engine's serialization step for hashing and signing. Delegates
+ * entirely to the single authoritative AOC Canonical JSON implementation
+ * (see ./canonicalize.ts) — this engine must never carry its own inline
+ * canonicalization logic, since any divergence here is directly
+ * security-relevant (it would let the same logical payload hash/sign
+ * differently depending on call path).
+ */
+export const canonicalSerialize = (value: unknown): string => canonicalizeJSON(value);
 
 export const stableHash = (value: unknown): string =>
   createHash('sha256').update(canonicalSerialize(value)).digest('base64url');
