@@ -33,7 +33,7 @@ export function FileToAsset() {
         mineral="amethyst"
       />
 
-      <div ref={stageRef} className="grid md:grid-cols-[minmax(0,34rem)_auto_minmax(0,34rem)] xl:grid-cols-[34rem_auto_34rem] md:justify-center gap-2 md:gap-0 items-center">
+      <div ref={stageRef} className="grid md:grid-cols-[minmax(0,26rem)_auto_minmax(0,26rem)] xl:grid-cols-[26rem_auto_26rem] md:justify-center gap-2 md:gap-0 items-center">
         <motion.div
           animate={reduceMotion ? undefined : { y: [0, -2, 0] }}
           transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
