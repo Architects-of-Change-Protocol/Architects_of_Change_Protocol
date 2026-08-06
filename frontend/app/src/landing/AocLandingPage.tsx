@@ -3,7 +3,7 @@ import { ProtocolNav } from './protocol/Nav';
 import { Hero } from './protocol/Hero';
 import { FileToAsset } from './protocol/FileToAsset';
 import { CapabilityDockSection } from './protocol/CapabilityDockSection';
-import { AssetCreationFlow } from './protocol/AssetCreationFlow';
+import { AssetComposition } from './protocol/AssetComposition';
 import { PhotographExample } from './protocol/PhotographExample';
 import { ProviderNeutral } from './protocol/ProviderNeutral';
 import { ProtocolToEnterprise } from './protocol/ProtocolToEnterprise';
@@ -35,7 +35,7 @@ export const AocLandingPage = () => {
           now fused into one Capability Dock (see CapabilityDockSection.tsx). */}
       <span id="sovereignty" aria-hidden="true" className="block h-0" />
       <CapabilityDockSection />
-      <AssetCreationFlow />
+      <AssetComposition />
       <PhotographExample />
       <ProviderNeutral />
       <ProtocolToEnterprise />
