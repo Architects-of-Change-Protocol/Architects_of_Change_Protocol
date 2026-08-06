@@ -38,12 +38,12 @@ export function FileToAsset() {
           animate={reduceMotion ? undefined : { y: [0, -2, 0] }}
           transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <Card className="p-6 md:p-7">
-            <p className="text-[11px] uppercase tracking-[0.2em] text-slate-500 font-mono">A File</p>
-            <p className="mt-2 font-mono text-slate-700 text-sm">photo.jpg</p>
-            <ul className="mt-5 space-y-2.5">
+          <Card className="flex flex-col justify-center p-6 md:h-60 md:p-5">
+            <p className="text-xs uppercase tracking-[0.2em] text-slate-500 font-mono">A File</p>
+            <p className="mt-2 font-mono text-slate-700 text-base leading-5">photo.jpg</p>
+            <ul className="mt-4 space-y-1.5">
               {FILE_TRAITS.map((trait) => (
-                <li key={trait} className="flex items-center gap-2.5 text-sm text-slate-500">
+                <li key={trait} className="flex items-center gap-2.5 text-[15px] leading-5 text-slate-500">
                   <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-slate-300" />
                   {trait}
                 </li>
@@ -54,13 +54,13 @@ export function FileToAsset() {
 
         <TransformationCore phase={phase} reduceMotion={reduceMotion} />
 
-        <div className={`rounded-2xl border ${m.border} ${m.soft} p-6 md:p-7`}>
-          <p className={`text-[11px] uppercase tracking-[0.2em] font-mono ${m.text}`}>
+        <div className={`flex flex-col justify-center rounded-2xl border ${m.border} ${m.soft} p-6 md:h-60 md:p-5`}>
+          <p className={`text-xs uppercase tracking-[0.2em] font-mono ${m.text}`}>
             AOC-Compatible Digital Asset
           </p>
-          <p className="mt-2 font-mono text-slate-700 text-sm">photo.jpg + protocol context</p>
+          <p className="mt-2 font-mono text-slate-700 text-base leading-5">photo.jpg + protocol context</p>
           <motion.ul
-            className="mt-5 space-y-2.5"
+            className="mt-4 space-y-1.5"
             variants={traitListVariants}
             animate={traitsRevealed ? 'visible' : 'hidden'}
             initial={reduceMotion ? false : 'hidden'}
@@ -68,7 +68,7 @@ export function FileToAsset() {
             {ASSET_TRAITS.map((trait) => (
               <motion.li
                 key={trait}
-                className="flex items-center gap-2.5 text-sm text-slate-900"
+                className="flex items-center gap-2.5 text-[15px] leading-5 text-slate-900"
                 variants={traitItemVariants}
               >
                 <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${m.dot}`} />
