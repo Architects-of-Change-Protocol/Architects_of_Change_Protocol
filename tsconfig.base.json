@@ -80,6 +80,15 @@
       "@aoc/protocol/runtime-registry": [
         "packages/protocol/src/runtime-registry"
       ],
+      "@aoc/protocol/canonical": [
+        "packages/protocol/src/canonical"
+      ],
+      "@aoc/protocol/identity": [
+        "packages/protocol/src/identity"
+      ],
+      "@aoc/protocol/manifest": [
+        "packages/protocol/src/manifest"
+      ],
       "@aoc/enterprise": [
         "enterprise/src"
       ],
