@@ -1,6 +1,16 @@
 import { buildAOCId } from '../aocId';
 import { ContentManifestV1 } from './types';
 
+/**
+ * LEGACY/CURRENT content-manifest identity — this is NOT the future
+ * `SovereignAssetId`. It incorporates `manifest.storage` (backend/hash/uri)
+ * into the id, which conflates content identity with storage location; a
+ * future sovereign-identity slice will separate the two. This function's
+ * hashing/id-derivation behavior is preserved unchanged by the
+ * canonicalization consolidation in this slice (AOC Protocol Slice 0) —
+ * see content/__tests__/legacy-identity-stability.test.ts for pinned
+ * fixture output.
+ */
 export function buildContentId(manifest: ContentManifestV1): string {
   if (typeof manifest.subject !== 'string' || manifest.subject.trim() === '') {
     throw new Error('Content subject must be non-empty.');
