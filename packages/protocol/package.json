@@ -44,6 +44,18 @@
       "types": "./dist/runtime-registry/index.d.ts",
       "default": "./dist/runtime-registry/index.js"
     },
+    "./canonical": {
+      "types": "./dist/canonical/index.d.ts",
+      "default": "./dist/canonical/index.js"
+    },
+    "./identity": {
+      "types": "./dist/identity/index.d.ts",
+      "default": "./dist/identity/index.js"
+    },
+    "./manifest": {
+      "types": "./dist/manifest/index.d.ts",
+      "default": "./dist/manifest/index.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
