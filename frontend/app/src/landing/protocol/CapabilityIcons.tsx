@@ -3,10 +3,9 @@
 // ../enterprise/primitives.tsx — rather than illustrative, so the resting
 // grid reads as a set of precise sculptural marks, not clip-art.
 
-import type { ReactElement, SVGProps } from 'react';
-import type { CapabilityFamily } from './content';
+import type { SVGProps } from 'react';
 
-type IconProps = SVGProps<SVGSVGElement>;
+export type IconProps = SVGProps<SVGSVGElement>;
 
 const base = {
   viewBox: '0 0 24 24',
@@ -17,7 +16,7 @@ const base = {
   strokeLinejoin: 'round' as const,
 };
 
-function IdentityIcon(props: IconProps) {
+export function IdentityIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>
       <circle cx="12" cy="8.5" r="3.25" />
@@ -26,7 +25,7 @@ function IdentityIcon(props: IconProps) {
   );
 }
 
-function IntegrityIcon(props: IconProps) {
+export function IntegrityIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>
       <path d="M12 3.5l6.5 2.6v5.1c0 4.6-2.9 7.7-6.5 9.3-3.6-1.6-6.5-4.7-6.5-9.3V6.1L12 3.5z" />
@@ -35,7 +34,7 @@ function IntegrityIcon(props: IconProps) {
   );
 }
 
-function ProvenanceIcon(props: IconProps) {
+export function ProvenanceIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>
       <path d="M6.5 3.5h7l4 4v13a1 1 0 01-1 1h-10a1 1 0 01-1-1v-16a1 1 0 011-1z" />
@@ -45,7 +44,7 @@ function ProvenanceIcon(props: IconProps) {
   );
 }
 
-function PortabilityIcon(props: IconProps) {
+export function PortabilityIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>
       <path d="M4.5 8.5h15v11a1 1 0 01-1 1h-13a1 1 0 01-1-1v-11z" />
@@ -56,7 +55,7 @@ function PortabilityIcon(props: IconProps) {
   );
 }
 
-function InteroperabilityIcon(props: IconProps) {
+export function InteroperabilityIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>
       <circle cx="9.25" cy="12" r="5" />
@@ -65,7 +64,7 @@ function InteroperabilityIcon(props: IconProps) {
   );
 }
 
-function VerifiabilityIcon(props: IconProps) {
+export function VerifiabilityIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>
       <circle cx="12" cy="12" r="8.5" />
@@ -74,7 +73,7 @@ function VerifiabilityIcon(props: IconProps) {
   );
 }
 
-function LicensingIcon(props: IconProps) {
+export function LicensingIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>
       <path d="M3.5 12V4.5a1 1 0 011-1h7.5l8.5 8.5-8.5 8.5-8.5-8.5z" />
@@ -83,7 +82,7 @@ function LicensingIcon(props: IconProps) {
   );
 }
 
-function GovernanceCompatibilityIcon(props: IconProps) {
+export function GovernanceCompatibilityIcon(props: IconProps) {
   return (
     <svg {...base} {...props}>
       <path d="M12 3.5v17" />
@@ -94,14 +93,3 @@ function GovernanceCompatibilityIcon(props: IconProps) {
     </svg>
   );
 }
-
-export const CAPABILITY_ICONS: Record<CapabilityFamily['id'], (props: IconProps) => ReactElement> = {
-  identity: IdentityIcon,
-  integrity: IntegrityIcon,
-  provenance: ProvenanceIcon,
-  portability: PortabilityIcon,
-  interoperability: InteroperabilityIcon,
-  verifiability: VerifiabilityIcon,
-  licensing: LicensingIcon,
-  'governance-compatibility': GovernanceCompatibilityIcon,
-};
