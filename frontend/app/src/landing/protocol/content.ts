@@ -95,18 +95,31 @@ export const CAPABILITY_FAMILIES: CapabilityFamily[] = [
   },
 ];
 
-export type CreationStep = {
-  label: string;
-  detail: string;
+// The Asset Composition section's narrative (frontend/app/src/landing/
+// protocol/AssetComposition.tsx) — replaces what used to be a six-step
+// creation-flow timeline with a single idea: a digital asset gains value as
+// capabilities are composed into it, not by moving through steps. Copy is
+// deliberately written for a business audience, not an engineering one — no
+// "canonical", "SDK", "protocol contract" or "declared digest".
+export const COMPOSITION_EYEBROW = 'Digital Asset Composition';
+export const COMPOSITION_HEADLINE = 'Meaning is added one capability at a time.';
+export const COMPOSITION_PARAGRAPH =
+  "A file becomes a digital asset as capabilities are incorporated into it. Each one adds something the file didn't have on its own — an identity that holds, proof it hasn't changed, a record of where it came from, the ability to move between systems without losing what it is. It doesn't become an asset because another step happened. It becomes one because another piece of meaning was added.";
+export const COMPOSITION_CTA_LABEL = 'See what a digital asset can express';
+export const COMPOSITION_CTA_HREF = '#capabilities';
+
+export type CompositionLayer = {
+  name: string;
+  sentence: string;
 };
 
-export const CREATION_FLOW: CreationStep[] = [
-  { label: 'Application or Tool', detail: 'A compatible application originates or ingests a digital resource.' },
-  { label: 'Digital Resource Created or Registered', detail: 'A file, dataset or record is produced or brought under protocol reference.' },
-  { label: 'Canonical Identity Assigned', detail: "An identity that doesn't depend on the storage location is attached to the resource." },
-  { label: 'Integrity and Provenance Recorded', detail: 'A digest and issuer/time context are declared for the resource.' },
-  { label: 'Capabilities Declared', detail: 'The asset states what it can express — licensing references, governance compatibility, and more.' },
-  { label: 'Asset Available to Compatible Systems', detail: 'Compatible applications and, where deployed, AOC Enterprise can now interpret the asset.' },
+export const COMPOSITION_LAYERS: CompositionLayer[] = [
+  { name: 'Identity', sentence: 'It becomes identifiable — recognized as itself, no matter where it is stored.' },
+  { name: 'Integrity', sentence: "It becomes trustworthy — provably unchanged from the moment it was created." },
+  { name: 'Origin', sentence: 'It becomes traceable — carrying where it came from and what has happened to it since.' },
+  { name: 'Capabilities', sentence: 'It becomes expressive — able to state what it allows and what it means.' },
+  { name: 'Portability', sentence: 'It becomes portable — able to move between systems without losing itself.' },
+  { name: 'Compatibility', sentence: 'It becomes understandable — readable by every system built to recognize it.' },
 ];
 
 export type PhotoStage = {
