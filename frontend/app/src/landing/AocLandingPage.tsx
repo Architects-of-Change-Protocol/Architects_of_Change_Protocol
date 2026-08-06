@@ -2,8 +2,7 @@ import { ProtocolFooter } from './components/ProtocolFooter';
 import { ProtocolNav } from './protocol/Nav';
 import { Hero } from './protocol/Hero';
 import { FileToAsset } from './protocol/FileToAsset';
-import { CapabilityFamilies } from './protocol/CapabilityFamilies';
-import { Sovereignty } from './protocol/Sovereignty';
+import { CapabilityDockSection } from './protocol/CapabilityDockSection';
 import { AssetCreationFlow } from './protocol/AssetCreationFlow';
 import { PhotographExample } from './protocol/PhotographExample';
 import { ProviderNeutral } from './protocol/ProviderNeutral';
@@ -31,8 +30,11 @@ export const AocLandingPage = () => {
 
       <Hero />
       <FileToAsset />
-      <CapabilityFamilies />
-      <Sovereignty />
+      {/* id="sovereignty" is a legacy deep-link target: the section used to be
+          split into a Capabilities grid and a separate Sovereignty pitch,
+          now fused into one Capability Dock (see CapabilityDockSection.tsx). */}
+      <span id="sovereignty" aria-hidden="true" className="block h-0" />
+      <CapabilityDockSection />
       <AssetCreationFlow />
       <PhotographExample />
       <ProviderNeutral />
