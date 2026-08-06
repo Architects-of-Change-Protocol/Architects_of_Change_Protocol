@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyPayloadSignature = exports.signPayload = exports.createRuntimeAuthority = exports.decryptObject = exports.encryptObject = exports.stableHash = exports.canonicalSerialize = void 0;
 const node_crypto_1 = require("node:crypto");
+const canonicalize_1 = require("./canonicalize");
 const NONCE_LENGTH = 12;
 const KEY_LENGTH = 32;
 const toBase64Url = (data) => Buffer.from(data).toString('base64url');
@@ -11,20 +12,15 @@ const assertKeyLength = (key) => {
         throw new Error(`Invalid key length: expected ${KEY_LENGTH} bytes`);
     }
 };
-const canonicalize = (value) => {
-    if (value === null || value === undefined)
-        return value;
-    if (Array.isArray(value))
-        return value.map(canonicalize);
-    if (typeof value !== 'object')
-        return value;
-    const obj = value;
-    return Object.keys(obj).sort().reduce((acc, key) => {
-        acc[key] = canonicalize(obj[key]);
-        return acc;
-    }, {});
-};
-const canonicalSerialize = (value) => JSON.stringify(canonicalize(value));
+/**
+ * The crypto engine's serialization step for hashing and signing. Delegates
+ * entirely to the single authoritative AOC Canonical JSON implementation
+ * (see ./canonicalize.ts) — this engine must never carry its own inline
+ * canonicalization logic, since any divergence here is directly
+ * security-relevant (it would let the same logical payload hash/sign
+ * differently depending on call path).
+ */
+const canonicalSerialize = (value) => (0, canonicalize_1.canonicalizeJSON)(value);
 exports.canonicalSerialize = canonicalSerialize;
 const stableHash = (value) => (0, node_crypto_1.createHash)('sha256').update((0, exports.canonicalSerialize)(value)).digest('base64url');
 exports.stableHash = stableHash;
