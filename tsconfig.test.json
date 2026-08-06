@@ -4,5 +4,5 @@
     "types": ["node", "jest"],
     "noEmit": true
   },
-  "exclude": ["node_modules", "**/dist/**", "crypto/node-compat.d.ts"]
+  "exclude": ["node_modules", "**/dist/**", "crypto/node-compat.d.ts", "packages/protocol/src/node-compat.d.ts"]
 }

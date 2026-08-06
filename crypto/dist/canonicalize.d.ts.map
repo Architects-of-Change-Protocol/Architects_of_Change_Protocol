@@ -1,1 +1,1 @@
-{"version":3,"file":"canonicalize.d.ts","sourceRoot":"","sources":["../canonicalize.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;GAsCG;AAEH,eAAO,MAAM,sBAAsB,EAAG,sBAA+B,CAAC;AAEtE,wBAAgB,gBAAgB,CAAC,KAAK,EAAE,GAAG,GAAG,MAAM,CAmDnD"}
+{"version":3,"file":"canonicalize.d.ts","sourceRoot":"","sources":["../canonicalize.ts"],"names":[],"mappings":"AAAA;;;;;;;;;GASG;AACH,OAAO,EAAE,gBAAgB,EAAE,sBAAsB,EAAE,MAAM,yBAAyB,CAAC"}

@@ -1,0 +1,1 @@
+{"version":3,"file":"state.d.ts","sourceRoot":"","sources":["../../src/manifest/state.ts"],"names":[],"mappings":"AAAA;;;;;;;;;GASG;AACH,eAAO,MAAM,mBAAmB;IAC9B,sEAAsE;;IAEtE,4EAA4E;;IAE5E,6EAA6E;;IAE7E,gEAAgE;;CAExD,CAAC;AACX,MAAM,MAAM,mBAAmB,GAAG,CAAC,OAAO,mBAAmB,CAAC,CAAC,MAAM,OAAO,mBAAmB,CAAC,CAAC;AAEjG,wBAAgB,0BAA0B,CAAC,KAAK,EAAE,OAAO,GAAG,KAAK,IAAI,mBAAmB,CAEvF"}

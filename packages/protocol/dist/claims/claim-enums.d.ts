@@ -6,6 +6,24 @@ export declare const ClaimType: {
     readonly Role: "Role";
     readonly Credential: "Credential";
     readonly Governance: "Governance";
+    /**
+     * A declaration of where/how a subject (typically a SovereignAssetId)
+     * came to exist. Origin claims are epistemically honest by construction:
+     * a valid signature proves the issuer asserted the claim, not that the
+     * asserted origin is historically or legally true. See
+     * `@aoc/protocol/manifest`'s `OriginClaim`.
+     */
+    readonly Origin: "Origin";
+    /**
+     * A declaration of authorship, rights, or other non-governance authority
+     * over a subject (typically a SovereignAssetId) — e.g. "issuer asserts
+     * they authored this asset" or "issuer asserts they hold distribution
+     * rights". Distinct from `Authorization` (which is about permission to
+     * perform an action) and from legal ownership, which this claim type
+     * never establishes on its own. See `@aoc/protocol/manifest`'s
+     * `AuthorityClaim` and `AuthorityClaimKind`.
+     */
+    readonly Authorship: "Authorship";
     readonly Custom: "Custom";
 };
 export type ClaimType = (typeof ClaimType)[keyof typeof ClaimType];
@@ -46,6 +64,13 @@ export declare const StandingStatus: {
     readonly Superseded: "Superseded";
     readonly Invalid: "Invalid";
     readonly NotYetActive: "NotYetActive";
+    /**
+     * A competing or challenging assertion exists against the referenced
+     * claim. Contested standing preserves the claim and its evidence as
+     * history — it neither deletes the claim nor picks a winner. Protocol
+     * records the dispute; adjudication (legal or institutional) is external.
+     */
+    readonly Contested: "Contested";
 };
 export type StandingStatus = (typeof StandingStatus)[keyof typeof StandingStatus];
 export declare const AuthorityStatus: {
