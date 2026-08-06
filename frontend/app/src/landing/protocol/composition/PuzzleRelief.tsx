@@ -27,10 +27,14 @@ import { PUZZLE_PIECE_PATH, PUZZLE_PIECE_VIEWBOX } from './puzzlePiece';
 // (a gradient swept across an element's own silhouette via
 // objectBoundingBox, restarted on an irregular cadence so it never reads as
 // a mechanical loop) -- see GrazingSweep below.
+//
+// The overlay fills whatever positioned box its caller gives it (see
+// AssetComposition.tsx, which sizes and places that box at 55-70% of the
+// section's width) rather than carrying its own fixed offsets -- that box is
+// also where the capability copy lives, in plain unrotated document flow, so
+// the relief and the words it falls across always share one coordinate
+// frame.
 // ---------------------------------------------------------------------------
-
-const PUZZLE_SVG_CLASS =
-  'absolute -right-10 top-12 h-[480px] w-[480px] sm:-right-6 sm:h-[620px] sm:w-[620px] md:top-16 md:h-[760px] md:w-[760px] lg:-right-4 lg:h-[860px] lg:w-[860px]';
 
 /** The section's base material: a near-white fabric tone and nothing else.
  * No shape lives here on purpose -- see PuzzleReliefOverlay. */
@@ -152,51 +156,74 @@ export function PuzzleReliefOverlay() {
   const { run, seed } = useGrazingLight(!reduceMotion);
 
   return (
-    <div className="pointer-events-none absolute inset-0 z-20 overflow-hidden" aria-hidden role="presentation">
+    <div className="pointer-events-none absolute inset-0 z-20" aria-hidden role="presentation">
       <svg
         viewBox={PUZZLE_PIECE_VIEWBOX}
         preserveAspectRatio="xMidYMid meet"
-        className={PUZZLE_SVG_CLASS}
-        style={{ transform: 'rotate(-7deg)' }}
+        className="absolute inset-0 h-full w-full"
+        style={{ transform: 'rotate(-6deg)' }}
       >
         <defs>
           <linearGradient id={`${gradientId}-surface`} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.09" />
-            <stop offset="100%" stopColor="#e7e4ee" stopOpacity="0.04" />
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.24" />
+            <stop offset="100%" stopColor="#e7e4ee" stopOpacity="0.11" />
           </linearGradient>
         </defs>
 
         {/* ambient occlusion -- the wide, soft shadow the piece casts into the sheet.
             A blend mode reaches every opaque pixel beneath it at full strength (there's
             no translucency left to dilute it), so these opacities read roughly 3x
-            stronger than the same numbers would on a translucent panel -- tuned down
-            accordingly to stay a whisper, not a graphic. */}
+            stronger than the same numbers would on a translucent panel. This is the
+            piece's centerpiece now (the six capabilities live inside it), so it has to
+            read at a glance rather than stay a background whisper -- tuned for
+            legibility of the silhouette, not for maximum subtlety. */}
         <path
           d={PUZZLE_PIECE_PATH}
           fill="#0f172a"
-          opacity={0.02}
-          style={{ filter: 'blur(30px)', transform: 'translate(10px, 16px)', mixBlendMode: 'multiply' }}
+          opacity={0.05}
+          style={{ filter: 'blur(26px)', transform: 'translate(10px, 16px)', mixBlendMode: 'multiply' }}
         />
         {/* the raised rim -- shadow, lower-right */}
         <path
           d={PUZZLE_PIECE_PATH}
           fill="#0f172a"
-          opacity={0.035}
-          style={{ filter: 'blur(11px)', transform: 'translate(4px, 6px)', mixBlendMode: 'multiply' }}
+          opacity={0.11}
+          style={{ filter: 'blur(8px)', transform: 'translate(4px, 6px)', mixBlendMode: 'multiply' }}
         />
-        {/* the raised rim -- highlight, upper-left. Kept noticeably weaker than the
-            shadow layers above: soft-light lightens whatever it crosses, and where it
-            crosses card body text (already dark) that reads as a visible contrast dip
-            past roughly this opacity -- multiply-based shadow doesn't have the same
-            problem, since multiplying already-dark text by a light color barely moves it. */}
+        {/* the raised rim -- highlight, upper-left. Kept weaker than the shadow layers
+            above: soft-light lightens whatever it crosses, and where it crosses card
+            body text (already dark) that reads as a visible contrast dip past roughly
+            this opacity -- multiply-based shadow doesn't have the same problem, since
+            multiplying already-dark text by a light color barely moves it. */}
         <path
           d={PUZZLE_PIECE_PATH}
           fill="#ffffff"
-          opacity={0.06}
-          style={{ filter: 'blur(9px)', transform: 'translate(-3px, -4px)', mixBlendMode: 'soft-light' }}
+          opacity={0.16}
+          style={{ filter: 'blur(7px)', transform: 'translate(-3px, -4px)', mixBlendMode: 'soft-light' }}
         />
-        {/* the surface itself -- a whisper of tone, not a printed shape */}
+        {/* the surface itself -- a tone shift, not a printed shape */}
         <path d={PUZZLE_PIECE_PATH} fill={`url(#${gradientId}-surface)`} style={{ mixBlendMode: 'soft-light' }} />
+
+        {/* the machined edge -- a crisp hairline contour is what makes the tab and
+            socket read as an unmistakable jigsaw silhouette rather than a diffuse
+            blob; paired dark/light lines one px apart read as an engraved seam,
+            the way a precision-cut edge catches light on two sides at once. */}
+        <path
+          d={PUZZLE_PIECE_PATH}
+          fill="none"
+          stroke="#0f172a"
+          strokeWidth={1.5}
+          opacity={0.16}
+          style={{ transform: 'translate(0.6px, 0.6px)', mixBlendMode: 'multiply' }}
+        />
+        <path
+          d={PUZZLE_PIECE_PATH}
+          fill="none"
+          stroke="#ffffff"
+          strokeWidth={1.5}
+          opacity={0.4}
+          style={{ transform: 'translate(-0.6px, -0.6px)', mixBlendMode: 'soft-light' }}
+        />
 
         {!reduceMotion ? (
           <g key={run}>
