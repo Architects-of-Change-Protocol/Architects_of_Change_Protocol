@@ -295,9 +295,9 @@ export function TransformationCore({ phase, reduceMotion = false }: { phase: Tra
   // state rather than a slowed-down version of the sequence.
   if (reduceMotion) {
     return (
-      <div className="relative mx-auto flex h-28 w-28 items-center justify-center md:h-32 md:w-32" role="presentation" aria-hidden>
-        <div className="absolute h-20 w-20 rounded-full bg-[radial-gradient(circle,rgba(139,92,246,0.5),transparent_72%)] opacity-20 blur-xl" />
-        <svg viewBox="0 0 100 100" className="relative h-14 w-14 md:h-16 md:w-16">
+      <div className="relative mx-auto flex h-32 w-32 items-center justify-center md:h-[9.5rem] md:w-[9.5rem]" role="presentation" aria-hidden>
+        <div className="absolute h-24 w-24 rounded-full bg-[radial-gradient(circle,rgba(139,92,246,0.5),transparent_72%)] opacity-20 blur-xl" />
+        <svg viewBox="0 0 100 100" className="relative h-16 w-16 md:h-[4.75rem] md:w-[4.75rem]">
           {FACETS.map((facet, i) => (
             <polygon key={i} points={facet.points} fill="#8b5cf6" stroke="#ede9fe" strokeOpacity={0.35} strokeWidth={0.6} opacity={facet.opacity} />
           ))}
@@ -308,12 +308,12 @@ export function TransformationCore({ phase, reduceMotion = false }: { phase: Tra
 
   return (
     <div
-      className="relative mx-auto flex h-28 w-28 items-center justify-center md:h-32 md:w-32"
+      className="relative mx-auto flex h-32 w-32 items-center justify-center md:h-[9.5rem] md:w-[9.5rem]"
       role="presentation"
       aria-hidden
     >
       <motion.div
-        className="absolute h-20 w-20 rounded-full bg-[radial-gradient(circle,rgba(139,92,246,0.5),transparent_72%)] blur-xl"
+        className="absolute h-24 w-24 rounded-full bg-[radial-gradient(circle,rgba(139,92,246,0.5),transparent_72%)] blur-xl"
         variants={glowVariants}
         animate={phase}
         initial="idle"
@@ -325,7 +325,7 @@ export function TransformationCore({ phase, reduceMotion = false }: { phase: Tra
 
       <motion.svg
         viewBox="0 0 100 100"
-        className="relative h-14 w-14 md:h-16 md:w-16"
+        className="relative h-16 w-16 md:h-[4.75rem] md:w-[4.75rem]"
         variants={gemVariants}
         animate={phase}
         initial="idle"
