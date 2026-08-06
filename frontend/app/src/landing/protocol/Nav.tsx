@@ -12,7 +12,6 @@ import { MINERALS } from '../enterprise/minerals';
 const NAV_ITEMS = [
   { label: 'Digital Assets', href: '/#digital-asset' },
   { label: 'Capabilities', href: '/#capabilities' },
-  { label: 'Sovereignty', href: '/#sovereignty' },
   { label: 'Enterprise', href: '/?view=enterprise' },
   { label: 'About', href: '/?view=about' },
 ];

@@ -20,65 +20,78 @@ export type CapabilityFamily = {
   summary: string;
 };
 
+// The Capability Dock's fused narrative (frontend/app/src/landing/protocol/
+// CapabilityDockSection.tsx) — one eyebrow, one headline, one paragraph
+// replacing what used to be two separate sections making overlapping
+// points: CapabilityFamilies.tsx's "what a digital asset can declare" grid,
+// and Sovereignty.tsx's "keeps its meaning wherever it goes" pitch.
+export const CAPABILITY_DOCK_EYEBROW = 'What can a digital asset express?';
+export const CAPABILITY_DOCK_HEADLINE = 'A digital asset should keep its meaning wherever it goes.';
+export const CAPABILITY_DOCK_PARAGRAPH =
+  "Capabilities are the properties a digital asset can declare about itself. Together, they preserve its identity, integrity, origin, terms and meaning as it moves across systems, applications and custodians.";
+
 // The eight capability families a digital asset can express. Grounded in the
 // canonical contract shapes already published in packages/protocol/src —
 // not a claim that a runtime or creation SDK implements them end to end.
+// Also the shared source for AOC Assurance's "Capability Domains" (see
+// landing/enterprise/assurance/CapabilityDomains.tsx) — id/name/status/
+// summary is a public shape read by that page too, so keep it stable.
 export const CAPABILITY_FAMILIES: CapabilityFamily[] = [
   {
     id: 'identity',
     name: 'Identity',
     status: 'Reference Model',
     summary:
-      "A canonical identity and credential reference that name an asset independent of any single database, application or account.",
+      'A persistent, verifiable identity that names the asset independent of any single database, application or account.',
   },
   {
     id: 'integrity',
     name: 'Integrity',
     status: 'Reference Model',
     summary:
-      'A declared digest — algorithm plus hash — that lets a compatible system check whether the underlying resource has changed.',
+      "Proves the asset still matches its canonical definition — so it's still the original, not just whatever you were handed.",
   },
   {
     id: 'provenance',
     name: 'Provenance',
     status: 'Reference Model',
     summary:
-      "Issuer and issuance-time fields that record where an asset's context came from and when it was established.",
+      'Preserves where the asset came from, who registered it, and everything that has happened to it since.',
   },
   {
     id: 'portability',
     name: 'Portability',
     status: 'Reference Model',
     summary:
-      'A registry reference that lets an asset be looked up and resolved independent of which provider currently stores it.',
+      'Lets the asset move across systems, applications or custodians without losing its essential meaning.',
   },
   {
     id: 'interoperability',
     name: 'Interoperability',
     status: 'Reference Model',
     summary:
-      'Adapter interfaces for verification, revocation and registry lookup that any compatible runtime can implement.',
+      'Lets different systems understand and work with the asset consistently, without a one-off integration for each pair.',
   },
   {
     id: 'verifiability',
     name: 'Verifiability',
     status: 'Reference Model',
     summary:
-      'Proof references and verification-key resolution that let a claim about an asset be checked without trusting whoever presents it.',
+      "Lets an independent party validate the asset's claims and properties directly, instead of trusting whoever presents them.",
   },
   {
     id: 'licensing',
     name: 'Licensing & Terms',
     status: 'Future Direction',
     summary:
-      "References an asset's manifest could carry to policies, licenses or economic arrangements. Not yet defined as a canonical contract.",
+      'Would carry the terms that define how the asset may be accessed, used or shared — a protocol direction, not yet a canonical contract.',
   },
   {
     id: 'governance-compatibility',
     name: 'Governance Compatibility',
     status: 'Reference Model',
     summary:
-      'Capability and consent shapes that Protocol defines and that AOC Enterprise operationalizes into access decisions, grants and revocation.',
+      "Lets governance systems interpret the asset's capabilities and apply rules around it — consent, access, revocation.",
   },
 ];
 
