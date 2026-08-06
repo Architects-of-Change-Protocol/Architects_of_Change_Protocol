@@ -108,18 +108,21 @@ export const COMPOSITION_PARAGRAPH =
 export const COMPOSITION_CTA_LABEL = 'See what a digital asset can express';
 export const COMPOSITION_CTA_HREF = '#capabilities';
 
+export type CompositionCapabilityId = 'identity' | 'integrity' | 'origin' | 'capabilities' | 'portability' | 'compatibility';
+
 export type CompositionLayer = {
+  id: CompositionCapabilityId;
   name: string;
   sentence: string;
 };
 
 export const COMPOSITION_LAYERS: CompositionLayer[] = [
-  { name: 'Identity', sentence: 'It becomes identifiable — recognized as itself, no matter where it is stored.' },
-  { name: 'Integrity', sentence: "It becomes trustworthy — provably unchanged from the moment it was created." },
-  { name: 'Origin', sentence: 'It becomes traceable — carrying where it came from and what has happened to it since.' },
-  { name: 'Capabilities', sentence: 'It becomes expressive — able to state what it allows and what it means.' },
-  { name: 'Portability', sentence: 'It becomes portable — able to move between systems without losing itself.' },
-  { name: 'Compatibility', sentence: 'It becomes understandable — readable by every system built to recognize it.' },
+  { id: 'identity', name: 'Identity', sentence: 'It becomes identifiable — recognized as itself, no matter where it is stored.' },
+  { id: 'integrity', name: 'Integrity', sentence: "It becomes trustworthy — provably unchanged from the moment it was created." },
+  { id: 'origin', name: 'Origin', sentence: 'It becomes traceable — carrying where it came from and what has happened to it since.' },
+  { id: 'capabilities', name: 'Capabilities', sentence: 'It becomes expressive — able to state what it allows and what it means.' },
+  { id: 'portability', name: 'Portability', sentence: 'It becomes portable — able to move between systems without losing itself.' },
+  { id: 'compatibility', name: 'Compatibility', sentence: 'It becomes understandable — readable by every system built to recognize it.' },
 ];
 
 export type PhotoStage = {
