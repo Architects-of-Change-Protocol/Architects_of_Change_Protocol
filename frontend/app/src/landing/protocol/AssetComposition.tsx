@@ -89,6 +89,41 @@ export function AssetComposition() {
 
               <PuzzleReliefOverlay />
             </div>
+
+            {/* A quiet editorial sign-off: the six capabilities remain the
+                contents of the puzzle, while this sits outside its boundary
+                as their collective outcome. The lettering and wink are
+                decorative paths/strokes, not a seventh capability or extra
+                screen-reader announcement. */}
+            <svg
+              viewBox="0 0 280 92"
+              aria-hidden="true"
+              role="presentation"
+              className="pointer-events-none mx-auto -mt-3 block h-auto w-[210px] max-w-full overflow-visible text-slate-500/65 sm:-mt-7 sm:mr-1 sm:ml-auto sm:w-[245px] md:-mt-9 md:mr-3 md:w-[270px]"
+            >
+              <g className="hidden sm:block" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M10 8 C 38 11, 45 37, 77 38 C 94 39, 105 32, 116 25" strokeWidth="1.7" />
+                <path d="M108 23 C 112 23, 116 24, 120 27 C 116 29, 113 32, 111 35" strokeWidth="1.7" />
+              </g>
+              <text
+                x="61"
+                y="68"
+                fill="currentColor"
+                fontFamily="'Segoe Print', 'Bradley Hand', cursive"
+                fontSize="27"
+                fontStyle="italic"
+                letterSpacing="-1.2"
+                transform="rotate(-3 61 68)"
+              >
+                Sovereignty
+              </text>
+              <path d="M67 76 C 120 83, 184 78, 222 70" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.1" opacity="0.62" />
+              <g fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5">
+                <path d="M238 52 l5 1" />
+                <path d="M252 51 q3 3 0 6" />
+                <path d="M240 62 q7 7 14 0" />
+              </g>
+            </svg>
           </div>
         </div>
 
