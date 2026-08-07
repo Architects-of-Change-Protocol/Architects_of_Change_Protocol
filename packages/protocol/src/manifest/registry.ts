@@ -27,10 +27,24 @@ import type { SignedSovereignManifest } from './manifest';
  */
 export interface SovereignAssetRegistry {
   register(signed: SignedSovereignManifest): void | Promise<void>;
+  /** Resolve the latest registered version for an asset. */
   resolve(sovereignAssetId: SovereignAssetId): SignedSovereignManifest | null | Promise<SignedSovereignManifest | null>;
+  /** Resolve an exact historical version; implementations must not substitute the latest version. */
+  resolveVersion(
+    sovereignAssetId: SovereignAssetId,
+    manifestVersion: number,
+  ): SignedSovereignManifest | null | Promise<SignedSovereignManifest | null>;
   findByContentDigest(
     contentIdentity: ContentIdentity,
   ): readonly SignedSovereignManifest[] | Promise<readonly SignedSovereignManifest[]>;
+}
+
+export function resolveSovereignAssetVersion(
+  sovereignAssetRegistry: SovereignAssetRegistry,
+  sovereignAssetId: SovereignAssetId,
+  manifestVersion: number,
+): SignedSovereignManifest | null | Promise<SignedSovereignManifest | null> {
+  return sovereignAssetRegistry.resolveVersion(sovereignAssetId, manifestVersion);
 }
 
 /**

@@ -13,16 +13,22 @@ import { contentIdentityKey } from '@aoc/protocol/identity';
  * registry behind the same `SovereignAssetRegistry` interface.
  */
 export class InMemorySovereignAssetRegistry implements SovereignAssetRegistry {
-  private readonly byId = new Map<SovereignAssetId, SignedSovereignManifest>();
+  private readonly byId = new Map<SovereignAssetId, Map<number, SignedSovereignManifest>>();
   private readonly byContentDigest = new Map<string, SignedSovereignManifest[]>();
 
   register(signed: SignedSovereignManifest): void {
     const id = signed.manifest.sovereignAssetId;
-    if (this.byId.has(id)) {
-      throw new Error(`Sovereign asset already registered: ${id}`);
+    const versions = this.byId.get(id) ?? new Map<number, SignedSovereignManifest>();
+    const version = signed.manifest.manifestVersion;
+    if (versions.has(version)) {
+      throw new Error(`Sovereign asset version already registered: ${id}@${version}`);
     }
-
-    this.byId.set(id, signed);
+    const latest = Math.max(0, ...versions.keys());
+    if (version <= latest) {
+      throw new Error(`Sovereign asset manifest version must increase: ${id}@${version}`);
+    }
+    versions.set(version, signed);
+    this.byId.set(id, versions);
 
     const key = contentIdentityKey(signed.manifest.contentIdentity);
     const existing = this.byContentDigest.get(key) ?? [];
@@ -31,7 +37,13 @@ export class InMemorySovereignAssetRegistry implements SovereignAssetRegistry {
   }
 
   resolve(sovereignAssetId: SovereignAssetId): SignedSovereignManifest | null {
-    return this.byId.get(sovereignAssetId) ?? null;
+    const versions = this.byId.get(sovereignAssetId);
+    if (!versions) return null;
+    return versions.get(Math.max(...versions.keys())) ?? null;
+  }
+
+  resolveVersion(sovereignAssetId: SovereignAssetId, manifestVersion: number): SignedSovereignManifest | null {
+    return this.byId.get(sovereignAssetId)?.get(manifestVersion) ?? null;
   }
 
   findByContentDigest(contentIdentity: ContentIdentity): readonly SignedSovereignManifest[] {
