@@ -1,6 +1,5 @@
 import { motion, useTransform, type MotionValue } from 'framer-motion';
 import type { CapabilityFamily } from '../content';
-import { StatusPill } from '../../enterprise/primitives';
 import { CapabilityMineral } from './CapabilityMineral';
 import { useCardInfluence } from './useDockProximity';
 import {
@@ -89,9 +88,6 @@ export function CapabilityCard({
       >
         <div id={detailId} className="overflow-hidden">
           <p className="text-[13.5px] leading-relaxed text-slate-500">{capability.summary}</p>
-          <div className="mt-3">
-            <StatusPill label={capability.status} />
-          </div>
         </div>
       </motion.div>
     </motion.button>
