@@ -1,5 +1,6 @@
 import { SectionHeader } from '../enterprise/primitives';
 import { MINERALS } from '../enterprise/minerals';
+import { CrystalCluster } from './CrystalCluster';
 
 const PROTOCOL_OWNS = ['Identity', 'Integrity', 'Capabilities', 'Sovereignty', 'Interoperability'];
 const ENTERPRISE_OWNS = ['Governance', 'Access', 'Decisions', 'Obligations', 'Grants', 'Revocation', 'Evidence', 'Assurance'];
@@ -22,28 +23,38 @@ export function ProtocolToEnterprise() {
       />
 
       <div className="grid md:grid-cols-2 gap-6">
-        <div className={`rounded-2xl border ${amethyst.border} ${amethyst.soft} p-6 md:p-7`}>
-          <p className={`text-[11px] uppercase tracking-[0.2em] font-mono ${amethyst.text}`}>AOC Protocol defines</p>
-          <ul className="mt-5 space-y-2.5">
-            {PROTOCOL_OWNS.map((item) => (
-              <li key={item} className="flex items-center gap-2.5 text-sm text-slate-900">
-                <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${amethyst.dot}`} />
-                {item}
-              </li>
-            ))}
-          </ul>
+        <div className={`relative overflow-hidden rounded-2xl border ${amethyst.border} ${amethyst.soft} p-6 md:p-7`}>
+          <div className="relative z-10">
+            <p className={`text-[11px] uppercase tracking-[0.2em] font-mono ${amethyst.text}`}>AOC Protocol defines</p>
+            <ul className="mt-5 space-y-2.5">
+              {PROTOCOL_OWNS.map((item) => (
+                <li key={item} className="flex items-center gap-2.5 text-sm text-slate-900">
+                  <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${amethyst.dot}`} />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="pointer-events-none absolute bottom-3 right-3 hidden h-[78%] w-[38%] sm:block md:bottom-4 md:right-4 md:h-[76%] md:w-[40%] lg:right-6 lg:w-[38%]">
+            <CrystalCluster variant="protocol" />
+          </div>
         </div>
 
-        <div className={`rounded-2xl border ${sapphire.border} ${sapphire.soft} p-6 md:p-7`}>
-          <p className={`text-[11px] uppercase tracking-[0.2em] font-mono ${sapphire.text}`}>AOC Enterprise operationalizes</p>
-          <ul className="mt-5 space-y-2.5">
-            {ENTERPRISE_OWNS.map((item) => (
-              <li key={item} className="flex items-center gap-2.5 text-sm text-slate-900">
-                <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${sapphire.dot}`} />
-                {item}
-              </li>
-            ))}
-          </ul>
+        <div className={`relative overflow-hidden rounded-2xl border ${sapphire.border} ${sapphire.soft} p-6 md:p-7`}>
+          <div className="relative z-10">
+            <p className={`text-[11px] uppercase tracking-[0.2em] font-mono ${sapphire.text}`}>AOC Enterprise operationalizes</p>
+            <ul className="mt-5 space-y-2.5">
+              {ENTERPRISE_OWNS.map((item) => (
+                <li key={item} className="flex items-center gap-2.5 text-sm text-slate-900">
+                  <span aria-hidden className={`h-1.5 w-1.5 rounded-full ${sapphire.dot}`} />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="pointer-events-none absolute bottom-3 right-3 hidden h-[78%] w-[38%] sm:block md:bottom-4 md:right-4 md:h-[76%] md:w-[40%] lg:right-6 lg:w-[38%]">
+            <CrystalCluster variant="enterprise" />
+          </div>
         </div>
       </div>
 
