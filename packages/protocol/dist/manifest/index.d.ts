@@ -11,5 +11,5 @@ export { validateSovereignManifestV1, buildSovereignManifestV1, computeManifestD
 export type { CheckOutcome, BindingOutcome, SovereignManifestVerificationChecks, SovereignManifestVerificationResult, VerifySovereignManifestOptions, } from './verify';
 export { verifySovereignManifest } from './verify';
 export type { SovereignAssetRegistry } from './registry';
-export { resolveSovereignAsset } from './registry';
+export { resolveSovereignAsset, resolveSovereignAssetVersion } from './registry';
 //# sourceMappingURL=index.d.ts.map

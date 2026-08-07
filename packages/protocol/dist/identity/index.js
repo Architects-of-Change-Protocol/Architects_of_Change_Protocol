@@ -1,10 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.contentIdentityKey = exports.verifyContentIdentity = exports.contentIdentitiesEqual = exports.isValidContentIdentity = exports.computeContentIdentity = exports.ContentDigestAlgorithm = exports.assertValidSovereignAssetId = exports.isValidSovereignAssetId = exports.mintSovereignAssetId = void 0;
+exports.contentIdentityKey = exports.verifyContentIdentity = exports.contentIdentitiesEqual = exports.isValidContentIdentity = exports.computeContentIdentity = exports.ContentDigestAlgorithm = exports.parseSovereignAssetId = exports.assertValidSovereignAssetId = exports.isValidSovereignAssetId = exports.mintSovereignAssetId = void 0;
 var sovereign_asset_id_1 = require("./sovereign-asset-id");
 Object.defineProperty(exports, "mintSovereignAssetId", { enumerable: true, get: function () { return sovereign_asset_id_1.mintSovereignAssetId; } });
 Object.defineProperty(exports, "isValidSovereignAssetId", { enumerable: true, get: function () { return sovereign_asset_id_1.isValidSovereignAssetId; } });
 Object.defineProperty(exports, "assertValidSovereignAssetId", { enumerable: true, get: function () { return sovereign_asset_id_1.assertValidSovereignAssetId; } });
+Object.defineProperty(exports, "parseSovereignAssetId", { enumerable: true, get: function () { return sovereign_asset_id_1.parseSovereignAssetId; } });
 var content_identity_1 = require("./content-identity");
 Object.defineProperty(exports, "ContentDigestAlgorithm", { enumerable: true, get: function () { return content_identity_1.ContentDigestAlgorithm; } });
 var content_identity_2 = require("./content-identity");
