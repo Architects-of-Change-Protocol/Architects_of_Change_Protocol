@@ -29,31 +29,21 @@ const navigationLinks: FooterItem[] = [
 // Sapphire, Governed Access -> Turquoise, Assurance -> Emerald. Amber
 // (reserved for a future AI Governance surface) is defined for
 // completeness even though nothing renders it yet.
-const ACCENT_CLASSES: Record<Mineral, { eyebrow: string; divider: string; primaryButton: string }> = {
+const ACCENT_CLASSES: Record<Mineral, { divider: string }> = {
   amethyst: {
-    eyebrow: 'text-violet-200/60',
     divider: 'bg-violet-200/20',
-    primaryButton: 'border-violet-400/40 bg-violet-500 text-white hover:bg-violet-400',
   },
   sapphire: {
-    eyebrow: 'text-indigo-300/70',
     divider: 'bg-indigo-300/20',
-    primaryButton: 'border-indigo-400/40 bg-indigo-500 text-white hover:bg-indigo-400',
   },
   turquoise: {
-    eyebrow: 'text-teal-200/60',
     divider: 'bg-teal-200/20',
-    primaryButton: 'border-teal-400/40 bg-teal-500 text-white hover:bg-teal-400',
   },
   emerald: {
-    eyebrow: 'text-emerald-200/60',
     divider: 'bg-emerald-200/20',
-    primaryButton: 'border-emerald-400/40 bg-emerald-500 text-white hover:bg-emerald-400',
   },
   amber: {
-    eyebrow: 'text-amber-200/60',
     divider: 'bg-amber-200/20',
-    primaryButton: 'border-amber-400/40 bg-amber-500 text-white hover:bg-amber-400',
   },
 } as const;
 
@@ -62,29 +52,7 @@ export function ProtocolFooter({ accent = 'sapphire' }: { accent?: Mineral }) {
   return (
     <section className="border-t border-white/10 bg-[#050816]">
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 pb-6 pt-12 md:pt-16">
-        <div className="footer-fade rounded-3xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01))] px-4 sm:px-6 py-8 text-center md:px-10 md:py-12">
-          <p className={`text-[11px] uppercase tracking-[0.24em] ${tone.eyebrow}`}>Protocol handoff</p>
-          <h2 className="mx-auto mt-4 max-w-2xl text-3xl font-semibold tracking-tight text-white md:text-4xl">
-            Ship digital assets with identity, integrity and capabilities built in.
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-white/65 md:text-base">
-            Explore the docs, review enterprise positioning, or contact the protocol directly.
-          </p>
-
-          <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
-            <a href="/?view=docs" className={`footer-link-hover inline-flex w-full sm:w-auto sm:min-w-[170px] items-center justify-center rounded-xl border px-5 py-3 text-sm font-semibold transition-colors ${tone.primaryButton}`}>
-              Read the Docs
-            </a>
-            <a href="/?view=enterprise" className="footer-link-hover inline-flex w-full sm:w-auto sm:min-w-[170px] items-center justify-center rounded-xl border border-white/20 px-5 py-3 text-sm font-medium text-white/80 transition-colors hover:border-white/35 hover:text-white">
-              Enterprise
-            </a>
-            <a href={REPO_URL} target="_blank" rel="noreferrer" className="footer-link-hover inline-flex w-full sm:w-auto sm:min-w-[170px] items-center justify-center rounded-xl border border-white/20 px-5 py-3 text-sm font-medium text-white/80 transition-colors hover:border-white/35 hover:text-white">
-              View GitHub
-            </a>
-          </div>
-        </div>
-
-        <footer className="footer-fade mt-10 rounded-3xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.008))] px-4 sm:px-6 py-8 md:px-10 md:py-12">
+        <footer className="footer-fade rounded-3xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.008))] px-4 sm:px-6 py-8 md:px-10 md:py-12">
           <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
             <div className="max-w-sm">
               <h3 className="text-base font-semibold tracking-tight text-white">AOC Protocol</h3>

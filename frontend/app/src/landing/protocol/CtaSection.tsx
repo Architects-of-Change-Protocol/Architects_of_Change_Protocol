@@ -1,11 +1,12 @@
 import { MINERALS } from '../enterprise/minerals';
 
 const REPO_URL = 'https://github.com/Architects-of-Change-Protocol/Architects_of_Change_Protocol';
+const PROTOCOL_PACKAGE_URL = `${REPO_URL}/tree/main/packages/protocol`;
 const m = MINERALS.amethyst;
 
 // Dark bookend closing CTA — matching the rhythm of ../enterprise/CtaSection.tsx,
-// governed-access/Assessment.tsx and assurance/Cta.tsx: one primary action,
-// lighter secondary links beneath it.
+// governed-access/Assessment.tsx and assurance/Cta.tsx: one primary action
+// with one secondary public-protocol action beneath it.
 export function CtaSection() {
   return (
     <section className="scroll-mt-16 bg-[#0B1220] px-6 py-24 md:py-28 text-center">
@@ -19,22 +20,20 @@ export function CtaSection() {
         </p>
 
         <a
-          href="#digital-asset"
+          href={PROTOCOL_PACKAGE_URL}
+          target="_blank"
+          rel="noreferrer"
           className={`mt-10 inline-flex items-center gap-2.5 rounded-full ${m.solid} px-8 py-4 text-sm font-bold text-white shadow-[0_8px_24px_rgba(15,23,42,0.08)] transition-transform hover:-translate-y-0.5 ${m.solidHover}`}
         >
-          Explore the Protocol
+          View @aoc/protocol on GitHub
           <svg viewBox="0 0 256 256" className="h-[18px] w-[18px]" fill="currentColor" aria-hidden="true">
             <path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z" />
           </svg>
         </a>
 
         <div className="mt-6 text-sm">
-          <a href={REPO_URL} target="_blank" rel="noreferrer" className={`${m.onDark} hover:text-violet-200`}>
-            Build with AOC
-          </a>
-          <span className="mx-4 text-slate-600">·</span>
-          <a href="/?view=enterprise" className={`${m.onDark} hover:text-violet-200`}>
-            See AOC Enterprise
+          <a href="/?view=docs" className={`${m.onDark} hover:text-violet-200`}>
+            Read the Docs
           </a>
         </div>
       </div>

@@ -1,0 +1,41 @@
+import { cleanup, render, screen } from '@testing-library/react';
+import { afterEach, describe, expect, it } from 'vitest';
+import { ProtocolFooter } from '../components/ProtocolFooter';
+import { CtaSection } from './CtaSection';
+
+afterEach(cleanup);
+
+describe('Protocol closing handoff', () => {
+  it('offers public source first and public documentation second', () => {
+    render(<CtaSection />);
+
+    const links = screen.getAllByRole('link');
+    expect(links.map((link) => link.textContent?.trim())).toEqual([
+      'View @aoc/protocol on GitHub',
+      'Read the Docs',
+    ]);
+    expect(links[0]).toHaveAttribute(
+      'href',
+      'https://github.com/Architects-of-Change-Protocol/Architects_of_Change_Protocol/tree/main/packages/protocol',
+    );
+    expect(links[1]).toHaveAttribute('href', '/?view=docs');
+    expect(screen.queryByRole('link', { name: /enterprise/i })).not.toBeInTheDocument();
+  });
+
+  it('moves directly from the closing handoff to the global footer', () => {
+    render(
+      <>
+        <CtaSection />
+        <ProtocolFooter accent="amethyst" />
+      </>,
+    );
+
+    expect(screen.queryByText(/protocol handoff/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/ship digital assets/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Enterprise' })).toHaveAttribute(
+      'href',
+      '/?view=enterprise',
+    );
+  });
+});
