@@ -1,0 +1,180 @@
+.developers-orbit {
+  --orbit-card-width: 15rem;
+  --orbit-radius: 22rem;
+  --orbit-duration: 120s;
+  position: relative;
+  min-height: 50rem;
+  isolation: isolate;
+}
+
+.developers-orbit__center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  display: grid;
+  width: 8rem;
+  height: 8rem;
+  place-items: center;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgb(226 232 240 / 85%);
+  border-radius: 9999px;
+  background: rgb(248 250 252 / 92%);
+  box-shadow: 0 12px 36px rgb(15 23 42 / 7%);
+}
+
+.developers-orbit__ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--orbit-radius) * 2);
+  height: calc(var(--orbit-radius) * 2);
+  transform: translate(-50%, -50%);
+  border: 1px solid rgb(148 163 184 / 25%);
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgb(248 250 252 / 30%) 0 1px, transparent 1.5px) center / 2rem 2rem;
+  mask-image: radial-gradient(circle, transparent 0 68%, #000 78% 100%);
+}
+
+.developers-orbit__layer {
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.developers-orbit__node {
+  position: absolute;
+  width: 0;
+  height: 0;
+  transform: rotate(var(--orbit-angle)) translateY(calc(-1 * var(--orbit-radius)));
+}
+
+.developers-orbit__counter {
+  width: 0;
+  height: 0;
+  transform: rotate(calc(-1 * var(--orbit-angle)));
+}
+
+.developer-card {
+  position: absolute;
+  top: 0;
+  left: calc(var(--orbit-card-width) / -2);
+  width: var(--orbit-card-width);
+  min-height: 6.75rem;
+  transform: translateY(-50%);
+  transition: border-color 180ms ease, box-shadow 180ms ease, scale 180ms ease;
+}
+
+.developer-card:hover,
+.developers-orbit__node:focus-visible .developer-card {
+  border-color: rgb(196 181 253);
+  box-shadow: 0 12px 30px rgb(15 23 42 / 9%);
+  outline: none;
+  scale: 1.01;
+}
+
+@media (min-width: 64rem) and (max-width: 79.999rem) {
+  .developers-orbit {
+    --orbit-card-width: 13.5rem;
+    --orbit-radius: 19rem;
+    min-height: 44rem;
+  }
+}
+
+@media (min-width: 80rem) {
+  .developers-orbit__layer {
+    animation: developers-orbit var(--orbit-duration) linear infinite;
+  }
+
+  .developers-orbit__counter {
+    animation: developers-counter-orbit var(--orbit-duration) linear infinite;
+  }
+
+  .developers-orbit:has(.developer-card:hover) .developers-orbit__layer,
+  .developers-orbit:has(.developer-card:hover) .developers-orbit__counter,
+  .developers-orbit:has(.developers-orbit__node:focus-visible) .developers-orbit__layer,
+  .developers-orbit:has(.developers-orbit__node:focus-visible) .developers-orbit__counter {
+    animation-play-state: paused;
+  }
+}
+
+@media (max-width: 63.999rem) {
+  .developers-orbit {
+    min-height: 0;
+  }
+
+  .developers-orbit__center {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 6rem;
+    height: 6rem;
+    margin: 0 auto 2rem;
+    transform: none;
+  }
+
+  .developers-orbit__center > div {
+    transform: scale(.78);
+  }
+
+  .developers-orbit__ring {
+    display: none;
+  }
+
+  .developers-orbit__layer {
+    position: static;
+    display: grid;
+    width: auto;
+    height: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .developers-orbit__node,
+  .developers-orbit__counter {
+    position: static;
+    width: auto;
+    height: auto;
+    transform: none;
+  }
+
+  .developer-card {
+    position: relative;
+    left: auto;
+    width: 100%;
+    height: 100%;
+    transform: none;
+  }
+}
+
+@media (max-width: 39.999rem) {
+  .developers-orbit__layer {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .developers-orbit__layer,
+  .developers-orbit__counter,
+  .developers-orbit__center svg,
+  .developers-orbit__center svg * {
+    animation: none !important;
+  }
+
+  .developer-card {
+    transition: none;
+  }
+}
+
+@keyframes developers-orbit {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes developers-counter-orbit {
+  from { transform: rotate(calc(-1 * var(--orbit-angle))); }
+  to { transform: rotate(calc(-1 * var(--orbit-angle) - 360deg)); }
+}
