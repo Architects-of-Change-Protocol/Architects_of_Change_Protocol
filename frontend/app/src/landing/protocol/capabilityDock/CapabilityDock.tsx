@@ -5,7 +5,11 @@ import { CapabilityCard } from './CapabilityCard';
 import { CapabilityMineral } from './CapabilityMineral';
 import { useCenteredCapability } from './useCenteredCapability';
 import { useDiscreteInfluence, useDockProximity } from './useDockProximity';
-import type { CapabilityId } from './dockTokens';
+import {
+  DOCK_STAGE_MIN_HEIGHT_PX,
+  DOCK_STAGE_PAD_TOP_PX,
+  type CapabilityId,
+} from './dockTokens';
 
 const CAPABILITIES = CAPABILITY_FAMILIES as (CapabilityFamily & { id: CapabilityId })[];
 const LAST_INDEX = CAPABILITIES.length - 1;
@@ -107,7 +111,14 @@ export function CapabilityDock() {
         ref={desktopContainerRef}
         role="group"
         aria-label="Capability dock — eight properties a digital asset can declare about itself"
-        className="hidden sm:flex items-start gap-3 lg:gap-4"
+        className="relative hidden sm:flex items-end gap-3 lg:gap-4"
+        style={{
+          // Stage reserves room for the tallest dominant overlay + lift +
+          // compact scale overhang. Height is invariant across pointer motion
+          // and across which capability is dominant.
+          minHeight: DOCK_STAGE_MIN_HEIGHT_PX,
+          paddingTop: DOCK_STAGE_PAD_TOP_PX,
+        }}
         onBlur={(event) => {
           if (!event.currentTarget.contains(event.relatedTarget as Node | null)) desktop.clear();
         }}
