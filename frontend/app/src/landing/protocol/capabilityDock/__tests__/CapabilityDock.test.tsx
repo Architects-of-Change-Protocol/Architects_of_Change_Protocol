@@ -68,6 +68,14 @@ describe('CapabilityDock', () => {
     expect(within(desktopGroup).getByText(CAPABILITY_FAMILIES[0].summary)).toBeInTheDocument();
   });
 
+  it('does not render technical maturity statuses in either public landing-page layout', () => {
+    render(<CapabilityDock />);
+
+    for (const capability of CAPABILITY_FAMILIES) {
+      expect(screen.queryByText(capability.status)).not.toBeInTheDocument();
+    }
+  });
+
   it('every card exposes aria-expanded and an aria-describedby that resolves to its description', () => {
     render(<CapabilityDock />);
     const desktopGroup = getDesktopGroup();
