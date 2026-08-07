@@ -1,7 +1,6 @@
 import { useCallback, useRef, useState, type KeyboardEvent } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { CAPABILITY_FAMILIES, type CapabilityFamily } from '../content';
-import { StatusPill } from '../../enterprise/primitives';
 import { CapabilityCard } from './CapabilityCard';
 import { CapabilityMineral } from './CapabilityMineral';
 import { useCenteredCapability } from './useCenteredCapability';
@@ -203,9 +202,6 @@ function MobileCapabilityTile({
       >
         <div className="overflow-hidden">
           <p className="text-[13.5px] leading-relaxed text-slate-500">{capability.summary}</p>
-          <div className="mt-3">
-            <StatusPill label={capability.status} />
-          </div>
         </div>
       </div>
     </button>
