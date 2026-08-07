@@ -99,7 +99,7 @@ export function AssetComposition() {
               viewBox="0 0 280 92"
               aria-hidden="true"
               role="presentation"
-              className="pointer-events-none mx-auto -mt-3 block h-auto w-[210px] max-w-full overflow-visible text-slate-500/65 sm:-mt-24 sm:mr-1 sm:ml-auto sm:w-[245px] md:-mt-30 md:mr-3 md:w-[270px] lg:-mt-[9.5rem]"
+              className="pointer-events-none mx-auto -mt-3 block h-auto w-[210px] max-w-full overflow-visible text-slate-500/65 sm:-mt-12 sm:mr-1 sm:ml-auto sm:w-[245px] md:-mt-18 md:mr-3 md:w-[270px] lg:-mt-[6.5rem]"
             >
               <g className="hidden sm:block" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M10 8 C 38 11, 45 37, 77 38 C 94 39, 105 32, 116 25" strokeWidth="1.7" />
