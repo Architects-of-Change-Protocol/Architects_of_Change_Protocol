@@ -49,16 +49,16 @@ export function ProtocolToEnterprise() {
 
       <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
         <a
-          href="/?view=enterprise"
-          className={`inline-flex items-center justify-center rounded-2xl ${sapphire.solid} px-8 py-4 text-white font-semibold ${sapphire.solidHover} transition-all active:scale-[0.98]`}
-        >
-          Explore AOC Enterprise &rarr;
-        </a>
-        <a
           href="/?view=docs#getting-started"
-          className="inline-flex items-center justify-center rounded-2xl border border-slate-200 hover:border-slate-300 text-slate-900 font-semibold px-8 py-4 transition-all active:scale-[0.98]"
+          className={`inline-flex items-center justify-center rounded-2xl ${amethyst.solid} px-8 py-4 text-white font-semibold ${amethyst.solidHover} transition-all active:scale-[0.98]`}
         >
           Review Protocol Documentation
+        </a>
+        <a
+          href="/?view=enterprise"
+          className="inline-flex items-center justify-center rounded-2xl border border-slate-200 hover:border-slate-300 text-slate-900 font-semibold px-8 py-4 transition-all active:scale-[0.98]"
+        >
+          Explore AOC Enterprise &rarr;
         </a>
       </div>
     </section>
