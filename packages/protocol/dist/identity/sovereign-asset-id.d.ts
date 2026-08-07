@@ -34,4 +34,10 @@ export declare function mintSovereignAssetId(): SovereignAssetId;
  */
 export declare function isValidSovereignAssetId(value: unknown): value is SovereignAssetId;
 export declare function assertValidSovereignAssetId(value: unknown): asserts value is SovereignAssetId;
+/**
+ * Parses an untrusted value as its canonical SovereignAssetId string.
+ * Sovereign asset identifiers have no alternate spellings, so parsing never
+ * rewrites, hashes, or derives an identity from the supplied value.
+ */
+export declare function parseSovereignAssetId(value: unknown): SovereignAssetId;
 //# sourceMappingURL=sovereign-asset-id.d.ts.map

@@ -1,5 +1,19 @@
 # Sovereign Asset Core (AOC Protocol Slice 1)
 
+## Public package consumption
+
+External systems consume the canonical model only through the declared
+`@aoc/protocol/identity`, `@aoc/protocol/canonical`, and
+`@aoc/protocol/manifest` exports. The registry is a Protocol-owned port:
+infrastructure may persist it, but must provide latest resolution and exact
+`resolveVersion(id, version)` historical resolution without substituting or
+rewriting a stored version. No tenant or storage-provider identity is part of
+that contract.
+
+Cryptographic verification establishes integrity and attributability under
+the presented or independently resolved key. It does not adjudicate copyright,
+legal ownership, or the truth of a claim.
+
 Status: implemented. This document records the design of the first real
 Sovereign Asset core in AOC Protocol, closing the primary gaps from the
 Sovereign Digital Asset Readiness Audit that are in scope for this slice:
@@ -290,12 +304,14 @@ without picking a side. Marking one of the underlying claims `Contested`
 (§8) is how an actual dispute gets represented, on request, without the
 Protocol ever adjudicating it.
 
-## 10. Versioning and lineage (out of scope, not precluded)
+## 10. Versioning and lineage
 
-`manifestVersion` is a real, validated field (`>= 1`, integer) in v1, but
-this slice does not implement a supersession/history ledger — a
-`superseded` manifest's predecessor is not linked, chained, or retained
-anywhere by this code. Full lineage (ancestor/descendant traversal,
+`manifestVersion` is a real, validated field (`>= 1`, integer) in v1. The
+registry port requires infrastructure to retain and resolve exact signed
+versions; the test-only reference registry demonstrates that immutability.
+The Protocol package does not implement a production history ledger, and a
+`superseded` manifest's predecessor is not cryptographically linked or chained
+by the v1 schema. Full lineage (ancestor/descendant traversal,
 multi-parent derivation, inherited obligations) is `SAP-GAP-005`,
 explicitly scoped to **Protocol Slice 2** and not started here.
 

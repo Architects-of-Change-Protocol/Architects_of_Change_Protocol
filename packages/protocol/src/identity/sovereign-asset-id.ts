@@ -55,3 +55,13 @@ export function assertValidSovereignAssetId(value: unknown): asserts value is So
     throw new Error(`Malformed SovereignAssetId: ${JSON.stringify(value)}`);
   }
 }
+
+/**
+ * Parses an untrusted value as its canonical SovereignAssetId string.
+ * Sovereign asset identifiers have no alternate spellings, so parsing never
+ * rewrites, hashes, or derives an identity from the supplied value.
+ */
+export function parseSovereignAssetId(value: unknown): SovereignAssetId {
+  assertValidSovereignAssetId(value);
+  return value;
+}

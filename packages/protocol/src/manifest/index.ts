@@ -31,4 +31,4 @@ export type {
 export { verifySovereignManifest } from './verify';
 
 export type { SovereignAssetRegistry } from './registry';
-export { resolveSovereignAsset } from './registry';
+export { resolveSovereignAsset, resolveSovereignAssetVersion } from './registry';

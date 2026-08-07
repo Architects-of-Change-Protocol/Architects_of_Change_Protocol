@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.mintSovereignAssetId = mintSovereignAssetId;
 exports.isValidSovereignAssetId = isValidSovereignAssetId;
 exports.assertValidSovereignAssetId = assertValidSovereignAssetId;
+exports.parseSovereignAssetId = parseSovereignAssetId;
 const node_crypto_1 = require("node:crypto");
 const SOVEREIGN_ASSET_ID_PREFIX = 'aoc:sovereign-asset:';
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
@@ -26,4 +27,13 @@ function assertValidSovereignAssetId(value) {
     if (!isValidSovereignAssetId(value)) {
         throw new Error(`Malformed SovereignAssetId: ${JSON.stringify(value)}`);
     }
+}
+/**
+ * Parses an untrusted value as its canonical SovereignAssetId string.
+ * Sovereign asset identifiers have no alternate spellings, so parsing never
+ * rewrites, hashes, or derives an identity from the supplied value.
+ */
+function parseSovereignAssetId(value) {
+    assertValidSovereignAssetId(value);
+    return value;
 }

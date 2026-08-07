@@ -3,11 +3,11 @@
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
   "name": "@aoc/protocol@0.1.0",
-  "documentNamespace": "http://spdx.org/spdxdocs/@aoc%2fprotocol-0.1.0-27cca14c-e1c3-4f69-b00c-e45afa8e84b3",
+  "documentNamespace": "http://spdx.org/spdxdocs/@aoc%2fprotocol-0.1.0-b049b209-e6d7-42f8-a469-7e81b88eb098",
   "creationInfo": {
-    "created": "2026-08-06T05:22:18.743Z",
+    "created": "2026-08-07T06:47:46.804Z",
     "creators": [
-      "Tool: npm/cli-10.9.7"
+      "Tool: npm/cli-11.4.2"
     ]
   },
   "documentDescribes": [
