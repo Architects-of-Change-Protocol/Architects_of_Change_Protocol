@@ -1,9 +1,18 @@
+.developers-layout {
+  display: grid;
+  gap: 3rem;
+}
+
+.developers-copy > :first-child {
+  margin-bottom: 2rem;
+}
+
 .developers-orbit {
-  --orbit-card-width: 15rem;
-  --orbit-radius: 22rem;
+  --orbit-card-width: 9.75rem;
+  --orbit-radius: 12.25rem;
   --orbit-duration: 120s;
   position: relative;
-  min-height: 50rem;
+  min-height: 32rem;
   isolation: isolate;
 }
 
@@ -13,14 +22,14 @@
   top: 50%;
   z-index: 2;
   display: grid;
-  width: 8rem;
-  height: 8rem;
+  width: 5.5rem;
+  height: 5.5rem;
   place-items: center;
   transform: translate(-50%, -50%);
   border: 1px solid rgb(226 232 240 / 85%);
   border-radius: 9999px;
   background: rgb(248 250 252 / 92%);
-  box-shadow: 0 12px 36px rgb(15 23 42 / 7%);
+  box-shadow: 0 10px 28px rgb(15 23 42 / 7%);
 }
 
 .developers-orbit__ring {
@@ -64,7 +73,7 @@
   top: 0;
   left: calc(var(--orbit-card-width) / -2);
   width: var(--orbit-card-width);
-  min-height: 6.75rem;
+  min-height: 5.25rem;
   transform: translateY(-50%);
   transition: border-color 180ms ease, box-shadow 180ms ease, scale 180ms ease;
 }
@@ -77,15 +86,18 @@
   scale: 1.01;
 }
 
-@media (min-width: 64rem) and (max-width: 79.999rem) {
-  .developers-orbit {
-    --orbit-card-width: 13.5rem;
-    --orbit-radius: 19rem;
-    min-height: 44rem;
+@media (min-width: 64rem) {
+  .developers-layout {
+    grid-template-columns: minmax(19rem, 0.82fr) minmax(34rem, 1.18fr);
+    align-items: center;
+    gap: 2rem;
   }
-}
 
-@media (min-width: 80rem) {
+  .developers-copy {
+    position: relative;
+    z-index: 3;
+  }
+
   .developers-orbit__layer {
     animation: developers-orbit var(--orbit-duration) linear infinite;
   }
@@ -103,6 +115,10 @@
 }
 
 @media (max-width: 63.999rem) {
+  .developers-layout {
+    gap: 2.5rem;
+  }
+
   .developers-orbit {
     min-height: 0;
   }
