@@ -79,13 +79,18 @@ export function FileToAsset() {
 
         <TransformationCore phase={phase} reduceMotion={reduceMotion} />
 
-        <div className={`flex flex-col justify-center rounded-2xl border ${m.border} ${m.soft} p-6 md:h-60 md:p-5`}>
+        <div className={`flex flex-col rounded-2xl border ${m.border} ${m.soft} p-6 md:h-60 md:p-5`}>
           <p className={`text-xs uppercase tracking-[0.2em] font-mono ${m.text}`}>
             AOC-Compatible Digital Asset
           </p>
           <p className="mt-2 font-mono text-slate-700 text-base leading-5">photo.jpg + protocol context</p>
+          {/*
+            Capability matrix: 1 col on narrow screens, 2×3 on sm+.
+            flex-1 + content-evenly uses the card's remaining vertical space
+            without changing outer md:h-60 dimensions.
+          */}
           <motion.ul
-            className="mt-4 space-y-1.5"
+            className="mt-4 grid grid-cols-1 gap-x-8 gap-y-2 sm:grid-cols-2 md:mt-5 md:flex-1 md:content-evenly md:gap-y-0"
             variants={traitListVariants}
             animate={traitsRevealed ? 'visible' : 'hidden'}
             initial={reduceMotion ? false : 'hidden'}
