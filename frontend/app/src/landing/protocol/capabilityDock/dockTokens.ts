@@ -22,7 +22,8 @@
 export const DOCK_EASE = [0.22, 1, 0.36, 1] as const;
 
 /** Spring used for every continuous, pointer-driven motion value (scale,
- * flex-grow, lift, shadow). Stiffness medium-high / damping high / mass low
+ * lift, shadow). Layout geometry is never driven by influence — only
+ * compositor properties. Stiffness medium-high / damping high / mass low
  * so the response is immediate and settles without cartoonish overshoot. */
 export const DOCK_SPRING = { type: 'spring', stiffness: 420, damping: 42, mass: 0.7 } as const;
 
@@ -45,16 +46,40 @@ export function gaussianInfluence(distancePx: number, radiusPx: number = INFLUEN
   return Math.exp(-(distancePx * distancePx) / (2 * sigma * sigma));
 }
 
-// Continuous ranges the influence value [0,1] is mapped onto. A dominant
-// card sits at influence ~1, an immediate neighbor typically lands ~0.35-0.5
-// (scale ~1.2-1.3), a second neighbor ~0.1-0.2 (scale ~1.05-1.1) — matching
-// the brief's suggested magnitudes, but derived from one continuous curve
-// instead of hard-coded per-rank steps.
+// Continuous ranges the influence value [0,1] is mapped onto compositor
+// properties only. Layout geometry (width/height/flex) is intentionally
+// NOT driven by influence — see CapabilityCard's compact surface + dominant
+// overlay split.
 export const MINERAL_SCALE_RANGE: [number, number] = [1, 1.85];
+
+/** Modest continuous magnification of the COMPACT surface (native typography
+ * and mineral size preserved — never derived by scaling a 300px card down). */
+export const CARD_COMPACT_SCALE_RANGE: [number, number] = [1, 1.12];
 export const CARD_LIFT_RANGE: [number, number] = [0, -12];
-export const CARD_FLEX_GROW_RANGE: [number, number] = [1, 5.2];
 export const SHADOW_OPACITY_RANGE: [number, number] = [0.05, 0.22];
 export const BORDER_OPACITY_RANGE: [number, number] = [0, 1];
+
+/**
+ * Fixed visual width of the dominant absolute overlay.
+ * Approximates the previous dominant footprint under flexGrow ≈ 5.2 on a
+ * ~1148px useful row (observed ~280–320px). Text inside this overlay has a
+ * stable content width, so paragraph wrapping never changes while the
+ * pointer moves.
+ */
+export const CARD_EXPANDED_WIDTH_PX = 300;
+
+/** Overlay enter scale — crossfades in from slightly under full size so the
+ * transition reads as one card expanding rather than a second card appearing. */
+export const OVERLAY_ENTER_SCALE = 0.96;
+
+/**
+ * Dock-stage vertical reservation (NOT per-card).
+ * Expanded overlay ≈ mineral 44 + name ~20 + desc ~88 (4 lines @ 13.5/relaxed)
+ * + py-5*2 + mt gaps ≈ 218px; + lift 12 + top safety for compact scale ≈ 40.
+ * Constant regardless of which capability is dominant.
+ */
+export const DOCK_STAGE_MIN_HEIGHT_PX = 280;
+export const DOCK_STAGE_PAD_TOP_PX = 36;
 
 /** A card only reveals its full description once it is the single nearest
  * card to the pointer/focus/touch-centered position — not merely "close". */
