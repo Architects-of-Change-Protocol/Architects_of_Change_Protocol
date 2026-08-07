@@ -1,6 +1,9 @@
 import { BUILDER_AUDIENCES } from './content';
 import { SectionHeader, Card } from '../enterprise/primitives';
 import { MINERALS } from '../enterprise/minerals';
+import { LogoRotating } from '../../components/logo/LogoRotating';
+import type { CSSProperties } from 'react';
+import './Developers.css';
 
 const REPO_URL = 'https://github.com/Architects-of-Change-Protocol/Architects_of_Change_Protocol';
 const PROTOCOL_PACKAGE_URL = `${REPO_URL}/tree/main/packages/protocol`;
@@ -16,13 +19,30 @@ export function Developers() {
         mineral="amethyst"
       />
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-10">
-        {BUILDER_AUDIENCES.map((audience) => (
-          <Card key={audience.name} className="p-5">
-            <p className="text-sm font-extrabold text-slate-900">{audience.name}</p>
-            <p className="mt-1.5 text-sm leading-relaxed text-slate-500">{audience.summary}</p>
-          </Card>
-        ))}
+      <div className="developers-orbit mb-10">
+        <div className="developers-orbit__center" aria-hidden="true">
+          <LogoRotating size={82} inverted={false} />
+        </div>
+
+        <div className="developers-orbit__ring" aria-hidden="true" />
+
+        <ol className="developers-orbit__layer" aria-label="Developer and builder audiences">
+          {BUILDER_AUDIENCES.map((audience, index) => {
+            const angle = -90 + index * (360 / BUILDER_AUDIENCES.length);
+            const orbitStyle = { '--orbit-angle': `${angle}deg` } as CSSProperties;
+
+            return (
+              <li className="developers-orbit__node" style={orbitStyle} key={audience.name} tabIndex={0}>
+                <div className="developers-orbit__counter">
+                  <Card className="developer-card p-5">
+                    <p className="text-sm font-extrabold text-slate-900">{audience.name}</p>
+                    <p className="mt-1.5 text-sm leading-relaxed text-slate-500">{audience.summary}</p>
+                  </Card>
+                </div>
+              </li>
+            );
+          })}
+        </ol>
       </div>
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">

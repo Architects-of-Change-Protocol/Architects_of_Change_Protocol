@@ -125,43 +125,6 @@ export const COMPOSITION_LAYERS: CompositionLayer[] = [
   { id: 'compatibility', name: 'Compatibility', sentence: 'It becomes understandable — readable by every system built to recognize it.' },
 ];
 
-export type PhotoStage = {
-  label: string;
-  detail: string;
-};
-
-export const PHOTO_PROGRESSION: PhotoStage[] = [
-  { label: 'Photo File', detail: 'photo.jpg — content, format, a place it happens to be stored.' },
-  { label: 'Identified Digital Asset', detail: 'A canonical asset identity and a creator or registrant reference are attached.' },
-  { label: 'Integrity and Provenance', detail: 'A digest fixes the file at a point in time; provenance records who registered it and when.' },
-  { label: 'Capabilities', detail: 'Preview vs. full-resolution, licensing references and governed-access compatibility are declared.' },
-  { label: 'Compatible Governance through Enterprise', detail: 'Organizations running AOC Enterprise can turn those declarations into access decisions.' },
-];
-
-export type ProviderEntry = {
-  name: string;
-  status: ClaimStatus;
-};
-
-export const ILLUSTRATIVE_PROVIDERS: ProviderEntry[] = [
-  { name: 'Pinata', status: 'Future Direction' },
-  { name: 'Amazon S3', status: 'Future Direction' },
-  { name: 'Azure Blob Storage', status: 'Future Direction' },
-  { name: 'Other providers', status: 'Future Direction' },
-];
-
-export type AssetExample = {
-  name: string;
-};
-
-export const OTHER_ASSET_EXAMPLES: AssetExample[] = [
-  { name: 'documents' },
-  { name: 'datasets' },
-  { name: 'videos' },
-  { name: 'models' },
-  { name: 'credentials' },
-];
-
 export type BuilderAudience = {
   name: string;
   summary: string;
