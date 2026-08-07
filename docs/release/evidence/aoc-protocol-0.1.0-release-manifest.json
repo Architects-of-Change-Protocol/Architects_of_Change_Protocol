@@ -24,23 +24,23 @@
   },
   "source": {
     "repository": "git+https://github.com/Architects-of-Change-Protocol/Architects_of_Change_Protocol.git",
-    "gitCommit": "5b0b38d6aaf27fae87d2ce358b3876cbe5e35ec7",
+    "gitCommit": "fed6f8095622efb8cfe06660a09c2970ac5da373",
     "protocolWorkspaceClean": true
   },
   "toolchain": {
-    "node": "v22.22.2",
-    "npm": "10.9.7"
+    "node": "v24.15.0",
+    "npm": "11.4.2"
   },
   "tarball": {
     "filename": "aoc-protocol-0.1.0.tgz",
-    "sizeBytes": 59786,
+    "sizeBytes": 60520,
     "fileCount": 253,
-    "sha256": "371c96d4aa8775cc2cf5b7f30a4cb0196ceed137636df69602778cfeb1975323",
-    "sha512": "4d66759094a91ae9fde7b1cceecafb36793ec1068690967c9aed11038edca8d2f0945d56eafb88255c2670585c3ef753a2acfb146a3eec83ef7b2c17df6e8d65",
-    "npmIntegrity": "sha512-TWZ1kJSpGun957HM7sr7Nnk+wQaGkJZ8mu0RA47cqNLwlF1W6vuIJVwmcFhcPvdToqz7FGo+7IPveywX326NZQ==",
+    "sha256": "65cdb86bfa8e70e48df51bf5736f6b7492869cd61a38750c3e3ce0f78c0bb876",
+    "sha512": "4e403b8d9497192652c4a5e8fd7ae02a00ceb54daa682cd4253c3e52922cb4437273252afc359b9ab361d9945d02aa18321f242b4951d712a4c117fa0cca5dda",
+    "npmIntegrity": "sha512-TkA7jZSXGSZSxKXo/XrgKgDOtU2qaCzUJTw+UpIstENycyUq/DWbmrNh2ZRdAqoYMh8kK0lR1xKkwRf6DMpd2g==",
     "reproducible": true
   },
-  "generatedAt": "2026-08-06T05:22:17.814Z",
+  "generatedAt": "2026-08-07T06:47:45.499Z",
   "files": [
     "LICENSE",
     "NOTICE",

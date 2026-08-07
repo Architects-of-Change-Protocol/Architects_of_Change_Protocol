@@ -66,9 +66,6 @@ for (const { name, build } of consumers) {
     cpSync(fixture, workdir, { recursive: true });
 
     execSync(`npm install --no-audit --no-fund ${JSON.stringify(tarball)}`, { cwd: workdir, stdio: 'pipe' });
-    if (build) {
-      execSync('npm install --no-audit --no-fund --no-save typescript@~6.0.2', { cwd: workdir, stdio: 'pipe' });
-    }
     result.install = 'ok';
 
     const installedPkgJson = join(workdir, 'node_modules/@aoc/protocol/package.json');
@@ -88,7 +85,13 @@ for (const { name, build } of consumers) {
     }
 
     if (build) {
-      execSync('npm run build', { cwd: workdir, stdio: 'pipe' });
+      // Use the repository-pinned compiler installed by the required root
+      // `npm ci`; consumer validation must not depend on a second registry
+      // download after the packed artifact has been installed.
+      execSync(`${JSON.stringify(join(repo, 'node_modules', '.bin', 'tsc'))} -p tsconfig.json`, {
+        cwd: workdir,
+        stdio: 'pipe',
+      });
       result.compile = 'ok';
     } else {
       result.compile = 'n/a';

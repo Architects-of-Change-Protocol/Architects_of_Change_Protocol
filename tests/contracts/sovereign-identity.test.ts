@@ -2,6 +2,7 @@ import {
   mintSovereignAssetId,
   isValidSovereignAssetId,
   assertValidSovereignAssetId,
+  parseSovereignAssetId,
 } from '@aoc/protocol/identity';
 import {
   ContentDigestAlgorithm,
@@ -22,6 +23,12 @@ describe('SovereignAssetId', () => {
   it('mints a fresh id every time — never derived from any input', () => {
     const ids = new Set(Array.from({ length: 50 }, () => mintSovereignAssetId()));
     expect(ids.size).toBe(50);
+  });
+
+  it('parses only the canonical representation without rewriting it', () => {
+    const id = mintSovereignAssetId();
+    expect(parseSovereignAssetId(id)).toBe(id);
+    expect(() => parseSovereignAssetId('sha256:' + 'a'.repeat(64))).toThrow(/Malformed SovereignAssetId/);
   });
 
   it('rejects malformed ids', () => {

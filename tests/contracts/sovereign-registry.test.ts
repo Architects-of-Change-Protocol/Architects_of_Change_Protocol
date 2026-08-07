@@ -3,6 +3,7 @@ import {
   buildSovereignManifestV1,
   generateSovereignKeyPair,
   resolveSovereignAsset,
+  resolveSovereignAssetVersion,
   signSovereignManifest,
   verifySovereignManifest,
 } from '@aoc/protocol/manifest';
@@ -82,6 +83,34 @@ describe('Duplicate / competing content claims (§18, §19, §36) — content ma
 
     registry.register(signed);
     expect(() => registry.register(signed)).toThrow(/already registered/);
+  });
+});
+
+describe('Manifest history', () => {
+  it('preserves exact historical versions and resolves the latest version separately', async () => {
+    const bytes = new TextEncoder().encode('versioned asset');
+    const registry = new InMemorySovereignAssetRegistry();
+    const sovereignAssetId = mintSovereignAssetId();
+    const contentIdentity = computeContentIdentity(bytes);
+    const { signingKey, privateKeyPem } = generateSovereignKeyPair();
+    const v1 = signSovereignManifest(
+      buildSovereignManifestV1({ sovereignAssetId, contentIdentity, registrant: 'principal:alice', manifestVersion: 1 }),
+      privateKeyPem,
+      signingKey,
+    );
+    const v2 = signSovereignManifest(
+      buildSovereignManifestV1({ sovereignAssetId, contentIdentity, registrant: 'principal:alice', manifestVersion: 2 }),
+      privateKeyPem,
+      signingKey,
+    );
+
+    registry.register(v1);
+    registry.register(v2);
+    expect(await resolveSovereignAssetVersion(registry, sovereignAssetId, 1)).toEqual(v1);
+    expect(await resolveSovereignAssetVersion(registry, sovereignAssetId, 2)).toEqual(v2);
+    expect(await resolveSovereignAsset(registry, sovereignAssetId)).toEqual(v2);
+    expect(await resolveSovereignAssetVersion(registry, sovereignAssetId, 99)).toBeNull();
+    expect(() => registry.register(v1)).toThrow(/already registered/);
   });
 });
 

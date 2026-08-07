@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resolveSovereignAsset = exports.verifySovereignManifest = exports.signSovereignManifest = exports.computeManifestDigest = exports.buildSovereignManifestV1 = exports.validateSovereignManifestV1 = exports.SOVEREIGN_MANIFEST_SCHEMA_VERSION = exports.contestClaim = exports.verifySignedClaim = exports.signClaim = exports.buildAuthorityClaim = exports.buildOriginClaim = exports.AuthorityClaimKind = exports.isValidSovereignAssetState = exports.SovereignAssetState = exports.verifySovereignSignature = exports.signSovereignPayload = exports.generateSovereignKeyPair = void 0;
+exports.resolveSovereignAssetVersion = exports.resolveSovereignAsset = exports.verifySovereignManifest = exports.signSovereignManifest = exports.computeManifestDigest = exports.buildSovereignManifestV1 = exports.validateSovereignManifestV1 = exports.SOVEREIGN_MANIFEST_SCHEMA_VERSION = exports.contestClaim = exports.verifySignedClaim = exports.signClaim = exports.buildAuthorityClaim = exports.buildOriginClaim = exports.AuthorityClaimKind = exports.isValidSovereignAssetState = exports.SovereignAssetState = exports.verifySovereignSignature = exports.signSovereignPayload = exports.generateSovereignKeyPair = void 0;
 var proof_1 = require("./proof");
 Object.defineProperty(exports, "generateSovereignKeyPair", { enumerable: true, get: function () { return proof_1.generateSovereignKeyPair; } });
 Object.defineProperty(exports, "signSovereignPayload", { enumerable: true, get: function () { return proof_1.signSovereignPayload; } });
@@ -27,3 +27,4 @@ var verify_1 = require("./verify");
 Object.defineProperty(exports, "verifySovereignManifest", { enumerable: true, get: function () { return verify_1.verifySovereignManifest; } });
 var registry_1 = require("./registry");
 Object.defineProperty(exports, "resolveSovereignAsset", { enumerable: true, get: function () { return registry_1.resolveSovereignAsset; } });
+Object.defineProperty(exports, "resolveSovereignAssetVersion", { enumerable: true, get: function () { return registry_1.resolveSovereignAssetVersion; } });

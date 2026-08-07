@@ -22,6 +22,8 @@ PMFreak             (commercial vertical product)
   authorization, observability (`./adapters`);
 - an in-process adapter token/registry/bootstrap toolkit used to wire adapter implementations
   into a runtime (`./runtime-registry`).
+- the Sovereign Asset Core identity, byte-identity, canonical manifest, Ed25519 proof, verification,
+  and storage-neutral registry contracts (`./identity`, `./canonical`, and `./manifest`).
 
 Everything here is implementation-neutral: shapes, references, and adapter interfaces only.
 
@@ -76,6 +78,16 @@ import type { CanonicalClaim } from "@aoc/protocol/claims";
 import type { ProtocolError } from "@aoc/protocol/errors";
 import type { VerificationProvider, RevocationLookup } from "@aoc/protocol/adapters";
 import { AdapterRegistry, AdapterTokens } from "@aoc/protocol/runtime-registry";
+import { computeContentIdentity, mintSovereignAssetId, parseSovereignAssetId } from "@aoc/protocol/identity";
+import { canonicalizeJSON, CANONICAL_JSON_PROFILE } from "@aoc/protocol/canonical";
+import {
+  buildSovereignManifestV1,
+  computeManifestDigest,
+  signSovereignManifest,
+  verifySovereignManifest,
+  resolveSovereignAsset,
+} from "@aoc/protocol/manifest";
+import type { SovereignAssetRegistry, SignedSovereignManifest } from "@aoc/protocol/manifest";
 
 const registry = new AdapterRegistry();
 registry.register(AdapterTokens.RevocationLookup, myRevocationLookupImpl, { implementation: "example" });
@@ -94,6 +106,9 @@ registry.register(AdapterTokens.RevocationLookup, myRevocationLookupImpl, { impl
 | `@aoc/protocol/claims` | RFC-005 claim/evidence/attestation/credential/registry/vocabulary contracts, plus `ClaimType`/`EvidenceType`/`AttestationType`/etc. enum objects | Mixed (enums are runtime values; contract shapes are types) |
 | `@aoc/protocol/adapters` | Adapter interfaces (verification, revocation, registry, audit/security event sinks, policy/governance decision, execution authorization, observability) | Type-only |
 | `@aoc/protocol/runtime-registry` | `AdapterRegistry`, `RuntimeAdapterBootstrap`, `RuntimeBootstrapEngine`, adapter tokens, and related error classes | Runtime |
+| `@aoc/protocol/identity` | Independent `SovereignAssetId` minting/parsing and SHA-256 `ContentIdentity` calculation/verification | Mixed |
+| `@aoc/protocol/canonical` | Deterministic `aoc-canonical-json/1` representation | Runtime |
+| `@aoc/protocol/manifest` | Versioned manifests, Ed25519 signing/verification, claims, and the storage-neutral version-preserving registry port | Mixed |
 
 See [`docs/protocol/PUBLIC_API.md`](../../docs/protocol/PUBLIC_API.md) for the full symbol-level table
 and stability classification.
