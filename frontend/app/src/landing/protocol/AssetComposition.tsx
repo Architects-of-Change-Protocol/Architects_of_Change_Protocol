@@ -41,7 +41,7 @@ import {
 // the same fabric, rather than forcing illegibly small type into the shape.
 export function AssetComposition() {
   return (
-    <section id="creation" className="relative scroll-mt-16 overflow-hidden border-t border-slate-200 py-24 md:py-32 lg:py-40">
+    <section id="creation" className="relative scroll-mt-16 overflow-hidden border-t border-slate-200 py-16 md:py-20 lg:py-24">
       <FabricSurface />
 
       <div className="relative z-10 mx-auto max-w-6xl px-6">
@@ -89,6 +89,41 @@ export function AssetComposition() {
 
               <PuzzleReliefOverlay />
             </div>
+
+            {/* A quiet editorial sign-off: the six capabilities remain the
+                contents of the puzzle, while this sits outside its boundary
+                as their collective outcome. The lettering and wink are
+                decorative paths/strokes, not a seventh capability or extra
+                screen-reader announcement. */}
+            <svg
+              viewBox="0 0 280 92"
+              aria-hidden="true"
+              role="presentation"
+              className="pointer-events-none mx-auto -mt-3 block h-auto w-[210px] max-w-full overflow-visible text-slate-500/65 sm:-mt-12 sm:mr-1 sm:ml-auto sm:w-[245px] md:-mt-18 md:mr-3 md:w-[270px] lg:-mt-[6.5rem]"
+            >
+              <g className="hidden sm:block" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M10 8 C 38 11, 45 37, 77 38 C 94 39, 105 32, 116 25" strokeWidth="1.7" />
+                <path d="M108 23 C 112 23, 116 24, 120 27 C 116 29, 113 32, 111 35" strokeWidth="1.7" />
+              </g>
+              <text
+                x="61"
+                y="68"
+                fill="currentColor"
+                fontFamily="'Segoe Print', 'Bradley Hand', cursive"
+                fontSize="27"
+                fontStyle="italic"
+                letterSpacing="-1.2"
+                transform="rotate(-3 61 68)"
+              >
+                Sovereignty
+              </text>
+              <path d="M67 76 C 120 83, 184 78, 222 70" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.1" opacity="0.62" />
+              <g stroke="currentColor" strokeLinecap="round" strokeWidth="1.5">
+                <circle cx="241" cy="53" r="1.8" fill="currentColor" stroke="none" />
+                <path d="M252 51 q3 3 0 6" fill="none" />
+                <path d="M240 62 q7 7 14 0" fill="none" />
+              </g>
+            </svg>
           </div>
         </div>
 
