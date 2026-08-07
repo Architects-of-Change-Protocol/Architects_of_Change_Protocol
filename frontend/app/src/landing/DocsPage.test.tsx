@@ -23,4 +23,13 @@ describe('public Protocol developer journey', () => {
     expect(links.at(-1)).toHaveTextContent('Explore AOC Enterprise');
     expect(links.at(-1)).toHaveAttribute('href', '/?view=enterprise');
   });
+
+  it('keeps both product crystal clusters decorative', () => {
+    const { container } = render(<ProtocolToEnterprise />);
+    const crystals = container.querySelectorAll('svg[aria-hidden="true"]');
+
+    expect(crystals).toHaveLength(2);
+    expect(within(container).getByText('Identity')).toBeInTheDocument();
+    expect(within(container).getByText('Governance')).toBeInTheDocument();
+  });
 });
