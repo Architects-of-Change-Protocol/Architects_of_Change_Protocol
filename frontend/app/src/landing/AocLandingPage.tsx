@@ -4,7 +4,6 @@ import { Hero } from './protocol/Hero';
 import { FileToAsset } from './protocol/FileToAsset';
 import { CapabilityDockSection } from './protocol/CapabilityDockSection';
 import { AssetComposition } from './protocol/AssetComposition';
-import { ProviderNeutral } from './protocol/ProviderNeutral';
 import { ProtocolToEnterprise } from './protocol/ProtocolToEnterprise';
 import { Developers } from './protocol/Developers';
 import { CtaSection } from './protocol/CtaSection';
@@ -35,7 +34,6 @@ export const AocLandingPage = () => {
       <span id="sovereignty" aria-hidden="true" className="block h-0" />
       <CapabilityDockSection />
       <AssetComposition />
-      <ProviderNeutral />
       <ProtocolToEnterprise />
       <Developers />
       <CtaSection />

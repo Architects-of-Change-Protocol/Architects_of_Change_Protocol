@@ -125,18 +125,6 @@ export const COMPOSITION_LAYERS: CompositionLayer[] = [
   { id: 'compatibility', name: 'Compatibility', sentence: 'It becomes understandable — readable by every system built to recognize it.' },
 ];
 
-export type ProviderEntry = {
-  name: string;
-  status: ClaimStatus;
-};
-
-export const ILLUSTRATIVE_PROVIDERS: ProviderEntry[] = [
-  { name: 'Pinata', status: 'Future Direction' },
-  { name: 'Amazon S3', status: 'Future Direction' },
-  { name: 'Azure Blob Storage', status: 'Future Direction' },
-  { name: 'Other providers', status: 'Future Direction' },
-];
-
 export type BuilderAudience = {
   name: string;
   summary: string;
