@@ -9,6 +9,15 @@ describe('Protocol closing handoff', () => {
   it('offers public source first and public documentation second', () => {
     render(<CtaSection />);
 
+    expect(
+      screen.getByRole('heading', { level: 2, name: 'Ownership should survive the platform.' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'AOC Protocol makes identity, capabilities and governance portable by design.',
+      ),
+    ).toBeInTheDocument();
+
     const links = screen.getAllByRole('link');
     expect(links.map((link) => link.textContent?.trim())).toEqual([
       'View @aoc/protocol on GitHub',

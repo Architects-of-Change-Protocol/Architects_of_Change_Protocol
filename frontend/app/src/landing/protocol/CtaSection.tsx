@@ -12,11 +12,10 @@ export function CtaSection() {
     <section className="scroll-mt-16 bg-[#0B1220] px-6 py-24 md:py-28 text-center">
       <div className="max-w-2xl mx-auto flex flex-col items-center">
         <h2 className="text-[32px] md:text-5xl font-extrabold tracking-tight text-white">
-          Build digital assets that retain identity, integrity and capabilities beyond a single
-          application.
+          Ownership should survive the platform.
         </h2>
         <p className="mt-4 max-w-xl text-base md:text-lg text-slate-400">
-          Open, provider-neutral, and reviewable today in the public repository.
+          AOC Protocol makes identity, capabilities and governance portable by design.
         </p>
 
         <a
