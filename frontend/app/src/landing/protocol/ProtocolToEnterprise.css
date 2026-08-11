@@ -32,7 +32,7 @@
 .mineral-glyph { width:29px; height:37px; overflow:visible; transition:width .6s ease,height .6s ease; }.protocol-node.is-active .mineral-glyph,.protocol-node.is-related .mineral-glyph { width:37px; height:46px; }
 .gravity-field { --gravity-weight:.5; width:110px; height:90px; display:grid; place-items:center; color:#475569; }
 .gravity-field i,.gravity-field i::before,.gravity-field i::after { position:absolute; border-radius:999px; border:1px solid rgb(71 116 116 / calc(.1 + var(--gravity-weight) * .27)); }
-.gravity-field i { width:calc(30px + var(--gravity-weight) * 34px); height:calc(30px + var(--gravity-weight) * 34px); background:radial-gradient(circle,rgb(153 246 228 / calc(var(--gravity-weight) * .2)),transparent 68%); box-shadow:0 0 calc(var(--gravity-weight) * 22px) rgb(45 212 191 / .14); transition:all 1.2s cubic-bezier(.22,1,.36,1); }
+.gravity-field i { width:calc(30px + var(--gravity-weight) * 34px); height:calc(30px + var(--gravity-weight) * 34px); background:radial-gradient(circle,rgb(153 246 228 / calc(var(--gravity-weight) * .2)),transparent 68%); box-shadow:0 0 calc(var(--gravity-weight) * 22px) rgb(45 212 191 / .14); transition:all .7s cubic-bezier(.22,1,.36,1); }
 .gravity-field i::before { content:''; inset:-9px; }.gravity-field i::after { content:''; inset:-18px; }
 .gravity-field.is-related i { box-shadow:0 0 28px rgb(45 212 191 / .28); filter:brightness(1.12); }
 .gravity-field span { position:absolute; top:73%; padding:2px 5px; border-radius:5px; background:rgb(255 255 255 / .76); font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.07em; }
