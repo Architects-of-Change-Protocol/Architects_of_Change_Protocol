@@ -24,12 +24,14 @@ describe('public Protocol developer journey', () => {
     expect(links.at(-1)).toHaveAttribute('href', '/?view=enterprise');
   });
 
-  it('keeps both product crystal clusters decorative', () => {
+  it('renders the three-layer capability architecture with semantic controls', () => {
     const { container } = render(<ProtocolToEnterprise />);
-    const crystals = container.querySelectorAll('svg[aria-hidden="true"]');
-
-    expect(crystals).toHaveLength(2);
+    expect(within(container).getByRole('heading', { name: 'Capabilities shape platforms.' })).toBeInTheDocument();
+    expect(within(container).getByText('Centers of gravity')).toBeInTheDocument();
+    expect(within(container).getByText('AOC Enterprise')).toBeInTheDocument();
+    expect(within(container).getByText('AOC Protocol')).toBeInTheDocument();
     expect(within(container).getByText('Identity')).toBeInTheDocument();
     expect(within(container).getByText('Governance')).toBeInTheDocument();
+    expect(within(container).getByRole('button', { name: /Creator:/ })).toBeInTheDocument();
   });
 });
