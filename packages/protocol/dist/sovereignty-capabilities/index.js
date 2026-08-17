@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.listSovereigntyCapabilities = exports.getSovereigntyCapabilityByKey = exports.getSovereigntyCapability = exports.SOVEREIGNTY_CAPABILITIES = exports.isSovereigntyCapabilityVersion = exports.isSovereigntyCapabilityKey = exports.isSovereigntyCapabilityId = exports.SOVEREIGNTY_CAPABILITY_NAMESPACE = exports.SOVEREIGNTY_CAPABILITY_KEYS = exports.SOVEREIGNTY_CAPABILITY_IDS = void 0;
+var ids_1 = require("./ids");
+Object.defineProperty(exports, "SOVEREIGNTY_CAPABILITY_IDS", { enumerable: true, get: function () { return ids_1.SOVEREIGNTY_CAPABILITY_IDS; } });
+Object.defineProperty(exports, "SOVEREIGNTY_CAPABILITY_KEYS", { enumerable: true, get: function () { return ids_1.SOVEREIGNTY_CAPABILITY_KEYS; } });
+Object.defineProperty(exports, "SOVEREIGNTY_CAPABILITY_NAMESPACE", { enumerable: true, get: function () { return ids_1.SOVEREIGNTY_CAPABILITY_NAMESPACE; } });
+Object.defineProperty(exports, "isSovereigntyCapabilityId", { enumerable: true, get: function () { return ids_1.isSovereigntyCapabilityId; } });
+Object.defineProperty(exports, "isSovereigntyCapabilityKey", { enumerable: true, get: function () { return ids_1.isSovereigntyCapabilityKey; } });
+var version_1 = require("./version");
+Object.defineProperty(exports, "isSovereigntyCapabilityVersion", { enumerable: true, get: function () { return version_1.isSovereigntyCapabilityVersion; } });
+var definitions_1 = require("./definitions");
+Object.defineProperty(exports, "SOVEREIGNTY_CAPABILITIES", { enumerable: true, get: function () { return definitions_1.SOVEREIGNTY_CAPABILITIES; } });
+var registry_1 = require("./registry");
+Object.defineProperty(exports, "getSovereigntyCapability", { enumerable: true, get: function () { return registry_1.getSovereigntyCapability; } });
+Object.defineProperty(exports, "getSovereigntyCapabilityByKey", { enumerable: true, get: function () { return registry_1.getSovereigntyCapabilityByKey; } });
+Object.defineProperty(exports, "listSovereigntyCapabilities", { enumerable: true, get: function () { return registry_1.listSovereigntyCapabilities; } });

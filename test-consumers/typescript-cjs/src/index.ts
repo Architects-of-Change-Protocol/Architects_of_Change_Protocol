@@ -23,6 +23,15 @@ import {
 } from '@aoc/protocol/manifest';
 import type { SignedSovereignManifest, SovereignAssetRegistry } from '@aoc/protocol/manifest';
 import type { SovereignAssetId, ContentIdentity } from '@aoc/protocol/identity';
+import {
+  SOVEREIGNTY_CAPABILITY_IDS,
+  getSovereigntyCapability,
+  getSovereigntyCapabilityByKey,
+  isSovereigntyCapabilityId,
+  isSovereigntyCapabilityVersion,
+  listSovereigntyCapabilities,
+} from '@aoc/protocol/sovereignty-capabilities';
+import type { SovereigntyCapabilityDefinition } from '@aoc/protocol/sovereignty-capabilities';
 
 const assertType = <T>(_value: T): void => undefined;
 
@@ -104,8 +113,56 @@ async function sovereignAssetAcceptance(): Promise<void> {
   if ('storage' in manifest || 'url' in manifest || 'cid' in manifest) throw new Error('storage leaked into identity');
 }
 
+function sovereigntyCapabilityAcceptance(): number {
+  const capabilities: readonly SovereigntyCapabilityDefinition[] = listSovereigntyCapabilities();
+  if (capabilities.length !== 8) throw new Error(`expected 8 sovereignty capabilities, got ${capabilities.length}`);
+
+  const canonicalOrder = [
+    'identity',
+    'integrity',
+    'provenance',
+    'portability',
+    'interoperability',
+    'verifiability',
+    'licensing_terms',
+    'governance_compatibility',
+  ];
+  if (capabilities.map((capability) => capability.key).join(',') !== canonicalOrder.join(',')) {
+    throw new Error('sovereignty capability enumeration is not in canonical order');
+  }
+
+  const identity = getSovereigntyCapability(SOVEREIGNTY_CAPABILITY_IDS.identity);
+  if (!identity || identity.name !== 'Identity' || identity.id !== 'aoc:sovereignty-capability:identity') {
+    throw new Error('Identity lookup by canonical id failed');
+  }
+  if (!isSovereigntyCapabilityVersion(identity.version)) {
+    throw new Error('Identity has no explicit capability version');
+  }
+  if (isSovereigntyCapabilityVersion('1e2.0.0') || isSovereigntyCapabilityVersion('-1.2.3')) {
+    throw new Error('malformed capability version accepted');
+  }
+
+  const governance = getSovereigntyCapabilityByKey('governance_compatibility');
+  if (!governance || governance.id !== 'aoc:sovereignty-capability:governance-compatibility') {
+    throw new Error('Governance Compatibility lookup failed');
+  }
+
+  if (getSovereigntyCapability('aoc:sovereignty-capability:wallet') !== undefined) {
+    throw new Error('unknown sovereignty capability id resolved');
+  }
+  if (isSovereigntyCapabilityId('my-company.special-capability')) {
+    throw new Error('third-party id accepted as canonical');
+  }
+
+  return capabilities.length;
+}
+
+const sovereigntyCapabilityCount = sovereigntyCapabilityAcceptance();
+
 void sovereignAssetAcceptance().catch((error) => {
   throw error;
 });
 
-console.log(`typescript-cjs consumer OK: token=${token.tokenId} claimType=${ClaimType.Identity} registry=${registry.constructor.name}`);
+console.log(
+  `typescript-cjs consumer OK: token=${token.tokenId} claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${sovereigntyCapabilityCount}`,
+);

@@ -41,7 +41,17 @@ const protocolImports = () =>
 
 describe('protocol package purity', () => {
   it('has explicit public protocol subpath sources', () => {
-    for (const subpath of ['contracts', 'claims', 'errors', 'adapters', 'runtime-registry', 'canonical', 'identity', 'manifest']) {
+    for (const subpath of [
+      'contracts',
+      'claims',
+      'errors',
+      'adapters',
+      'runtime-registry',
+      'canonical',
+      'identity',
+      'manifest',
+      'sovereignty-capabilities',
+    ]) {
       expect(existsSync(join(protocolSrc, subpath, 'index.ts'))).toBe(true);
     }
   });

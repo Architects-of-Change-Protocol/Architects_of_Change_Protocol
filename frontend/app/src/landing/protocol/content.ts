@@ -13,8 +13,32 @@ export const STATUS_COPY: Record<ClaimStatus, string> = {
   'Future Direction': 'Not yet defined as a canonical contract — a protocol direction.',
 };
 
+/** Mirrors SovereigntyCapabilityKey in @aoc/protocol/sovereignty-capabilities. */
+export type SovereigntyCapabilityKey =
+  | 'identity'
+  | 'integrity'
+  | 'provenance'
+  | 'portability'
+  | 'interoperability'
+  | 'verifiability'
+  | 'licensing_terms'
+  | 'governance_compatibility';
+
 export type CapabilityFamily = {
   id: string;
+  /**
+   * The canonical @aoc/protocol Sovereignty Capability this card renders.
+   *
+   * WHICH capabilities exist is owned by Protocol, not by this file — see
+   * packages/protocol/src/sovereignty-capabilities. `frontend/app` is a
+   * standalone npm project and does not resolve `@aoc/protocol`, so this list
+   * cannot import the registry directly without a fragile build coupling.
+   * Instead each entry names its Protocol key, and
+   * __tests__/architecture/sovereignty-capability-frontend-parity.test.ts
+   * fails if this list drifts from the Protocol registry in membership, order
+   * or canonical name. Add, remove or rename a mineral in Protocol first.
+   */
+  protocolKey: SovereigntyCapabilityKey;
   name: string;
   status: ClaimStatus;
   summary: string;
@@ -30,15 +54,20 @@ export const CAPABILITY_DOCK_HEADLINE = 'A digital asset should keep its meaning
 export const CAPABILITY_DOCK_PARAGRAPH =
   "Capabilities are the properties a digital asset can declare about itself. Together, they preserve its identity, integrity, origin, terms and meaning as it moves across systems, applications and custodians.";
 
-// The eight capability families a digital asset can express. Grounded in the
-// canonical contract shapes already published in packages/protocol/src —
-// not a claim that a runtime or creation SDK implements them end to end.
+// The eight capability families a digital asset can express — the display
+// model for the canonical Sovereignty Capabilities defined by
+// packages/protocol/src/sovereignty-capabilities. Protocol owns which
+// capabilities exist, their identities and their versions; this file owns
+// only presentation (ids used by the dock's crystal geometry, maturity
+// status, and landing copy). Status is not a claim that a runtime or
+// creation SDK implements a capability end to end.
 // Also the shared source for AOC Assurance's "Capability Domains" (see
 // landing/enterprise/assurance/CapabilityDomains.tsx) — id/name/status/
 // summary is a public shape read by that page too, so keep it stable.
 export const CAPABILITY_FAMILIES: CapabilityFamily[] = [
   {
     id: 'identity',
+    protocolKey: 'identity',
     name: 'Identity',
     status: 'Reference Model',
     summary:
@@ -46,6 +75,7 @@ export const CAPABILITY_FAMILIES: CapabilityFamily[] = [
   },
   {
     id: 'integrity',
+    protocolKey: 'integrity',
     name: 'Integrity',
     status: 'Reference Model',
     summary:
@@ -53,6 +83,7 @@ export const CAPABILITY_FAMILIES: CapabilityFamily[] = [
   },
   {
     id: 'provenance',
+    protocolKey: 'provenance',
     name: 'Provenance',
     status: 'Reference Model',
     summary:
@@ -60,6 +91,7 @@ export const CAPABILITY_FAMILIES: CapabilityFamily[] = [
   },
   {
     id: 'portability',
+    protocolKey: 'portability',
     name: 'Portability',
     status: 'Reference Model',
     summary:
@@ -67,6 +99,7 @@ export const CAPABILITY_FAMILIES: CapabilityFamily[] = [
   },
   {
     id: 'interoperability',
+    protocolKey: 'interoperability',
     name: 'Interoperability',
     status: 'Reference Model',
     summary:
@@ -74,6 +107,7 @@ export const CAPABILITY_FAMILIES: CapabilityFamily[] = [
   },
   {
     id: 'verifiability',
+    protocolKey: 'verifiability',
     name: 'Verifiability',
     status: 'Reference Model',
     summary:
@@ -81,6 +115,7 @@ export const CAPABILITY_FAMILIES: CapabilityFamily[] = [
   },
   {
     id: 'licensing',
+    protocolKey: 'licensing_terms',
     name: 'Licensing & Terms',
     status: 'Future Direction',
     summary:
@@ -88,6 +123,7 @@ export const CAPABILITY_FAMILIES: CapabilityFamily[] = [
   },
   {
     id: 'governance-compatibility',
+    protocolKey: 'governance_compatibility',
     name: 'Governance Compatibility',
     status: 'Reference Model',
     summary:
