@@ -172,3 +172,25 @@ export type {
   TraceLineageProvenanceInput,
   TraceLineageProvenanceOutput,
 } from './capsules';
+
+// --- SM-06: production Portability capsule ---------------------------------
+
+export {
+  PORTABILITY_SOVEREIGNTY_CAPABILITY_OPERATIONS,
+  PORTABILITY_SOVEREIGNTY_CAPABILITY_REASON_CODES,
+  createPortabilitySovereigntyCapabilityImplementation,
+  isValidPortabilitySovereigntyCapabilityInput,
+  validatePortabilitySovereigntyCapabilityInput,
+} from './capsules';
+export type {
+  ExportPortabilityBundleInput,
+  ExportPortabilityBundleOutput,
+  ImportPortabilityBundleInput,
+  ImportPortabilityBundleOutput,
+  PortabilitySovereigntyCapabilityImplementation,
+  PortabilitySovereigntyCapabilityInput,
+  PortabilitySovereigntyCapabilityInputValidationResult,
+  PortabilitySovereigntyCapabilityOperation,
+  PortabilitySovereigntyCapabilityOutput,
+  PortabilitySovereigntyCapabilityReasonCode,
+} from './capsules';

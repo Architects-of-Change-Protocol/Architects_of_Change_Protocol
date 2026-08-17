@@ -89,6 +89,9 @@
       "@aoc/protocol/manifest": [
         "packages/protocol/src/manifest"
       ],
+      "@aoc/protocol/portability": [
+        "packages/protocol/src/portability"
+      ],
       "@aoc/protocol/sovereignty-capabilities": [
         "packages/protocol/src/sovereignty-capabilities"
       ],

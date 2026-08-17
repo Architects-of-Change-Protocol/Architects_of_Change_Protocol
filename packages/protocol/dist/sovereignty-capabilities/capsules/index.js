@@ -1,18 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateProvenanceSovereigntyCapabilityInput = exports.isValidProvenanceSovereigntyCapabilityInput = exports.createProvenanceSovereigntyCapabilityImplementation = exports.PROVENANCE_SOVEREIGNTY_CAPABILITY_REASON_CODES = exports.PROVENANCE_SOVEREIGNTY_CAPABILITY_OPERATIONS = exports.validateIntegritySovereigntyCapabilityInput = exports.isValidIntegritySovereigntyCapabilityInput = exports.createIntegritySovereigntyCapabilityImplementation = exports.INTEGRITY_SOVEREIGNTY_CAPABILITY_REASON_CODES = exports.INTEGRITY_SOVEREIGNTY_CAPABILITY_OPERATIONS = exports.validateIdentitySovereigntyCapabilityInput = exports.isValidIdentitySovereigntyCapabilityInput = exports.createIdentitySovereigntyCapabilityImplementation = exports.IDENTITY_SOVEREIGNTY_CAPABILITY_REASON_CODES = void 0;
+exports.validatePortabilitySovereigntyCapabilityInput = exports.isValidPortabilitySovereigntyCapabilityInput = exports.createPortabilitySovereigntyCapabilityImplementation = exports.PORTABILITY_SOVEREIGNTY_CAPABILITY_REASON_CODES = exports.PORTABILITY_SOVEREIGNTY_CAPABILITY_OPERATIONS = exports.validateProvenanceSovereigntyCapabilityInput = exports.isValidProvenanceSovereigntyCapabilityInput = exports.createProvenanceSovereigntyCapabilityImplementation = exports.PROVENANCE_SOVEREIGNTY_CAPABILITY_REASON_CODES = exports.PROVENANCE_SOVEREIGNTY_CAPABILITY_OPERATIONS = exports.validateIntegritySovereigntyCapabilityInput = exports.isValidIntegritySovereigntyCapabilityInput = exports.createIntegritySovereigntyCapabilityImplementation = exports.INTEGRITY_SOVEREIGNTY_CAPABILITY_REASON_CODES = exports.INTEGRITY_SOVEREIGNTY_CAPABILITY_OPERATIONS = exports.validateIdentitySovereigntyCapabilityInput = exports.isValidIdentitySovereigntyCapabilityInput = exports.createIdentitySovereigntyCapabilityImplementation = exports.IDENTITY_SOVEREIGNTY_CAPABILITY_REASON_CODES = void 0;
 /**
  * The production Sovereignty Capability capsules.
  *
  * SM-04 shipped the first two of the canonical eight as real implementations
- * of the SM-03 socket — AOC.IDENTITY and AOC.INTEGRITY — and SM-05 adds the
- * third, AOC.PROVENANCE. Portability, Interoperability, Verifiability,
- * Licensing & Terms and Governance Compatibility remain canonical descriptors
- * with no production capsule.
+ * of the SM-03 socket — AOC.IDENTITY and AOC.INTEGRITY — SM-05 added the third,
+ * AOC.PROVENANCE, and SM-06 adds the fourth, AOC.PORTABILITY. Interoperability,
+ * Verifiability, Licensing & Terms and Governance Compatibility remain canonical
+ * descriptors with no production capsule.
  *
- * All three are plain factories with no import-time side effects. None
- * registers itself anywhere: there is no global implementation registry, and a
- * capsule is passed explicitly to `invokeSovereigntyCapability`.
+ * All four are plain factories with no import-time side effects. None registers
+ * itself anywhere: there is no global implementation registry, and a capsule is
+ * passed explicitly to `invokeSovereigntyCapability`.
  */
 var identity_1 = require("./identity");
 Object.defineProperty(exports, "IDENTITY_SOVEREIGNTY_CAPABILITY_REASON_CODES", { enumerable: true, get: function () { return identity_1.IDENTITY_SOVEREIGNTY_CAPABILITY_REASON_CODES; } });
@@ -31,3 +31,9 @@ Object.defineProperty(exports, "PROVENANCE_SOVEREIGNTY_CAPABILITY_REASON_CODES",
 Object.defineProperty(exports, "createProvenanceSovereigntyCapabilityImplementation", { enumerable: true, get: function () { return provenance_1.createProvenanceSovereigntyCapabilityImplementation; } });
 Object.defineProperty(exports, "isValidProvenanceSovereigntyCapabilityInput", { enumerable: true, get: function () { return provenance_1.isValidProvenanceSovereigntyCapabilityInput; } });
 Object.defineProperty(exports, "validateProvenanceSovereigntyCapabilityInput", { enumerable: true, get: function () { return provenance_1.validateProvenanceSovereigntyCapabilityInput; } });
+var portability_1 = require("./portability");
+Object.defineProperty(exports, "PORTABILITY_SOVEREIGNTY_CAPABILITY_OPERATIONS", { enumerable: true, get: function () { return portability_1.PORTABILITY_SOVEREIGNTY_CAPABILITY_OPERATIONS; } });
+Object.defineProperty(exports, "PORTABILITY_SOVEREIGNTY_CAPABILITY_REASON_CODES", { enumerable: true, get: function () { return portability_1.PORTABILITY_SOVEREIGNTY_CAPABILITY_REASON_CODES; } });
+Object.defineProperty(exports, "createPortabilitySovereigntyCapabilityImplementation", { enumerable: true, get: function () { return portability_1.createPortabilitySovereigntyCapabilityImplementation; } });
+Object.defineProperty(exports, "isValidPortabilitySovereigntyCapabilityInput", { enumerable: true, get: function () { return portability_1.isValidPortabilitySovereigntyCapabilityInput; } });
+Object.defineProperty(exports, "validatePortabilitySovereigntyCapabilityInput", { enumerable: true, get: function () { return portability_1.validatePortabilitySovereigntyCapabilityInput; } });
