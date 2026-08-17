@@ -56,6 +56,10 @@
       "types": "./dist/manifest/index.d.ts",
       "default": "./dist/manifest/index.js"
     },
+    "./sovereignty-capabilities": {
+      "types": "./dist/sovereignty-capabilities/index.d.ts",
+      "default": "./dist/sovereignty-capabilities/index.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
