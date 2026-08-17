@@ -33,6 +33,10 @@ import type {
   SovereignSubjectRef,
 } from '@aoc/protocol/identity';
 import {
+  buildSovereigntyCapabilityInvocation,
+  getSovereigntyCapabilityRefByKey,
+  invokeSovereigntyCapability,
+  isValidSovereigntyCapabilityInvocationEvidence,
   SOVEREIGNTY_CAPABILITY_IDS,
   getSovereigntyCapability,
   getSovereigntyCapabilityByKey,
@@ -40,7 +44,12 @@ import {
   isSovereigntyCapabilityVersion,
   listSovereigntyCapabilities,
 } from '@aoc/protocol/sovereignty-capabilities';
-import type { SovereigntyCapabilityDefinition } from '@aoc/protocol/sovereignty-capabilities';
+import type {
+  SovereigntyCapabilityImplementation,
+  SovereigntyCapabilityDefinition,
+  SovereigntyCapabilityRef,
+} from '@aoc/protocol/sovereignty-capabilities';
+import type { AuditEventSink } from '@aoc/protocol/adapters';
 
 const assertType = <T>(_value: T): void => undefined;
 
@@ -249,12 +258,126 @@ function sovereigntyCapabilityAcceptance(): number {
   return capabilities.length;
 }
 
+
+/**
+ * An EXTERNAL developer, importing only the packed tarball, implements the
+ * public `SovereigntyCapabilityImplementation` interface and runs it through
+ * the public invoker. This is demo/test code, not a real mineral: SM-04 owns
+ * the first production Identity and Integrity capsules.
+ */
+async function sovereigntyCapabilityInvocationAcceptance(): Promise<string> {
+  const definition = getSovereigntyCapability(SOVEREIGNTY_CAPABILITY_IDS.integrity);
+  if (!definition) throw new Error('canonical Integrity definition not found');
+
+  // (3) derive an exact ref from the canonical registry entry.
+  const capability = getSovereigntyCapabilityRefByKey('integrity') as SovereigntyCapabilityRef;
+  if (capability.id !== definition.id || capability.version !== definition.version) {
+    throw new Error('derived capability ref drifted from the canonical definition');
+  }
+
+  // (5) a consumer-defined implementation conforming to the public interface.
+  const consumerImplementation: SovereigntyCapabilityImplementation<Uint8Array, { byteLength: number }> = {
+    capability,
+    async invoke(invocation) {
+      if (!(invocation.input instanceof Uint8Array)) {
+        throw new Error('raw byte input did not survive the common invocation layer');
+      }
+      return { status: 'succeeded', output: { byteLength: invocation.input.byteLength } };
+    },
+  };
+
+  const deliveredEvents: ContractsAuditEventEnvelope[] = [];
+  const consumerSink: AuditEventSink = {
+    recordAuditEvent(event) {
+      deliveredEvents.push(event);
+    },
+  };
+
+  // (4) construct a valid invocation — no subject at all, raw bytes as input.
+  const invocation = buildSovereigntyCapabilityInvocation({
+    capability,
+    correlationId: 'consumer-flow-001',
+    input: new Uint8Array([1, 2, 3, 4]),
+  });
+  if (invocation.subject !== undefined) throw new Error('common invocation invented a subject');
+
+  // (6/7) invoke through the common invoker and receive a result.
+  const result = await invokeSovereigntyCapability(invocation, consumerImplementation, {
+    evidenceSink: consumerSink,
+  });
+  if (result.status !== 'succeeded') throw new Error('consumer capability invocation did not succeed');
+  if (result.output.byteLength !== 4) throw new Error('capability output did not survive the result');
+  if (result.invocationId !== invocation.invocationId) throw new Error('result invocation id drifted');
+
+  // (8) capability-attributed evidence.
+  const evidence = result.evidence;
+  if (!isValidSovereigntyCapabilityInvocationEvidence(evidence)) throw new Error('evidence is not valid');
+  if (evidence.capability.id !== 'aoc:sovereignty-capability:integrity') {
+    throw new Error('evidence does not attribute the canonical Integrity capability');
+  }
+  if (evidence.capability.version !== definition.version) throw new Error('evidence lost the capability version');
+  if (evidence.correlationId !== 'consumer-flow-001') throw new Error('evidence lost the correlation id');
+  if ('subject' in evidence) throw new Error('evidence invented a subject');
+  const serializedEvidence = JSON.stringify(evidence);
+  if (serializedEvidence.includes('byteLength') || serializedEvidence.includes('input')) {
+    throw new Error('evidence embedded a raw capability payload');
+  }
+  if (canonicalizeJSON(JSON.parse(serializedEvidence)) !== canonicalizeJSON(evidence)) {
+    throw new Error('evidence did not survive a canonical round trip');
+  }
+  if (deliveredEvents.length !== 1) throw new Error('evidence sink did not receive exactly one record');
+  if (deliveredEvents[0].eventId !== invocation.invocationId) throw new Error('delivered record identity drifted');
+
+  // An existing SM-02 subject travels through the same socket unchanged.
+  const subject: SovereignSubjectRef = {
+    sovereignAssetId: mintSovereignAssetId(),
+    externalReference: buildSovereignExternalReference({
+      namespace: 'alien-system-v47',
+      id: 'alien-resource-92817',
+      locator: 'future://provider/object/92817',
+    }),
+  };
+  const verifiability = getSovereigntyCapabilityRefByKey('verifiability') as SovereigntyCapabilityRef;
+  const withSubject = await invokeSovereigntyCapability(
+    buildSovereigntyCapabilityInvocation({ capability: verifiability, subject, input: { arbitrary: 'value' } }),
+    {
+      capability: verifiability,
+      async invoke() {
+        return { status: 'succeeded' as const, output: { testValue: true } };
+      },
+    },
+  );
+  if (withSubject.subject?.sovereignAssetId !== subject.sovereignAssetId) {
+    throw new Error('alien subject did not survive the invocation');
+  }
+  if (withSubject.evidence.subject?.externalReference?.id !== 'alien-resource-92817') {
+    throw new Error('alien external reference did not survive into evidence');
+  }
+
+  // A mismatched implementation is rejected before it can run.
+  let rejected = false;
+  try {
+    await invokeSovereigntyCapability(
+      buildSovereigntyCapabilityInvocation({ capability, input: new Uint8Array() }),
+      { capability: verifiability, async invoke() { return { status: 'succeeded' as const, output: 1 }; } },
+    );
+  } catch {
+    rejected = true;
+  }
+  if (!rejected) throw new Error('capability mismatch was not rejected');
+
+  // (9) no Enterprise package is imported anywhere in this fixture.
+  return evidence.invocationId;
+}
+
 const sovereigntyCapabilityCount = sovereigntyCapabilityAcceptance();
 
 void (async (): Promise<void> => {
   await sovereignAssetAcceptance();
   const nonByteSubjectId = await nonByteSubjectAcceptance();
   console.log(`typescript-cjs non-byte sovereign subject OK: ${nonByteSubjectId}`);
+  const invocationId = await sovereigntyCapabilityInvocationAcceptance();
+  console.log(`typescript-cjs sovereignty capability invocation OK: ${invocationId}`);
 })().catch((error) => {
   throw error;
 });

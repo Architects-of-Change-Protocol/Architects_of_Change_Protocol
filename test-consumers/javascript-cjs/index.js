@@ -52,6 +52,75 @@ assert(
   'unknown sovereignty capability id resolved',
 );
 assert(typeof sovereigntyCapabilities.registerSovereigntyCapability === 'undefined', 'registry must be read-only');
+assert(
+  typeof sovereigntyCapabilities.registerSovereigntyCapabilityImplementation === 'undefined',
+  'no global implementation registration surface may exist',
+);
+assert(
+  typeof sovereigntyCapabilities.invokeSovereigntyCapability === 'function',
+  'the common capability invoker must be part of the published surface',
+);
+
+// A plain-JavaScript external consumer implements the common capability
+// contract and drives it through the public invoker. Demo code, not a real
+// mineral: SM-04 owns the first production capsules.
+const capabilityInvocationAcceptance = async () => {
+  const capability = sovereigntyCapabilities.getSovereigntyCapabilityRefByKey('verifiability');
+  assert(capability.id === 'aoc:sovereignty-capability:verifiability', 'derived ref lost the canonical id');
+  assert(capability.version === '1.0.0', 'derived ref lost the explicit capability version');
+
+  const delivered = [];
+  const invocation = sovereigntyCapabilities.buildSovereigntyCapabilityInvocation({
+    capability,
+    correlationId: 'consumer-flow-js-001',
+    input: { arbitrary: 'value' },
+  });
+
+  const result = await sovereigntyCapabilities.invokeSovereigntyCapability(
+    invocation,
+    {
+      capability,
+      invoke: async () => ({ status: 'succeeded', output: { testValue: true } }),
+    },
+    { evidenceSink: { recordAuditEvent: (event) => delivered.push(event) } },
+  );
+
+  assert(result.status === 'succeeded', 'consumer capability invocation did not succeed');
+  assert(result.invocationId === invocation.invocationId, 'result invocation id drifted');
+  assert(result.capability.id === capability.id, 'result capability drifted');
+  assert(
+    sovereigntyCapabilities.isValidSovereigntyCapabilityInvocationEvidence(result.evidence),
+    'invocation evidence is not valid',
+  );
+  assert(
+    result.evidence.capability.id === 'aoc:sovereignty-capability:verifiability' &&
+      result.evidence.capability.version === '1.0.0',
+    'evidence does not attribute Verifiability 1.0.0',
+  );
+  assert(result.evidence.correlationId === 'consumer-flow-js-001', 'evidence lost the correlation id');
+  const serialized = JSON.stringify(result.evidence);
+  assert(!serialized.includes('arbitrary'), 'evidence embedded the raw capability input');
+  assert(!serialized.includes('testValue'), 'evidence embedded the raw capability output');
+  assert(
+    canonical.canonicalizeJSON(JSON.parse(serialized)) === canonical.canonicalizeJSON(result.evidence),
+    'evidence did not survive a canonical round trip',
+  );
+  assert(delivered.length === 1, 'evidence sink did not receive exactly one record');
+  assert(delivered[0].eventId === invocation.invocationId, 'delivered record identity drifted');
+
+  let rejected = false;
+  try {
+    await sovereigntyCapabilities.invokeSovereigntyCapability(invocation, {
+      capability: sovereigntyCapabilities.getSovereigntyCapabilityRefByKey('identity'),
+      invoke: async () => ({ status: 'succeeded', output: 1 }),
+    });
+  } catch (error) {
+    rejected = sovereigntyCapabilities.isSovereigntyCapabilityInvocationError(error);
+  }
+  assert(rejected, 'a mismatched capability implementation was not rejected');
+
+  return result.invocationId;
+};
 
 // A sovereign subject with no bytes: identified, signed, serialized and
 // verified from the packed tarball without fabricating content integrity.
@@ -117,8 +186,11 @@ manifestApi
     );
     assert(verification.valid, 'non-byte subject manifest failed verification');
 
+    return capabilityInvocationAcceptance();
+  })
+  .then((capabilityInvocationId) => {
     console.log(
-      `javascript-cjs consumer OK: claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${capabilities.length} nonByteSubject=${nonByteSubject.sovereignAssetId}`,
+      `javascript-cjs consumer OK: claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${capabilities.length} nonByteSubject=${nonByteSubject.sovereignAssetId} capabilityInvocation=${capabilityInvocationId}`,
     );
   })
   .catch((error) => {

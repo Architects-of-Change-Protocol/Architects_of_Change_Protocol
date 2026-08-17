@@ -6,11 +6,21 @@ import type { ProtocolError } from '@aoc/protocol/errors';
 import type { RevocationLookup } from '@aoc/protocol/adapters';
 import { AdapterRegistry, AdapterTokens } from '@aoc/protocol/runtime-registry';
 import {
+  buildSovereigntyCapabilityInvocation,
   getSovereigntyCapability,
   getSovereigntyCapabilityByKey,
+  getSovereigntyCapabilityRefByKey,
+  invokeSovereigntyCapability,
+  isValidSovereigntyCapabilityInvocationEvidence,
   listSovereigntyCapabilities,
 } from '@aoc/protocol/sovereignty-capabilities';
-import type { SovereigntyCapabilityId, SovereigntyCapabilityKey } from '@aoc/protocol/sovereignty-capabilities';
+import type {
+  SovereigntyCapabilityId,
+  SovereigntyCapabilityImplementation,
+  SovereigntyCapabilityKey,
+  SovereigntyCapabilityRef,
+} from '@aoc/protocol/sovereignty-capabilities';
+import type { AuditEventSink } from '@aoc/protocol/adapters';
 import {
   buildSovereignExternalReference,
   isValidSovereignSubjectRef,
@@ -134,6 +144,103 @@ if (!verification.valid) {
   throw new Error('non-byte subject manifest failed verification');
 }
 
+
+// An external ESM consumer implements the public Sovereignty Capability
+// interface and drives it through the public invoker, from the packed tarball
+// only. Demo/test code — not a real mineral capsule.
+const identityCapabilityRef = getSovereigntyCapabilityRefByKey('identity') as SovereigntyCapabilityRef;
+const createdSubject: SovereignSubjectRef = {
+  sovereignAssetId: mintSovereignAssetId(),
+  externalReference: buildSovereignExternalReference({
+    namespace: 'alien-system-v47',
+    id: 'alien-resource-92817',
+  }),
+};
+
+const consumerIdentityShapedImplementation: SovereigntyCapabilityImplementation<
+  { externalReference: SovereignExternalReference },
+  { minted: true }
+> = {
+  capability: identityCapabilityRef,
+  async invoke() {
+    return { status: 'succeeded', output: { minted: true }, subject: createdSubject };
+  },
+};
+
+const consumerEvents: AuditEventEnvelope[] = [];
+const consumerEvidenceSink: AuditEventSink = {
+  recordAuditEvent(event) {
+    consumerEvents.push(event);
+  },
+};
+
+// Identity-shaped: no subject before, a subject after.
+const identityInvocation = buildSovereigntyCapabilityInvocation({
+  capability: identityCapabilityRef,
+  correlationId: 'consumer-flow-esm-001',
+  input: { externalReference },
+});
+if (identityInvocation.subject !== undefined) {
+  throw new Error('common invocation required a subject it should not have');
+}
+
+const identityResult = await invokeSovereigntyCapability(identityInvocation, consumerIdentityShapedImplementation, {
+  evidenceSink: consumerEvidenceSink,
+});
+if (identityResult.status !== 'succeeded') throw new Error('consumer capability invocation failed');
+if (identityResult.subject?.sovereignAssetId !== createdSubject.sovereignAssetId) {
+  throw new Error('the subject created by the capability did not reach the result');
+}
+if (!isValidSovereigntyCapabilityInvocationEvidence(identityResult.evidence)) {
+  throw new Error('capability invocation evidence is not valid');
+}
+if (identityResult.evidence.capability.id !== 'aoc:sovereignty-capability:identity') {
+  throw new Error('evidence does not attribute the canonical Identity capability');
+}
+if (identityResult.evidence.capability.version !== identityCapabilityRef.version) {
+  throw new Error('evidence lost the exact capability version');
+}
+if (identityResult.evidence.invocationId !== identityInvocation.invocationId) {
+  throw new Error('evidence lost the invocation id');
+}
+if (identityResult.evidence.correlationId !== 'consumer-flow-esm-001') {
+  throw new Error('evidence lost the correlation id');
+}
+if (JSON.stringify(identityResult.evidence).includes('minted')) {
+  throw new Error('evidence embedded the raw capability output');
+}
+if (
+  canonicalizeJSON(JSON.parse(JSON.stringify(identityResult.evidence))) !==
+  canonicalizeJSON(identityResult.evidence)
+) {
+  throw new Error('evidence did not survive a canonical round trip');
+}
+if (consumerEvents.length !== 1 || consumerEvents[0].eventId !== identityInvocation.invocationId) {
+  throw new Error('evidence sink did not receive exactly one matching record');
+}
+
+// Integrity-shaped: raw bytes, no subject, no sink at all.
+const integrityCapabilityRef = getSovereigntyCapabilityRefByKey('integrity') as SovereigntyCapabilityRef;
+const bytesResult = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: integrityCapabilityRef,
+    input: new Uint8Array([7, 8, 9]),
+  }),
+  {
+    capability: integrityCapabilityRef,
+    async invoke(invocation) {
+      return { status: 'succeeded' as const, output: { byteLength: invocation.input.byteLength } };
+    },
+  },
+);
+if (bytesResult.status !== 'succeeded' || bytesResult.output.byteLength !== 3) {
+  throw new Error('raw byte input did not survive the common invocation layer');
+}
+if (bytesResult.subject !== undefined) throw new Error('a subject was invented for a subject-less invocation');
+if (!isValidSovereigntyCapabilityInvocationEvidence(bytesResult.evidence)) {
+  throw new Error('evidence must exist even with no sink configured');
+}
+
 console.log(
-  `typescript-esm consumer OK: token=${token.tokenId} claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${sovereigntyCapabilities.length} nonByteSubject=${sovereignAssetId}`,
+  `typescript-esm consumer OK: token=${token.tokenId} claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${sovereigntyCapabilities.length} nonByteSubject=${sovereignAssetId} capabilityInvocation=${identityResult.invocationId}`,
 );
