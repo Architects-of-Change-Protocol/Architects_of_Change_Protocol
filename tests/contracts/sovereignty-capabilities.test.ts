@@ -189,15 +189,22 @@ describe('Sovereignty Capability lookup', () => {
 });
 
 describe('Sovereignty Capability registry immutability', () => {
-  it('exposes no registration, mutation or invocation API', () => {
+  it('exposes no registration or mutation API', () => {
+    // SM-03 added `invokeSovereigntyCapability` to this surface: a common way
+    // to *consume* a capability. It deliberately did not add a way to change
+    // what the canonical inventory is, or to register an implementation into
+    // global state — the read-only inventory this suite guards is unaffected
+    // by the existence of an invocation API, and the invoker takes its
+    // implementation as an explicit argument.
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const surface = require('@aoc/protocol/sovereignty-capabilities') as Record<string, unknown>;
     for (const forbidden of [
       'register',
       'registerSovereigntyCapability',
+      'registerSovereigntyCapabilityImplementation',
       'defineSovereigntyCapability',
+      'addCanonicalCapability',
       'removeSovereigntyCapability',
-      'invokeSovereigntyCapability',
       'applySovereigntyCapability',
       'executeSovereigntyCapability',
     ]) {
