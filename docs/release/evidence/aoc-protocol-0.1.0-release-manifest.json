@@ -18,6 +18,7 @@
       "./canonical",
       "./identity",
       "./manifest",
+      "./portability",
       "./sovereignty-capabilities",
       "./package.json"
     ],
@@ -25,7 +26,7 @@
   },
   "source": {
     "repository": "git+https://github.com/Architects-of-Change-Protocol/Architects_of_Change_Protocol.git",
-    "gitCommit": "14b506e033fa29ddba51a608a2efee8724118c5a",
+    "gitCommit": "5c0267c912aded750f6d40c0ae48df4aeb0958b8",
     "protocolWorkspaceClean": true
   },
   "toolchain": {
@@ -34,14 +35,14 @@
   },
   "tarball": {
     "filename": "aoc-protocol-0.1.0.tgz",
-    "sizeBytes": 134724,
-    "fileCount": 322,
-    "sha256": "c531a92aeab1af47ba942646a679ce16631603b81dc0f4c18c4e279d29d68387",
-    "sha512": "1800012473ecc0488f9e3a8b79a9127ba223bab53519c4b2b66745b1b38ba106f8828ea9ee9067c70146753b239812fbb8597dbcefbd08b5185d36a6994f2db9",
-    "npmIntegrity": "sha512-GAABJHPswEiPnjqLeakSe6IjurU1GcSytmdFsbOLoQb4go6p7pBnxwFGdTsjmBL7uFl9vO+9CLUYXTammU8tuQ==",
+    "sizeBytes": 157314,
+    "fileCount": 334,
+    "sha256": "19465e4c313c791cf8eb0298ef0db02bf54fed8876fe2e45d906a038509c1ee2",
+    "sha512": "efc48b11a40796639ff73ba602dc482c09d966b06fd8a5a5398a607eeaf6cf203cfa5d2d4e43fc1e523f285417c09bf98e39d62ee8520c7fa4faa1b9b08a7765",
+    "npmIntegrity": "sha512-78SLEaQHlmOf9zumAtxILAnZZrBv2KWlOYpgfur2zyA8+l0tTkP8HlI/KFQXwJv5jjnWLuhSDH+k+qG5sIp3ZQ==",
     "reproducible": true
   },
-  "generatedAt": "2026-08-17T22:51:47.683Z",
+  "generatedAt": "2026-08-17T23:49:21.532Z",
   "files": [
     "LICENSE",
     "NOTICE",
@@ -277,6 +278,15 @@
     "dist/manifest/verify.d.ts",
     "dist/manifest/verify.d.ts.map",
     "dist/manifest/verify.js",
+    "dist/portability/bundle.d.ts",
+    "dist/portability/bundle.d.ts.map",
+    "dist/portability/bundle.js",
+    "dist/portability/index.d.ts",
+    "dist/portability/index.d.ts.map",
+    "dist/portability/index.js",
+    "dist/portability/serialization.d.ts",
+    "dist/portability/serialization.d.ts.map",
+    "dist/portability/serialization.js",
     "dist/runtime-registry/adapter-registry.d.ts",
     "dist/runtime-registry/adapter-registry.d.ts.map",
     "dist/runtime-registry/adapter-registry.js",
@@ -319,6 +329,9 @@
     "dist/sovereignty-capabilities/capsules/integrity.d.ts",
     "dist/sovereignty-capabilities/capsules/integrity.d.ts.map",
     "dist/sovereignty-capabilities/capsules/integrity.js",
+    "dist/sovereignty-capabilities/capsules/portability.d.ts",
+    "dist/sovereignty-capabilities/capsules/portability.d.ts.map",
+    "dist/sovereignty-capabilities/capsules/portability.js",
     "dist/sovereignty-capabilities/capsules/provenance.d.ts",
     "dist/sovereignty-capabilities/capsules/provenance.d.ts.map",
     "dist/sovereignty-capabilities/capsules/provenance.js",
