@@ -34,6 +34,8 @@ import type {
 } from '@aoc/protocol/identity';
 import {
   buildSovereigntyCapabilityInvocation,
+  createIdentitySovereigntyCapabilityImplementation,
+  createIntegritySovereigntyCapabilityImplementation,
   getSovereigntyCapabilityRefByKey,
   invokeSovereigntyCapability,
   isValidSovereigntyCapabilityInvocationEvidence,
@@ -45,6 +47,8 @@ import {
   listSovereigntyCapabilities,
 } from '@aoc/protocol/sovereignty-capabilities';
 import type {
+  IdentitySovereigntyCapabilityInput,
+  IntegritySovereigntyCapabilityInput,
   SovereigntyCapabilityImplementation,
   SovereigntyCapabilityDefinition,
   SovereigntyCapabilityRef,
@@ -370,6 +374,207 @@ async function sovereigntyCapabilityInvocationAcceptance(): Promise<string> {
   return evidence.invocationId;
 }
 
+/**
+ * SM-04: the two PRODUCTION Sovereignty Minerals, consumed end-to-end by an
+ * external developer who has installed nothing but the packed @aoc/protocol
+ * tarball. No fake implementation, no test fixture, no Enterprise package, no
+ * source import — the capsules come from the public
+ * `@aoc/protocol/sovereignty-capabilities` subpath and execute through the
+ * same `invokeSovereigntyCapability` socket a third-party implementation uses.
+ */
+async function productionSovereigntyMineralAcceptance(): Promise<string> {
+  const correlationId = 'sm04-photo-onboarding-001';
+  const bytes = new TextEncoder().encode('hello sovereign world');
+
+  const integrityRef = getSovereigntyCapabilityRefByKey('integrity') as SovereigntyCapabilityRef;
+  const identityRef = getSovereigntyCapabilityRefByKey('identity') as SovereigntyCapabilityRef;
+
+  // ---- FLOW B: real AOC.INTEGRITY over bytes, with no sovereign identity ----
+  const integrityImplementation = createIntegritySovereigntyCapabilityImplementation();
+  if (integrityImplementation.capability.id !== 'aoc:sovereignty-capability:integrity') {
+    throw new Error('production Integrity capsule does not advertise the canonical id');
+  }
+  if (integrityImplementation.capability.version !== integrityRef.version) {
+    throw new Error('production Integrity capsule drifted from the canonical capability version');
+  }
+
+  const integrityInput: IntegritySovereigntyCapabilityInput = { operation: 'compute-content-identity', bytes };
+  const integrityResult = await invokeSovereigntyCapability(
+    buildSovereigntyCapabilityInvocation({ capability: integrityRef, correlationId, input: integrityInput }),
+    integrityImplementation,
+  );
+  if (integrityResult.status !== 'succeeded') throw new Error('production Integrity invocation failed');
+  if (integrityResult.output.operation !== 'compute-content-identity') throw new Error('wrong Integrity operation');
+  const contentIdentity = integrityResult.output.contentIdentity;
+
+  // Independent equivalence against the public primitive.
+  if (!contentIdentitiesEqual(contentIdentity, computeContentIdentity(bytes))) {
+    throw new Error('capability ContentIdentity differs from the computeContentIdentity primitive');
+  }
+  if (integrityResult.subject !== undefined) throw new Error('Integrity invented a sovereign subject');
+
+  // A real verification, and a real negative check that is NOT an execution failure.
+  const verifyOk = await invokeSovereigntyCapability(
+    buildSovereigntyCapabilityInvocation({
+      capability: integrityRef,
+      input: { operation: 'verify-content-identity', bytes, expected: contentIdentity } as IntegritySovereigntyCapabilityInput,
+    }),
+    integrityImplementation,
+  );
+  if (verifyOk.status !== 'succeeded' || verifyOk.output.operation !== 'verify-content-identity') {
+    throw new Error('production Integrity verification did not execute');
+  }
+  if (!verifyOk.output.check.valid) throw new Error('matching bytes reported as invalid');
+
+  const verifyMismatch = await invokeSovereigntyCapability(
+    buildSovereigntyCapabilityInvocation({
+      capability: integrityRef,
+      input: {
+        operation: 'verify-content-identity',
+        bytes: new TextEncoder().encode('different bytes'),
+        expected: contentIdentity,
+      } as IntegritySovereigntyCapabilityInput,
+    }),
+    integrityImplementation,
+  );
+  if (verifyMismatch.status !== 'succeeded') {
+    throw new Error('a digest mismatch must be a successful check with a negative result, not a failed execution');
+  }
+  if (verifyMismatch.output.operation !== 'verify-content-identity') throw new Error('wrong Integrity operation');
+  if (verifyMismatch.output.check.valid || verifyMismatch.output.check.reason !== 'CONTENT_DIGEST_MISMATCH') {
+    throw new Error('mismatch result was not preserved');
+  }
+  if (verifyMismatch.evidence.outcome !== 'succeeded') throw new Error('mismatch was recorded as a failed invocation');
+
+  // ---- FLOW A/C: real AOC.IDENTITY, binding the Integrity output ----
+  const identityImplementation = createIdentitySovereigntyCapabilityImplementation();
+  if (identityImplementation.capability.id !== 'aoc:sovereignty-capability:identity') {
+    throw new Error('production Identity capsule does not advertise the canonical id');
+  }
+  if (identityImplementation.capability.version !== identityRef.version) {
+    throw new Error('production Identity capsule drifted from the canonical capability version');
+  }
+
+  const identityInput: IdentitySovereigntyCapabilityInput = {
+    registrant: 'principal:consumer',
+    externalReference: buildSovereignExternalReference({
+      namespace: 'alien-system-v47',
+      id: 'alien-resource-92817',
+      locator: 'future://provider/object/92817',
+    }),
+    contentIdentity,
+  };
+  const identityResult = await invokeSovereigntyCapability(
+    buildSovereigntyCapabilityInvocation({ capability: identityRef, correlationId, input: identityInput }),
+    identityImplementation,
+  );
+  if (identityResult.status !== 'succeeded') throw new Error('production Identity invocation failed');
+
+  const { subject, manifest } = identityResult.output;
+  if (!isValidSovereignSubjectRef(subject)) throw new Error('Identity produced an invalid subject reference');
+  if (subject.sovereignAssetId !== manifest.sovereignAssetId) throw new Error('subject/manifest identity drift');
+  if (!manifest.contentIdentity || !contentIdentitiesEqual(manifest.contentIdentity, contentIdentity)) {
+    throw new Error('the Identity manifest does not carry the Integrity output');
+  }
+  if ('proof' in manifest || 'manifestDigest' in manifest) throw new Error('Identity signed its own manifest');
+  if (manifest.authorityClaims.length !== 0 || 'originClaim' in manifest) {
+    throw new Error('Identity fabricated a provenance claim');
+  }
+  if (manifest.externalReference?.locator !== 'future://provider/object/92817') {
+    throw new Error('the open-world locator did not survive');
+  }
+  if (identityResult.subject?.sovereignAssetId !== subject.sovereignAssetId) {
+    throw new Error('the common result subject is not the newly created subject');
+  }
+
+  // Identity with NO ContentIdentity at all stays independently consumable.
+  const identityOnly = await invokeSovereigntyCapability(
+    buildSovereigntyCapabilityInvocation({
+      capability: identityRef,
+      input: {
+        registrant: 'principal:consumer',
+        externalReference: buildSovereignExternalReference({
+          namespace: 'example:property-registry',
+          id: 'folio-92817',
+        }),
+      } as IdentitySovereigntyCapabilityInput,
+    }),
+    identityImplementation,
+  );
+  if (identityOnly.status !== 'succeeded') throw new Error('Identity requires Integrity — it must not');
+  if ('contentIdentity' in identityOnly.output.manifest) {
+    throw new Error('an absent contentIdentity was serialized rather than omitted');
+  }
+  if (canonicalizeJSON(identityOnly.output.manifest).includes('contentIdentity')) {
+    throw new Error('canonical payload leaked a fabricated contentIdentity');
+  }
+
+  // ---- Composition, attribution and evidence hygiene ----
+  if (integrityResult.evidence.capability.id !== 'aoc:sovereignty-capability:integrity') {
+    throw new Error('Integrity evidence lost its canonical attribution');
+  }
+  if (identityResult.evidence.capability.id !== 'aoc:sovereignty-capability:identity') {
+    throw new Error('Identity evidence lost its canonical attribution');
+  }
+  if (integrityResult.evidence.capability.version !== integrityRef.version
+    || identityResult.evidence.capability.version !== identityRef.version) {
+    throw new Error('evidence lost an exact capability version');
+  }
+  if (integrityResult.invocationId === identityResult.invocationId) {
+    throw new Error('two separate mineral invocations shared one invocation id');
+  }
+  if (integrityResult.evidence.correlationId !== correlationId
+    || identityResult.evidence.correlationId !== correlationId) {
+    throw new Error('the shared correlation id did not survive both invocations');
+  }
+  if ('subject' in integrityResult.evidence) throw new Error('Integrity evidence invented a subject');
+  if (identityResult.evidence.subject?.sovereignAssetId !== subject.sovereignAssetId) {
+    throw new Error('Identity evidence does not carry the newly created subject');
+  }
+  for (const evidence of [integrityResult.evidence, identityResult.evidence]) {
+    if (!isValidSovereigntyCapabilityInvocationEvidence(evidence)) throw new Error('invalid capability evidence');
+    const serialized = JSON.stringify(evidence);
+    for (const leak of ['hello sovereign world', contentIdentity.digest, 'manifest', 'registrant', 'bytes']) {
+      if (serialized.includes(leak)) throw new Error(`generic evidence leaked "${leak}"`);
+    }
+    if (canonicalizeJSON(JSON.parse(serialized)) !== canonicalizeJSON(evidence)) {
+      throw new Error('capability evidence did not survive a canonical round trip');
+    }
+  }
+
+  // A real manifest digest through the production Integrity capsule, checked
+  // against the public primitive.
+  const digestResult = await invokeSovereigntyCapability(
+    buildSovereigntyCapabilityInvocation({
+      capability: integrityRef,
+      input: { operation: 'compute-manifest-digest', manifest } as IntegritySovereigntyCapabilityInput,
+    }),
+    integrityImplementation,
+  );
+  if (digestResult.status !== 'succeeded' || digestResult.output.operation !== 'compute-manifest-digest') {
+    throw new Error('production manifest digest did not execute');
+  }
+  if (digestResult.output.manifestDigest !== computeManifestDigest(manifest)) {
+    throw new Error('capability manifest digest differs from the computeManifestDigest primitive');
+  }
+
+  // Identity refuses to mint a second identity for an existing subject.
+  const alreadyIdentified = await invokeSovereigntyCapability(
+    buildSovereigntyCapabilityInvocation({
+      capability: identityRef,
+      subject,
+      input: { registrant: 'principal:consumer' } as IdentitySovereigntyCapabilityInput,
+    }),
+    identityImplementation,
+  );
+  if (alreadyIdentified.status !== 'failed'
+    || alreadyIdentified.reasonCodes[0] !== 'IDENTITY_SUBJECT_ALREADY_EXISTS') {
+    throw new Error('Identity minted a second identity for an existing subject');
+  }
+
+  return subject.sovereignAssetId;
+}
+
 const sovereigntyCapabilityCount = sovereigntyCapabilityAcceptance();
 
 void (async (): Promise<void> => {
@@ -378,6 +583,8 @@ void (async (): Promise<void> => {
   console.log(`typescript-cjs non-byte sovereign subject OK: ${nonByteSubjectId}`);
   const invocationId = await sovereigntyCapabilityInvocationAcceptance();
   console.log(`typescript-cjs sovereignty capability invocation OK: ${invocationId}`);
+  const productionSubjectId = await productionSovereigntyMineralAcceptance();
+  console.log(`typescript-cjs production Identity + Integrity minerals OK: ${productionSubjectId}`);
 })().catch((error) => {
   throw error;
 });

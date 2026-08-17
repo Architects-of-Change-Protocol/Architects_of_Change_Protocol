@@ -291,12 +291,195 @@ result.evidence.capability;
 // { id: 'aoc:sovereignty-capability:verifiability', version: '1.0.0' }
 ```
 
+## Production capsules: Identity and Integrity
+
+Two of the canonical eight are now real implementations of the socket above, exported from
+`@aoc/protocol/sovereignty-capabilities` and executed through `invokeSovereigntyCapability` like any
+other implementation. They are plain factories with no import-time side effects, they register
+themselves nowhere, and they expose no second entry point that would bypass the common result and
+evidence semantics.
+
+```ts
+import {
+  buildSovereigntyCapabilityInvocation,
+  createIdentitySovereigntyCapabilityImplementation,
+  createIntegritySovereigntyCapabilityImplementation,
+  getSovereigntyCapabilityRefByKey,
+  invokeSovereigntyCapability,
+} from '@aoc/protocol/sovereignty-capabilities';
+```
+
+Both derive their advertised `capability` ref from the SM-01 registry, so neither can drift from the
+canonical id or version. Neither reads the network, a provider, a chain, a registry or storage.
+
+### AOC.IDENTITY
+
+Answers exactly one question: *create a new canonical AOC sovereign identity for this registration
+action, and return the canonical subject representation.*
+
+| | |
+| --- | --- |
+| Input | `IdentitySovereigntyCapabilityInput` — `registrant`, optional `externalReference`, optional **precomputed** `contentIdentity` |
+| Output | `IdentitySovereigntyCapabilityOutput` — `{ subject: SovereignSubjectRef; manifest: SovereignManifestV1 }` |
+| Subject before | must be **absent** |
+| Subject after | **present** — the one it just created |
+| Factory | `createIdentitySovereigntyCapabilityImplementation({ clock? })` |
+
+It mints a new `SovereignAssetId` through `mintSovereignAssetId`, builds the canonical record through
+`buildSovereignManifestV1`, and returns the resulting subject. A new identity begins at
+`manifestVersion: 1` in state `active`, with `authorityClaims: []` and no `originClaim`.
+
+The invocation must not already name a subject. Creating identity for a subject that already has one
+would fork it rather than identify it, so that case returns an ordinary failed outcome with reason
+code `IDENTITY_SUBJECT_ALREADY_EXISTS` — not an exception, and not a second mint. A caller-supplied
+`sovereignAssetId` is likewise not accepted: a capability that took one would not be establishing
+identity at all. Two identical invocations therefore produce two distinct sovereign identities;
+Identity creation is not content-addressed and is never de-duplicated by external reference, content
+identity or registrant. Whether two ids denote the same real-world thing is a separate resolution
+question this capability does not answer.
+
+`createdAt` comes from an injectable clock, not from `invocation.requestedAt`: that field is
+caller-supplied envelope metadata describing when the *request* was built, which is a different fact
+from when the sovereign record was produced.
+
+**Identity does not sign.** The output carries a `SovereignManifestV1`, never a
+`SignedSovereignManifest`. Identity establishes *what the sovereign subject is*; whether a
+cryptographic assertion over that record can be independently verified is AOC.VERIFIABILITY's
+question. A capsule that generated a key pair and signed its own output would silently absorb part of
+another mineral and make an unsigned-by-choice registration inexpressible. Sign the returned manifest
+with `signSovereignManifest` when a proof is actually wanted — and note that an unsigned manifest is a
+canonical record, not cryptographic proof.
+
+**Identity does not claim ownership.** `registrant` records who submitted the registration. It is not
+`owner`, `legalOwner` or `beneficialOwner`, and nothing in the output asserts that the registrant
+owns, controls or holds any legal right over the referenced external thing. The record says *this AOC
+subject references this external identifier*, and no more. Declared (and disputable) authority
+assertions are `AuthorityClaim`, which belongs to Provenance.
+
+Reason codes: `IDENTITY_SUBJECT_ALREADY_EXISTS`, `IDENTITY_INVALID_INPUT`,
+`IDENTITY_INVALID_REGISTRANT`, `IDENTITY_INVALID_EXTERNAL_REFERENCE`,
+`IDENTITY_INVALID_CONTENT_IDENTITY`.
+
+### AOC.INTEGRITY
+
+Answers: *what exact integrity commitment applies to this representation, and does a representation
+match a declared commitment?* Three operations, a closed set for capability version 1.0.0:
+
+| `operation` | Input | Output | Wraps |
+| --- | --- | --- | --- |
+| `compute-content-identity` | `bytes: Uint8Array` | `{ contentIdentity }` | `computeContentIdentity` |
+| `verify-content-identity` | `bytes`, `expected: ContentIdentity` | `{ check: { valid, reason? } }` | `verifyContentIdentity` |
+| `compute-manifest-digest` | `manifest: SovereignManifestV1` | `{ manifestDigest }` | `computeManifestDigest` |
+
+No new hashing semantics are introduced: `ContentIdentity` remains SHA-256 over the exact bytes, and
+there is no second digest implementation. The caller's `Uint8Array` reaches the primitive untouched —
+never frozen, cloned, canonicalized or re-encoded.
+
+The invocation's `subject` is optional and, when present, is attribution/context only. It can never
+influence a digest: the same bytes under different subjects, or under the same subject at different
+locators, produce the same `ContentIdentity`. Integrity never mints a `SovereignAssetId` and never
+returns a subject of its own.
+
+**A mismatch is a successful check with a negative result, not a failed execution.** If the caller
+asks "do these bytes match this commitment?" and the correct answer is "no", the capability did its
+job. So the result is `status: 'succeeded'` with `output.check.valid === false` and
+`output.check.reason === 'CONTENT_DIGEST_MISMATCH'`, and the evidence records `outcome: 'succeeded'`.
+Reporting it as a failed execution would conflate *the Integrity capability did not run properly* with
+*the integrity assertion does not hold*, and make the two indistinguishable in evidence. A failed
+outcome is reserved for malformed input: `INTEGRITY_INVALID_INPUT`,
+`INTEGRITY_UNSUPPORTED_OPERATION`, `INTEGRITY_INVALID_BYTES`,
+`INTEGRITY_INVALID_EXPECTED_CONTENT_IDENTITY`, `INTEGRITY_INVALID_MANIFEST`.
+
+`compute-manifest-digest` belongs here because it answers *what is the canonical digest of this
+manifest?* It does **not** answer *was this manifest signed by the right principal?* — signature
+checking, issuer binding, public-key resolution and proof-payload validation are AOC.VERIFIABILITY,
+and none of them happen in this capsule. Generic canonicalization is deliberately not offered as an
+operation either: a `canonicalize-any-json` operation would broaden Integrity into Interoperability's
+contract. `computeManifestDigest` *uses* canonicalization internally, which is not the same as
+exposing it.
+
+### Identity is not Integrity
+
+The two are independently consumable, and neither depends on the other:
+
+| Scenario | AOC.IDENTITY | AOC.INTEGRITY | Result |
+| --- | --- | --- | --- |
+| An external building, a token, an agent, an alien-namespace object | required | **not required** | a real `SovereignSubjectRef` and manifest with `contentIdentity` structurally absent |
+| Loose bytes nobody has minted an identity for | **not required** | required | a real `ContentIdentity`, no subject anywhere |
+| A photo that wants both | required | required, composed | a manifest carrying the digest Integrity produced |
+
+An absent `contentIdentity` is *omitted*, never emitted as `undefined` and never fabricated from the
+external reference, the locator or the manifest itself.
+
+### Composing them
+
+Composition runs through the public output of one and the public input of the other. Nothing links
+them in code:
+
+```ts
+const integrity = createIntegritySovereigntyCapabilityImplementation();
+const identity = createIdentitySovereigntyCapabilityImplementation();
+const correlationId = 'photo-onboarding-001';
+
+const measured = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: getSovereigntyCapabilityRefByKey('integrity')!,
+    correlationId,
+    input: { operation: 'compute-content-identity', bytes },   // no subject
+  }),
+  integrity,
+);
+
+const registered = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: getSovereigntyCapabilityRefByKey('identity')!,
+    correlationId,
+    input: { registrant, externalReference, contentIdentity: measured.output.contentIdentity },
+  }),
+  identity,
+);
+
+registered.output.manifest.contentIdentity;  // exactly what Integrity produced
+registered.output.subject;                   // the subject Identity created
+```
+
+The two invocations share one `correlationId` and keep distinct `invocationId`s. Correlation is a
+caller-chosen grouping: it implies no ordering, causality, dependency, workflow, policy or
+authorization. Integrity never saw the subject; Identity never recomputed the digest.
+
+### Evidence from the capsules
+
+Both rely entirely on the common SM-03 invocation evidence, and neither widens it. An Identity
+evidence record names the newly created subject; an Integrity evidence record names a subject only if
+the invocation supplied one. Neither carries the raw input, the raw output, the bytes, the manifest,
+the manifest digest, the `ContentIdentity`, the registrant payload, key material or exception text.
+
+Neither capsule populates `evidenceRefs`. A `ContentIdentity` is not automatically a
+`CanonicalEvidenceId`, a `manifestDigest` is not automatically a stored artifact, and an unsigned
+manifest is not automatically an evidence-store record. With no real evidence storage or resolution
+semantics in Protocol, leaving the field absent is the honest option.
+
 ### Status
 
-The socket exists; the minerals do not yet fill it. SM-03 ships **no** production implementation of
-any of the eight — the flows above are exercised by test-only implementations. SM-04 will make
-Identity and Integrity the first real capsules, wrapping the existing `mintSovereignAssetId`,
-`buildSovereignManifestV1` and `computeContentIdentity` primitives. Provenance, Portability,
-Interoperability, Licensing & Terms and Governance Compatibility follow in later work packages, and
-their lineage, transfer, terms and governance semantics belong to their own inputs and outputs —
-never to this common contract.
+The socket exists and **two of the eight** minerals now fill it. `AOC.IDENTITY` and `AOC.INTEGRITY`
+are production capsules consuming the common invocation and evidence architecture end-to-end,
+verified from a real `npm pack` tarball by all three fixtures in `test-consumers/`.
+
+The remaining six are **not** production capsules, and they do not become ones merely because two now
+are:
+
+| Mineral | Production capsule |
+| --- | --- |
+| Identity | **yes** |
+| Integrity | **yes** |
+| Provenance | not yet |
+| Portability | not yet |
+| Interoperability | not yet |
+| Verifiability | not yet — strong signing and verification *primitives* exist in `@aoc/protocol/manifest`, but no capsule wraps them |
+| Licensing & Terms | not yet |
+| Governance Compatibility | not yet |
+
+Their lineage, transfer, terms, verification and governance semantics belong to their own inputs and
+outputs — never to this common contract. There is still no global implementation registry: a capsule
+is passed explicitly to `invokeSovereigntyCapability`, and wiring several together is a future
+composition concern.
