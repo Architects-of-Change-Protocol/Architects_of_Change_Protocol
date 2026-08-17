@@ -1,3 +1,4 @@
+import { isCanonicalTimestamp } from '../claims/timestamps';
 import type { UtcDateTime } from '../contracts';
 
 /**
@@ -23,11 +24,15 @@ export const systemSovereigntyCapabilityClock: SovereigntyCapabilityClock = () =
  * must not depend on whether the producing host wrote `…+02:00` or `…Z`, and
  * a local-offset timestamp is exactly the ambiguity §30 of the invocation
  * contract exists to exclude.
+ *
+ * The rule itself lives with `CanonicalTimestamp` in `../claims/timestamps`
+ * (SM-05), so the invocation envelope, portable evidence and canonical
+ * provenance claims share one definition of a canonical timestamp rather
+ * than three copies of a pattern. Behaviour is unchanged; this is the same
+ * check under its owning module.
  */
-const UTC_TIMESTAMP_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?Z$/;
-
 export function isUtcTimestamp(value: unknown): value is UtcDateTime {
-  return typeof value === 'string' && UTC_TIMESTAMP_PATTERN.test(value) && !Number.isNaN(Date.parse(value));
+  return isCanonicalTimestamp(value);
 }
 
 export function toUtcTimestamp(now: Date): UtcDateTime {

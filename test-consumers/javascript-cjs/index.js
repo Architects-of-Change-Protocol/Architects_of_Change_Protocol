@@ -125,6 +125,262 @@ const capabilityInvocationAcceptance = async () => {
 // SM-04: the two PRODUCTION Sovereignty Minerals, exercised by a plain
 // CommonJS JavaScript consumer that installed nothing but the packed tarball.
 // No fake implementation, no Enterprise package, no source import.
+/**
+ * SM-05: the THIRD production Sovereignty Mineral, consumed from the packed
+ * tarball only. Real Identity creates two subjects; real Provenance records a
+ * real derivation between them and traces the lineage. No fake implementation,
+ * no source import, no Enterprise package, no database.
+ */
+const productionProvenanceAcceptance = async () => {
+  const correlationId = 'sm05-derivative-onboarding-js-001';
+  const identityRef = sovereigntyCapabilities.getSovereigntyCapabilityRefByKey('identity');
+  const provenanceRef = sovereigntyCapabilities.getSovereigntyCapabilityRefByKey('provenance');
+
+  const productionIdentity = sovereigntyCapabilities.createIdentitySovereigntyCapabilityImplementation();
+  const productionProvenance = sovereigntyCapabilities.createProvenanceSovereigntyCapabilityImplementation();
+  assert(
+    productionProvenance.capability.id === 'aoc:sovereignty-capability:provenance'
+      && productionProvenance.capability.version === provenanceRef.version,
+    'production Provenance capsule drifted from the canonical capability ref',
+  );
+
+  const createSubject = async (externalId) => {
+    const created = await sovereigntyCapabilities.invokeSovereigntyCapability(
+      sovereigntyCapabilities.buildSovereigntyCapabilityInvocation({
+        capability: identityRef,
+        correlationId,
+        input: {
+          registrant: 'principal:consumer',
+          externalReference: identity.buildSovereignExternalReference({
+            namespace: 'alien-system-v47',
+            id: externalId,
+          }),
+        },
+      }),
+      productionIdentity,
+    );
+    assert(created.status === 'succeeded', 'real Identity invocation failed');
+    return created.output.subject;
+  };
+
+  const sourceSubject = await createSubject('alien-resource-source');
+  const derivedSubject = await createSubject('alien-resource-derived');
+  assert(
+    sourceSubject.sovereignAssetId !== derivedSubject.sovereignAssetId,
+    'two Identity invocations produced one subject',
+  );
+
+  // Provenance requires an existing sovereign subject and mints none.
+  const withoutSubject = await sovereigntyCapabilities.invokeSovereigntyCapability(
+    sovereigntyCapabilities.buildSovereigntyCapabilityInvocation({
+      capability: provenanceRef,
+      input: {
+        operation: 'declare-origin',
+        claimId: 'claim:origin:consumer',
+        issuer: 'principal:consumer',
+        assertedOrigin: 'future-system-origin-42',
+      },
+    }),
+    productionProvenance,
+  );
+  assert(
+    withoutSubject.status === 'failed' && withoutSubject.reasonCodes[0] === 'PROVENANCE_SUBJECT_REQUIRED',
+    'Provenance did not require an existing sovereign subject',
+  );
+
+  // A real OriginClaim — no bytes, no ContentIdentity, no dereference.
+  const originResult = await sovereigntyCapabilities.invokeSovereigntyCapability(
+    sovereigntyCapabilities.buildSovereigntyCapabilityInvocation({
+      capability: provenanceRef,
+      subject: sourceSubject,
+      correlationId,
+      input: {
+        operation: 'declare-origin',
+        claimId: 'claim:origin:consumer',
+        issuer: 'principal:consumer',
+        assertedOrigin: 'future-system-origin-42',
+      },
+    }),
+    productionProvenance,
+  );
+  assert(originResult.status === 'succeeded', 'production declare-origin did not execute');
+  assert(originResult.output.claim.type === ClaimType.Origin, 'origin claim is not ClaimType.Origin');
+  assert(
+    originResult.output.claim.subject === sourceSubject.sovereignAssetId,
+    'origin claim subject is not the invocation subject',
+  );
+  assert(!('proof' in originResult.output.claim), 'Provenance signed its own claim');
+
+  // A real authorship assertion, fixed to the Authorship kind.
+  const authorshipResult = await sovereigntyCapabilities.invokeSovereigntyCapability(
+    sovereigntyCapabilities.buildSovereigntyCapabilityInvocation({
+      capability: provenanceRef,
+      subject: sourceSubject,
+      input: {
+        operation: 'declare-authorship',
+        claimId: 'claim:authorship:consumer',
+        issuer: 'principal:consumer',
+        statement: 'Authored by the consumer',
+      },
+    }),
+    productionProvenance,
+  );
+  assert(authorshipResult.status === 'succeeded', 'production declare-authorship did not execute');
+  assert(
+    authorshipResult.output.claim.metadata.kind === manifestApi.AuthorityClaimKind.Authorship,
+    'the authority kind is not fixed to Authorship',
+  );
+
+  // A real DerivationClaim: derived subject <- source subject.
+  const derivationResult = await sovereigntyCapabilities.invokeSovereigntyCapability(
+    sovereigntyCapabilities.buildSovereigntyCapabilityInvocation({
+      capability: provenanceRef,
+      subject: derivedSubject,
+      correlationId,
+      input: {
+        operation: 'record-derivation',
+        claimId: 'claim:derivation:consumer',
+        issuer: 'principal:consumer',
+        sourceSovereignAssetIds: [sourceSubject.sovereignAssetId],
+        relation: manifestApi.DerivationRelationKind.TransformedFrom,
+        statement: 'Derived artifact produced by the consumer',
+        occurredAt: '2026-01-01T00:00:00.000Z',
+      },
+    }),
+    productionProvenance,
+  );
+  assert(derivationResult.status === 'succeeded', 'production record-derivation did not execute');
+  const derivationClaim = derivationResult.output.claim;
+  assert(derivationClaim.type === ClaimType.Derivation, 'not a ClaimType.Derivation');
+  assert(
+    derivationClaim.subject === derivedSubject.sovereignAssetId,
+    'the derivation child is not the invocation subject',
+  );
+  assert(
+    derivationClaim.metadata.sourceSovereignAssetIds.length === 1
+      && derivationClaim.metadata.sourceSovereignAssetIds[0] === sourceSubject.sovereignAssetId,
+    'the derivation source is not the source subject',
+  );
+  assert(derivationClaim.metadata.occurredAt !== derivationClaim.issuedAt, 'occurredAt collapsed into issuedAt');
+  assert(manifestApi.isValidDerivationClaim(derivationClaim), 'the derivation claim is not structurally valid');
+
+  const selfDerivation = await sovereigntyCapabilities.invokeSovereigntyCapability(
+    sovereigntyCapabilities.buildSovereigntyCapabilityInvocation({
+      capability: provenanceRef,
+      subject: derivedSubject,
+      input: {
+        operation: 'record-derivation',
+        claimId: 'claim:derivation:self',
+        issuer: 'principal:consumer',
+        sourceSovereignAssetIds: [derivedSubject.sovereignAssetId],
+        relation: manifestApi.DerivationRelationKind.DerivedFrom,
+      },
+    }),
+    productionProvenance,
+  );
+  assert(
+    selfDerivation.status === 'failed'
+      && selfDerivation.reasonCodes[0] === 'PROVENANCE_DERIVATION_SELF_REFERENCE',
+    'a self-referencing derivation was accepted',
+  );
+
+  // Real lineage traversal, both directions, from the one supplied claim.
+  const lineageResult = await sovereigntyCapabilities.invokeSovereigntyCapability(
+    sovereigntyCapabilities.buildSovereigntyCapabilityInvocation({
+      capability: provenanceRef,
+      subject: derivedSubject,
+      correlationId,
+      input: { operation: 'trace-lineage', direction: 'ancestors', derivationClaims: [derivationClaim] },
+    }),
+    productionProvenance,
+  );
+  assert(lineageResult.status === 'succeeded', 'production trace-lineage did not execute');
+  const trace = lineageResult.output.trace;
+  assert(
+    trace.nodes.some((node) => node.sovereignAssetId === sourceSubject.sovereignAssetId),
+    'the source subject does not appear as an ancestor',
+  );
+  assert(
+    trace.edges.length === 1 && trace.edges[0].claimId === derivationClaim.id,
+    'the lineage edge lost its claim identity',
+  );
+  assert(
+    trace.edges[0].relation === manifestApi.DerivationRelationKind.TransformedFrom,
+    'the lineage edge lost its relation',
+  );
+  assert(!trace.cycleDetected && !trace.truncated, 'an acyclic complete trace was misreported');
+
+  const descendantResult = await sovereigntyCapabilities.invokeSovereigntyCapability(
+    sovereigntyCapabilities.buildSovereigntyCapabilityInvocation({
+      capability: provenanceRef,
+      subject: sourceSubject,
+      input: { operation: 'trace-lineage', direction: 'descendants', derivationClaims: [derivationClaim] },
+    }),
+    productionProvenance,
+  );
+  assert(descendantResult.status === 'succeeded', 'descendant trace did not execute');
+  assert(
+    descendantResult.output.trace.nodes[0]
+      && descendantResult.output.trace.nodes[0].sovereignAssetId === derivedSubject.sovereignAssetId,
+    'the derived subject does not appear as a descendant',
+  );
+
+  // Contestation records a challenge and preserves the claim.
+  const contestResult = await sovereigntyCapabilities.invokeSovereigntyCapability(
+    sovereigntyCapabilities.buildSovereigntyCapabilityInvocation({
+      capability: provenanceRef,
+      subject: derivedSubject,
+      input: {
+        operation: 'contest-provenance-claim',
+        standingId: 'standing:consumer:001',
+        claim: derivationClaim,
+        reason: 'Independent party disputes the asserted derivation relationship',
+      },
+    }),
+    productionProvenance,
+  );
+  assert(contestResult.status === 'succeeded', 'production contest-provenance-claim did not execute');
+  assert(contestResult.output.standing.status === 'Contested', 'contestation did not record Contested standing');
+  assert(contestResult.output.claim === derivationClaim, 'contestation replaced the original claim');
+  assert(manifestApi.isValidDerivationClaim(derivationClaim), 'contestation mutated the original claim');
+
+  for (const evidence of [
+    originResult.evidence,
+    authorshipResult.evidence,
+    derivationResult.evidence,
+    lineageResult.evidence,
+    contestResult.evidence,
+  ]) {
+    assert(
+      sovereigntyCapabilities.isValidSovereigntyCapabilityInvocationEvidence(evidence),
+      'invalid Provenance evidence',
+    );
+    assert(
+      evidence.capability.id === 'aoc:sovereignty-capability:provenance'
+        && evidence.capability.version === provenanceRef.version,
+      'evidence does not attribute the canonical Provenance capability at its exact version',
+    );
+    assert(evidence.subject && evidence.subject.sovereignAssetId, 'evidence lost the invocation subject');
+    const serialized = JSON.stringify(evidence);
+    for (const leak of [
+      'assertedOrigin', 'future-system-origin-42', 'sourceSovereignAssetIds', 'TransformedFrom',
+      'nodes', 'edges', 'cycleDetected', 'issuer', 'principal:consumer', 'claim:derivation:consumer',
+    ]) {
+      assert(!serialized.includes(leak), `generic Provenance evidence leaked "${leak}"`);
+    }
+    assert(
+      canonical.canonicalizeJSON(JSON.parse(serialized)) === canonical.canonicalizeJSON(evidence),
+      'Provenance evidence did not survive a canonical round trip',
+    );
+  }
+  assert(
+    originResult.invocationId !== derivationResult.invocationId,
+    'two Provenance invocations shared one invocation id',
+  );
+
+  return derivationClaim.id;
+};
+
 const productionMineralAcceptance = async () => {
   const correlationId = 'sm04-photo-onboarding-js-001';
   const bytes = new TextEncoder().encode('hello sovereign world');
@@ -349,8 +605,9 @@ manifestApi
   })
   .then(async (capabilityInvocationId) => {
     const productionSubjectId = await productionMineralAcceptance();
+    const provenanceDerivationId = await productionProvenanceAcceptance();
     console.log(
-      `javascript-cjs consumer OK: claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${capabilities.length} nonByteSubject=${nonByteSubject.sovereignAssetId} capabilityInvocation=${capabilityInvocationId} productionMinerals=${productionSubjectId}`,
+      `javascript-cjs consumer OK: claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${capabilities.length} nonByteSubject=${nonByteSubject.sovereignAssetId} capabilityInvocation=${capabilityInvocationId} productionMinerals=${productionSubjectId} provenanceDerivation=${provenanceDerivationId}`,
     );
   })
   .catch((error) => {

@@ -143,3 +143,32 @@ export type {
   VerifyContentIdentityIntegrityInput,
   VerifyContentIdentityIntegrityOutput,
 } from './capsules';
+
+// --- SM-05: production Provenance capsule and derivation lineage ------------
+
+export {
+  PROVENANCE_SOVEREIGNTY_CAPABILITY_OPERATIONS,
+  PROVENANCE_SOVEREIGNTY_CAPABILITY_REASON_CODES,
+  createProvenanceSovereigntyCapabilityImplementation,
+  isValidProvenanceSovereigntyCapabilityInput,
+  validateProvenanceSovereigntyCapabilityInput,
+} from './capsules';
+export type {
+  ContestProvenanceClaimInput,
+  ContestProvenanceClaimOutput,
+  CreateProvenanceSovereigntyCapabilityImplementationOptions,
+  DeclareAuthorshipProvenanceInput,
+  DeclareAuthorshipProvenanceOutput,
+  DeclareOriginProvenanceInput,
+  DeclareOriginProvenanceOutput,
+  ProvenanceSovereigntyCapabilityImplementation,
+  ProvenanceSovereigntyCapabilityInput,
+  ProvenanceSovereigntyCapabilityInputValidationResult,
+  ProvenanceSovereigntyCapabilityOperation,
+  ProvenanceSovereigntyCapabilityOutput,
+  ProvenanceSovereigntyCapabilityReasonCode,
+  RecordDerivationProvenanceInput,
+  RecordDerivationProvenanceOutput,
+  TraceLineageProvenanceInput,
+  TraceLineageProvenanceOutput,
+} from './capsules';

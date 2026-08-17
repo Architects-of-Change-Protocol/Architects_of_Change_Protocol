@@ -18,8 +18,9 @@ Status: implemented. This document records the design of the first real
 Sovereign Asset core in AOC Protocol, closing the primary gaps from the
 Sovereign Digital Asset Readiness Audit that are in scope for this slice:
 `SAP-GAP-001`, `SAP-GAP-002`, `SAP-GAP-003`, `SAP-GAP-004`, `SAP-GAP-006`,
-and `SAP-GAP-009`. `SAP-GAP-005` (lineage) is explicitly **not** addressed
-here — see "Out of scope" below.
+and `SAP-GAP-009`. `SAP-GAP-005` (lineage) was explicitly **not** addressed
+by this slice — see "Out of scope" below — and has since been closed by
+AOC-P-SM-05, recorded in §16.
 
 Protocol Slice 0 (`SAP-GAP-008`, `SAP-GAP-010`) is the completed
 foundation this slice builds on: the asset/content layer participates in
@@ -346,14 +347,17 @@ versions; the test-only reference registry demonstrates that immutability.
 The Protocol package does not implement a production history ledger, and a
 `superseded` manifest's predecessor is not cryptographically linked or chained
 by the v1 schema. Full lineage (ancestor/descendant traversal,
-multi-parent derivation, inherited obligations) is `SAP-GAP-005`,
-explicitly scoped to **Protocol Slice 2** and not started here.
+multi-parent derivation) was `SAP-GAP-005`, explicitly scoped beyond this
+slice and not started here; it is now implemented as a *claim*, in
+AOC-P-SM-05 — see §16.
 
 `SovereignManifestV1` deliberately has **no** `parentId` field of any
-kind, singular or otherwise — adding a singular `parentId` now would force
-a breaking migration once Slice 2 needs multi-parent derivation. Nothing
-in this schema shape prevents Slice 2 from adding parent-relationship,
-manifest-version-chain, or derivative-relationship fields additively.
+kind, singular or otherwise — adding a singular `parentId` would force
+a breaking migration the moment multi-parent derivation is needed. That
+prediction held: SM-05 added multi-parent lineage and the manifest still has
+no `parentId`, because lineage turned out to belong in the claim layer rather
+than in the identity record at all (§16). Inherited obligations remain
+deliberately absent — nothing travels along a lineage edge.
 
 ## 11. Canonicalization ownership (relocation, not a new implementation)
 
@@ -438,8 +442,10 @@ Enterprise. They resolve sovereign semantics only.
 Per the implementation brief, this slice does not implement, and this
 document does not claim:
 
-- Full lineage: ancestor/descendant traversal, multi-parent derivation,
-  inherited obligations (`SAP-GAP-005`, Protocol Slice 2).
+- Full lineage: ancestor/descendant traversal, multi-parent derivation
+  (`SAP-GAP-005`) — out of scope for *this slice*, and since implemented by
+  AOC-P-SM-05 (§16). Inherited obligations remain out of scope permanently at
+  this layer: provenance describes history, it does not transfer rights.
 - Fingerprinting: ISCC, acoustic fingerprinting, perceptual hashing,
   watermarking.
 - Any Enterprise concept: `AccessGrant`, `ExecutionGrant`,
@@ -620,7 +626,9 @@ attributable claim, not something a subject reference may imply.
 `externalReference` deliberately carries no history: no `parentId`,
 `derivedFrom`, `createdBy`, `ownedBy`, or `transferredFrom`. It answers
 "what external thing is this identity associated with?", never "where did
-it come from" — lineage remains `SAP-GAP-005`.
+it come from" — and that separation still holds after SM-05, which put
+history in `DerivationClaim` rather than anywhere in the identity record
+(§16).
 
 ### 15.9 Wire-contract decision: `aoc-sovereign-manifest/1` is retained
 
@@ -672,3 +680,128 @@ still cannot consume arbitrary subjects:
 Converging those consumers onto `SovereignSubjectRef` is deliberately
 deferred to a later legacy-convergence work package, and SM-02 changed none
 of them.
+
+## 16. Derivation lineage as a claim (AOC-P-SM-05)
+
+Status: implemented. This section closes `SAP-GAP-005` and records *how*, so
+the earlier sections' "lineage is out of scope" statements stay readable as
+history rather than as current truth.
+
+Slice 1 predicted that a singular `manifest.parentId` would force a breaking
+migration once multi-parent derivation was needed. The prediction held, and
+the resolution was not "add a better manifest field" — it was that lineage
+does not belong in the identity record at all.
+
+### 16.1 `SovereignManifestV1` still has no lineage field
+
+SM-05 added **no** `parentId`, `derivedFrom`, `parents`, `ancestors` or any
+other lineage field to `SovereignManifestV1`. The schema is unchanged. The
+reasoning:
+
+- a sovereign subject may have zero, one or many parents, so a singular field
+  is wrong and a plural one only moves the problem;
+- several issuers may assert *different, competing* lineages for the same
+  subject — a manifest field can hold only one of them;
+- a lineage assertion must be contestable, and a field in the identity record
+  is not an assertion anyone can dispute without rewriting identity;
+- manifest evolution and asset derivation are different facts. `manifestVersion`
+  2 is *the same subject, later*. A derived asset is *a different subject*. A
+  field on the manifest invites conflating them.
+
+### 16.2 Lineage is a `CanonicalClaim`
+
+```
+   metadata.sourceSovereignAssetIds          claim.subject
+        A ──┐
+            ├────────── relation ─────────────► C
+        B ──┘
+```
+
+`DerivationClaim` (`@aoc/protocol/manifest`) is a `CanonicalClaim` with the new
+`ClaimType.Derivation`. Its `subject` is the **child**; the asserted parents
+live in `metadata.sourceSovereignAssetIds`, with a `relation`
+(`DerivedFrom`, `TransformedFrom`, `CombinedFrom`, `ExtractedFrom`,
+`GeneratedFrom`, `Custom`), an optional `statement` and an optional
+`occurredAt`. It reuses `CanonicalClaim`, `CanonicalIssuer`,
+`CanonicalTimestamp` and `CanonicalEvidenceId` — there is no parallel lineage
+object model.
+
+Because it is a claim, everything the claim layer already provides applies:
+multiple issuers may assert competing lineage for one subject, and any of
+those assertions can be marked `Contested` through the existing `contestClaim`
+without the claim being deleted or rewritten.
+
+At least one source is required, duplicates are rejected rather than silently
+collapsed, and direct self-derivation `A → A` is rejected. That is the only
+cycle claim a single assertion makes — one claim cannot establish that a wider
+graph is acyclic.
+
+### 16.3 Edges name subjects, not locations
+
+A source is a `SovereignAssetId` and never an `externalReference.id`, locator,
+URL, CID, `ContentIdentity`, `manifestDigest` or provider id. This is the same
+invariant §1 and §15.8 establish for identity, applied to lineage: `A → C` must
+remain true after A migrates to another provider, changes locator or is
+re-encoded. Lineage identity is *subject* identity.
+
+A source that has no `SovereignAssetId` yet is given one through AOC.IDENTITY
+first. That composition is deliberate — Protocol grows no second, weaker kind
+of "unidentified external ancestor".
+
+### 16.4 `occurredAt` is not `issuedAt`
+
+`issuedAt` is when the claim was recorded; `occurredAt` is when the issuer
+asserts the transformation happened. A 2026 claim about a 2019 transformation is
+an ordinary case, and it is what makes importing historical assertions possible.
+Both are asserted values: neither establishes that the event occurred.
+
+### 16.5 Traversal without infrastructure
+
+`traceSovereignLineage` walks a caller-supplied set of derivation claims in
+either direction (`ancestors`, `descendants`) and returns a portable
+`SovereignLineageTrace` of nodes, edges, `cycleDetected`, `truncated` and the
+applied `maxDepth`. Each edge keeps the `claimId` that created it.
+
+There is no global lineage database, graph service or external graph library.
+Protocol defines the semantics; where claims are stored and indexed is
+infrastructure's decision, and requiring a global graph to answer "what did this
+come from?" would end the portability the rest of this document is built on. The
+consequence is stated rather than hidden: a trace is complete *with respect to
+the dataset supplied to it*.
+
+Traversal is iterative and visited-set guarded, ordering is deterministic (depth,
+then `sovereignAssetId`), a cycle in the supplied data is reported as a
+successful analysis rather than a crash, and `truncated` marks a depth-bounded
+walk instead of presenting it as a complete lineage.
+
+### 16.6 Nothing travels along a lineage edge
+
+This is the invariant that keeps the mineral boundaries intact. If `C` derives
+from `A`, Protocol does **not** copy to `C`:
+
+`A`'s licence, authority claims, rights assertions, restrictions, obligations,
+ownership, governance policy, evidence refs, or authorship.
+
+Lineage describes provenance. Rights inheritance, if it is ever appropriate at
+all, belongs to `AOC.LICENSING_TERMS` and `AOC.GOVERNANCE_COMPATIBILITY`.
+Likewise, derivation and authorship are independent assertions — `C` deriving
+from `A` implies neither that they share an author nor that they do not — and
+derivation and integrity are independent: a transformation normally *changes*
+the bytes, and two subjects sharing a `ContentIdentity` are not thereby related.
+
+### 16.7 What SM-05 does not claim
+
+`SAP-GAP-005` is closed for ancestry, descent and multi-parent derivation. It is
+not closed for everything a reader might file under "provenance":
+
+- claims are **unsigned** until separately passed through the existing signing
+  primitives; there is still no formal Verifiability capsule;
+- `evidenceRefs` are references, not resolved evidence, and a bare ref is not
+  proof its target exists;
+- **custody** — possession, control, legal title, custodian roles, transfer
+  intervals, jurisdiction — is deliberately not modelled, and inventing a custody
+  state machine here would fake completeness;
+- a production history ledger and cryptographic chaining of superseded manifest
+  versions (§10) remain unbuilt;
+- legal and historical truth remain external. Protocol records assertions and
+  disputes; it adjudicates neither.

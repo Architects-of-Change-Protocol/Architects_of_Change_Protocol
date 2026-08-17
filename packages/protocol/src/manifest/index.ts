@@ -8,6 +8,40 @@ export { AuthorityClaimKind, buildOriginClaim, buildAuthorityClaim } from './cla
 export type { SignedClaim, SignedClaimVerificationResult, ContestClaimInput } from './claims';
 export { signClaim, verifySignedClaim, contestClaim } from './claims';
 
+// --- SM-05: first-class derivation assertions and lineage -------------------
+
+export type { DerivationClaim, BuildDerivationClaimInput, ClaimValidationResult } from './claims';
+export {
+  DERIVATION_RELATION_KINDS,
+  DerivationRelationKind,
+  buildDerivationClaim,
+  isValidAuthorityClaim,
+  isValidDerivationClaim,
+  isValidOriginClaim,
+  validateAuthorityClaim,
+  validateDerivationClaim,
+  validateOriginClaim,
+} from './claims';
+
+export type {
+  SovereignLineageDirection,
+  SovereignLineageEdge,
+  SovereignLineageNode,
+  SovereignLineageTrace,
+  SovereignLineageTraceSchemaVersion,
+  TraceSovereignLineageInput,
+  TraceSovereignLineageValidationResult,
+} from './lineage';
+export {
+  DEFAULT_SOVEREIGN_LINEAGE_MAX_DEPTH,
+  SOVEREIGN_LINEAGE_DIRECTIONS,
+  SOVEREIGN_LINEAGE_TRACE_SCHEMA_VERSION,
+  isValidSovereignLineageMaxDepth,
+  isValidTraceSovereignLineageInput,
+  traceSovereignLineage,
+  validateTraceSovereignLineageInput,
+} from './lineage';
+
 export {
   SOVEREIGN_MANIFEST_SCHEMA_VERSION,
 } from './manifest';

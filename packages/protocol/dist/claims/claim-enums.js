@@ -27,6 +27,22 @@ exports.ClaimType = {
      * `AuthorityClaim` and `AuthorityClaimKind`.
      */
     Authorship: 'Authorship',
+    /**
+     * A declaration that one subject (typically a SovereignAssetId) was
+     * derived, transformed, extracted, combined or generated from one or more
+     * *other* sovereign subjects — e.g. "issuer asserts this asset was
+     * combined from those two assets". The claim's `subject` is the child and
+     * the asserted sources travel in the claim's metadata, so a subject may
+     * carry zero, one or many derivation assertions, from one issuer or from
+     * several disagreeing ones, without any of them being an identity field.
+     *
+     * Deliberately generic: it records the asserted *relationship*, never
+     * whether the derivation was historically real, legally authorized, or
+     * licensed, and never that rights, authority or authorship travel along
+     * the edge. See `@aoc/protocol/manifest`'s `DerivationClaim` and
+     * `DerivationRelationKind`.
+     */
+    Derivation: 'Derivation',
     Custom: 'Custom',
 };
 exports.EvidenceType = {
