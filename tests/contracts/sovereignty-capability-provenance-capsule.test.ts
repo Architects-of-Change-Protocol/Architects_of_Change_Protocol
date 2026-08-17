@@ -120,6 +120,20 @@ const capsuleSource = (name: string): string =>
     .replace(/\/\*[\s\S]*?\*\//g, ' ')
     .replace(/(^|[^:])\/\/[^\n]*/g, '$1');
 
+/**
+ * Redacts sovereign asset ids before a vocabulary scan.
+ *
+ * A `SovereignAssetId` ends in a random UUID, and hex digits spell real words:
+ * a raw scan for the licensing token `fee` over output containing
+ * `…3bfee4a7…` "finds" it about 1% of the time, which made this suite flaky
+ * rather than wrong. These ids are opaque Protocol-generated identifiers and
+ * can never be licensing, ownership or authorization vocabulary, so removing
+ * them keeps the assertion strict — the alternative, dropping the token, would
+ * quietly stop testing the thing it exists to catch.
+ */
+const withoutOpaqueIds = (value: string): string =>
+  value.replace(/aoc:sovereign-asset:[0-9a-f-]+/g, 'aoc:sovereign-asset:<id>');
+
 describe('SM-05 / Provenance capsule identity and version (PROVENANCE TESTS 1-2)', () => {
   it('TEST 1 — advertises the exact canonical AOC.PROVENANCE ref', () => {
     expect(provenance().capability.id).toBe(SOVEREIGNTY_CAPABILITY_IDS.provenance);
@@ -279,7 +293,7 @@ describe('SM-05 / declare-authorship (PROVENANCE TESTS 9-12)', () => {
 
   it('TEST 12b — declaring authorship asserts no ownership', async () => {
     const result = succeed(await invokeProvenance(authorshipInput()));
-    const serialized = canonicalizeJSON(result.output);
+    const serialized = withoutOpaqueIds(canonicalizeJSON(result.output));
     for (const forbidden of [
       'owner', 'legalOwner', 'beneficialOwner', 'titleHolder', 'copyrightOwnerVerified', 'title',
     ]) {
@@ -843,7 +857,7 @@ describe('SM-05 / mineral separation (BOUNDARY TESTS 1-10)', () => {
   it('TEST 2 — derivation copies no licence, rights, terms or obligations', async () => {
     const { parent } = await parentWithClaims();
     const result = succeed(await invokeProvenance(derivationInput([parent.sovereignAssetId])));
-    const serialized = canonicalizeJSON(result.output);
+    const serialized = withoutOpaqueIds(canonicalizeJSON(result.output));
 
     for (const forbidden of [
       'license', 'licence', 'terms', 'royalty', 'commercialUseAllowed', 'allowedDerivative',
@@ -866,7 +880,7 @@ describe('SM-05 / mineral separation (BOUNDARY TESTS 1-10)', () => {
 
   it('TEST 4 — derivation implies no ownership', async () => {
     const result = succeed(await invokeProvenance(derivationInput([mintSovereignAssetId()])));
-    const serialized = canonicalizeJSON(result.output);
+    const serialized = withoutOpaqueIds(canonicalizeJSON(result.output));
     for (const forbidden of ['owner', 'legalOwner', 'beneficialOwner', 'titleHolder', 'copyright']) {
       expect(serialized.toLowerCase()).not.toContain(forbidden.toLowerCase());
     }
@@ -874,7 +888,7 @@ describe('SM-05 / mineral separation (BOUNDARY TESTS 1-10)', () => {
 
   it('TEST 5 — derivation implies no authorization to derive', async () => {
     const result = succeed(await invokeProvenance(derivationInput([mintSovereignAssetId()])));
-    const serialized = canonicalizeJSON(result.output);
+    const serialized = withoutOpaqueIds(canonicalizeJSON(result.output));
     for (const forbidden of ['authorized', 'permitted', 'approval', 'grant', 'consent', 'allowed']) {
       expect(serialized.toLowerCase()).not.toContain(forbidden.toLowerCase());
     }
@@ -933,6 +947,22 @@ describe('SM-05 / mineral separation (BOUNDARY TESTS 1-10)', () => {
       expect(specifier).not.toMatch(/enterprise|pmfreak|@aoc\/sdk|provider|runtime|storage|supabase|governance/i);
       // Only relative Protocol siblings — this capsule needs no node builtin at all.
       expect(specifier.startsWith('.')).toBe(true);
+    }
+  });
+
+  it('TEST 2-regression — the vocabulary scan survives a subject id that spells a forbidden token', () => {
+    // A real id observed in CI: `…-3bfee4a707b8` contains "fee". Before the
+    // redaction, BOUNDARY TEST 2 failed on roughly 1% of runs for reasons that
+    // had nothing to do with licensing leaking into a derivation claim. This
+    // pins the fix deterministically rather than trusting a green run.
+    const poisoned = JSON.stringify({
+      claim: { subject: 'aoc:sovereign-asset:1ca42904-f074-45f5-89c4-3bfee4a707b8' },
+    });
+    expect(poisoned.toLowerCase()).toContain('fee');
+    expect(withoutOpaqueIds(poisoned).toLowerCase()).not.toContain('fee');
+    // The placeholder must not itself smuggle in a token the scans look for.
+    for (const forbidden of ['license', 'licence', 'terms', 'fee', 'owner', 'grant', 'consent', 'allowed']) {
+      expect('aoc:sovereign-asset:<id>').not.toContain(forbidden);
     }
   });
 
