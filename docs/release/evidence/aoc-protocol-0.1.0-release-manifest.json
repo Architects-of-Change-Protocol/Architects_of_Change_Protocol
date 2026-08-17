@@ -25,7 +25,7 @@
   },
   "source": {
     "repository": "git+https://github.com/Architects-of-Change-Protocol/Architects_of_Change_Protocol.git",
-    "gitCommit": "be12510fe5ae691f46a3685781fb2e6d276d9910",
+    "gitCommit": "b1b40560ec5a6eef9816df7b9979277738877a3a",
     "protocolWorkspaceClean": true
   },
   "toolchain": {
@@ -34,14 +34,14 @@
   },
   "tarball": {
     "filename": "aoc-protocol-0.1.0.tgz",
-    "sizeBytes": 67729,
-    "fileCount": 271,
-    "sha256": "f09b4976f158fa8ce6b46ed539a0efd465a4daf702c98333baf2af55591c3742",
-    "sha512": "349a0bd8e147147efc0ae69bbb5bb6d38a0ba87581800a77cfb211b80c825e9a7a6b209a552fbb32fad21c0911341a605f5d402f34fdd89a792190f5722ba785",
-    "npmIntegrity": "sha512-NJoL2OFHFH78Cuabu1u204oLqHWBgAp3z7IRuAyCXpp6ayCaVS+7MvrSHAkRNBpgX11ALzT92Jp5IZD1ciunhQ==",
+    "sizeBytes": 73498,
+    "fileCount": 274,
+    "sha256": "451085019b902e93d28318d3081dd70ccd649095839db6f7c22d8afb1c373076",
+    "sha512": "ead662c4181c78d41b0ba2f24f5e382d2a4ef109468a382c99f119db4092e92aba5926481e4b4bff3276863654e0c65e7be76e294085315c9129d9b16099d26e",
+    "npmIntegrity": "sha512-6tZixBgceNQbC6LyT144LSpO8QlGijgsmfEZ20CS6Sq6WSZIHktL/zJ2hjZU4MZee+duKUCFMVyRKdmxYJnSbg==",
     "reproducible": true
   },
-  "generatedAt": "2026-08-17T13:21:03.193Z",
+  "generatedAt": "2026-08-17T16:48:30.368Z",
   "files": [
     "LICENSE",
     "NOTICE",
@@ -247,6 +247,9 @@
     "dist/identity/sovereign-asset-id.d.ts",
     "dist/identity/sovereign-asset-id.d.ts.map",
     "dist/identity/sovereign-asset-id.js",
+    "dist/identity/subject-reference.d.ts",
+    "dist/identity/subject-reference.d.ts.map",
+    "dist/identity/subject-reference.js",
     "dist/manifest/claims.d.ts",
     "dist/manifest/claims.d.ts.map",
     "dist/manifest/claims.js",
