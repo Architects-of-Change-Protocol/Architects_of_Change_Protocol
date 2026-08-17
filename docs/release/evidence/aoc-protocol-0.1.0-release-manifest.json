@@ -18,29 +18,30 @@
       "./canonical",
       "./identity",
       "./manifest",
+      "./sovereignty-capabilities",
       "./package.json"
     ],
     "runtimeDependencies": {}
   },
   "source": {
     "repository": "git+https://github.com/Architects-of-Change-Protocol/Architects_of_Change_Protocol.git",
-    "gitCommit": "fed6f8095622efb8cfe06660a09c2970ac5da373",
+    "gitCommit": "be12510fe5ae691f46a3685781fb2e6d276d9910",
     "protocolWorkspaceClean": true
   },
   "toolchain": {
-    "node": "v24.15.0",
-    "npm": "11.4.2"
+    "node": "v22.22.2",
+    "npm": "10.9.7"
   },
   "tarball": {
     "filename": "aoc-protocol-0.1.0.tgz",
-    "sizeBytes": 60520,
-    "fileCount": 253,
-    "sha256": "65cdb86bfa8e70e48df51bf5736f6b7492869cd61a38750c3e3ce0f78c0bb876",
-    "sha512": "4e403b8d9497192652c4a5e8fd7ae02a00ceb54daa682cd4253c3e52922cb4437273252afc359b9ab361d9945d02aa18321f242b4951d712a4c117fa0cca5dda",
-    "npmIntegrity": "sha512-TkA7jZSXGSZSxKXo/XrgKgDOtU2qaCzUJTw+UpIstENycyUq/DWbmrNh2ZRdAqoYMh8kK0lR1xKkwRf6DMpd2g==",
+    "sizeBytes": 67729,
+    "fileCount": 271,
+    "sha256": "f09b4976f158fa8ce6b46ed539a0efd465a4daf702c98333baf2af55591c3742",
+    "sha512": "349a0bd8e147147efc0ae69bbb5bb6d38a0ba87581800a77cfb211b80c825e9a7a6b209a552fbb32fad21c0911341a605f5d402f34fdd89a792190f5722ba785",
+    "npmIntegrity": "sha512-NJoL2OFHFH78Cuabu1u204oLqHWBgAp3z7IRuAyCXpp6ayCaVS+7MvrSHAkRNBpgX11ALzT92Jp5IZD1ciunhQ==",
     "reproducible": true
   },
-  "generatedAt": "2026-08-07T06:47:45.499Z",
+  "generatedAt": "2026-08-17T13:21:03.193Z",
   "files": [
     "LICENSE",
     "NOTICE",
@@ -294,6 +295,24 @@
     "dist/runtime-registry/types.d.ts",
     "dist/runtime-registry/types.d.ts.map",
     "dist/runtime-registry/types.js",
+    "dist/sovereignty-capabilities/definitions.d.ts",
+    "dist/sovereignty-capabilities/definitions.d.ts.map",
+    "dist/sovereignty-capabilities/definitions.js",
+    "dist/sovereignty-capabilities/ids.d.ts",
+    "dist/sovereignty-capabilities/ids.d.ts.map",
+    "dist/sovereignty-capabilities/ids.js",
+    "dist/sovereignty-capabilities/index.d.ts",
+    "dist/sovereignty-capabilities/index.d.ts.map",
+    "dist/sovereignty-capabilities/index.js",
+    "dist/sovereignty-capabilities/registry.d.ts",
+    "dist/sovereignty-capabilities/registry.d.ts.map",
+    "dist/sovereignty-capabilities/registry.js",
+    "dist/sovereignty-capabilities/types.d.ts",
+    "dist/sovereignty-capabilities/types.d.ts.map",
+    "dist/sovereignty-capabilities/types.js",
+    "dist/sovereignty-capabilities/version.d.ts",
+    "dist/sovereignty-capabilities/version.d.ts.map",
+    "dist/sovereignty-capabilities/version.js",
     "package.json"
   ]
 }
