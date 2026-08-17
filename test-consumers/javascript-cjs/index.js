@@ -10,6 +10,7 @@ const sovereigntyCapabilities = require('@aoc/protocol/sovereignty-capabilities'
 const identity = require('@aoc/protocol/identity');
 const manifestApi = require('@aoc/protocol/manifest');
 const canonical = require('@aoc/protocol/canonical');
+const portability = require('@aoc/protocol/portability');
 
 const assert = (condition, message) => {
   if (!condition) {
@@ -589,6 +590,250 @@ registry.register(
   { implementation: 'noop', source: 'test-consumer', version: '0.0.0' },
 );
 
+/**
+ * SM-06: the FOURTH production Sovereignty Mineral, from the packed tarball
+ * alone. Application A creates a real subject through real Identity, asserts a
+ * real origin through real Provenance, and exports a real canonical bundle.
+ * Application B receives the JSON string and nothing else, and reconstructs the
+ * same subject, manifest and claim — with real Integrity proving the wire form
+ * is byte-identical on both sides.
+ */
+const productionPortabilityAcceptance = async () => {
+  const correlationId = 'sm06-migration-js-001';
+  const integrityRef = sovereigntyCapabilities.getSovereigntyCapabilityRefByKey('integrity');
+  const identityRef = sovereigntyCapabilities.getSovereigntyCapabilityRefByKey('identity');
+  const provenanceRef = sovereigntyCapabilities.getSovereigntyCapabilityRefByKey('provenance');
+  const portabilityRef = sovereigntyCapabilities.getSovereigntyCapabilityRefByKey('portability');
+
+  const productionIntegrity = sovereigntyCapabilities.createIntegritySovereigntyCapabilityImplementation();
+  const productionIdentity = sovereigntyCapabilities.createIdentitySovereigntyCapabilityImplementation();
+  const productionProvenance = sovereigntyCapabilities.createProvenanceSovereigntyCapabilityImplementation();
+  const applicationAPortability = sovereigntyCapabilities.createPortabilitySovereigntyCapabilityImplementation();
+
+  assert(
+    applicationAPortability.capability.id === 'aoc:sovereignty-capability:portability',
+    'production Portability capsule does not advertise the canonical id',
+  );
+  assert(
+    applicationAPortability.capability.version === portabilityRef.version,
+    'production Portability capsule drifted from the canonical capability version',
+  );
+
+  const digestOf = async (bytes) => {
+    const result = await sovereigntyCapabilities.invokeSovereigntyCapability(
+      sovereigntyCapabilities.buildSovereigntyCapabilityInvocation({
+        capability: integrityRef,
+        input: { operation: 'compute-content-identity', bytes },
+      }),
+      productionIntegrity,
+    );
+    assert(result.status === 'succeeded', 'real Integrity invocation failed');
+    return result.output.contentIdentity;
+  };
+
+  // ---- APPLICATION A -----------------------------------------------------
+  const assetBytes = new TextEncoder().encode('sm06-js-consumer-fixture-bytes');
+  const contentIdentity = await digestOf(assetBytes);
+
+  const identityResult = await sovereigntyCapabilities.invokeSovereigntyCapability(
+    sovereigntyCapabilities.buildSovereigntyCapabilityInvocation({
+      capability: identityRef,
+      correlationId,
+      input: {
+        registrant: 'principal:consumer',
+        contentIdentity,
+        externalReference: identity.buildSovereignExternalReference({
+          namespace: 'alien-system-v47',
+          id: 'alien-resource-92817',
+          locator: 'future://provider-p1/object/92817',
+        }),
+      },
+    }),
+    productionIdentity,
+  );
+  assert(identityResult.status === 'succeeded', 'real Identity invocation failed');
+  const subjectX = identityResult.output.subject;
+  const manifestM = identityResult.output.manifest;
+
+  const originResult = await sovereigntyCapabilities.invokeSovereigntyCapability(
+    sovereigntyCapabilities.buildSovereigntyCapabilityInvocation({
+      capability: provenanceRef,
+      subject: subjectX,
+      correlationId,
+      input: {
+        operation: 'declare-origin',
+        claimId: 'claim:origin:sm06-js-consumer',
+        issuer: 'principal:consumer',
+        assertedOrigin: 'future-system-origin-42',
+      },
+    }),
+    productionProvenance,
+  );
+  assert(originResult.status === 'succeeded', 'real Provenance declare-origin failed');
+  const claimP = originResult.output.claim;
+
+  // Export requires an existing subject and never mints one.
+  const exportWithoutSubject = await sovereigntyCapabilities.invokeSovereigntyCapability(
+    sovereigntyCapabilities.buildSovereigntyCapabilityInvocation({
+      capability: portabilityRef,
+      input: { operation: 'export-bundle' },
+    }),
+    applicationAPortability,
+  );
+  assert(
+    exportWithoutSubject.status === 'failed'
+      && exportWithoutSubject.reasonCodes[0] === 'PORTABILITY_SUBJECT_REQUIRED',
+    'Portability did not require an existing sovereign subject to export',
+  );
+
+  const exportResult = await sovereigntyCapabilities.invokeSovereigntyCapability(
+    sovereigntyCapabilities.buildSovereigntyCapabilityInvocation({
+      capability: portabilityRef,
+      subject: subjectX,
+      correlationId,
+      input: {
+        operation: 'export-bundle',
+        manifests: [{ kind: 'manifest', manifest: manifestM }],
+        claims: [{ kind: 'claim', claim: claimP }],
+      },
+    }),
+    applicationAPortability,
+  );
+  assert(
+    exportResult.status === 'succeeded' && exportResult.output.operation === 'export-bundle',
+    'production export-bundle did not execute',
+  );
+  const bundleA = exportResult.output.bundle;
+  assert(
+    bundleA.schemaVersion === portability.SOVEREIGNTY_PORTABILITY_BUNDLE_SCHEMA_VERSION,
+    'the bundle does not carry the canonical portability schema version',
+  );
+  assert(
+    Object.keys(bundleA).sort().join(',')
+      === 'canonicalizationProfile,claims,manifests,schemaVersion,standings,subject',
+    'the portability envelope grew unexpected fields',
+  );
+
+  const s1 = exportResult.output.serializedBundle;
+  assert(
+    s1 === portability.serializeSovereigntyPortabilityBundle(bundleA),
+    'the capsule and the public serializer disagree',
+  );
+  assert(s1 === canonical.canonicalizeJSON(bundleA), 'the wire form is not canonical JSON');
+  assert(!s1.includes('sm06-js-consumer-fixture-bytes'), 'the bundle embedded the content bytes');
+  const b1 = await digestOf(new TextEncoder().encode(s1));
+
+  // ---- APPLICATION B: the string, and nothing else ------------------------
+  const applicationBPortability = sovereigntyCapabilities.createPortabilitySovereigntyCapabilityImplementation();
+  const importResult = await sovereigntyCapabilities.invokeSovereigntyCapability(
+    sovereigntyCapabilities.buildSovereigntyCapabilityInvocation({
+      capability: portabilityRef,
+      correlationId,
+      input: { operation: 'import-bundle', serializedBundle: s1 },
+    }),
+    applicationBPortability,
+  );
+  assert(
+    importResult.status === 'succeeded' && importResult.output.operation === 'import-bundle',
+    'production import-bundle did not execute without an invocation subject',
+  );
+  assert(
+    importResult.subject.sovereignAssetId === subjectX.sovereignAssetId,
+    'subjectless import did not return the existing bundle subject',
+  );
+  assert(
+    importResult.evidence.subject.sovereignAssetId === subjectX.sovereignAssetId,
+    'import evidence lost the imported subject',
+  );
+
+  const bundleB = importResult.output.bundle;
+  assert(
+    bundleB.subject.externalReference.locator === 'future://provider-p1/object/92817',
+    'the opaque locator did not survive transport exactly',
+  );
+  const importedManifest = portability.portableManifestOf(bundleB.manifests[0]);
+  assert(
+    canonical.canonicalizeJSON(importedManifest) === canonical.canonicalizeJSON(manifestM),
+    'the manifest did not survive transport',
+  );
+  assert(
+    importedManifest.contentIdentity.digest === contentIdentity.digest,
+    'the manifest lost its ContentIdentity',
+  );
+  const importedClaim = portability.portableClaimOf(bundleB.claims[0]);
+  assert(importedClaim.id === claimP.id, 'the claim id was reminted');
+  assert(
+    canonical.canonicalizeJSON(importedClaim) === canonical.canonicalizeJSON(claimP),
+    'the origin claim did not survive transport',
+  );
+
+  const s2 = importResult.output.serializedBundle;
+  assert(s2 === s1, 'the canonical serialization drifted across transport');
+  const b2 = await digestOf(new TextEncoder().encode(s2));
+  assert(b2.digest === b1.digest, 'the bundle ContentIdentity changed across transport');
+
+  const parsed = portability.parseSovereigntyPortabilityBundle(s1);
+  assert(parsed.valid, 'the public parser rejected a canonical bundle');
+  assert(
+    portability.serializeSovereigntyPortabilityBundle(parsed.bundle) === s1,
+    'the parser round trip drifted',
+  );
+
+  // ---- Import fails closed on untrusted or unsupported input --------------
+  const malformed = await sovereigntyCapabilities.invokeSovereigntyCapability(
+    sovereigntyCapabilities.buildSovereigntyCapabilityInvocation({
+      capability: portabilityRef,
+      input: { operation: 'import-bundle', serializedBundle: '{ not-json' },
+    }),
+    applicationBPortability,
+  );
+  assert(
+    malformed.status === 'failed' && malformed.reasonCodes[0] === 'PORTABILITY_INVALID_JSON',
+    'malformed JSON was not rejected as an ordinary failed outcome',
+  );
+
+  const future = JSON.stringify({
+    ...JSON.parse(s1),
+    schemaVersion: 'aoc-sovereignty-portability-bundle/999',
+  });
+  const unsupported = await sovereigntyCapabilities.invokeSovereigntyCapability(
+    sovereigntyCapabilities.buildSovereigntyCapabilityInvocation({
+      capability: portabilityRef,
+      input: { operation: 'import-bundle', serializedBundle: future },
+    }),
+    applicationBPortability,
+  );
+  assert(
+    unsupported.status === 'failed' && unsupported.reasonCodes[0] === 'PORTABILITY_UNSUPPORTED_BUNDLE_SCHEMA',
+    'a future bundle version was not rejected fail-closed',
+  );
+
+  for (const result of [exportResult, importResult]) {
+    assert(
+      sovereigntyCapabilities.isValidSovereigntyCapabilityInvocationEvidence(result.evidence),
+      'invalid Portability evidence',
+    );
+    assert(
+      result.evidence.capability.id === 'aoc:sovereignty-capability:portability',
+      'evidence does not attribute the canonical Portability capability',
+    );
+    assert(result.evidence.correlationId === correlationId, 'the correlation id did not survive');
+    const serializedEvidence = JSON.stringify(result.evidence);
+    for (const leak of [
+      'serializedBundle', 'aoc-sovereignty-portability-bundle/1', 'manifests', 'standings',
+      'assertedOrigin', 'future-system-origin-42', 'claim:origin:sm06-js-consumer', contentIdentity.digest,
+    ]) {
+      assert(!serializedEvidence.includes(leak), `generic Portability evidence leaked "${leak}"`);
+    }
+  }
+  assert(
+    exportResult.invocationId !== importResult.invocationId,
+    'two Portability invocations shared one invocation id',
+  );
+
+  return bundleB.subject.sovereignAssetId;
+};
+
 manifestApi
   .verifySovereignManifest(nonByteSubject.roundTripped)
   .then((verification) => {
@@ -606,8 +851,9 @@ manifestApi
   .then(async (capabilityInvocationId) => {
     const productionSubjectId = await productionMineralAcceptance();
     const provenanceDerivationId = await productionProvenanceAcceptance();
+    const portableSubjectId = await productionPortabilityAcceptance();
     console.log(
-      `javascript-cjs consumer OK: claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${capabilities.length} nonByteSubject=${nonByteSubject.sovereignAssetId} capabilityInvocation=${capabilityInvocationId} productionMinerals=${productionSubjectId} provenanceDerivation=${provenanceDerivationId}`,
+      `javascript-cjs consumer OK: claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${capabilities.length} nonByteSubject=${nonByteSubject.sovereignAssetId} capabilityInvocation=${capabilityInvocationId} productionMinerals=${productionSubjectId} provenanceDerivation=${provenanceDerivationId} portableSubject=${portableSubjectId}`,
     );
   })
   .catch((error) => {

@@ -291,9 +291,9 @@ result.evidence.capability;
 // { id: 'aoc:sovereignty-capability:verifiability', version: '1.0.0' }
 ```
 
-## Production capsules: Identity, Integrity and Provenance
+## Production capsules: Identity, Integrity, Provenance and Portability
 
-Three of the canonical eight are now real implementations of the socket above, exported from
+Four of the canonical eight are now real implementations of the socket above, exported from
 `@aoc/protocol/sovereignty-capabilities` and executed through `invokeSovereigntyCapability` like any
 other implementation. They are plain factories with no import-time side effects, they register
 themselves nowhere, and they expose no second entry point that would bypass the common result and
@@ -304,13 +304,14 @@ import {
   buildSovereigntyCapabilityInvocation,
   createIdentitySovereigntyCapabilityImplementation,
   createIntegritySovereigntyCapabilityImplementation,
+  createPortabilitySovereigntyCapabilityImplementation,
   createProvenanceSovereigntyCapabilityImplementation,
   getSovereigntyCapabilityRefByKey,
   invokeSovereigntyCapability,
 } from '@aoc/protocol/sovereignty-capabilities';
 ```
 
-All three derive their advertised `capability` ref from the SM-01 registry, so none can drift from the
+All four derive their advertised `capability` ref from the SM-01 registry, so none can drift from the
 canonical id or version. None reads the network, a provider, a chain, a registry or storage.
 
 ### AOC.IDENTITY
@@ -622,6 +623,275 @@ solved. Still open, and deliberately not papered over:
 - **Legal and historical truth remain external.** Protocol records assertions and disputes; it
   adjudicates neither.
 
+### AOC.PORTABILITY
+
+Answers: *can this subject's sovereign representation leave the system it is currently used in, and
+remain the SAME sovereign representation elsewhere?*
+
+| | |
+| --- | --- |
+| Input | `PortabilitySovereigntyCapabilityInput` — a closed union over two operations |
+| Output | `PortabilitySovereigntyCapabilityOutput` — the matching discriminated result |
+| Subject before | **required** for `export-bundle`; **optional** for `import-bundle` |
+| Subject after | export: unchanged; import: the subject that arrived **in the bundle** |
+| Factory | `createPortabilitySovereigntyCapabilityImplementation()` |
+
+| Operation | Produces |
+| --- | --- |
+| `export-bundle` | a canonical `SovereigntyPortabilityBundleV1` plus its canonical wire string |
+| `import-bundle` | the reconstructed bundle, plus its canonical wire string, plus the existing subject |
+
+Two operations, deliberately. There is no file manager, no listing, no partial patch, no diff, no
+merge and no sync — each of those is a lifecycle or reconciliation semantic that portability does not
+own.
+
+The portable *data contract* lives on its own subpath, `@aoc/protocol/portability`, beside the
+identity/manifest/claim primitives it carries; the capsule above is what makes export and import
+ordinary capability invocations with capability-attributed evidence. The bundle is usable without the
+capsule, and neither surface defines the contract twice.
+
+```
+APPLICATION A ─► sovereign subject + supplied sovereign artifacts
+                     │
+                     ▼
+              PORTABILITY BUNDLE ──(canonical JSON)──► arbitrary transport
+                                                              │
+                                                              ▼
+APPLICATION B ◄─ same SovereignAssetId, same supplied artifacts
+```
+
+### The canonical bundle
+
+```ts
+export const SOVEREIGNTY_PORTABILITY_BUNDLE_SCHEMA_VERSION = 'aoc-sovereignty-portability-bundle/1';
+
+export interface SovereigntyPortabilityBundleV1 {
+  readonly schemaVersion: typeof SOVEREIGNTY_PORTABILITY_BUNDLE_SCHEMA_VERSION;
+  readonly canonicalizationProfile: typeof CANONICAL_JSON_PROFILE;   // 'aoc-canonical-json/1'
+  readonly subject: SovereignSubjectRef;
+  readonly manifests: readonly PortableSovereignManifestArtifact[];
+  readonly claims: readonly PortableSovereignClaimArtifact[];
+  readonly standings: readonly CanonicalStanding[];
+}
+```
+
+Six fields, and the omissions are as deliberate as the inclusions:
+
+| Absent | Why |
+| --- | --- |
+| `bundleId` | the bundle represents existing artifacts; it is not a new sovereign object, and the subject's identity is already `SovereignAssetId` |
+| `exportedAt` | an automatic timestamp would make the same sovereign state serialize differently every time. *When* an export happened is recorded truthfully in the SM-03 invocation evidence |
+| `digest` / `hash` / `checksum` | integrity over a bundle is explicit composition — serialize, then invoke AOC.INTEGRITY over the bytes |
+| `bundleSignature` | signing and verifying a portable artifact is AOC.VERIFIABILITY's contract, and it does not exist yet |
+| `provider`, `storageUri`, `bucket`, `CID`, `region`, `tenantId` | a bundle that named where it came from would be transport-history dependent and provider-coupled — the exact lock-in portability removes |
+| `sourceApplication` / `destinationApplication` | same reason; migration provenance, if anyone wants it, is an explicit claim |
+| `contentBytes` | a building, an API resource, an agent or an external token may have no byte payload at all |
+| `complete` / `containsFullHistory` | Protocol has no global registry of manifests, claims or standing records and could not know |
+| `license`, `terms`, `policy`, `governanceContext`, ownership | other minerals' contracts, not envelope metadata |
+
+The one nested locator that survives is `subject.externalReference.locator`, because it belongs to the
+canonical SM-02 subject model. It is preserved verbatim and never dereferenced, required, or treated
+as identity or as transport.
+
+**The subject is the SM-02 `SovereignSubjectRef` itself.** There is no parallel "portable subject"
+model — a second subject type is exactly how two representations of one subject start to disagree.
+
+### Artifact unions
+
+Both canonical manifest states are portable, and neither is forced — AOC.IDENTITY produces *unsigned*
+manifests while the lower-level primitives can produce signed ones, and a transport demanding either
+would make a legitimate half of the Protocol unportable:
+
+```ts
+type PortableSovereignManifestArtifact =
+  | { kind: 'manifest';        manifest: SovereignManifestV1 }
+  | { kind: 'signed-manifest'; signedManifest: SignedSovereignManifest };
+
+type PortableSovereignClaim = OriginClaim | AuthorityClaim | DerivationClaim;
+
+type PortableSovereignClaimArtifact =
+  | { kind: 'claim';        claim: PortableSovereignClaim }
+  | { kind: 'signed-claim'; signedClaim: SignedClaim<PortableSovereignClaim> };
+```
+
+A signed artifact travels whole — `manifest`/`claim`, digest and proof — never flattened into the
+envelope, and never re-signed, re-digested or re-timestamped.
+
+The claim union is deliberately *not* `CanonicalClaim` in general: there is no canonical runtime
+validator for every current and future variant, so accepting an arbitrary one at an external trust
+boundary would advertise an understanding of semantics Protocol does not have. `ClaimType.Custom` is
+not used as an escape hatch for that gap, and a future additive bundle version can widen the union
+once the validators exist.
+
+### Cross-field invariants
+
+- Every manifest's `sovereignAssetId` and every claim's `subject` must equal
+  `bundle.subject.sovereignAssetId`. A mismatch fails closed and the artifact is **never** rewritten
+  to agree.
+- `manifestVersion` must be unique across the whole manifest list, signed and unsigned wrappers alike
+  — a signed wrapper already contains its manifest, so the same version must not appear twice under
+  two wrappers.
+- Underlying claim ids must be unique, again across wrappers, and duplicates are reported rather than
+  silently deduplicated.
+- A standing's `claimRef` must resolve to a claim inside the bundle
+  (`PORTABILITY_DANGLING_STANDING_CLAIM_REF`): a standing with no represented claim is not
+  self-contained sovereign standing. Nothing is fetched to resolve it.
+- `evidenceRefs` are emphatically **not** held to that rule. An evidence ref may legitimately point at
+  separately stored evidence; the reference is preserved and never resolved. *A portable claim
+  reference is not a bundled evidence payload.*
+
+Historical manifests may carry a *different* `externalReference` from the bundle subject — an old
+locator, an old external-reference state — and that is preserved, not reconciled. The only hard
+cross-field invariant is `sovereignAssetId` equality.
+
+### Canonical ordering and determinism
+
+Envelope arrays are copied (never mutated in place) and sorted:
+
+| List | Key |
+| --- | --- |
+| `manifests` | `manifestVersion` ascending |
+| `claims` | underlying claim `id`, lexicographically |
+| `standings` | `id`, lexicographically |
+
+Duplicates on all three keys are rejected, so the order is total and no arbitrary secondary key is
+invented. Ordering historical manifests ascending is *serialization determinism*, not adjudication —
+it does not make the latest version authoritative beyond existing manifest semantics.
+
+This normalizes the **envelope** and nothing inside it. `evidenceRefs` are not sorted,
+`authorityClaims` inside a historical manifest are not reordered, statements are not rewritten,
+locators are not touched and proof timestamps are not changed:
+
+> canonical import normalization = envelope ordering only.
+
+The practical consequence: the same artifact set supplied as `[A, B, C]` or `[C, A, B]` serializes
+identically, and repeated export/import cycles produce byte-identical output with no cumulative drift.
+
+### Serialization and the import trust boundary
+
+```ts
+serializeSovereigntyPortabilityBundle(bundle)   // → canonicalizeJSON(bundle), the wire form
+parseSovereigntyPortabilityBundle(serialized)   // → { valid: true, bundle } | { valid: false, reasons }
+```
+
+One serializer, one profile: `aoc-canonical-json/1`, the same one the rest of Protocol hashes and
+signs under. No second canonicalizer, no stable-stringify variant, no pretty-printed "canonical" form,
+and no ZIP, TAR, CBOR, MessagePack, protobuf, custom extension, compression or encryption — those are
+transport and storage concerns that layer outside without redefining anything.
+
+The parser is the import trust boundary and fails closed on every defect, with a stable reason rather
+than a leaked `JSON.parse` exception: malformed JSON, an unsupported bundle schema, an unsupported
+canonicalization profile, an invalid subject, an unknown artifact kind, a subject mismatch, a
+duplicate version or id, an invalid or dangling standing, and any value the canonical profile refuses.
+
+An importer seeing `aoc-sovereignty-portability-bundle/2` **fails closed**. A v1 importer does not
+pretend to understand future semantics, and an unrecognized artifact kind is rejected rather than
+skipped — for a sovereignty transport, a failed import is strictly better than a quietly lossy one.
+Unrecognized fields in the structures SM-06 owns and rebuilds (the envelope, the artifact wrappers,
+the subject) are likewise reported rather than dropped; nested artifacts are carried by reference and
+never rebuilt, so nothing about them can be lost and their own layers' tolerance is unchanged.
+
+### Structural validity is not verification
+
+`validateSovereigntyPortabilityBundleV1` reports `valid`, never `verified`. A structurally valid
+bundle means a supported schema and profile, a valid subject, recognized artifact kinds, valid nested
+structures, artifact/subject consistency, unique versions and ids, resolvable standing references, and
+a canonicalizable value.
+
+It does **not** mean signatures verified, claims historically true, content bytes matching a
+`ContentIdentity`, evidence refs resolvable, the bundle globally complete, the issuer's identity
+established, or ownership proven.
+
+### Subjectless import, and why it matters
+
+An importing application may have no local record of the subject yet — the ordinary case for a bundle
+arriving from somewhere else. So `import-bundle` runs with `invocation.subject` absent, and the
+implementation returns the subject **from the bundle**, which SM-03's subject-precedence rule then
+places on the result and its evidence.
+
+This is not Identity creation. No `SovereignAssetId` was minted; the one that arrives is the one the
+exporting runtime already had.
+
+Supplying a subject explicitly is an assertion that the bundle is expected to be about exactly that
+reference, and it is checked for **exact** equality — same `SovereignAssetId` *and* same external
+reference. A same-id-different-locator pair fails with `PORTABILITY_SUBJECT_MISMATCH` rather than
+being reconciled: silently picking a winner between two locators is a lifecycle decision, not a
+transport one.
+
+### What import does and does not mean
+
+| | |
+| --- | --- |
+| Imported | **yes** |
+| Reconstructed in memory as a canonical AOC representation | **yes** |
+| Registered in a `SovereignAssetRegistry` | **no** — not performed |
+| Stored in a database, filesystem or provider | **no** — not performed |
+| Cryptographically verified | **no** — not performed |
+| Historically true | **not established** |
+| Legally authoritative, or owned by the importer | **not established** |
+
+Import is deliberately independent of registry persistence, and not only on principle:
+`SovereignAssetRegistry.register` takes a `SignedSovereignManifest` while AOC.IDENTITY produces
+unsigned ones, so defining import as "call register" would have made *signing* a precondition of
+portability. Persistence is the consumer's infrastructure decision, made on data the capsule returns.
+
+### Boundaries Portability holds
+
+- **Identity.** Never calls `mintSovereignAssetId`, on either operation. Export requires a subject;
+  import returns the one that arrived.
+- **Integrity.** Never calls `computeContentIdentity` or `computeManifestDigest`, and never "fixes" a
+  supplied `manifestDigest`. A tampered digest survives transport unchanged, for Integrity or
+  Verifiability to reveal later.
+- **Verifiability.** Never signs and never verifies. Supplied proof material — public key, signature,
+  payload hash, timestamps, digests — is preserved exactly and judged later by whoever is entitled to.
+  A structurally transportable but cryptographically invalid artifact transports successfully; that is
+  correct behaviour, not a portability failure.
+- **Provenance.** Moving a bundle asserts no origin, authorship, derivation or custody. Transport
+  history is not sovereign provenance unless somebody asserts it through AOC.PROVENANCE. Contested
+  standing stays `Contested`; manifest lifecycle states are never reactivated by an import.
+- **Ownership.** Possession of a bundle is possession of data — no title, custody, rights or authority.
+- **Storage.** No provider, backend, bucket, CID or storage pointer, and no bytes are moved. A 500 MB
+  video travels through whichever storage transport the application chooses; the sovereign record that
+  describes it travels here, and `ContentIdentity` inside a manifest is what connects the two.
+- **Discovery.** Export bundles what the caller supplied. It never queries a registry, index, provider
+  or Enterprise service to "complete" the set — Protocol has no universal claim registry and could not
+  guarantee completeness if it tried.
+- **Recursion.** A `DerivationClaim` naming sources A and B transports with those references intact;
+  bundles for A and B are not fetched, built or implied. Exporting one subject never expands into
+  exporting a graph. Callers wanting bundles for A, B and C export three.
+- **The outside world.** No fetch, upload, download, IPFS, S3 or chain RPC; no key material,
+  credential or secret; no dynamic code execution from imported metadata. Imported data is data.
+
+### Portability is not Interoperability
+
+SM-06 establishes **one canonical AOC wire representation** and a versioned schema so that the
+representation can be safely imported at all. Schema versioning is basic serialization safety, not
+interoperability.
+
+Whether a *non-AOC* system can understand, map, translate, negotiate or consume these semantics —
+W3C VC, DID, C2PA, SPDX, JSON-LD contexts, media-type registries, cross-protocol adapters — is a
+different question, and none of it exists here. That is AOC.INTEROPERABILITY's contract.
+
+### A migration, end to end
+
+```
+SOURCE APP                                   DESTINATION APP
+  collect Subject X, Manifest(s),              AOC.PORTABILITY / import-bundle
+  Claim(s), Standing(s)                          (no local subject needed)
+        │                                            ▲
+        ▼                                            │
+  AOC.PORTABILITY / export-bundle ──► canonical JSON ─┘
+        │                                            │
+        └──► (optional) AOC.INTEGRITY over the string, both sides — same digest
+                                                     │
+                                                     ▼
+                                 same Subject X, same supplied artifacts,
+                                 persisted by the destination's own
+                                 infrastructure if it chooses to
+```
+
+No source provider is required at any point, and nothing was reminted.
+
 ### Identity is not Integrity
 
 The two are independently consumable, and neither depends on the other:
@@ -693,11 +963,14 @@ resolution semantics in Protocol, leaving the field absent is the honest option 
 
 ### Status
 
-The socket exists and **three of the eight** minerals now fill it. `AOC.IDENTITY`, `AOC.INTEGRITY` and
-`AOC.PROVENANCE` are production capsules consuming the common invocation and evidence architecture
-end-to-end, verified from a real `npm pack` tarball by all three fixtures in `test-consumers/`.
+The socket exists and **four of the eight** minerals now fill it. `AOC.IDENTITY`, `AOC.INTEGRITY`,
+`AOC.PROVENANCE` and `AOC.PORTABILITY` are production capsules consuming the common invocation and
+evidence architecture end-to-end, verified from a real `npm pack` tarball by all three fixtures in
+`test-consumers/` — including the first four-mineral flow, in which Integrity measures bytes, Identity
+mints the subject, Provenance asserts its origin, Portability exports the canonical bundle, and
+Integrity digests the wire string identically on both sides of a transport.
 
-The remaining five are **not** production capsules, and they do not become ones merely because three
+The remaining four are **not** production capsules, and they do not become ones merely because four
 now are:
 
 | Mineral | Production capsule |
@@ -705,7 +978,7 @@ now are:
 | Identity | **yes** |
 | Integrity | **yes** |
 | Provenance | **yes** — origin, authorship, derivation, contestation and lineage traversal |
-| Portability | not yet |
+| Portability | **yes** — canonical bundle export and import, provider-neutral, no reminting |
 | Interoperability | not yet |
 | Verifiability | not yet — strong signing and verification *primitives* exist in `@aoc/protocol/manifest`, but no capsule wraps them |
 | Licensing & Terms | not yet |
@@ -715,6 +988,7 @@ Their transfer, terms, verification and governance semantics belong to their own
 never to this common contract. Adding a production capsule is not a capability-contract change:
 capability versions remain `1.0.0`, and the canonical inventory remains eight. Derivation and lineage
 are Provenance *semantics*, not a ninth mineral — there is no `AOC.LINEAGE`, `AOC.AUTHORSHIP`,
-`AOC.DERIVATION` or `AOC.CUSTODY`. There is still no global implementation registry: a capsule is
+`AOC.DERIVATION` or `AOC.CUSTODY`. The portability bundle is likewise a Portability *contract*, not an
+`AOC.BUNDLE` or `AOC.EXPORT` mineral. There is still no global implementation registry: a capsule is
 passed explicitly to `invokeSovereigntyCapability`, and wiring several together is a future
 composition concern.

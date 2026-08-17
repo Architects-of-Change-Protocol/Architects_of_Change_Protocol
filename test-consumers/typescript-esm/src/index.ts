@@ -6,9 +6,17 @@ import type { ProtocolError } from '@aoc/protocol/errors';
 import type { RevocationLookup } from '@aoc/protocol/adapters';
 import { AdapterRegistry, AdapterTokens } from '@aoc/protocol/runtime-registry';
 import {
+  SOVEREIGNTY_PORTABILITY_BUNDLE_SCHEMA_VERSION,
+  parseSovereigntyPortabilityBundle,
+  portableClaimOf,
+  portableManifestOf,
+  serializeSovereigntyPortabilityBundle,
+} from '@aoc/protocol/portability';
+import {
   buildSovereigntyCapabilityInvocation,
   createIdentitySovereigntyCapabilityImplementation,
   createIntegritySovereigntyCapabilityImplementation,
+  createPortabilitySovereigntyCapabilityImplementation,
   createProvenanceSovereigntyCapabilityImplementation,
   getSovereigntyCapability,
   getSovereigntyCapabilityByKey,
@@ -20,6 +28,7 @@ import {
 import type {
   IdentitySovereigntyCapabilityInput,
   IntegritySovereigntyCapabilityInput,
+  PortabilitySovereigntyCapabilityInput,
   ProvenanceSovereigntyCapabilityInput,
   SovereigntyCapabilityId,
   SovereigntyCapabilityImplementation,
@@ -673,6 +682,198 @@ if (originResult.invocationId === derivationResult.invocationId) {
   throw new Error('two Provenance invocations shared one invocation id');
 }
 
+// --- SM-06: the FOURTH production Sovereignty Mineral -----------------------
+//
+// APPLICATION A exports a real sovereign representation. APPLICATION B is
+// handed the canonical JSON string and NOTHING else — no reference to A's
+// objects, no registry, no database, no provider — and reconstructs the same
+// subject, manifest and claim. Real Integrity over the wire string on both
+// sides proves the two minerals compose without either doing the other's work.
+
+const portabilityCapabilityRef = getSovereigntyCapabilityRefByKey('portability') as SovereigntyCapabilityRef;
+const applicationAPortability = createPortabilitySovereigntyCapabilityImplementation();
+const portabilityCorrelationId = 'sm06-esm-migration-001';
+
+if (applicationAPortability.capability.id !== 'aoc:sovereignty-capability:portability') {
+  throw new Error('production Portability capsule does not advertise the canonical id');
+}
+if (applicationAPortability.capability.version !== portabilityCapabilityRef.version) {
+  throw new Error('production Portability capsule drifted from the canonical capability version');
+}
+
+const portabilityExport = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: portabilityCapabilityRef,
+    subject: provenanceDerivedSubject,
+    correlationId: portabilityCorrelationId,
+    input: {
+      operation: 'export-bundle',
+      claims: [{ kind: 'claim', claim: consumerDerivationClaim }],
+    } as PortabilitySovereigntyCapabilityInput,
+  }),
+  applicationAPortability,
+);
+if (portabilityExport.status !== 'succeeded' || portabilityExport.output.operation !== 'export-bundle') {
+  throw new Error('production export-bundle did not execute');
+}
+if (portabilityExport.output.bundle.schemaVersion !== SOVEREIGNTY_PORTABILITY_BUNDLE_SCHEMA_VERSION) {
+  throw new Error('the bundle does not carry the canonical portability schema version');
+}
+const portabilityWire: string = portabilityExport.output.serializedBundle;
+if (portabilityWire !== serializeSovereigntyPortabilityBundle(portabilityExport.output.bundle)) {
+  throw new Error('the capsule and the public serializer disagree');
+}
+if (portabilityWire !== canonicalizeJSON(portabilityExport.output.bundle)) {
+  throw new Error('the wire form is not canonical JSON');
+}
+
+// Export requires an existing subject and never mints one.
+const portabilityExportWithoutSubject = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: portabilityCapabilityRef,
+    input: { operation: 'export-bundle' } as PortabilitySovereigntyCapabilityInput,
+  }),
+  applicationAPortability,
+);
+if (portabilityExportWithoutSubject.status !== 'failed'
+  || portabilityExportWithoutSubject.reasonCodes[0] !== 'PORTABILITY_SUBJECT_REQUIRED') {
+  throw new Error('Portability did not require an existing sovereign subject to export');
+}
+
+// Real Integrity over the wire string — explicit composition, before transport.
+const bundleDigestBefore = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: integrityCapabilityRef,
+    input: {
+      operation: 'compute-content-identity',
+      bytes: new TextEncoder().encode(portabilityWire),
+    } as IntegritySovereigntyCapabilityInput,
+  }),
+  productionIntegrity,
+);
+if (bundleDigestBefore.status !== 'succeeded' || bundleDigestBefore.output.operation !== 'compute-content-identity') {
+  throw new Error('real Integrity over the serialized bundle failed');
+}
+
+// ---- APPLICATION B: the string, and nothing else --------------------------
+const applicationBPortability = createPortabilitySovereigntyCapabilityImplementation();
+const portabilityImport = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: portabilityCapabilityRef,
+    correlationId: portabilityCorrelationId,
+    input: { operation: 'import-bundle', serializedBundle: portabilityWire } as PortabilitySovereigntyCapabilityInput,
+  }),
+  applicationBPortability,
+);
+if (portabilityImport.status !== 'succeeded' || portabilityImport.output.operation !== 'import-bundle') {
+  throw new Error('production import-bundle did not execute without an invocation subject');
+}
+if (portabilityImport.subject?.sovereignAssetId !== provenanceDerivedSubject.sovereignAssetId) {
+  throw new Error('subjectless import did not return the existing bundle subject');
+}
+if (portabilityImport.evidence.subject?.sovereignAssetId !== provenanceDerivedSubject.sovereignAssetId) {
+  throw new Error('import evidence lost the imported subject');
+}
+const importedDerivationClaim = portableClaimOf(portabilityImport.output.bundle.claims[0]) as DerivationClaim;
+if (importedDerivationClaim.id !== consumerDerivationClaim.id) throw new Error('the claim id was reminted');
+if (canonicalizeJSON(importedDerivationClaim) !== canonicalizeJSON(consumerDerivationClaim)) {
+  throw new Error('the derivation claim did not survive transport');
+}
+if (portabilityImport.output.serializedBundle !== portabilityWire) {
+  throw new Error('the canonical serialization drifted across transport');
+}
+
+const bundleDigestAfter = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: integrityCapabilityRef,
+    input: {
+      operation: 'compute-content-identity',
+      bytes: new TextEncoder().encode(portabilityImport.output.serializedBundle),
+    } as IntegritySovereigntyCapabilityInput,
+  }),
+  productionIntegrity,
+);
+if (bundleDigestAfter.status !== 'succeeded' || bundleDigestAfter.output.operation !== 'compute-content-identity') {
+  throw new Error('real Integrity over the imported bundle failed');
+}
+if (!contentIdentitiesEqual(bundleDigestAfter.output.contentIdentity, bundleDigestBefore.output.contentIdentity)) {
+  throw new Error('the bundle ContentIdentity changed across transport');
+}
+
+// The imported claim is still real lineage input for another mineral.
+const importedLineage = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: provenanceCapabilityRef,
+    subject: portabilityImport.output.bundle.subject,
+    input: {
+      operation: 'trace-lineage',
+      direction: 'ancestors',
+      derivationClaims: [importedDerivationClaim],
+    } as ProvenanceSovereigntyCapabilityInput,
+  }),
+  productionProvenance,
+);
+if (importedLineage.status !== 'succeeded' || importedLineage.output.operation !== 'trace-lineage') {
+  throw new Error('real Provenance could not trace lineage from the imported claim');
+}
+if (!importedLineage.output.trace.nodes.some(
+  (node) => node.sovereignAssetId === provenanceSourceSubject.sovereignAssetId,
+)) {
+  throw new Error('the imported derivation lost its ancestor');
+}
+
+// The public parser reaches the same bundle from the same string.
+const parsedBundle = parseSovereigntyPortabilityBundle(portabilityWire);
+if (!parsedBundle.valid) throw new Error('the public parser rejected a canonical bundle');
+if (serializeSovereigntyPortabilityBundle(parsedBundle.bundle) !== portabilityWire) {
+  throw new Error('the parser round trip drifted');
+}
+if (portableManifestOf === undefined) throw new Error('portableManifestOf is not exported');
+
+// Import fails closed on untrusted input.
+const portabilityMalformed = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: portabilityCapabilityRef,
+    input: { operation: 'import-bundle', serializedBundle: '{ not-json' } as PortabilitySovereigntyCapabilityInput,
+  }),
+  applicationBPortability,
+);
+if (portabilityMalformed.status !== 'failed' || portabilityMalformed.reasonCodes[0] !== 'PORTABILITY_INVALID_JSON') {
+  throw new Error('malformed JSON was not rejected as an ordinary failed outcome');
+}
+
+const portabilityMismatch = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: portabilityCapabilityRef,
+    subject: provenanceSourceSubject,
+    input: { operation: 'import-bundle', serializedBundle: portabilityWire } as PortabilitySovereigntyCapabilityInput,
+  }),
+  applicationBPortability,
+);
+if (portabilityMismatch.status !== 'failed' || portabilityMismatch.reasonCodes[0] !== 'PORTABILITY_SUBJECT_MISMATCH') {
+  throw new Error('an explicitly mismatched import subject was not rejected');
+}
+
+for (const evidence of [portabilityExport.evidence, portabilityImport.evidence]) {
+  if (!isValidSovereigntyCapabilityInvocationEvidence(evidence)) throw new Error('invalid Portability evidence');
+  if (evidence.capability.id !== 'aoc:sovereignty-capability:portability') {
+    throw new Error('evidence does not attribute the canonical Portability capability');
+  }
+  if (evidence.correlationId !== portabilityCorrelationId) throw new Error('the correlation id did not survive');
+  const serializedPortabilityEvidence = JSON.stringify(evidence);
+  for (const leak of [
+    'serializedBundle', 'aoc-sovereignty-portability-bundle/1', 'manifests', 'standings',
+    'sourceSovereignAssetIds', 'claim:derivation:consumer', 'TransformedFrom',
+  ]) {
+    if (serializedPortabilityEvidence.includes(leak)) {
+      throw new Error(`generic Portability evidence leaked "${leak}"`);
+    }
+  }
+}
+if (portabilityExport.invocationId === portabilityImport.invocationId) {
+  throw new Error('two Portability invocations shared one invocation id');
+}
+
 console.log(
-  `typescript-esm consumer OK: token=${token.tokenId} claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${sovereigntyCapabilities.length} nonByteSubject=${sovereignAssetId} capabilityInvocation=${identityResult.invocationId} productionMinerals=${productionSubject.sovereignAssetId} provenanceDerivation=${consumerDerivationClaim.id}`,
+  `typescript-esm consumer OK: token=${token.tokenId} claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${sovereigntyCapabilities.length} nonByteSubject=${sovereignAssetId} capabilityInvocation=${identityResult.invocationId} productionMinerals=${productionSubject.sovereignAssetId} provenanceDerivation=${consumerDerivationClaim.id} portableSubject=${portabilityImport.output.bundle.subject.sovereignAssetId}`,
 );

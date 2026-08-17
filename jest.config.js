@@ -50,6 +50,7 @@ module.exports = {
     '^@aoc/protocol/canonical$': '<rootDir>/packages/protocol/src/canonical',
     '^@aoc/protocol/identity$': '<rootDir>/packages/protocol/src/identity',
     '^@aoc/protocol/manifest$': '<rootDir>/packages/protocol/src/manifest',
+    '^@aoc/protocol/portability$': '<rootDir>/packages/protocol/src/portability',
     '^@aoc/protocol/sovereignty-capabilities$': '<rootDir>/packages/protocol/src/sovereignty-capabilities',
     '^@aoc/enterprise/assurance/(.*)$': '<rootDir>/enterprise/src/assurance/$1',
     '^@aoc/enterprise/assurance$': '<rootDir>/enterprise/src/assurance',
