@@ -114,8 +114,21 @@ function isValidCanonicalIssuer(value) {
     const candidate = value;
     return isNonBlankString(candidate.id) && isNonBlankString(candidate.kind);
 }
+/**
+ * Every element must be present and satisfy `predicate`.
+ *
+ * `Array.prototype.every` *skips holes*, so a sparse array like `new Array(1)`
+ * satisfies any `every` check while still carrying nothing at index 0. An
+ * untyped caller can produce one, and the hole survives into claim metadata
+ * where it canonicalizes to nothing and reaches a lineage node as a missing
+ * `sovereignAssetId`. Iterating a densified copy makes holes visible as
+ * `undefined` and rejects them.
+ */
+function isDenseArrayOf(value, predicate) {
+    return Array.isArray(value) && Array.from(value).every((entry) => predicate(entry));
+}
 function isValidEvidenceRefs(value) {
-    return Array.isArray(value) && value.every((ref) => isNonBlankString(ref));
+    return isDenseArrayOf(value, isNonBlankString);
 }
 function hasOwnProperty(value, key) {
     return Object.prototype.hasOwnProperty.call(value, key);
@@ -141,6 +154,17 @@ function commonClaimReasons(value) {
         reasons.push('INVALID_CLAIM_ISSUED_AT');
     if (!isValidEvidenceRefs(candidate.evidenceRefs))
         reasons.push('INVALID_CLAIM_EVIDENCE_REFS');
+    // `assertionRef` and `attestationRefs` are required by `CanonicalClaim` too.
+    // A TypeScript caller cannot omit them, but these guards exist precisely for
+    // the callers that are not TypeScript — without this, a claim missing them
+    // passes the guard and is then returned as an `OriginClaim` /
+    // `AuthorityClaim` / `DerivationClaim` that does not satisfy the contract it
+    // is advertised under.
+    if (!isNonBlankString(candidate.assertionRef))
+        reasons.push('INVALID_CLAIM_ASSERTION_REF');
+    if (!isDenseArrayOf(candidate.attestationRefs, isNonBlankString)) {
+        reasons.push('INVALID_CLAIM_ATTESTATION_REFS');
+    }
     return { claim: candidate, reasons };
 }
 /**
@@ -228,7 +252,7 @@ function validateDerivationClaim(value) {
         reasons.push('DERIVATION_SOURCES_REQUIRED');
     }
     else {
-        if (!sources.every((source) => (0, sovereign_asset_id_1.isValidSovereignAssetId)(source))) {
+        if (!isDenseArrayOf(sources, sovereign_asset_id_1.isValidSovereignAssetId)) {
             reasons.push('INVALID_DERIVATION_SOURCE');
         }
         if (new Set(sources).size !== sources.length) {

@@ -388,7 +388,10 @@ export function validateProvenanceSovereigntyCapabilityInput(
     if (!Array.isArray(sources) || sources.length === 0) {
       reasons.push(codes.derivationSourcesRequired);
     } else {
-      if (!sources.every((source) => isValidSovereignAssetId(source))) {
+      // `Array.from` densifies: `Array.prototype.every` skips holes, so a
+      // sparse array from an untyped caller would otherwise pass every check
+      // and carry a missing id into the claim.
+      if (!Array.from(sources).every((source) => isValidSovereignAssetId(source))) {
         reasons.push(codes.invalidSourceSubject);
       }
       // Reported, never silently collapsed: `[A, A, B]` is a malformed
@@ -439,7 +442,7 @@ export function validateProvenanceSovereigntyCapabilityInput(
     // lineage silently computed from the readable half of a dataset would look
     // exactly like a complete one.
     const claims = candidate.derivationClaims;
-    if (!Array.isArray(claims) || !claims.every((claim) => isValidDerivationClaim(claim))) {
+    if (!Array.isArray(claims) || !Array.from(claims).every((claim) => isValidDerivationClaim(claim))) {
       reasons.push(codes.invalidLineageData);
     } else {
       const ids = claims.map((claim) => claim.id);

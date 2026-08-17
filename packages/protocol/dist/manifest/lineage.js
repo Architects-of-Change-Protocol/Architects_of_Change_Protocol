@@ -88,7 +88,8 @@ function validateTraceSovereignLineageInput(value) {
         reasons.push('INVALID_LINEAGE_CLAIMS');
     }
     else {
-        if (!claims.every((claim) => (0, claims_1.isValidDerivationClaim)(claim))) {
+        // `Array.from` densifies: a hole must be rejected, not skipped by `every`.
+        if (!Array.from(claims).every((claim) => (0, claims_1.isValidDerivationClaim)(claim))) {
             reasons.push('INVALID_LINEAGE_DERIVATION_CLAIM');
         }
         const ids = claims.map((claim) => claim?.id);
@@ -245,7 +246,15 @@ function traceSovereignLineage(input) {
         if (depth >= maxDepth) {
             // Something was still reachable and deliberately not explored. Saying so
             // is the difference between a bounded answer and a false complete one.
-            truncated = frontier.some((subject) => (adjacency.get(subject) ?? []).some((claim) => stepTargets(claim, input.direction).some((target) => !visited.has(target))));
+            //
+            // An un-emitted *edge* counts as much as an unreached *subject*: at the
+            // depth cut, a frontier claim pointing only at already-visited subjects
+            // still has a claim nobody was shown. A two-node cycle bounded to depth 1
+            // is exactly that case — it would otherwise report one of two edges,
+            // `cycleDetected: true` and `truncated: false`, inviting a consumer to
+            // treat a partial edge set as the whole history.
+            truncated = frontier.some((subject) => (adjacency.get(subject) ?? []).some((claim) => !emittedClaimIds.has(claim.id)
+                || stepTargets(claim, input.direction).some((target) => !visited.has(target))));
             break;
         }
         const nextDepth = depth + 1;

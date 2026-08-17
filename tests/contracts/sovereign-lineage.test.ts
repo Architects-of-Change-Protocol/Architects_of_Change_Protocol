@@ -281,6 +281,23 @@ describe('SM-05 / traversal bounds (LINEAGE TESTS 11-13)', () => {
     expect(Number.isInteger(DEFAULT_SOVEREIGN_LINEAGE_MAX_DEPTH)).toBe(true);
   });
 
+  it('TEST 12c — a bound that hides an un-emitted edge is reported as truncated', () => {
+    // A two-node cycle bounded to depth 1 reaches no new subject, but the
+    // claim closing the cycle is never emitted. Reporting `truncated: false`
+    // there would present a partial edge set as the whole history.
+    const g = new Graph();
+    const claims = [g.derives('A', ['B']), g.derives('B', ['A'])];
+    const bounded = trace(g.id('A'), 'ancestors', claims, 1);
+
+    expect(bounded.edges.length).toBeLessThan(claims.length);
+    expect(bounded.truncated).toBe(true);
+
+    // Unbounded, the same data is complete and must not be marked truncated.
+    const complete = trace(g.id('A'), 'ancestors', claims);
+    expect(complete.edges).toHaveLength(claims.length);
+    expect(complete.truncated).toBe(false);
+  });
+
   it('TEST 13 — an invalid maxDepth is rejected', () => {
     const g = new Graph();
     const claims = [g.derives('B', ['A'])];

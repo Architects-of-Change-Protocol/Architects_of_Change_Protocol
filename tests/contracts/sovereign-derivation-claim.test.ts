@@ -322,6 +322,48 @@ describe('SM-05 / structural validation of a derivation claim (DERIVATION TEST 2
     }
   });
 
+  it('rejects a claim missing required CanonicalClaim base fields', () => {
+    // Reachable from any untyped or external caller, which is exactly who
+    // these guards exist for: without this the object is returned as an
+    // OriginClaim/AuthorityClaim/DerivationClaim it does not satisfy.
+    const withoutAssertionRef = { ...valid() } as Record<string, unknown>;
+    delete withoutAssertionRef.assertionRef;
+    expect(validateDerivationClaim(withoutAssertionRef).reasons).toContain('INVALID_CLAIM_ASSERTION_REF');
+
+    const withoutAttestationRefs = { ...valid() } as Record<string, unknown>;
+    delete withoutAttestationRefs.attestationRefs;
+    expect(validateDerivationClaim(withoutAttestationRefs).reasons).toContain('INVALID_CLAIM_ATTESTATION_REFS');
+  });
+
+  it('rejects an impossible calendar date that Date.parse would silently normalize', () => {
+    // `2026-02-31` parses to 3 March. A timestamp that means a different
+    // instant than it spells must not be preserved verbatim into a claim.
+    for (const impossible of [
+      '2026-02-31T12:00:00.000Z',
+      '2026-02-29T12:00:00.000Z',
+      '2026-13-01T12:00:00.000Z',
+      '2026-00-10T12:00:00.000Z',
+      '2026-08-00T12:00:00.000Z',
+      '2026-08-17T24:00:00.000Z',
+      '2026-08-17T12:60:00.000Z',
+    ]) {
+      expect(validateDerivationClaim({ ...valid(), issuedAt: impossible }).reasons)
+        .toContain('INVALID_CLAIM_ISSUED_AT');
+    }
+    // Real leap days and sub-millisecond precision stay valid.
+    expect(isValidDerivationClaim({ ...valid(), issuedAt: '2024-02-29T12:00:00.000Z' })).toBe(true);
+    expect(isValidDerivationClaim({ ...valid(), issuedAt: '2026-08-17T12:00:00.123456Z' })).toBe(true);
+  });
+
+  it('rejects a sparse source array rather than letting a hole through', () => {
+    // `Array.prototype.every` skips holes, so `new Array(1)` would otherwise
+    // satisfy every check and carry a missing id into lineage output.
+    const sparse = new Array(1) as unknown as SovereignAssetId[];
+    const claim = { ...valid(), metadata: { ...valid().metadata, sourceSovereignAssetIds: sparse } };
+    expect(validateDerivationClaim(claim).reasons).toContain('INVALID_DERIVATION_SOURCE');
+    expect(isValidDerivationClaim(claim)).toBe(false);
+  });
+
   it('performs no network or filesystem access while validating', () => {
     // A statement and an origin-looking source are inert data.
     const claim = buildDerivationClaim(derivationInput({

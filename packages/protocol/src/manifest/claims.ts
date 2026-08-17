@@ -244,8 +244,22 @@ function isValidCanonicalIssuer(value: unknown): value is CanonicalIssuer {
   return isNonBlankString(candidate.id) && isNonBlankString(candidate.kind);
 }
 
+/**
+ * Every element must be present and satisfy `predicate`.
+ *
+ * `Array.prototype.every` *skips holes*, so a sparse array like `new Array(1)`
+ * satisfies any `every` check while still carrying nothing at index 0. An
+ * untyped caller can produce one, and the hole survives into claim metadata
+ * where it canonicalizes to nothing and reaches a lineage node as a missing
+ * `sovereignAssetId`. Iterating a densified copy makes holes visible as
+ * `undefined` and rejects them.
+ */
+function isDenseArrayOf<T>(value: unknown, predicate: (entry: unknown) => boolean): value is readonly T[] {
+  return Array.isArray(value) && Array.from(value).every((entry) => predicate(entry));
+}
+
 function isValidEvidenceRefs(value: unknown): value is readonly CanonicalEvidenceId[] {
-  return Array.isArray(value) && value.every((ref) => isNonBlankString(ref));
+  return isDenseArrayOf<CanonicalEvidenceId>(value, isNonBlankString);
 }
 
 function hasOwnProperty(value: object, key: string): boolean {
@@ -269,6 +283,16 @@ function commonClaimReasons(value: unknown): { readonly claim: CanonicalClaim | 
   if (!isValidCanonicalIssuer(candidate.issuer)) reasons.push('INVALID_CLAIM_ISSUER');
   if (!isCanonicalTimestamp(candidate.issuedAt)) reasons.push('INVALID_CLAIM_ISSUED_AT');
   if (!isValidEvidenceRefs(candidate.evidenceRefs)) reasons.push('INVALID_CLAIM_EVIDENCE_REFS');
+  // `assertionRef` and `attestationRefs` are required by `CanonicalClaim` too.
+  // A TypeScript caller cannot omit them, but these guards exist precisely for
+  // the callers that are not TypeScript — without this, a claim missing them
+  // passes the guard and is then returned as an `OriginClaim` /
+  // `AuthorityClaim` / `DerivationClaim` that does not satisfy the contract it
+  // is advertised under.
+  if (!isNonBlankString(candidate.assertionRef)) reasons.push('INVALID_CLAIM_ASSERTION_REF');
+  if (!isDenseArrayOf(candidate.attestationRefs, isNonBlankString)) {
+    reasons.push('INVALID_CLAIM_ATTESTATION_REFS');
+  }
 
   return { claim: candidate, reasons };
 }
@@ -365,7 +389,7 @@ export function validateDerivationClaim(value: unknown): ClaimValidationResult {
   } else if (sources.length === 0) {
     reasons.push('DERIVATION_SOURCES_REQUIRED');
   } else {
-    if (!sources.every((source) => isValidSovereignAssetId(source))) {
+    if (!isDenseArrayOf(sources, isValidSovereignAssetId)) {
       reasons.push('INVALID_DERIVATION_SOURCE');
     }
     if (new Set(sources).size !== sources.length) {
