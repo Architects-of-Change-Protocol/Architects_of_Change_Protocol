@@ -7,10 +7,14 @@ import type { RevocationLookup } from '@aoc/protocol/adapters';
 import { AdapterRegistry, AdapterTokens } from '@aoc/protocol/runtime-registry';
 import { CANONICAL_JSON_PROFILE, canonicalizeJSON } from '@aoc/protocol/canonical';
 import {
+  buildSovereignExternalReference,
   computeContentIdentity,
   contentIdentitiesEqual,
+  isValidSovereignSubjectRef,
   mintSovereignAssetId,
   parseSovereignAssetId,
+  sovereignExternalReferencesEqual,
+  toSovereignSubjectRef,
 } from '@aoc/protocol/identity';
 import {
   buildSovereignManifestV1,
@@ -22,7 +26,12 @@ import {
   verifySovereignManifest,
 } from '@aoc/protocol/manifest';
 import type { SignedSovereignManifest, SovereignAssetRegistry } from '@aoc/protocol/manifest';
-import type { SovereignAssetId, ContentIdentity } from '@aoc/protocol/identity';
+import type {
+  SovereignAssetId,
+  ContentIdentity,
+  SovereignExternalReference,
+  SovereignSubjectRef,
+} from '@aoc/protocol/identity';
 import {
   SOVEREIGNTY_CAPABILITY_IDS,
   getSovereigntyCapability,
@@ -82,8 +91,11 @@ class ConsumerRegistry implements SovereignAssetRegistry {
     return this.records.get(id)?.get(version) ?? null;
   }
   findByContentDigest(identity: ContentIdentity): readonly SignedSovereignManifest[] {
+    // A manifest that declares no contentIdentity asserted no integrity and
+    // must never match a content lookup.
     return [...this.records.values()].flatMap((versions) => [...versions.values()])
-      .filter((signed) => contentIdentitiesEqual(signed.manifest.contentIdentity, identity));
+      .filter((signed) => signed.manifest.contentIdentity !== undefined
+        && contentIdentitiesEqual(signed.manifest.contentIdentity, identity));
   }
 }
 
@@ -105,12 +117,92 @@ async function sovereignAssetAcceptance(): Promise<void> {
     throw new Error('registry resolution mismatch');
   }
   const verification = await verifySovereignManifest(resolved, { contentBytes: bytes });
-  if (!verification.valid || !contentIdentitiesEqual(resolved.manifest.contentIdentity, contentIdentity)) {
+  if (!resolved.manifest.contentIdentity || !contentIdentitiesEqual(resolved.manifest.contentIdentity, contentIdentity)) {
+    throw new Error('byte-backed manifest lost its content identity');
+  }
+  if (!verification.valid) {
     throw new Error('verification failed');
   }
   const tampered = { ...resolved, manifest: { ...resolved.manifest, registrant: 'principal:attacker' } };
   if ((await verifySovereignManifest(tampered)).valid) throw new Error('tampering accepted');
   if ('storage' in manifest || 'url' in manifest || 'cid' in manifest) throw new Error('storage leaked into identity');
+}
+
+/**
+ * A sovereign subject with no byte representation at all: an object in a
+ * namespace @aoc/protocol has never heard of, identified, signed, serialized
+ * and verified without fabricating any content integrity material.
+ */
+async function nonByteSubjectAcceptance(): Promise<string> {
+  const sovereignAssetId = parseSovereignAssetId(mintSovereignAssetId());
+  const externalReference: SovereignExternalReference = buildSovereignExternalReference({
+    namespace: 'alien-system-v47',
+    id: 'alien-resource-92817',
+    locator: 'future://provider/object/92817',
+  });
+
+  const subject: SovereignSubjectRef = { sovereignAssetId, externalReference };
+  if (!isValidSovereignSubjectRef(subject)) throw new Error('subject reference rejected');
+
+  const manifest = buildSovereignManifestV1({
+    sovereignAssetId,
+    externalReference,
+    registrant: 'principal:consumer',
+    // deliberately NO contentIdentity
+  });
+  if ('contentIdentity' in manifest) throw new Error('absent contentIdentity was serialized, not omitted');
+  if (canonicalizeJSON(manifest).includes('contentIdentity')) throw new Error('canonical payload leaked contentIdentity');
+
+  const { signingKey, privateKeyPem } = generateSovereignKeyPair();
+  const signed = signSovereignManifest(manifest, privateKeyPem, signingKey);
+
+  const roundTripped = JSON.parse(JSON.stringify(signed)) as SignedSovereignManifest;
+  if (!roundTripped.manifest.externalReference
+    || !sovereignExternalReferencesEqual(roundTripped.manifest.externalReference, externalReference)) {
+    throw new Error('external reference did not survive serialization exactly');
+  }
+  if (roundTripped.manifest.externalReference.locator !== 'future://provider/object/92817') {
+    throw new Error('locator did not survive serialization');
+  }
+  if (computeManifestDigest(roundTripped.manifest) !== signed.manifestDigest) throw new Error('digest mismatch');
+
+  const verification = await verifySovereignManifest(roundTripped);
+  if (verification.checks.manifestStructure !== 'valid') throw new Error('manifestStructure not valid');
+  if (verification.checks.manifestDigest !== 'valid') throw new Error('manifestDigest not valid');
+  if (verification.checks.signature !== 'valid') throw new Error('signature not valid');
+  if (verification.checks.contentDigest !== 'not_performed') {
+    throw new Error(`contentDigest must be not_performed, got ${verification.checks.contentDigest}`);
+  }
+  if (!verification.valid) throw new Error('non-byte subject manifest failed verification');
+
+  // Supplying unrelated bytes must not fabricate a comparison target.
+  const withBytes = await verifySovereignManifest(roundTripped, {
+    contentBytes: new TextEncoder().encode('unrelated bytes'),
+  });
+  if (withBytes.checks.contentDigest !== 'not_performed') throw new Error('content check was fabricated');
+
+  // Tampering the signed reference must be detected.
+  const tampered = {
+    ...roundTripped,
+    manifest: {
+      ...roundTripped.manifest,
+      externalReference: { ...roundTripped.manifest.externalReference, id: 'alien-resource-00000' },
+    },
+  };
+  if ((await verifySovereignManifest(tampered)).valid) throw new Error('tampered external reference accepted');
+
+  if (toSovereignSubjectRef(roundTripped.manifest).sovereignAssetId !== sovereignAssetId) {
+    throw new Error('subject narrowing lost the sovereign identity');
+  }
+
+  // This whole flow imports nothing but `@aoc/protocol` subpaths — no
+  // Enterprise, runtime, provider or storage package is installed in the
+  // fixture at all. The runtime proof that those modules cannot even be
+  // resolved lives in the javascript-cjs fixture (which has `require`
+  // available untyped), alongside the packed-package forbidden-term check
+  // in scripts/validate-protocol-consumer.mjs.
+
+  return sovereignAssetId;
 }
 
 function sovereigntyCapabilityAcceptance(): number {
@@ -159,7 +251,11 @@ function sovereigntyCapabilityAcceptance(): number {
 
 const sovereigntyCapabilityCount = sovereigntyCapabilityAcceptance();
 
-void sovereignAssetAcceptance().catch((error) => {
+void (async (): Promise<void> => {
+  await sovereignAssetAcceptance();
+  const nonByteSubjectId = await nonByteSubjectAcceptance();
+  console.log(`typescript-cjs non-byte sovereign subject OK: ${nonByteSubjectId}`);
+})().catch((error) => {
   throw error;
 });
 

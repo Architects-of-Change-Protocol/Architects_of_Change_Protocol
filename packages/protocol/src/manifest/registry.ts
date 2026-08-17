@@ -34,6 +34,13 @@ export interface SovereignAssetRegistry {
     sovereignAssetId: SovereignAssetId,
     manifestVersion: number,
   ): SignedSovereignManifest | null | Promise<SignedSovereignManifest | null>;
+  /**
+   * Exact-content lookup. `contentIdentity` is optional on a sovereign
+   * manifest (a subject need not have byte-addressable content at all), so
+   * an implementation must simply never match a manifest that declares
+   * none — absence of an integrity assertion is not a wildcard, and must
+   * never be indexed under a fabricated digest.
+   */
   findByContentDigest(
     contentIdentity: ContentIdentity,
   ): readonly SignedSovereignManifest[] | Promise<readonly SignedSovereignManifest[]>;

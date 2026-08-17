@@ -34,13 +34,26 @@ async function verifySovereignManifest(signed, options = {}) {
     if (signed.proof.payloadHash !== signed.manifestDigest) {
         reasons.push('PROOF_PAYLOAD_HASH_MISMATCH');
     }
+    // Content verification is performed only when there is both something to
+    // check (`contentBytes`) and a declared commitment to check it against
+    // (`manifest.contentIdentity`). A manifest that declares no content
+    // identity is not an integrity failure — it asserted no
+    // content-integrity claim, so there is nothing to confirm or refute, and
+    // fabricating a comparison target (hashing the external reference, the
+    // locator, or the manifest) would manufacture a verification result
+    // nobody ever signed. Both honest gaps are reported as `not_performed`,
+    // never as `valid` and never as `invalid`.
     let contentDigest = 'not_performed';
-    if (options.contentBytes) {
-        const contentCheck = (0, content_identity_1.verifyContentIdentity)(options.contentBytes, signed.manifest.contentIdentity);
+    const declaredContentIdentity = signed.manifest.contentIdentity;
+    if (options.contentBytes && declaredContentIdentity) {
+        const contentCheck = (0, content_identity_1.verifyContentIdentity)(options.contentBytes, declaredContentIdentity);
         contentDigest = contentCheck.valid ? 'valid' : 'invalid';
         if (!contentCheck.valid && contentCheck.reason) {
             reasons.push(contentCheck.reason);
         }
+    }
+    else if (options.contentBytes && !declaredContentIdentity) {
+        reasons.push('CONTENT_DIGEST_NOT_PERFORMED_NO_CONTENT_IDENTITY');
     }
     let issuerBinding = 'not_performed';
     if (options.verificationKeyResolver) {

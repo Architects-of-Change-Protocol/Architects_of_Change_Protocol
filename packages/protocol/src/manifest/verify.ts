@@ -22,7 +22,14 @@ export interface SovereignManifestVerificationResult {
 }
 
 export interface VerifySovereignManifestOptions {
-  /** Raw content bytes to verify against `manifest.contentIdentity`. Omit to skip content verification honestly (not silently pass it). */
+  /**
+   * Raw content bytes to verify against `manifest.contentIdentity`. Omit
+   * to skip content verification honestly (not silently pass it). If the
+   * manifest declares no `contentIdentity`, supplying bytes here cannot
+   * make a content check happen: there is no declared commitment to
+   * compare them against, and Protocol will not invent one (see
+   * `contentDigest` below).
+   */
   readonly contentBytes?: Uint8Array;
   /**
    * Optional key->principal binding check. Without this, `issuerBinding`
@@ -75,13 +82,25 @@ export async function verifySovereignManifest(
     reasons.push('PROOF_PAYLOAD_HASH_MISMATCH');
   }
 
+  // Content verification is performed only when there is both something to
+  // check (`contentBytes`) and a declared commitment to check it against
+  // (`manifest.contentIdentity`). A manifest that declares no content
+  // identity is not an integrity failure — it asserted no
+  // content-integrity claim, so there is nothing to confirm or refute, and
+  // fabricating a comparison target (hashing the external reference, the
+  // locator, or the manifest) would manufacture a verification result
+  // nobody ever signed. Both honest gaps are reported as `not_performed`,
+  // never as `valid` and never as `invalid`.
   let contentDigest: CheckOutcome = 'not_performed';
-  if (options.contentBytes) {
-    const contentCheck = verifyContentIdentity(options.contentBytes, signed.manifest.contentIdentity);
+  const declaredContentIdentity = signed.manifest.contentIdentity;
+  if (options.contentBytes && declaredContentIdentity) {
+    const contentCheck = verifyContentIdentity(options.contentBytes, declaredContentIdentity);
     contentDigest = contentCheck.valid ? 'valid' : 'invalid';
     if (!contentCheck.valid && contentCheck.reason) {
       reasons.push(contentCheck.reason);
     }
+  } else if (options.contentBytes && !declaredContentIdentity) {
+    reasons.push('CONTENT_DIGEST_NOT_PERFORMED_NO_CONTENT_IDENTITY');
   }
 
   let issuerBinding: BindingOutcome = 'not_performed';
