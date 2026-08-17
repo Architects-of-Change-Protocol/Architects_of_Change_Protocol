@@ -31,7 +31,14 @@ assert(
 );
 const identityCapability = sovereigntyCapabilities.getSovereigntyCapability('aoc:sovereignty-capability:identity');
 assert(identityCapability && identityCapability.name === 'Identity', 'Identity lookup by canonical id failed');
-assert(/^\d+\.\d+\.\d+$/.test(identityCapability.version), 'Identity has no explicit capability version');
+assert(
+  sovereigntyCapabilities.isSovereigntyCapabilityVersion(identityCapability.version),
+  'Identity has no explicit capability version',
+);
+assert(
+  !sovereigntyCapabilities.isSovereigntyCapabilityVersion('1e2.0.0'),
+  'malformed capability version accepted',
+);
 const governanceCapability = sovereigntyCapabilities.getSovereigntyCapabilityByKey('governance_compatibility');
 assert(
   governanceCapability && governanceCapability.id === 'aoc:sovereignty-capability:governance-compatibility',

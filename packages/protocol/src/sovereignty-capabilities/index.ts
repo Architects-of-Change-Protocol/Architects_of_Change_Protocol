@@ -11,7 +11,10 @@ export type {
   SovereigntyCapabilityNamespace,
 } from './ids';
 
-export type { SovereigntyCapabilityDefinition, SovereigntyCapabilityVersion } from './types';
+export type { SovereigntyCapabilityDefinition } from './types';
+
+export { isSovereigntyCapabilityVersion } from './version';
+export type { SovereigntyCapabilityVersion } from './version';
 
 export { SOVEREIGNTY_CAPABILITIES } from './definitions';
 

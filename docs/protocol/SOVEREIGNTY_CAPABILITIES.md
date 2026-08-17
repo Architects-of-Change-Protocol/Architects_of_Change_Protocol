@@ -49,7 +49,10 @@ No legacy type was renamed; convergence is later work.
 - **Version** — `SovereigntyCapabilityVersion`, a SemVer-shaped version of the capability's own
   semantic contract. It is not the package version, `manifestVersion`, `schemaVersion`, the
   canonicalization profile, an adapter `contractVersion`, or a grant version. It exists so a future
-  work package can state "this operation consumed Verifiability 1.0.0".
+  work package can state "this operation consumed Verifiability 1.0.0". The exported template
+  literal type is only a cheap compile-time filter — TypeScript's `${number}` also admits `-1.2.3`,
+  `1e2.0.0` and `1.2.3.4` — so `isSovereigntyCapabilityVersion` (exactly `^\d+\.\d+\.\d+$`) is the
+  authoritative rule and is what consumers validating or persisting a version should call.
 
 ## Discovery
 

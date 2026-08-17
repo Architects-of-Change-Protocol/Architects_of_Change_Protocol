@@ -28,6 +28,7 @@ import {
   getSovereigntyCapability,
   getSovereigntyCapabilityByKey,
   isSovereigntyCapabilityId,
+  isSovereigntyCapabilityVersion,
   listSovereigntyCapabilities,
 } from '@aoc/protocol/sovereignty-capabilities';
 import type { SovereigntyCapabilityDefinition } from '@aoc/protocol/sovereignty-capabilities';
@@ -134,7 +135,12 @@ function sovereigntyCapabilityAcceptance(): number {
   if (!identity || identity.name !== 'Identity' || identity.id !== 'aoc:sovereignty-capability:identity') {
     throw new Error('Identity lookup by canonical id failed');
   }
-  if (!/^\d+\.\d+\.\d+$/.test(identity.version)) throw new Error('Identity has no explicit capability version');
+  if (!isSovereigntyCapabilityVersion(identity.version)) {
+    throw new Error('Identity has no explicit capability version');
+  }
+  if (isSovereigntyCapabilityVersion('1e2.0.0') || isSovereigntyCapabilityVersion('-1.2.3')) {
+    throw new Error('malformed capability version accepted');
+  }
 
   const governance = getSovereigntyCapabilityByKey('governance_compatibility');
   if (!governance || governance.id !== 'aoc:sovereignty-capability:governance-compatibility') {

@@ -3,7 +3,8 @@ import {
   SOVEREIGNTY_CAPABILITY_NAMESPACE,
   type SovereigntyCapabilityKey,
 } from './ids';
-import type { SovereigntyCapabilityDefinition, SovereigntyCapabilityVersion } from './types';
+import type { SovereigntyCapabilityDefinition } from './types';
+import type { SovereigntyCapabilityVersion } from './version';
 
 /**
  * Initial semantic contract version shared by all eight capabilities.

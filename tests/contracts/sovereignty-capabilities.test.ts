@@ -7,6 +7,7 @@ import {
   getSovereigntyCapabilityByKey,
   isSovereigntyCapabilityId,
   isSovereigntyCapabilityKey,
+  isSovereigntyCapabilityVersion,
   listSovereigntyCapabilities,
 } from '@aoc/protocol/sovereignty-capabilities';
 import type { SovereigntyCapabilityDefinition } from '@aoc/protocol/sovereignty-capabilities';
@@ -85,7 +86,35 @@ describe('canonical Sovereignty Capability inventory', () => {
   it('gives every capability an explicit, well-formed capability version', () => {
     for (const capability of listSovereigntyCapabilities()) {
       expect(capability.version).toMatch(/^\d+\.\d+\.\d+$/);
+      expect(isSovereigntyCapabilityVersion(capability.version)).toBe(true);
       expect(capability.version).toBe('1.0.0');
+    }
+  });
+
+  it('rejects version strings the template literal type alone would admit', () => {
+    // `${number}.${number}.${number}` also matches negatives, exponent
+    // notation and extra dotted segments, so the runtime guard — not the type
+    // — is the authoritative rule for a capability version.
+    for (const malformed of [
+      '-1.2.3',
+      '1e2.0.0',
+      '1.2.3.4',
+      '1.2',
+      '1.2.3-rc.1',
+      '1.2.3+build',
+      'v1.2.3',
+      '1.2.',
+      ' 1.2.3',
+      'x.y.z',
+      '',
+      null,
+      undefined,
+      100,
+    ]) {
+      expect(isSovereigntyCapabilityVersion(malformed)).toBe(false);
+    }
+    for (const wellFormed of ['0.0.0', '1.0.0', '12.34.567']) {
+      expect(isSovereigntyCapabilityVersion(wellFormed)).toBe(true);
     }
   });
 

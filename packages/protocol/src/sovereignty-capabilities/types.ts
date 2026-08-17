@@ -3,23 +3,7 @@ import type {
   SovereigntyCapabilityKey,
   SovereigntyCapabilityNamespace,
 } from './ids';
-
-/**
- * SemVer-shaped version of a Sovereignty Capability's own semantic contract.
- *
- * This is a first-class property of the capability, and is intentionally
- * independent of every other version in the repository:
- *
- *   capabilityVersion != @aoc/protocol package version
- *   capabilityVersion != SignedSovereignManifest.manifestVersion
- *   capabilityVersion != CapabilityToken.schemaVersion
- *   capabilityVersion != CANONICAL_JSON_PROFILE (canonicalization profile)
- *   capabilityVersion != AdapterToken.contractVersion
- *
- * It exists so a later work package can record, unambiguously, that an
- * operation consumed a specific version of a specific sovereignty capability.
- */
-export type SovereigntyCapabilityVersion = `${number}.${number}.${number}`;
+import type { SovereigntyCapabilityVersion } from './version';
 
 /**
  * The canonical Protocol definition of one Sovereignty Capability.
