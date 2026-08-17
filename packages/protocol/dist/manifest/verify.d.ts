@@ -15,7 +15,14 @@ export interface SovereignManifestVerificationResult {
     readonly reasons: readonly string[];
 }
 export interface VerifySovereignManifestOptions {
-    /** Raw content bytes to verify against `manifest.contentIdentity`. Omit to skip content verification honestly (not silently pass it). */
+    /**
+     * Raw content bytes to verify against `manifest.contentIdentity`. Omit
+     * to skip content verification honestly (not silently pass it). If the
+     * manifest declares no `contentIdentity`, supplying bytes here cannot
+     * make a content check happen: there is no declared commitment to
+     * compare them against, and Protocol will not invent one (see
+     * `contentDigest` below).
+     */
     readonly contentBytes?: Uint8Array;
     /**
      * Optional key->principal binding check. Without this, `issuerBinding`

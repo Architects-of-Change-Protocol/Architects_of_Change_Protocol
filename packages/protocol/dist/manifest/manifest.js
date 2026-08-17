@@ -9,10 +9,14 @@ const node_crypto_1 = require("node:crypto");
 const canonical_1 = require("../canonical");
 const content_identity_1 = require("../identity/content-identity");
 const sovereign_asset_id_1 = require("../identity/sovereign-asset-id");
+const subject_reference_1 = require("../identity/subject-reference");
 const state_1 = require("./state");
 const proof_1 = require("./proof");
 Object.defineProperty(exports, "generateSovereignKeyPair", { enumerable: true, get: function () { return proof_1.generateSovereignKeyPair; } });
 exports.SOVEREIGN_MANIFEST_SCHEMA_VERSION = 'aoc-sovereign-manifest/1';
+function hasOwnField(manifest, key) {
+    return typeof manifest === 'object' && manifest !== null && Object.prototype.hasOwnProperty.call(manifest, key);
+}
 /**
  * Structural + cross-field validation for a `SovereignManifestV1`. This is
  * used both when building a new manifest and when verifying a resolved
@@ -33,8 +37,17 @@ function validateSovereignManifestV1(manifest) {
     if (!Number.isInteger(manifest.manifestVersion) || manifest.manifestVersion < 1) {
         reasons.push('INVALID_MANIFEST_VERSION');
     }
-    if (!(0, content_identity_1.isValidContentIdentity)(manifest.contentIdentity)) {
+    // Optional fields are validated only when structurally present. A
+    // present-but-`undefined` optional field is treated as invalid rather
+    // than absent: `aoc-canonical-json/1` refuses to serialize `undefined`,
+    // so such a manifest could never be canonicalized or signed, and
+    // reporting that as a structural defect here is more truthful than
+    // letting canonicalization throw later.
+    if (hasOwnField(manifest, 'contentIdentity') && !(0, content_identity_1.isValidContentIdentity)(manifest.contentIdentity)) {
         reasons.push('INVALID_CONTENT_IDENTITY');
+    }
+    if (hasOwnField(manifest, 'externalReference') && !(0, subject_reference_1.isValidSovereignExternalReference)(manifest.externalReference)) {
+        reasons.push('INVALID_EXTERNAL_REFERENCE');
     }
     if (!(0, state_1.isValidSovereignAssetState)(manifest.state)) {
         reasons.push('INVALID_STATE');
@@ -64,7 +77,12 @@ function buildSovereignManifestV1(input, now = new Date()) {
         canonicalizationProfile: canonical_1.CANONICAL_JSON_PROFILE,
         sovereignAssetId: input.sovereignAssetId,
         manifestVersion: input.manifestVersion ?? 1,
-        contentIdentity: input.contentIdentity,
+        // Absent optional fields are omitted structurally, never emitted as
+        // `undefined` — canonical JSON rejects ambiguous values, and an
+        // absent integrity assertion must stay absent rather than being
+        // invented from the external reference, the locator, or the subject.
+        ...(input.externalReference === undefined ? {} : { externalReference: input.externalReference }),
+        ...(input.contentIdentity === undefined ? {} : { contentIdentity: input.contentIdentity }),
         registrant: input.registrant,
         ...(input.originClaim ? { originClaim: input.originClaim } : {}),
         authorityClaims: input.authorityClaims ?? [],

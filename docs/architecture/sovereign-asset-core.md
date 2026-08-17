@@ -27,18 +27,19 @@ the real build/test graph, and `aoc-canonical-json/1` is the single
 authoritative canonicalization contract. This slice does not redo either
 decision.
 
-## 1. The five core concepts
+## 1. The core concepts
 
 ```text
 SovereignAssetId
        │
        ├── persistent identity, independently minted
-       ├── independent of storage, content, and manifest
+       ├── independent of storage, content, manifest, and external reference
        │
        ↓
 Signed SovereignManifest
        │
-       ├── ContentIdentity / contentDigest
+       ├── externalReference?           (how another namespace refers to it)
+       ├── ContentIdentity?             (integrity of one representation)
        ├── registrant
        ├── originClaim
        ├── authorityClaims
@@ -46,6 +47,10 @@ Signed SovereignManifest
        ├── timestamp
        └── cryptographic proof
 ```
+
+Since AOC-P-SM-02 the sovereign subject is *not* required to be bytes. A
+subject is identified, an external namespace may refer to it, and integrity
+is attached only when genuine integrity material exists — see §15.
 
 - **SovereignAssetId** — who/what the asset is. A persistent identity,
   independently minted (`aoc:sovereign-asset:<uuid>`, via `node:crypto`'s
@@ -61,9 +66,19 @@ Signed SovereignManifest
   that historical behavior is preserved unchanged (see
   `content/__tests__/legacy-identity-stability.test.ts`) and is not what
   `ContentIdentity` computes.
+- **SovereignExternalReference** — how a *different* namespace refers to
+  the same sovereign subject: `{ namespace, id, locator? }`, all opaque to
+  Protocol. Optional, open-world, never an alternate identity, never
+  dereferenced (§15).
+- **SovereignSubjectRef** — the universal Protocol-level subject reference:
+  `{ sovereignAssetId, externalReference? }`. It deliberately carries no
+  integrity material, which is what makes a non-byte subject (an AI agent,
+  an API resource, an external token, a building, an object from a system
+  that does not exist yet) a first-class sovereign subject (§15).
 - **SovereignManifest** — a portable, signed record describing sovereign
-  assertions about an asset: its content identity, registrant, origin
-  claim, authority claims, and lifecycle state.
+  assertions about an asset: its optional external reference, its optional
+  content identity, registrant, origin claim, authority claims, and
+  lifecycle state.
 - **AuthorityClaim** (and **OriginClaim**) — who declared what about the
   asset. A `CanonicalClaim` (see `@aoc/protocol/claims`), not a parallel
   rights system. A valid signature over a claim proves the issuer made
@@ -78,6 +93,10 @@ Signed SovereignManifest
 Asset Identity ≠ Content Digest
 Asset Identity ≠ Manifest Digest
 Asset Identity ≠ Storage Location
+Asset Identity ≠ External Identifier
+Asset Identity ≠ Locator
+Sovereign Identity ≠ Integrity
+External Reference ≠ Authority Claim
 Registration ≠ Legal Ownership
 Possession ≠ Authority
 Signature ≠ Truth of the Signed Claim
@@ -124,6 +143,13 @@ computeContentIdentity(bytes: Uint8Array): ContentIdentity
 verifyContentIdentity(bytes, expected): { valid: boolean; reason?: 'UNSUPPORTED_CONTENT_DIGEST_ALGORITHM' | 'CONTENT_DIGEST_MISMATCH' }
 ```
 
+`ContentIdentity` answers "does this representation match the integrity
+commitment?", which is a different question from "which subject is this?".
+It is therefore optional on a sovereign manifest (§15) — but nothing about
+it is weakened when it *is* declared: `computeContentIdentity` and
+`verifyContentIdentity` are unchanged, and a declared identity is verified
+exactly as strictly as before.
+
 Fingerprinting, perceptual hashing, and watermarking are explicitly out of
 scope (see §9) — a re-encoded copy of otherwise-identical content
 legitimately produces a different `ContentIdentity`. That is expected,
@@ -134,12 +160,13 @@ not a defect, for this slice.
 ```ts
 const SOVEREIGN_MANIFEST_SCHEMA_VERSION = 'aoc-sovereign-manifest/1';
 
-interface SovereignManifestV1 {
+interface SovereignManifestV1 extends SovereignSubjectRef {
   schemaVersion: typeof SOVEREIGN_MANIFEST_SCHEMA_VERSION;
   canonicalizationProfile: typeof CANONICAL_JSON_PROFILE; // 'aoc-canonical-json/1'
-  sovereignAssetId: SovereignAssetId;
+  sovereignAssetId: SovereignAssetId;          // from SovereignSubjectRef
+  externalReference?: SovereignExternalReference; // from SovereignSubjectRef (§15)
   manifestVersion: number;               // real field in v1; no history chain yet (§10)
-  contentIdentity: ContentIdentity;
+  contentIdentity?: ContentIdentity;     // optional since SM-02 (§15)
   registrant: string | CanonicalPrincipalRef;
   originClaim?: OriginClaim;
   authorityClaims: readonly AuthorityClaim[];
@@ -232,7 +259,14 @@ interface SovereignManifestVerificationResult {
 - `contentDigest` is `'not_performed'`, never a silent `'valid'`, when no
   content bytes were supplied — see
   `tests/contracts/sovereign-manifest.test.ts` "honestly reports content
-  verification as not performed".
+  verification as not performed". It is also `'not_performed'` when the
+  manifest declares no `contentIdentity` at all, *including* when the
+  caller supplied `contentBytes`: with no declared commitment there is
+  nothing to compare against, and Protocol will not invent a comparison
+  target (reason code
+  `CONTENT_DIGEST_NOT_PERFORMED_NO_CONTENT_IDENTITY`). Absence of an
+  integrity assertion is never reported as `'invalid'` — that would claim
+  an integrity failure that nobody asserted.
 - `issuerBinding` distinguishes "nobody attempted to bind the signature to
   a known principal" (`not_performed`, when no
   `VerificationKeyResolver` is supplied) from "an attempt was made and it
@@ -413,9 +447,228 @@ document does not claim:
   switch, settlement, royalties.
 - Legal adjudication or automatic ownership resolution of any kind.
 - Blockchain of any kind.
+- (SM-02) A common capability invocation layer, evidence-on-invocation,
+  Provenance lineage, a Portability capsule, an Interoperability capsule,
+  structured Licensing & Terms, a Governance Compatibility bundle,
+  tokenization of anything, provider resolution, or convergence of the
+  legacy access-governance runtime (`consent/ScopeEntry`,
+  `protocol/enforcement`, `protocol/execution`) onto the canonical subject
+  model — see §15.
 
 None of these are implied by anything in this document. In particular:
 **AOC does not prevent copying**, and **registration does not establish
 legal ownership merely because someone registered first** — both are
 explicitly false statements this slice's design was required to avoid
 making true by accident.
+
+## 15. Universal sovereign subject reference (AOC-P-SM-02)
+
+Status: implemented. Slice 1 made `SovereignAssetId` independent of
+content, storage and manifest — but `SovereignManifestV1` still *required*
+`contentIdentity`, so the registered sovereign record silently assumed every
+sovereign subject has a byte-addressable representation. That is correct for
+`photo.jpg` and artificial for an AI agent, an API resource, an external
+token, a legal/institutional entitlement, a building, or an object from a
+system nobody has built yet: those subjects would have had to fabricate
+stand-in bytes purely to obtain a digest so the manifest could exist.
+SM-02 removes that requirement without weakening integrity anywhere.
+
+### 15.1 Three concepts that must never collapse
+
+```text
+SovereignAssetId    what the thing is in AOC sovereignty space
+ExternalReference   how another namespace names/points at it
+ContentIdentity     whether one representation matches an integrity commitment
+```
+
+They may be associated on the same manifest. They are never equivalent, and
+none of them derives another:
+
+```text
+SovereignAssetId ≠ externalReference.namespace / .id / .locator
+SovereignAssetId ≠ contentIdentity.digest
+externalReference ≠ AuthorityClaim
+contentIdentity is optional for sovereign identity
+```
+
+### 15.2 The types
+
+```ts
+// @aoc/protocol/identity
+interface SovereignExternalReference {
+  readonly namespace: string;   // which external namespace owns `id`; open-world
+  readonly id: string;          // opaque inside that namespace; never parsed
+  readonly locator?: string;    // passive addressing hint; never dereferenced
+}
+
+interface SovereignSubjectRef {
+  readonly sovereignAssetId: SovereignAssetId;
+  readonly externalReference?: SovereignExternalReference;
+}
+
+validateSovereignExternalReference(value: unknown): { valid: boolean; reasons: readonly string[] }
+isValidSovereignExternalReference(value: unknown): value is SovereignExternalReference
+buildSovereignExternalReference({ namespace, id, locator? }): SovereignExternalReference
+isValidSovereignSubjectRef(value: unknown): value is SovereignSubjectRef
+sovereignExternalReferencesEqual(a, b): boolean
+toSovereignSubjectRef(subject: SovereignSubjectRef): SovereignSubjectRef
+```
+
+`SovereignSubjectRef` is a general Protocol subject reference, not a
+manifest field group: `SovereignManifestV1 extends SovereignSubjectRef`
+(§4), so the canonical subject model and the registered sovereign record
+cannot drift into disconnected islands, and later work packages
+(capability invocation, a governance bundle) can carry "which sovereign
+subject this is" without knowing what kind of thing it is.
+
+### 15.3 What Protocol deliberately does not validate
+
+Validation is minimal on purpose: `namespace` and `id` must be non-blank
+strings, and `locator` must be a non-blank string *if present*. No URL/URI
+syntax, DID, UUID, SHA-256, CID, blockchain-address form, HTTP(S) scheme,
+known provider or known namespace is required or checked, and there is no
+`ExternalReferenceKind` enum and no branch on `namespace` anywhere — an
+unknown future namespace is valid by construction. Values are never
+trimmed, normalized or rewritten: an external identifier must survive
+Protocol byte-exactly. A present-but-`undefined` optional field is
+reported as a structural defect rather than accepted, because
+`aoc-canonical-json/1` refuses to serialize `undefined` and an absent
+optional field must therefore be structurally *omitted* to be signable.
+
+### 15.4 Locators are passive data
+
+Protocol performs **zero** network activity: it never fetches, resolves,
+connects to, or probes a locator, never queries a registry, provider,
+chain or namespace authority, and never checks that the referenced object
+exists. A locator is signed metadata and nothing more, which is also what
+keeps this contract free of SSRF, hidden I/O, provider coupling, and false
+verification claims. `tests/contracts/sovereign-subject-reference.test.ts`
+asserts this structurally (no network primitive anywhere in
+`packages/protocol/src`) and behaviourally (a throwing `fetch` is never
+called across build/sign/serialize/verify).
+
+### 15.5 What a valid signature over an external reference proves
+
+`externalReference` is part of the signed manifest, so mutating its
+`namespace`, `id`, or `locator` after signing invalidates both the manifest
+digest and the signature — the binding is tamper-evident. What that proves
+is exactly one thing: **the signer signed this binding.** It does not prove
+the external object exists, is reachable, is owned or controlled by the
+signer, or that the external namespace agrees. `registrant` remains "who
+submitted this", `AuthorityClaim` remains a claim, and legal/institutional
+adjudication remains external (§5, §8).
+
+### 15.6 Integrity is optional, never fabricated
+
+`contentIdentity` is optional on the manifest, and absence is represented
+by structural omission — never by `contentIdentity: undefined`, and never
+by a fabricated digest such as `sha256(externalReference.id)`,
+`sha256(locator)`, or `sha256(canonicalize(subject))`. Absence is truthful;
+fabricated integrity is not. Verification reflects this honestly (§7):
+
+| Manifest | `contentBytes` supplied | `contentDigest` |
+| --- | --- | --- |
+| declares `contentIdentity` | correct bytes | `valid` |
+| declares `contentIdentity` | wrong bytes | `invalid` (overall `valid: false`) |
+| declares `contentIdentity` | none | `not_performed` |
+| declares no `contentIdentity` | none | `not_performed` |
+| declares no `contentIdentity` | any bytes | `not_performed` + reason `CONTENT_DIGEST_NOT_PERFORMED_NO_CONTENT_IDENTITY` |
+
+A manifest with no declared integrity can still be overall `valid`: every
+check that was applicable passed, and the one that was not applicable is
+visibly `not_performed` rather than silently `valid`.
+
+The registry port follows the same rule: a manifest that declares no
+`contentIdentity` is never indexed under, or matched by,
+`findByContentDigest` — absence of an assertion is not a wildcard (§13).
+
+### 15.7 Non-byte subjects are first-class
+
+All six subjects below use the *same* generic structures. There is no
+`TokenSubjectRef`, `BuildingSubjectRef`, `AgentSubjectRef` or
+`APIResourceRef`, and no domain profile is needed for any of them.
+
+| Subject | External reference | `contentIdentity` |
+| --- | --- | --- |
+| `photo.jpg` | optional | yes — that is where byte integrity lives |
+| AI agent | `example:agent-system` / `agent-92817` / `agent://runtime/92817` | no |
+| external token | `example:token-network` / `token-0xabc-42` | no |
+| API resource | `example:api` / `customer-resource-92817` / `https://example.invalid/...` | no |
+| building reference | `example:property-registry` / `folio-92817` | no |
+| unknown future object | `alien-system-v47` / `alien-resource-92817` / `future://provider/object/92817` | no |
+
+Those namespaces are test examples, not canonical namespaces, and none of
+them is hardcoded in Protocol.
+
+An external token and a physical building each receive their own
+independent `SovereignAssetId`. Protocol tokenizes neither and asserts **no**
+relationship between them: "this token represents that building" is an
+attributable claim, not something a subject reference may imply.
+
+### 15.8 Identity survives location and representation change
+
+- Changing `externalReference.locator` in a new manifest version keeps the
+  same `SovereignAssetId` (and produces a different manifest digest). This
+  is the seed of Portability; the Portability capability itself is not built
+  here.
+- Adding or changing `contentIdentity` in a later manifest version keeps the
+  same `SovereignAssetId`.
+- Historical versions are never rewritten: `resolveVersion(id, n)` continues
+  to return the exact signed version registered as `n`, and each version
+  verifies independently.
+
+`externalReference` deliberately carries no history: no `parentId`,
+`derivedFrom`, `createdBy`, `ownedBy`, or `transferredFrom`. It answers
+"what external thing is this identity associated with?", never "where did
+it come from" — lineage remains `SAP-GAP-005`.
+
+### 15.9 Wire-contract decision: `aoc-sovereign-manifest/1` is retained
+
+SM-02 makes a previously required field optional and adds one new optional
+field. That is deliberately *not* a new schema version, and the reasoning is
+recorded here rather than assumed:
+
+- **New readers accept every old payload.** Every pre-SM-02 manifest (which
+  always carried `contentIdentity` and never carried `externalReference`)
+  builds, canonicalizes, signs, verifies and resolves byte-identically —
+  this is backward compatibility in the sense `SEMVER_POLICY.md` uses, and
+  it is covered by regression tests, not assertion.
+- **The newly valid payload set is larger.** A pre-SM-02 reader would
+  reject a manifest that declares no `contentIdentity`
+  (`INVALID_CONTENT_IDENTITY`). That is a forward-compatibility limit, and
+  it is bounded to zero in practice because no such reader has ever been
+  released: `@aoc/protocol` is `"private": true` and has never been
+  published to any registry (`docs/release/REGISTRY_READINESS.md`,
+  `docs/release/PRERELEASE_POLICY.md`), so there is no deployed consumer
+  that could receive a payload it cannot parse.
+- **Introducing `aoc-sovereign-manifest/2` would be the larger, less
+  truthful change**: it would require a dual-support window for two schema
+  versions and would have to reverse the existing fail-closed contract test
+  that asserts `aoc-sovereign-manifest/2` is unsupported — a real
+  compatibility break taken purely for symbolism.
+
+Consequence: a **minor** changeset on `@aoc/protocol` (additive exports plus
+an additive contract relaxation, no existing export changed, no export map
+change — the new symbols ship on the existing `@aoc/protocol/identity`
+subpath).
+
+### 15.10 What SM-02 does not claim
+
+The correct claim after SM-02 is: *the canonical AOC Protocol sovereign
+subject model can represent arbitrary external things without requiring
+content integrity.* It is **not** "every AOC runtime path now supports
+arbitrary subjects". The legacy access-governance runtime is untouched and
+still cannot consume arbitrary subjects:
+
+- `consent/ScopeEntry` still models a resource as
+  `{ type: 'field' | 'content' | 'pack', ref: sha256 }` — a closed kind set
+  with a hash-shaped ref;
+- `protocol/enforcement` and `protocol/execution` resources still follow
+  that legacy shape;
+- `content/contentId.ts` and `content/contentManifest.ts` still fold
+  storage/manifest metadata into a content hash (the contradictory legacy
+  model §3 already flags).
+
+Converging those consumers onto `SovereignSubjectRef` is deliberately
+deferred to a later legacy-convergence work package, and SM-02 changed none
+of them.

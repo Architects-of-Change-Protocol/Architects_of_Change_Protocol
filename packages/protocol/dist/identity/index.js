@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.contentIdentityKey = exports.verifyContentIdentity = exports.contentIdentitiesEqual = exports.isValidContentIdentity = exports.computeContentIdentity = exports.ContentDigestAlgorithm = exports.parseSovereignAssetId = exports.assertValidSovereignAssetId = exports.isValidSovereignAssetId = exports.mintSovereignAssetId = void 0;
+exports.toSovereignSubjectRef = exports.sovereignExternalReferencesEqual = exports.isValidSovereignSubjectRef = exports.buildSovereignExternalReference = exports.isValidSovereignExternalReference = exports.validateSovereignExternalReference = exports.contentIdentityKey = exports.verifyContentIdentity = exports.contentIdentitiesEqual = exports.isValidContentIdentity = exports.computeContentIdentity = exports.ContentDigestAlgorithm = exports.parseSovereignAssetId = exports.assertValidSovereignAssetId = exports.isValidSovereignAssetId = exports.mintSovereignAssetId = void 0;
 var sovereign_asset_id_1 = require("./sovereign-asset-id");
 Object.defineProperty(exports, "mintSovereignAssetId", { enumerable: true, get: function () { return sovereign_asset_id_1.mintSovereignAssetId; } });
 Object.defineProperty(exports, "isValidSovereignAssetId", { enumerable: true, get: function () { return sovereign_asset_id_1.isValidSovereignAssetId; } });
@@ -14,3 +14,10 @@ Object.defineProperty(exports, "isValidContentIdentity", { enumerable: true, get
 Object.defineProperty(exports, "contentIdentitiesEqual", { enumerable: true, get: function () { return content_identity_2.contentIdentitiesEqual; } });
 Object.defineProperty(exports, "verifyContentIdentity", { enumerable: true, get: function () { return content_identity_2.verifyContentIdentity; } });
 Object.defineProperty(exports, "contentIdentityKey", { enumerable: true, get: function () { return content_identity_2.contentIdentityKey; } });
+var subject_reference_1 = require("./subject-reference");
+Object.defineProperty(exports, "validateSovereignExternalReference", { enumerable: true, get: function () { return subject_reference_1.validateSovereignExternalReference; } });
+Object.defineProperty(exports, "isValidSovereignExternalReference", { enumerable: true, get: function () { return subject_reference_1.isValidSovereignExternalReference; } });
+Object.defineProperty(exports, "buildSovereignExternalReference", { enumerable: true, get: function () { return subject_reference_1.buildSovereignExternalReference; } });
+Object.defineProperty(exports, "isValidSovereignSubjectRef", { enumerable: true, get: function () { return subject_reference_1.isValidSovereignSubjectRef; } });
+Object.defineProperty(exports, "sovereignExternalReferencesEqual", { enumerable: true, get: function () { return subject_reference_1.sovereignExternalReferencesEqual; } });
+Object.defineProperty(exports, "toSovereignSubjectRef", { enumerable: true, get: function () { return subject_reference_1.toSovereignSubjectRef; } });

@@ -44,7 +44,11 @@ describe('Storage migration invariant (§10, §35) — identity survives a stora
 
     const resolved = await resolveSovereignAsset(registry, sovereignAssetId);
     expect(resolved?.manifest.sovereignAssetId).toBe(sovereignAssetId);
-    expect(contentIdentitiesEqual(resolved!.manifest.contentIdentity, contentIdentity)).toBe(true);
+    // `contentIdentity` is optional on the manifest (a sovereign subject
+    // need not have byte-addressable content), so a byte-backed asset has
+    // to be asserted present before its integrity material is compared.
+    expect(resolved!.manifest.contentIdentity).toBeDefined();
+    expect(contentIdentitiesEqual(resolved!.manifest.contentIdentity!, contentIdentity)).toBe(true);
   });
 });
 

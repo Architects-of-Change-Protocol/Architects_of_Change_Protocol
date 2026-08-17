@@ -15,3 +15,18 @@ export {
   verifyContentIdentity,
   contentIdentityKey,
 } from './content-identity';
+
+export type {
+  SovereignExternalReference,
+  SovereignSubjectRef,
+  SovereignExternalReferenceValidationResult,
+  BuildSovereignExternalReferenceInput,
+} from './subject-reference';
+export {
+  validateSovereignExternalReference,
+  isValidSovereignExternalReference,
+  buildSovereignExternalReference,
+  isValidSovereignSubjectRef,
+  sovereignExternalReferencesEqual,
+  toSovereignSubjectRef,
+} from './subject-reference';

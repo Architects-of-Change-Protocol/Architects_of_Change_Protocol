@@ -30,10 +30,16 @@ export class InMemorySovereignAssetRegistry implements SovereignAssetRegistry {
     versions.set(version, signed);
     this.byId.set(id, versions);
 
-    const key = contentIdentityKey(signed.manifest.contentIdentity);
-    const existing = this.byContentDigest.get(key) ?? [];
-    existing.push(signed);
-    this.byContentDigest.set(key, existing);
+    // A manifest that declares no `contentIdentity` is never indexed for
+    // content lookup: it made no integrity assertion, so it must not be
+    // discoverable by one (and no stand-in digest is fabricated for it).
+    const declaredContentIdentity = signed.manifest.contentIdentity;
+    if (declaredContentIdentity) {
+      const key = contentIdentityKey(declaredContentIdentity);
+      const existing = this.byContentDigest.get(key) ?? [];
+      existing.push(signed);
+      this.byContentDigest.set(key, existing);
+    }
   }
 
   resolve(sovereignAssetId: SovereignAssetId): SignedSovereignManifest | null {

@@ -5,6 +5,8 @@ import { isValidContentIdentity } from '../identity/content-identity';
 import type { ContentIdentity } from '../identity/content-identity';
 import { isValidSovereignAssetId } from '../identity/sovereign-asset-id';
 import type { SovereignAssetId } from '../identity/sovereign-asset-id';
+import { isValidSovereignExternalReference } from '../identity/subject-reference';
+import type { SovereignExternalReference, SovereignSubjectRef } from '../identity/subject-reference';
 import type { CanonicalPrincipalRef } from '../claims/references';
 import { isValidSovereignAssetState, SovereignAssetState } from './state';
 import type { AuthorityClaim, OriginClaim } from './claims';
@@ -28,25 +30,47 @@ export type SovereignRegistrant = string | CanonicalPrincipalRef;
  * for the full invariant this type encodes:
  *
  *   SovereignAssetId  = persistent asset identity (never derived from
- *                       content/manifest/storage)
- *   ContentIdentity   = identity/integrity of content bytes
+ *                       content/manifest/storage/external reference)
+ *   ExternalReference = how another namespace refers to the same subject
+ *                       (opaque; never an alternate identity)
+ *   ContentIdentity   = identity/integrity of one content representation,
+ *                       optional because a sovereign subject need not have
+ *                       byte-addressable content at all
  *   manifestDigest    = integrity identity of this manifest (computed by
  *                       `signSovereignManifest`, not stored inside it)
  *   StoragePointer    = where bytes currently live (deliberately absent
  *                       from this type — storage bindings are operational
  *                       metadata tracked outside the sovereign core)
  *
+ * The subject fields (`sovereignAssetId`, `externalReference?`) are not
+ * declared locally: this manifest *is* a `SovereignSubjectRef` (see
+ * `@aoc/protocol/identity`), so the canonical Protocol subject model and
+ * the registered sovereign record cannot drift apart, and both stay flat
+ * on the wire.
+ *
+ * Identity is independent of both of the other two concepts, and that
+ * independence is what makes the sovereign model portable:
+ * - moving the subject (a new `externalReference.locator`) never changes
+ *   `sovereignAssetId`;
+ * - adding, changing, or omitting `contentIdentity` never changes
+ *   `sovereignAssetId`.
+ *
  * `manifestVersion` is a real, validated field in v1 but this slice does
  * not implement the supersession/history chain those versions will one
  * day link into — see `docs/architecture/sovereign-asset-core.md` §
  * "Versioning and lineage (out of scope, not precluded)".
  */
-export interface SovereignManifestV1 {
+export interface SovereignManifestV1 extends SovereignSubjectRef {
   readonly schemaVersion: SovereignManifestSchemaVersion;
   readonly canonicalizationProfile: typeof CANONICAL_JSON_PROFILE;
-  readonly sovereignAssetId: SovereignAssetId;
   readonly manifestVersion: number;
-  readonly contentIdentity: ContentIdentity;
+  /**
+   * Optional integrity assertion over one content representation of this
+   * subject. Absent means no content-integrity assertion was made — never
+   * that integrity failed, and never an invitation to fabricate a digest
+   * from the external reference, the locator, or the manifest itself.
+   */
+  readonly contentIdentity?: ContentIdentity;
   readonly registrant: SovereignRegistrant;
   readonly originClaim?: OriginClaim;
   readonly authorityClaims: readonly AuthorityClaim[];
@@ -62,7 +86,10 @@ export interface SignedSovereignManifest {
 
 export interface BuildSovereignManifestV1Input {
   readonly sovereignAssetId: SovereignAssetId;
-  readonly contentIdentity: ContentIdentity;
+  /** How another namespace refers to this subject. Optional, opaque, never dereferenced. */
+  readonly externalReference?: SovereignExternalReference;
+  /** Omit entirely when no genuine integrity material exists — nothing is fabricated in its place. */
+  readonly contentIdentity?: ContentIdentity;
   readonly registrant: SovereignRegistrant;
   readonly manifestVersion?: number;
   readonly originClaim?: OriginClaim;
@@ -74,6 +101,10 @@ export interface BuildSovereignManifestV1Input {
 export interface ManifestValidationResult {
   readonly valid: boolean;
   readonly reasons: readonly string[];
+}
+
+function hasOwnField(manifest: SovereignManifestV1, key: string): boolean {
+  return typeof manifest === 'object' && manifest !== null && Object.prototype.hasOwnProperty.call(manifest, key);
 }
 
 /**
@@ -101,8 +132,18 @@ export function validateSovereignManifestV1(manifest: SovereignManifestV1): Mani
     reasons.push('INVALID_MANIFEST_VERSION');
   }
 
-  if (!isValidContentIdentity(manifest.contentIdentity)) {
+  // Optional fields are validated only when structurally present. A
+  // present-but-`undefined` optional field is treated as invalid rather
+  // than absent: `aoc-canonical-json/1` refuses to serialize `undefined`,
+  // so such a manifest could never be canonicalized or signed, and
+  // reporting that as a structural defect here is more truthful than
+  // letting canonicalization throw later.
+  if (hasOwnField(manifest, 'contentIdentity') && !isValidContentIdentity(manifest.contentIdentity)) {
     reasons.push('INVALID_CONTENT_IDENTITY');
+  }
+
+  if (hasOwnField(manifest, 'externalReference') && !isValidSovereignExternalReference(manifest.externalReference)) {
+    reasons.push('INVALID_EXTERNAL_REFERENCE');
   }
 
   if (!isValidSovereignAssetState(manifest.state)) {
@@ -141,7 +182,12 @@ export function buildSovereignManifestV1(
     canonicalizationProfile: CANONICAL_JSON_PROFILE,
     sovereignAssetId: input.sovereignAssetId,
     manifestVersion: input.manifestVersion ?? 1,
-    contentIdentity: input.contentIdentity,
+    // Absent optional fields are omitted structurally, never emitted as
+    // `undefined` — canonical JSON rejects ambiguous values, and an
+    // absent integrity assertion must stay absent rather than being
+    // invented from the external reference, the locator, or the subject.
+    ...(input.externalReference === undefined ? {} : { externalReference: input.externalReference }),
+    ...(input.contentIdentity === undefined ? {} : { contentIdentity: input.contentIdentity }),
     registrant: input.registrant,
     ...(input.originClaim ? { originClaim: input.originClaim } : {}),
     authorityClaims: input.authorityClaims ?? [],
