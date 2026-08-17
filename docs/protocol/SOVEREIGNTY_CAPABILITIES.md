@@ -291,9 +291,9 @@ result.evidence.capability;
 // { id: 'aoc:sovereignty-capability:verifiability', version: '1.0.0' }
 ```
 
-## Production capsules: Identity and Integrity
+## Production capsules: Identity, Integrity and Provenance
 
-Two of the canonical eight are now real implementations of the socket above, exported from
+Three of the canonical eight are now real implementations of the socket above, exported from
 `@aoc/protocol/sovereignty-capabilities` and executed through `invokeSovereigntyCapability` like any
 other implementation. They are plain factories with no import-time side effects, they register
 themselves nowhere, and they expose no second entry point that would bypass the common result and
@@ -304,13 +304,14 @@ import {
   buildSovereigntyCapabilityInvocation,
   createIdentitySovereigntyCapabilityImplementation,
   createIntegritySovereigntyCapabilityImplementation,
+  createProvenanceSovereigntyCapabilityImplementation,
   getSovereigntyCapabilityRefByKey,
   invokeSovereigntyCapability,
 } from '@aoc/protocol/sovereignty-capabilities';
 ```
 
-Both derive their advertised `capability` ref from the SM-01 registry, so neither can drift from the
-canonical id or version. Neither reads the network, a provider, a chain, a registry or storage.
+All three derive their advertised `capability` ref from the SM-01 registry, so none can drift from the
+canonical id or version. None reads the network, a provider, a chain, a registry or storage.
 
 ### AOC.IDENTITY
 
@@ -398,6 +399,229 @@ operation either: a `canonicalize-any-json` operation would broaden Integrity in
 contract. `computeManifestDigest` *uses* canonicalization internally, which is not the same as
 exposing it.
 
+### AOC.PROVENANCE
+
+Answers: *what does someone assert about where this sovereign subject came from, who claims to have
+authored it, what it derives from — and does anyone dispute that?*
+
+| | |
+| --- | --- |
+| Input | `ProvenanceSovereigntyCapabilityInput` — a closed union over five operations |
+| Output | `ProvenanceSovereigntyCapabilityOutput` — the matching discriminated result |
+| Subject before | must be **present** |
+| Subject after | unchanged — Provenance never creates a subject |
+| Factory | `createProvenanceSovereigntyCapabilityImplementation({ clock? })` |
+
+| Operation | Produces |
+| --- | --- |
+| `declare-origin` | an `OriginClaim` via the existing `buildOriginClaim` |
+| `declare-authorship` | an `AuthorityClaim` via `buildAuthorityClaim`, kind fixed to `Authorship` |
+| `record-derivation` | a `DerivationClaim` — the new first-class lineage assertion |
+| `contest-provenance-claim` | a `Contested` `CanonicalStanding` via the existing `contestClaim` |
+| `trace-lineage` | a `SovereignLineageTrace` over caller-supplied claims |
+
+Unlike Identity (which must *not* be given a subject) and standalone Integrity (which needs none),
+Provenance **requires** `invocation.subject`: it describes something that already exists. An
+invocation without one is an ordinary failed outcome carrying `PROVENANCE_SUBJECT_REQUIRED` — no
+subject is minted to have something to describe, and AOC.IDENTITY is never called internally.
+
+#### Assertions, not history
+
+Every operation records what an issuer *asserts*:
+
+```
+provenance assertion ≠ historical truth
+provenance assertion ≠ legal ownership
+derivation relation  ≠ permission to derive
+signature            ≠ truth
+```
+
+A well-formed but disputable assertion therefore **succeeds**. "I authored this" may be false, and
+Protocol cannot know that from an invocation; refusing to record it would be a claim Protocol has no
+basis for. Disagreement is expressed by contesting the claim, which records that a challenge exists
+without deciding who is right.
+
+### Derivation lineage
+
+The gap SM-05 closes is derivation. Origin, authorship, contestation and signing primitives already
+existed; a machine-identifiable *derivation relationship between sovereign subjects* did not.
+
+```
+   metadata.sourceSovereignAssetIds          claim.subject
+        A ──┐
+            ├────────── relation ─────────────► C
+        B ──┘
+```
+
+A `DerivationClaim` is a `CanonicalClaim` with `type: ClaimType.Derivation`. Its `subject` is the
+**child**; the asserted parents live in `metadata.sourceSovereignAssetIds`, alongside a `relation`, an
+optional `statement` and an optional `occurredAt`.
+
+#### Why this is a claim and not `manifest.parentId`
+
+`SovereignManifestV1` deliberately has **no** `parentId` and no derivation field of any kind. A single
+manifest field would:
+
+- force a tree, when a subject may have zero, one or many parents;
+- make multi-parent composition inexpressible;
+- turn a contestable assertion into an identity field;
+- make competing lineage assertions from different issuers impossible to represent;
+- conflate manifest evolution (*the same subject at version 2*) with asset derivation (*a different
+  subject made from this one*).
+
+A new `manifestVersion` is not a new child subject, and a new `SovereignAssetId` is not automatically
+derived from a previous one. Derivation exists only where an explicit provenance assertion says so.
+
+#### Why sources are SovereignAssetIds
+
+An edge names the sovereign subject and never an `externalReference.id`, locator, URL, CID,
+`ContentIdentity`, `manifestDigest` or provider id. `A → C` has to stay true after A moves to another
+provider or its bytes change, so lineage identity is *subject* identity, not location or
+representation. A source with no `SovereignAssetId` yet gets one through AOC.IDENTITY first — that
+composition is the point, and Protocol grows no second, weaker kind of ancestor.
+
+#### The relation vocabulary
+
+`DerivedFrom`, `TransformedFrom`, `CombinedFrom`, `ExtractedFrom`, `GeneratedFrom`, `Custom`. Generic
+across domains, with no music-, software-, token- or AI-specific member, and no embedded legal
+conclusion: there is deliberately no `PlagiarizedFrom`, `Infringes`, `AuthorizedDerivative` or
+`IllegalCopy`.
+
+#### `occurredAt` vs `issuedAt`
+
+`issuedAt` is when the claim was recorded; `occurredAt` is when the issuer asserts the transformation
+actually happened. A claim issued in 2026 about a 2019 transformation is an ordinary case, which is
+what makes importing historical assertions possible. Both are asserted values — neither establishes
+that the event occurred.
+
+#### Cardinality and self-reference
+
+At least one source is required, duplicates are reported rather than silently collapsed (a caller who
+sent `[A, A, B]` made a mistake worth surfacing), and direct self-derivation `A → A` is rejected.
+
+That last rejection is the *only* cycle claim a single assertion makes. `record-derivation` cannot and
+does not assert that a wider lineage graph is acyclic — the rest of the graph was never supplied.
+Cycles across several claims are a finding of `trace-lineage` over a supplied dataset.
+
+### Tracing lineage
+
+```ts
+const trace = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: getSovereigntyCapabilityRefByKey('provenance')!,
+    subject,                                   // the root
+    input: { operation: 'trace-lineage', direction: 'ancestors', derivationClaims },
+  }),
+  createProvenanceSovereigntyCapabilityImplementation(),
+);
+```
+
+The caller supplies the claims. There is no `ProvenanceDatabase`, no `LineageGraphService`, no global
+asset graph, no graph-database dependency and no external graph library: Protocol defines what a
+derivation relationship *means*, and where claims are stored and indexed is infrastructure's decision.
+A Protocol that needed a global lineage database to answer "what did this come from?" would stop being
+portable and provider-neutral. The honest consequence is stated rather than hidden — a trace is
+complete *with respect to the supplied dataset* and says nothing about claims it was never shown.
+
+`direction` is `ancestors` (what the root derives from) or `descendants` (what derives from it). Both
+are answered from the same claim set; the reverse relationship is built in memory, so no separately
+maintained inverse index is required.
+
+The result is a portable, JSON-safe `SovereignLineageTrace`:
+
+| Field | Meaning |
+| --- | --- |
+| `rootSovereignAssetId` | the subject the walk started from |
+| `nodes` | reached subjects with their depth — the root is never restated here |
+| `edges` | `{ claimId, childSovereignAssetId, sourceSovereignAssetIds, relation }` |
+| `cycleDetected` | the supplied claims contain a real back edge |
+| `truncated` | `maxDepth` was reached with reachable subjects left unexplored |
+| `maxDepth` | the bound actually applied |
+
+Each edge keeps the `claimId` that created it — a lineage a consumer cannot attribute back to a claim
+is a lineage it cannot contest — and carries no issuer payload, statement or evidence document.
+
+#### Determinism
+
+Ordering is part of the contract, not an accident of `Set` iteration or of the order claims were
+passed in: `nodes` ascend by depth, then by `sovereignAssetId` within a depth; `edges` follow
+traversal order, and within one subject by `claimId`. The same semantic claim set always produces the
+same trace.
+
+#### Termination and honesty
+
+Traversal is breadth-first and iterative — never recursive — guarded by a visited set and bounded by
+`maxDepth` (default `DEFAULT_SOVEREIGN_LINEAGE_MAX_DEPTH`). A cyclic dataset terminates and reports
+`cycleDetected: true` on a **successful** invocation: the caller asked what the graph looks like and is
+being told, accurately, that it loops. That is an analysis result, not an implementation crash, and no
+edge is silently dropped to make the graph look acyclic.
+
+Cycle detection is a genuine back-edge search rather than a "have I seen this subject before" check,
+because those are not the same question: a diamond (`A → B`, `A → C`, `B → D`, `C → D`) reaches `A` by
+two paths and is perfectly ordinary multi-parent history, not a loop.
+
+When `maxDepth` bites, `truncated: true` says so rather than presenting a partial lineage as complete.
+
+#### Contested history is still history
+
+A trace analyses every derivation claim it is given and never filters by standing, so a contested claim
+still appears in the lineage it asserts. Standing is a separate record precisely so a consumer can
+choose to show everything, only uncontested edges, or both side by side. Silently deleting contested
+edges would make Protocol quietly pick a winner in a dispute it is not entitled to resolve.
+
+### Contestation
+
+`contest-provenance-claim` reuses the existing `contestClaim` primitive. The claim must be about the
+invocation's subject (`PROVENANCE_CLAIM_SUBJECT_MISMATCH` otherwise). The result carries the original
+claim **unmodified** alongside a `CanonicalStanding` with `status: Contested`.
+
+Protocol records that a challenge exists. It does not record that the challenger is correct. No claim
+is deleted or superseded, no manifest lifecycle state is changed as a side effect, and no policy,
+approval, governance body, oracle or human reviewer is consulted — AOC Enterprise may later decide
+operationally not to act on contested provenance, but that is an operational decision, not an
+adjudication of history.
+
+### Boundaries Provenance holds
+
+| It does not | Because |
+| --- | --- |
+| mint a `SovereignAssetId` | identity creation is AOC.IDENTITY |
+| require bytes, `ContentIdentity` or a manifest digest | integrity is AOC.INTEGRITY, and a subject need not have bytes |
+| sign or verify anything | signature and issuer binding are AOC.VERIFIABILITY |
+| mutate a `SovereignManifestV1` | claims are appendable assertions, not manifest edits |
+| inherit licences, rights, obligations or terms along an edge | AOC.LICENSING_TERMS |
+| inherit authority, authorship or governance policy | AOC.GOVERNANCE_COMPATIBILITY |
+| infer ownership from origin, authorship, derivation or registration | none of them establishes legal ownership |
+| dereference `assertedOrigin` or any locator | assertions are data; Protocol performs no I/O |
+
+Derivation and authorship are independent assertions: `C` deriving from `A` implies neither that they
+share an author nor that they do not. Derivation and integrity are likewise independent: a
+transformation normally *changes* the bytes, and two subjects with an identical `ContentIdentity` are
+not thereby related.
+
+The formal capsule exposes only `declare-authorship`, with the kind fixed to `AuthorityClaimKind.Authorship`.
+The low-level `buildAuthorityClaim` primitive still offers `License`, `Rights` and `Custom` and is
+unchanged; keeping them out of this capsule is what stops Provenance from becoming a licence factory
+before AOC.LICENSING_TERMS exists.
+
+### What Provenance does not yet cover
+
+Production means the defined v1 contract is real and consumable — not that every provenance problem is
+solved. Still open, and deliberately not papered over:
+
+- **Claims are unsigned.** Cryptographic attribution requires passing a claim through the existing
+  signing primitives; a formal Verifiability capsule does not exist yet.
+- **`evidenceRefs` are references, not resolved evidence.** Protocol does not resolve them, and a bare
+  ref is not proof its target exists. Caller-supplied refs are preserved verbatim and none is ever
+  fabricated from a digest, invocation id, subject id or URL.
+- **Lineage completeness depends on the supplied dataset.** There is no global provenance database.
+- **Global acyclicity is not provable** from a single `record-derivation`.
+- **Custody is not modelled.** Possession, control, legal title, custodian roles, transfer intervals and
+  jurisdiction are materially more complex than origin/authorship/derivation, and inventing a custody
+  state machine here would fake completeness. Custody-specific provenance is deferred.
+- **Legal and historical truth remain external.** Protocol records assertions and disputes; it
+  adjudicates neither.
+
 ### Identity is not Integrity
 
 The two are independently consumable, and neither depends on the other:
@@ -449,37 +673,48 @@ authorization. Integrity never saw the subject; Identity never recomputed the di
 
 ### Evidence from the capsules
 
-Both rely entirely on the common SM-03 invocation evidence, and neither widens it. An Identity
+All three rely entirely on the common SM-03 invocation evidence, and none widens it. An Identity
 evidence record names the newly created subject; an Integrity evidence record names a subject only if
-the invocation supplied one. Neither carries the raw input, the raw output, the bytes, the manifest,
-the manifest digest, the `ContentIdentity`, the registrant payload, key material or exception text.
+the invocation supplied one; a Provenance evidence record names the subject the invocation carried,
+since Provenance never creates one. None carries the raw input, the raw output, the bytes, the
+manifest, the manifest digest, the `ContentIdentity`, the registrant payload, key material or
+exception text.
 
-Neither capsule populates `evidenceRefs`. A `ContentIdentity` is not automatically a
-`CanonicalEvidenceId`, a `manifestDigest` is not automatically a stored artifact, and an unsigned
-manifest is not automatically an evidence-store record. With no real evidence storage or resolution
-semantics in Protocol, leaving the field absent is the honest option.
+Provenance evidence specifically excludes the claim it produced, the lineage graph it computed, the
+issuer payload and any referenced evidence document. Those belong to the capability *output*, which
+the caller already holds; evidence has to stay small enough and safe enough to hand to someone who is
+not entitled to the payload.
+
+No capsule populates `evidenceRefs`. A `ContentIdentity` is not automatically a `CanonicalEvidenceId`,
+a `manifestDigest` is not automatically a stored artifact, a provenance claim is not automatically an
+evidence-store record, and an unsigned manifest is not one either. With no real evidence storage or
+resolution semantics in Protocol, leaving the field absent is the honest option — fabricating a
+`CanonicalEvidenceId` from a digest, an invocation id or a subject id would be worse than empty.
 
 ### Status
 
-The socket exists and **two of the eight** minerals now fill it. `AOC.IDENTITY` and `AOC.INTEGRITY`
-are production capsules consuming the common invocation and evidence architecture end-to-end,
-verified from a real `npm pack` tarball by all three fixtures in `test-consumers/`.
+The socket exists and **three of the eight** minerals now fill it. `AOC.IDENTITY`, `AOC.INTEGRITY` and
+`AOC.PROVENANCE` are production capsules consuming the common invocation and evidence architecture
+end-to-end, verified from a real `npm pack` tarball by all three fixtures in `test-consumers/`.
 
-The remaining six are **not** production capsules, and they do not become ones merely because two now
-are:
+The remaining five are **not** production capsules, and they do not become ones merely because three
+now are:
 
 | Mineral | Production capsule |
 | --- | --- |
 | Identity | **yes** |
 | Integrity | **yes** |
-| Provenance | not yet |
+| Provenance | **yes** — origin, authorship, derivation, contestation and lineage traversal |
 | Portability | not yet |
 | Interoperability | not yet |
 | Verifiability | not yet — strong signing and verification *primitives* exist in `@aoc/protocol/manifest`, but no capsule wraps them |
 | Licensing & Terms | not yet |
 | Governance Compatibility | not yet |
 
-Their lineage, transfer, terms, verification and governance semantics belong to their own inputs and
-outputs — never to this common contract. There is still no global implementation registry: a capsule
-is passed explicitly to `invokeSovereigntyCapability`, and wiring several together is a future
+Their transfer, terms, verification and governance semantics belong to their own inputs and outputs —
+never to this common contract. Adding a production capsule is not a capability-contract change:
+capability versions remain `1.0.0`, and the canonical inventory remains eight. Derivation and lineage
+are Provenance *semantics*, not a ninth mineral — there is no `AOC.LINEAGE`, `AOC.AUTHORSHIP`,
+`AOC.DERIVATION` or `AOC.CUSTODY`. There is still no global implementation registry: a capsule is
+passed explicitly to `invokeSovereigntyCapability`, and wiring several together is a future
 composition concern.

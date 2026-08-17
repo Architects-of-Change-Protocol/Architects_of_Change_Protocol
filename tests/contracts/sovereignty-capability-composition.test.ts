@@ -352,10 +352,13 @@ describe('SM-04 / regression and boundary guarantees (REGRESSION TESTS)', () => 
     }
   });
 
-  it('REGRESSION 27 — no third mineral is pulled forward', () => {
+  it('REGRESSION 27 — no mineral beyond the shipped three is pulled forward', () => {
+    // SM-05 legitimately added `provenance` as the third production capsule, so
+    // it is no longer forbidden here. The remaining five are still canonical
+    // descriptors with no implementation, and this guards against one of them
+    // being resolved by a capsule that does not exist yet.
     for (const { source } of capsuleSources()) {
       for (const term of [
-        'provenance',
         'portability',
         'interoperability',
         'verifiability',
@@ -368,7 +371,11 @@ describe('SM-04 / regression and boundary guarantees (REGRESSION TESTS)', () => 
   });
 
   it('the capsules import only Protocol-internal identity, manifest and SM-03 modules', () => {
-    const allowed = /^(\.\.\/\.\.\/(identity|manifest)|\.\.\/(capability-ref|implementation|invocation|ids|time)|\.\/(canonical-ref|identity|integrity))$/;
+    // SM-05 adds the Provenance capsule, which additionally reads the canonical
+    // claim primitives (`CanonicalIssuer`, `CanonicalStanding`, the canonical
+    // timestamp rule) it builds provenance assertions from. Still strictly
+    // Protocol-internal: no Enterprise, runtime, provider or storage module.
+    const allowed = /^(\.\.\/\.\.\/(identity|manifest|claims\/(primitives|standing|timestamps))|\.\.\/(capability-ref|implementation|invocation|ids|time)|\.\/(canonical-ref|identity|integrity|provenance))$/;
     for (const { file, source } of capsuleSources()) {
       const specifiers = [...source.matchAll(/(?:import|export)[^'"]*from\s+['"]([^'"]+)['"]/g)].map((m) => m[1]);
       for (const specifier of specifiers) {

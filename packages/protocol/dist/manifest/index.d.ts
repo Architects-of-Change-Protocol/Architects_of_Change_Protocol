@@ -5,6 +5,10 @@ export type { OriginClaim, AuthorityClaim, BuildOriginClaimInput, BuildAuthority
 export { AuthorityClaimKind, buildOriginClaim, buildAuthorityClaim } from './claims';
 export type { SignedClaim, SignedClaimVerificationResult, ContestClaimInput } from './claims';
 export { signClaim, verifySignedClaim, contestClaim } from './claims';
+export type { DerivationClaim, BuildDerivationClaimInput, ClaimValidationResult } from './claims';
+export { DERIVATION_RELATION_KINDS, DerivationRelationKind, buildDerivationClaim, isValidAuthorityClaim, isValidDerivationClaim, isValidOriginClaim, validateAuthorityClaim, validateDerivationClaim, validateOriginClaim, } from './claims';
+export type { SovereignLineageDirection, SovereignLineageEdge, SovereignLineageNode, SovereignLineageTrace, SovereignLineageTraceSchemaVersion, TraceSovereignLineageInput, TraceSovereignLineageValidationResult, } from './lineage';
+export { DEFAULT_SOVEREIGN_LINEAGE_MAX_DEPTH, SOVEREIGN_LINEAGE_DIRECTIONS, SOVEREIGN_LINEAGE_TRACE_SCHEMA_VERSION, isValidSovereignLineageMaxDepth, isValidTraceSovereignLineageInput, traceSovereignLineage, validateTraceSovereignLineageInput, } from './lineage';
 export { SOVEREIGN_MANIFEST_SCHEMA_VERSION, } from './manifest';
 export type { SovereignManifestSchemaVersion, SovereignRegistrant, SovereignManifestV1, SignedSovereignManifest, BuildSovereignManifestV1Input, ManifestValidationResult, } from './manifest';
 export { validateSovereignManifestV1, buildSovereignManifestV1, computeManifestDigest, signSovereignManifest } from './manifest';
