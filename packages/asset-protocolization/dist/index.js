@@ -17,12 +17,22 @@
  * what a case was given and where it is in its lifecycle; it verifies nothing,
  * decides no readiness, resolves no authority and states no legal conclusion.
  *
- * See `docs/asset-protocolization/APV_03_ASSET_PROFILE_FRAMEWORK.md` and
- * `docs/asset-protocolization/APV_04_PROTOCOLIZATION_CASE.md`.
+ * APV-05 delivers the third: the **evidence intake layer** — how a case is told
+ * about evidence. It receives a submission, admits it *structurally*, correlates
+ * it to requirements of the pinned profile, records an immutable receipt, and
+ * associates it through APV-04's own evidence material pathway. It reuses
+ * Protocol's `CanonicalEvidence`/`EvidenceType` and defines no evidence
+ * substrate of its own. Evidence received is never evidence verified; evidence
+ * associated is never a requirement satisfied; evidence complete is never a case
+ * ready.
+ *
+ * See `docs/asset-protocolization/APV_03_ASSET_PROFILE_FRAMEWORK.md`,
+ * `docs/asset-protocolization/APV_04_PROTOCOLIZATION_CASE.md` and
+ * `docs/asset-protocolization/APV_05_EVIDENCE_INTAKE.md`.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProtocolizationRequirementConditionStatus = exports.ProtocolizationCaseState = exports.INITIAL_PROTOCOLIZATION_CASE_STATE = exports.protocolizationMaterialPayloadKey = exports.isValidProtocolizationCaseMaterial = exports.isProtocolizationMaterialKind = exports.ProtocolizationMaterialKind = exports.isValidProtocolizationCaseSubject = exports.protocolizationProfileRefsEqual = exports.isValidProtocolizationTenantId = exports.isValidProtocolizationProfileRef = exports.isValidProtocolizationMaterialId = exports.isValidProtocolizationCaseId = exports.PROTOCOLIZATION_IDENTIFIER_MAX_LENGTH = exports.AssetProfileError = exports.ASSET_PROFILE_ERROR_CODES = exports.createAssetProfileCatalog = exports.listAssetProfileRequirements = exports.listAssetProfileReadinessRequirements = exports.hasAssetProfileRequirement = exports.getAssetProfileRequirement = exports.validateAssetProfile = exports.isValidAssetProfile = exports.isAssetRequirementOfKind = exports.ASSET_PROFILE_VALIDATION_CODES = exports.AssetProfileScope = exports.ASSET_PROFILE_SCHEMA_VERSION = exports.AssetRequirementSatisfaction = exports.AssetRequirementObligation = exports.AssetRequirementKind = exports.AssetIdentityStrategy = exports.isValidAssetRegistryConstraint = exports.isValidAssetCredentialConstraint = exports.isValidAssetAttesterConstraint = exports.isValidUtcDateTime = exports.isValidAssetFreshnessConstraint = exports.isValidAssetProfileMetadata = exports.jurisdictionRefsEqual = exports.isValidJurisdictionRef = exports.isValidJurisdictionCode = exports.GLOBAL_JURISDICTION_CODE = exports.isValidAssetVerificationCheckId = exports.isValidAssetRequirementId = exports.isValidAssetRequirementConditionId = exports.isValidAssetProfileVersion = exports.isValidAssetProfileId = exports.isValidAssetCategoryId = exports.compareAssetProfileVersions = exports.assetProfileVersionKey = exports.ASSET_IDENTIFIER_MAX_LENGTH = void 0;
-exports.ProtocolizationCaseError = exports.PROTOCOLIZATION_CASE_ERROR_CODES = exports.createInMemoryProtocolizationCaseRepository = exports.listProtocolizationCaseRequirementProgress = exports.listProtocolizationCasePendingMaterialRequirements = exports.getProtocolizationCaseRequirementProgress = exports.reconstituteProtocolizationCase = exports.createProtocolizationCase = exports.cancelProtocolizationCase = exports.associateProtocolizationCaseMaterial = exports.addProtocolizationCaseMaterial = exports.activateProtocolizationCase = exports.PROTOCOLIZATION_CASE_EVENT_TYPES = exports.validateProtocolizationCase = exports.isValidProtocolizationCase = exports.PROTOCOLIZATION_CASE_VALIDATION_CODES = exports.PROTOCOLIZATION_CASE_SCHEMA_VERSION = exports.isProtocolizationCaseState = exports.isAllowedProtocolizationCaseTransition = exports.acceptsProtocolizationMaterial = exports.ProtocolizationRequirementMaterialStatus = void 0;
+exports.EvidenceIntakeError = exports.EVIDENCE_INTAKE_ERROR_CODES = exports.createInMemoryEvidenceIntakeRepository = exports.reconstituteEvidenceIntakeReceipt = exports.intakeProtocolizationEvidence = exports.PROTOCOLIZATION_EVIDENCE_EVENT_TYPES = exports.validateProtocolizationEvidenceSubmission = exports.validateEvidenceIntakeReceipt = exports.isValidEvidenceIntakeReceipt = exports.isAdmissibleProtocolizationEvidenceSubmission = exports.EVIDENCE_INTAKE_VALIDATION_CODES = exports.EVIDENCE_INTAKE_RECEIPT_SCHEMA_VERSION = exports.isEvidenceIntakePathway = exports.EvidenceIntakePathway = exports.isValidEvidenceIntakeId = exports.isValidEvidenceIntakeCategoryId = exports.ProtocolizationCaseError = exports.PROTOCOLIZATION_CASE_ERROR_CODES = exports.createInMemoryProtocolizationCaseRepository = exports.listProtocolizationCaseRequirementProgress = exports.listProtocolizationCasePendingMaterialRequirements = exports.getProtocolizationCaseRequirementProgress = exports.reconstituteProtocolizationCase = exports.createProtocolizationCase = exports.cancelProtocolizationCase = exports.associateProtocolizationCaseMaterial = exports.addProtocolizationCaseMaterial = exports.activateProtocolizationCase = exports.PROTOCOLIZATION_CASE_EVENT_TYPES = exports.validateProtocolizationCase = exports.isValidProtocolizationCase = exports.PROTOCOLIZATION_CASE_VALIDATION_CODES = exports.PROTOCOLIZATION_CASE_SCHEMA_VERSION = exports.isProtocolizationCaseState = exports.isAllowedProtocolizationCaseTransition = exports.acceptsProtocolizationMaterial = exports.ProtocolizationRequirementMaterialStatus = void 0;
 var identifiers_1 = require("./identifiers");
 Object.defineProperty(exports, "ASSET_IDENTIFIER_MAX_LENGTH", { enumerable: true, get: function () { return identifiers_1.ASSET_IDENTIFIER_MAX_LENGTH; } });
 Object.defineProperty(exports, "assetProfileVersionKey", { enumerable: true, get: function () { return identifiers_1.assetProfileVersionKey; } });
@@ -119,3 +129,30 @@ Object.defineProperty(exports, "createInMemoryProtocolizationCaseRepository", { 
 var case_errors_1 = require("./case/case-errors");
 Object.defineProperty(exports, "PROTOCOLIZATION_CASE_ERROR_CODES", { enumerable: true, get: function () { return case_errors_1.PROTOCOLIZATION_CASE_ERROR_CODES; } });
 Object.defineProperty(exports, "ProtocolizationCaseError", { enumerable: true, get: function () { return case_errors_1.ProtocolizationCaseError; } });
+// ---------------------------------------------------------------------------
+// APV-05 — Evidence intake
+// ---------------------------------------------------------------------------
+var evidence_intake_identifiers_1 = require("./evidence/evidence-intake-identifiers");
+Object.defineProperty(exports, "isValidEvidenceIntakeCategoryId", { enumerable: true, get: function () { return evidence_intake_identifiers_1.isValidEvidenceIntakeCategoryId; } });
+Object.defineProperty(exports, "isValidEvidenceIntakeId", { enumerable: true, get: function () { return evidence_intake_identifiers_1.isValidEvidenceIntakeId; } });
+var evidence_submission_1 = require("./evidence/evidence-submission");
+Object.defineProperty(exports, "EvidenceIntakePathway", { enumerable: true, get: function () { return evidence_submission_1.EvidenceIntakePathway; } });
+Object.defineProperty(exports, "isEvidenceIntakePathway", { enumerable: true, get: function () { return evidence_submission_1.isEvidenceIntakePathway; } });
+var evidence_intake_receipt_1 = require("./evidence/evidence-intake-receipt");
+Object.defineProperty(exports, "EVIDENCE_INTAKE_RECEIPT_SCHEMA_VERSION", { enumerable: true, get: function () { return evidence_intake_receipt_1.EVIDENCE_INTAKE_RECEIPT_SCHEMA_VERSION; } });
+var evidence_intake_validation_1 = require("./evidence/evidence-intake-validation");
+Object.defineProperty(exports, "EVIDENCE_INTAKE_VALIDATION_CODES", { enumerable: true, get: function () { return evidence_intake_validation_1.EVIDENCE_INTAKE_VALIDATION_CODES; } });
+Object.defineProperty(exports, "isAdmissibleProtocolizationEvidenceSubmission", { enumerable: true, get: function () { return evidence_intake_validation_1.isAdmissibleProtocolizationEvidenceSubmission; } });
+Object.defineProperty(exports, "isValidEvidenceIntakeReceipt", { enumerable: true, get: function () { return evidence_intake_validation_1.isValidEvidenceIntakeReceipt; } });
+Object.defineProperty(exports, "validateEvidenceIntakeReceipt", { enumerable: true, get: function () { return evidence_intake_validation_1.validateEvidenceIntakeReceipt; } });
+Object.defineProperty(exports, "validateProtocolizationEvidenceSubmission", { enumerable: true, get: function () { return evidence_intake_validation_1.validateProtocolizationEvidenceSubmission; } });
+var evidence_intake_events_1 = require("./evidence/evidence-intake-events");
+Object.defineProperty(exports, "PROTOCOLIZATION_EVIDENCE_EVENT_TYPES", { enumerable: true, get: function () { return evidence_intake_events_1.PROTOCOLIZATION_EVIDENCE_EVENT_TYPES; } });
+var evidence_intake_operations_1 = require("./evidence/evidence-intake-operations");
+Object.defineProperty(exports, "intakeProtocolizationEvidence", { enumerable: true, get: function () { return evidence_intake_operations_1.intakeProtocolizationEvidence; } });
+Object.defineProperty(exports, "reconstituteEvidenceIntakeReceipt", { enumerable: true, get: function () { return evidence_intake_operations_1.reconstituteEvidenceIntakeReceipt; } });
+var evidence_intake_repository_1 = require("./evidence/evidence-intake-repository");
+Object.defineProperty(exports, "createInMemoryEvidenceIntakeRepository", { enumerable: true, get: function () { return evidence_intake_repository_1.createInMemoryEvidenceIntakeRepository; } });
+var evidence_intake_errors_1 = require("./evidence/evidence-intake-errors");
+Object.defineProperty(exports, "EVIDENCE_INTAKE_ERROR_CODES", { enumerable: true, get: function () { return evidence_intake_errors_1.EVIDENCE_INTAKE_ERROR_CODES; } });
+Object.defineProperty(exports, "EvidenceIntakeError", { enumerable: true, get: function () { return evidence_intake_errors_1.EvidenceIntakeError; } });

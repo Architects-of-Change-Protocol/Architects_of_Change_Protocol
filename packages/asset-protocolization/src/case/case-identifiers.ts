@@ -70,7 +70,13 @@ const INSTANCE_IDENTIFIER_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]*$/;
  */
 const UNSAFE_IDENTIFIER_CHARACTERS = /[\s\u0000-\u001f\u007f-\u009f]/;
 
-function isInstanceIdentifier(value: unknown): value is string {
+/**
+ * Exported for reuse *inside* this package only — it is not part of the package
+ * facade. APV-05 mints an evidence-intake id per intake operation, which is the
+ * same *instance* identifier kind as a case id or a material id, so it must
+ * satisfy this grammar rather than a second one that happens to look like it.
+ */
+export function isProtocolizationInstanceIdentifier(value: unknown): value is string {
   return (
     typeof value === 'string' &&
     value.length <= PROTOCOLIZATION_IDENTIFIER_MAX_LENGTH &&
@@ -79,11 +85,11 @@ function isInstanceIdentifier(value: unknown): value is string {
 }
 
 export function isValidProtocolizationCaseId(value: unknown): value is ProtocolizationCaseId {
-  return isInstanceIdentifier(value);
+  return isProtocolizationInstanceIdentifier(value);
 }
 
 export function isValidProtocolizationMaterialId(value: unknown): value is ProtocolizationMaterialId {
-  return isInstanceIdentifier(value);
+  return isProtocolizationInstanceIdentifier(value);
 }
 
 /**

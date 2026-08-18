@@ -84,7 +84,13 @@ const ASSET_PROFILE_VERSION_PATTERN = /^\d+\.\d+\.\d+$/;
  */
 export const ASSET_IDENTIFIER_MAX_LENGTH = 128;
 
-function isDottedToken(value: unknown): value is string {
+/**
+ * Exported for reuse *inside* this package only — it is not part of the package
+ * facade. APV-05's evidence-intake category ids are dotted tokens under exactly
+ * this grammar, and re-spelling the pattern in a second module would let the two
+ * copies drift.
+ */
+export function isDottedToken(value: unknown): value is string {
   return (
     typeof value === 'string' &&
     value.length <= ASSET_IDENTIFIER_MAX_LENGTH &&
