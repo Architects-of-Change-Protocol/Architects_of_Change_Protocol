@@ -16,8 +16,18 @@
  * what a case was given and where it is in its lifecycle; it verifies nothing,
  * decides no readiness, resolves no authority and states no legal conclusion.
  *
- * See `docs/asset-protocolization/APV_03_ASSET_PROFILE_FRAMEWORK.md` and
- * `docs/asset-protocolization/APV_04_PROTOCOLIZATION_CASE.md`.
+ * APV-05 delivers the third: the **evidence intake layer** — how a case is told
+ * about evidence. It receives a submission, admits it *structurally*, correlates
+ * it to requirements of the pinned profile, records an immutable receipt, and
+ * associates it through APV-04's own evidence material pathway. It reuses
+ * Protocol's `CanonicalEvidence`/`EvidenceType` and defines no evidence
+ * substrate of its own. Evidence received is never evidence verified; evidence
+ * associated is never a requirement satisfied; evidence complete is never a case
+ * ready.
+ *
+ * See `docs/asset-protocolization/APV_03_ASSET_PROFILE_FRAMEWORK.md`,
+ * `docs/asset-protocolization/APV_04_PROTOCOLIZATION_CASE.md` and
+ * `docs/asset-protocolization/APV_05_EVIDENCE_INTAKE.md`.
  */
 
 export {
@@ -215,3 +225,57 @@ export type { ProtocolizationCaseRepository } from './case/case-repository';
 
 export { PROTOCOLIZATION_CASE_ERROR_CODES, ProtocolizationCaseError } from './case/case-errors';
 export type { ProtocolizationCaseErrorCode, ProtocolizationCaseErrorDetails } from './case/case-errors';
+
+// ---------------------------------------------------------------------------
+// APV-05 — Evidence intake
+// ---------------------------------------------------------------------------
+
+export {
+  isValidEvidenceIntakeCategoryId,
+  isValidEvidenceIntakeId,
+} from './evidence/evidence-intake-identifiers';
+export type { EvidenceIntakeCategoryId, EvidenceIntakeId } from './evidence/evidence-intake-identifiers';
+
+export {
+  EvidenceIntakePathway,
+  isEvidenceIntakePathway,
+} from './evidence/evidence-submission';
+export type {
+  CanonicalEvidenceSubmission,
+  ProtocolizationEvidenceSubmission,
+  ReferencedEvidenceSubmission,
+} from './evidence/evidence-submission';
+
+export { EVIDENCE_INTAKE_RECEIPT_SCHEMA_VERSION } from './evidence/evidence-intake-receipt';
+export type { EvidenceIntakeReceipt } from './evidence/evidence-intake-receipt';
+
+export {
+  EVIDENCE_INTAKE_VALIDATION_CODES,
+  isAdmissibleProtocolizationEvidenceSubmission,
+  isValidEvidenceIntakeReceipt,
+  validateEvidenceIntakeReceipt,
+  validateProtocolizationEvidenceSubmission,
+} from './evidence/evidence-intake-validation';
+export type {
+  EvidenceIntakeValidationCode,
+  EvidenceIntakeValidationResult,
+} from './evidence/evidence-intake-validation';
+
+export { PROTOCOLIZATION_EVIDENCE_EVENT_TYPES } from './evidence/evidence-intake-events';
+export type {
+  ProtocolizationEvidenceEvent,
+  ProtocolizationEvidenceEventType,
+  ProtocolizationEvidenceReceivedEvent,
+} from './evidence/evidence-intake-events';
+
+export {
+  intakeProtocolizationEvidence,
+  reconstituteEvidenceIntakeReceipt,
+} from './evidence/evidence-intake-operations';
+export type { ProtocolizationEvidenceIntakeTransition } from './evidence/evidence-intake-operations';
+
+export { createInMemoryEvidenceIntakeRepository } from './evidence/evidence-intake-repository';
+export type { EvidenceIntakeRepository } from './evidence/evidence-intake-repository';
+
+export { EVIDENCE_INTAKE_ERROR_CODES, EvidenceIntakeError } from './evidence/evidence-intake-errors';
+export type { EvidenceIntakeErrorCode, EvidenceIntakeErrorDetails } from './evidence/evidence-intake-errors';

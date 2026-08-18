@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PROTOCOLIZATION_IDENTIFIER_MAX_LENGTH = void 0;
+exports.isProtocolizationInstanceIdentifier = isProtocolizationInstanceIdentifier;
 exports.isValidProtocolizationCaseId = isValidProtocolizationCaseId;
 exports.isValidProtocolizationMaterialId = isValidProtocolizationMaterialId;
 exports.isValidProtocolizationTenantId = isValidProtocolizationTenantId;
@@ -26,16 +27,22 @@ const INSTANCE_IDENTIFIER_PATTERN = /^[A-Za-z0-9][A-Za-z0-9._:-]*$/;
  * value itself is opaque to this package.
  */
 const UNSAFE_IDENTIFIER_CHARACTERS = /[\s\u0000-\u001f\u007f-\u009f]/;
-function isInstanceIdentifier(value) {
+/**
+ * Exported for reuse *inside* this package only — it is not part of the package
+ * facade. APV-05 mints an evidence-intake id per intake operation, which is the
+ * same *instance* identifier kind as a case id or a material id, so it must
+ * satisfy this grammar rather than a second one that happens to look like it.
+ */
+function isProtocolizationInstanceIdentifier(value) {
     return (typeof value === 'string' &&
         value.length <= exports.PROTOCOLIZATION_IDENTIFIER_MAX_LENGTH &&
         INSTANCE_IDENTIFIER_PATTERN.test(value));
 }
 function isValidProtocolizationCaseId(value) {
-    return isInstanceIdentifier(value);
+    return isProtocolizationInstanceIdentifier(value);
 }
 function isValidProtocolizationMaterialId(value) {
-    return isInstanceIdentifier(value);
+    return isProtocolizationInstanceIdentifier(value);
 }
 /**
  * Deliberately more permissive than a case id.

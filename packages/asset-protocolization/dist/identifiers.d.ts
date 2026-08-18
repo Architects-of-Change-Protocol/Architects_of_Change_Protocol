@@ -63,6 +63,13 @@ export type AssetRequirementConditionId = string;
  * or a UI column without truncation surprises.
  */
 export declare const ASSET_IDENTIFIER_MAX_LENGTH = 128;
+/**
+ * Exported for reuse *inside* this package only — it is not part of the package
+ * facade. APV-05's evidence-intake category ids are dotted tokens under exactly
+ * this grammar, and re-spelling the pattern in a second module would let the two
+ * copies drift.
+ */
+export declare function isDottedToken(value: unknown): value is string;
 export declare function isValidAssetProfileId(value: unknown): value is AssetProfileId;
 export declare function isValidAssetRequirementId(value: unknown): value is AssetRequirementId;
 export declare function isValidAssetCategoryId(value: unknown): value is AssetCategoryId;

@@ -17,6 +17,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ASSET_IDENTIFIER_MAX_LENGTH = void 0;
+exports.isDottedToken = isDottedToken;
 exports.isValidAssetProfileId = isValidAssetProfileId;
 exports.isValidAssetRequirementId = isValidAssetRequirementId;
 exports.isValidAssetCategoryId = isValidAssetCategoryId;
@@ -42,6 +43,12 @@ const ASSET_PROFILE_VERSION_PATTERN = /^\d+\.\d+\.\d+$/;
  * or a UI column without truncation surprises.
  */
 exports.ASSET_IDENTIFIER_MAX_LENGTH = 128;
+/**
+ * Exported for reuse *inside* this package only — it is not part of the package
+ * facade. APV-05's evidence-intake category ids are dotted tokens under exactly
+ * this grammar, and re-spelling the pattern in a second module would let the two
+ * copies drift.
+ */
 function isDottedToken(value) {
     return (typeof value === 'string' &&
         value.length <= exports.ASSET_IDENTIFIER_MAX_LENGTH &&

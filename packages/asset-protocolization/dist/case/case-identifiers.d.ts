@@ -43,6 +43,13 @@ export type ProtocolizationTenantId = CanonicalId;
 export type ProtocolizationMaterialId = string;
 /** Shared upper bound with APV-03's identifiers — same rationale, same limit. */
 export declare const PROTOCOLIZATION_IDENTIFIER_MAX_LENGTH = 128;
+/**
+ * Exported for reuse *inside* this package only — it is not part of the package
+ * facade. APV-05 mints an evidence-intake id per intake operation, which is the
+ * same *instance* identifier kind as a case id or a material id, so it must
+ * satisfy this grammar rather than a second one that happens to look like it.
+ */
+export declare function isProtocolizationInstanceIdentifier(value: unknown): value is string;
 export declare function isValidProtocolizationCaseId(value: unknown): value is ProtocolizationCaseId;
 export declare function isValidProtocolizationMaterialId(value: unknown): value is ProtocolizationMaterialId;
 /**

@@ -40,7 +40,8 @@ TOKENIZER               issuance, contracts, custody, marketplace, settlement
 | **GATE A0** | **Vertical boundary frozen** | **`RATIFIED`** — see below |
 | APV-03 | [`APV_03_ASSET_PROFILE_FRAMEWORK.md`](./APV_03_ASSET_PROFILE_FRAMEWORK.md) | Implemented — `@aoc/asset-protocolization` |
 | APV-04 | [`APV_04_PROTOCOLIZATION_CASE.md`](./APV_04_PROTOCOLIZATION_CASE.md) | `VERIFIED` — `ProtocolizationCase` in `@aoc/asset-protocolization` |
-| APV-05…APV-20 | not started | — |
+| APV-05 | [`APV_05_EVIDENCE_INTAKE.md`](./APV_05_EVIDENCE_INTAKE.md) | `VERIFIED` — evidence intake layer in `@aoc/asset-protocolization` |
+| APV-06…APV-20 | not started | — |
 
 The ADR lives under `docs/architecture/` to follow this repository's existing ADR naming
 convention (`docs/architecture/adr-*.md`).
@@ -100,7 +101,9 @@ of asset-specific business semantics, and must obey Protocol's format constraint
 APV-03 mints no assertion id, because it creates no claim — so no helper was written. The
 ownership stands and is discharged by the slice that first needs one. APV-04 mints none
 either: a case *references* claims, evidence, attestations and verifications by identifier;
-it creates none.
+it creates none. APV-05 mints none either, and deliberately constructs no
+`CanonicalEvidence`: intake receives an evidence *reference*, or a record the caller
+legitimately already holds, and never fabricates a canonical record identifier of its own.
 
 ### `U-4` — Fee model ownership
 
@@ -121,6 +124,12 @@ deterministic in-memory implementation. No database adapter, migration or schema
 port to a store is an infrastructure decision for the composition layer. See
 [`APV_04_PROTOCOLIZATION_CASE.md`](./APV_04_PROTOCOLIZATION_CASE.md#13-persistence).
 
+APV-05 extends the same decision to evidence intake: `EvidenceIntakeRepository` is declared
+in `packages/asset-protocolization/src/evidence/evidence-intake-repository.ts` with one
+in-memory implementation, stores *receipts* rather than evidence, and adds no database, blob
+store or upload infrastructure. See
+[`APV_05_EVIDENCE_INTAKE.md`](./APV_05_EVIDENCE_INTAKE.md#13-persistence).
+
 ## Reading order for an implementer
 
 1. `docs/architecture/sovereign-asset-core.md` — the frozen substrate and its invariants.
@@ -133,7 +142,10 @@ port to a store is an infrastructure decision for the composition layer. See
 6. `APV_03_ASSET_PROFILE_FRAMEWORK.md` — how a profile states what an asset class requires.
 7. `APV_04_PROTOCOLIZATION_CASE.md` — how one tenant's attempt under one pinned profile
    version is modelled, and why material presence is never truth.
-8. `docs/constitution/ARCHITECTURAL-LAWS.md` — which mistakes fail the build.
+8. `APV_05_EVIDENCE_INTAKE.md` — how evidence is received, structurally admitted,
+   referenced, correlated and recorded over the life of a case, and why *received* is never
+   *verified*.
+9. `docs/constitution/ARCHITECTURAL-LAWS.md` — which mistakes fail the build.
 
 ## Workstream B
 
