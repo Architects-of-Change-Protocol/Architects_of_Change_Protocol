@@ -39,7 +39,8 @@ TOKENIZER               issuance, contracts, custody, marketplace, settlement
 | APV-02 | [`APV_02_VERTICAL_PROTOCOL_CONTRACT.md`](./APV_02_VERTICAL_PROTOCOL_CONTRACT.md) | Frozen (specification; no code) |
 | **GATE A0** | **Vertical boundary frozen** | **`RATIFIED`** — see below |
 | APV-03 | [`APV_03_ASSET_PROFILE_FRAMEWORK.md`](./APV_03_ASSET_PROFILE_FRAMEWORK.md) | Implemented — `@aoc/asset-protocolization` |
-| APV-04…APV-20 | not started | — |
+| APV-04 | [`APV_04_PROTOCOLIZATION_CASE.md`](./APV_04_PROTOCOLIZATION_CASE.md) | `VERIFIED` — `ProtocolizationCase` in `@aoc/asset-protocolization` |
+| APV-05…APV-20 | not started | — |
 
 The ADR lives under `docs/architecture/` to follow this repository's existing ADR naming
 convention (`docs/architecture/adr-*.md`).
@@ -97,13 +98,15 @@ deterministic where required, collision-resistant, unit-tested, documented, and 
 of asset-specific business semantics, and must obey Protocol's format constraints exactly.
 
 APV-03 mints no assertion id, because it creates no claim — so no helper was written. The
-ownership stands and is discharged by the slice that first needs one.
+ownership stands and is discharged by the slice that first needs one. APV-04 mints none
+either: a case *references* claims, evidence, attestations and verifications by identifier;
+it creates none.
 
 ### `U-4` — Fee model ownership
 
-**Decision.** The vertical owns its own fee **assessment** model. APV-03 and later slices
-are not coupled to `runtime/monetization`, and implement no payment processing, no payment
-provider integration and no settlement. Later slices may emit auditable assessments and
+**Decision.** The vertical owns its own fee **assessment** model. APV-03, APV-04 and later
+slices are not coupled to `runtime/monetization`, and implement no payment processing, no
+payment provider integration and no settlement. Later slices may emit auditable assessments and
 events that a separate subsystem can bill from; the architecture must not foreclose that.
 
 ### `U-6` — Case persistence ownership
@@ -111,6 +114,12 @@ events that a separate subsystem can bill from; the architecture must not forecl
 **Decision.** Persistence for `ProtocolizationCase` and every other vertical workflow
 aggregate belongs to the vertical. No vertical workflow persistence port is placed in AOC
 Protocol. Protocol remains substrate and never learns the case exists.
+
+APV-04 discharges this: `ProtocolizationCaseRepository` is declared in
+`packages/asset-protocolization/src/case/case-repository.ts` together with one
+deterministic in-memory implementation. No database adapter, migration or schema was added — binding the
+port to a store is an infrastructure decision for the composition layer. See
+[`APV_04_PROTOCOLIZATION_CASE.md`](./APV_04_PROTOCOLIZATION_CASE.md#13-persistence).
 
 ## Reading order for an implementer
 
@@ -122,7 +131,9 @@ Protocol. Protocol remains substrate and never learns the case exists.
 4. The ADR — what you may and may not own.
 5. `APV_02_VERTICAL_PROTOCOL_CONTRACT.md` — what you must emit.
 6. `APV_03_ASSET_PROFILE_FRAMEWORK.md` — how a profile states what an asset class requires.
-7. `docs/constitution/ARCHITECTURAL-LAWS.md` — which mistakes fail the build.
+7. `APV_04_PROTOCOLIZATION_CASE.md` — how one tenant's attempt under one pinned profile
+   version is modelled, and why material presence is never truth.
+8. `docs/constitution/ARCHITECTURAL-LAWS.md` — which mistakes fail the build.
 
 ## Workstream B
 
