@@ -37,13 +37,21 @@ TOKENIZER               issuance, contracts, custody, marketplace, settlement
 | APV-00 | [`APV_00_RECONNAISSANCE.md`](./APV_00_RECONNAISSANCE.md) | `VERIFIED` |
 | APV-01 | [`../architecture/adr-asset-protocolization-vertical-boundary.md`](../architecture/adr-asset-protocolization-vertical-boundary.md) | Accepted — frozen |
 | APV-02 | [`APV_02_VERTICAL_PROTOCOL_CONTRACT.md`](./APV_02_VERTICAL_PROTOCOL_CONTRACT.md) | Frozen (specification; no code) |
-| **GATE A0** | **Vertical boundary frozen** | **Awaiting sign-off** |
-| APV-03…APV-20 | not started | blocked by GATE A0 |
+| **GATE A0** | **Vertical boundary frozen** | **`RATIFIED`** — see below |
+| APV-03 | [`APV_03_ASSET_PROFILE_FRAMEWORK.md`](./APV_03_ASSET_PROFILE_FRAMEWORK.md) | Implemented — `@aoc/asset-protocolization` |
+| APV-04…APV-20 | not started | — |
 
 The ADR lives under `docs/architecture/` to follow this repository's existing ADR naming
 convention (`docs/architecture/adr-*.md`).
 
-## Gate A0 — what must be signed off before any vertical code exists
+## Gate A0 — `RATIFIED`
+
+```text
+GATE A0 = RATIFIED
+```
+
+Ratified by the Founder / AOC Architecture Authority as the precondition for APV-03. The
+boundary frozen by APV-01 and APV-02 is unchanged:
 
 ```text
 Protocol                 != Asset Protocolization      frozen  (ADR §1, §2)
@@ -52,8 +60,57 @@ Enterprise Governance    != Tokenizer                  frozen  (ADR §1, §2)
 Vertical → substrate contract                          frozen  (APV-02 §2)
 ```
 
-Six open decisions carried from APV-00 §8 (`U-1`…`U-6`); `U-5` is closed by ADR §3. The
-remaining five need a human decision before APV-03 begins.
+Six decisions were carried from APV-00 §8 (`U-1`…`U-6`). `U-5` was closed by ADR §3
+(`packages/asset-protocolization`, published as `@aoc/asset-protocolization`, role
+`facade`). The remaining five are resolved as follows. This section is the ratification
+record; APV-00 and the ADR are historical and are not rewritten by it.
+
+### `U-1` — Verifiability
+
+**Decision.** The vertical does **not** wait for an `AOC.VERIFIABILITY` capsule. It
+composes the existing lower-level Protocol primitives it needs (`verifySovereignManifest`,
+`VerificationKeyResolver`, `CredentialStatusLookup`, `computeContentIdentity` /
+`verifyContentIdentity`).
+
+If implementation surfaces a genuinely generic missing capability — one that at least
+three unrelated verticals would need — it is documented as a *possible future Protocol
+proposal* with its own gate (ADR §7). It is not added to Protocol inside this workstream.
+
+### `U-2` — External registries
+
+**Decision.** Use the existing generic model:
+
+```text
+RegistryType.Custom  +  RegistryAuthorityLevel.External
+```
+
+This is sufficient for any future external registry source. No jurisdiction- or
+domain-specific enum member (`RegistryType.CostaRica`, `.RealEstate`, `.Property`, or any
+equivalent) is added to Protocol. Revisited only if multiple unrelated verticals
+independently demonstrate a genuinely generic abstraction need.
+
+### `U-3` — `CanonicalAssertionId` ownership
+
+**Decision.** The vertical mints and derives the canonical assertion identifiers it needs.
+No Protocol helper is added merely because one does not exist. Any such mechanism must be
+deterministic where required, collision-resistant, unit-tested, documented, and independent
+of asset-specific business semantics, and must obey Protocol's format constraints exactly.
+
+APV-03 mints no assertion id, because it creates no claim — so no helper was written. The
+ownership stands and is discharged by the slice that first needs one.
+
+### `U-4` — Fee model ownership
+
+**Decision.** The vertical owns its own fee **assessment** model. APV-03 and later slices
+are not coupled to `runtime/monetization`, and implement no payment processing, no payment
+provider integration and no settlement. Later slices may emit auditable assessments and
+events that a separate subsystem can bill from; the architecture must not foreclose that.
+
+### `U-6` — Case persistence ownership
+
+**Decision.** Persistence for `ProtocolizationCase` and every other vertical workflow
+aggregate belongs to the vertical. No vertical workflow persistence port is placed in AOC
+Protocol. Protocol remains substrate and never learns the case exists.
 
 ## Reading order for an implementer
 
@@ -64,7 +121,8 @@ remaining five need a human decision before APV-03 begins.
    `Evidence`, `Claim`, `Attestation`, `Verification` or `Proof`, stop and read it first.**
 4. The ADR — what you may and may not own.
 5. `APV_02_VERTICAL_PROTOCOL_CONTRACT.md` — what you must emit.
-6. `docs/constitution/ARCHITECTURAL-LAWS.md` — which mistakes fail the build.
+6. `APV_03_ASSET_PROFILE_FRAMEWORK.md` — how a profile states what an asset class requires.
+7. `docs/constitution/ARCHITECTURAL-LAWS.md` — which mistakes fail the build.
 
 ## Workstream B
 

@@ -56,6 +56,9 @@
       "@aoc/audit-sdk": [
         "packages/audit-sdk/src"
       ],
+      "@aoc/asset-protocolization": [
+        "packages/asset-protocolization/src"
+      ],
       "@aoc/protocol": [
         "packages/protocol/src/contracts"
       ],

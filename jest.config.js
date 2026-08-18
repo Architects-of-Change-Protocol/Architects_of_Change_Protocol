@@ -41,8 +41,14 @@ module.exports = {
     '<rootDir>/storage/__tests__/**/*.test.ts',
     '<rootDir>/resolver/__tests__/**/*.test.ts',
     '<rootDir>/sdl/__tests__/**/*.test.ts',
+    // APV-03 (Asset Protocolization Vertical, asset profile framework): the
+    // vertical owns its own test directory, and a new suite is invisible to CI
+    // until its path is listed here. Adding it is a build-configuration change,
+    // not a Protocol change — see the ADR's "Accepted costs".
+    '<rootDir>/packages/asset-protocolization/tests/**/*.test.ts',
   ],
   moduleNameMapper: {
+    '^@aoc/asset-protocolization$': '<rootDir>/packages/asset-protocolization/src',
     '^@aoc/protocol/contracts$': '<rootDir>/packages/protocol/src/contracts',
     '^@aoc/protocol/claims$': '<rootDir>/packages/protocol/src/claims',
     '^@aoc/protocol/adapters$': '<rootDir>/packages/protocol/src/adapters',
