@@ -95,6 +95,9 @@
       "@aoc/protocol/portability": [
         "packages/protocol/src/portability"
       ],
+      "@aoc/protocol/interoperability": [
+        "packages/protocol/src/interoperability"
+      ],
       "@aoc/protocol/sovereignty-capabilities": [
         "packages/protocol/src/sovereignty-capabilities"
       ],

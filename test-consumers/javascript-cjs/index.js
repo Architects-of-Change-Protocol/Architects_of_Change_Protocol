@@ -11,6 +11,7 @@ const identity = require('@aoc/protocol/identity');
 const manifestApi = require('@aoc/protocol/manifest');
 const canonical = require('@aoc/protocol/canonical');
 const portability = require('@aoc/protocol/portability');
+const interoperability = require('@aoc/protocol/interoperability');
 
 const assert = (condition, message) => {
   if (!condition) {
@@ -22,6 +23,10 @@ assert(typeof root === 'object' && root !== null, 'root import must resolve to a
 assert(typeof contracts === 'object' && contracts !== null, './contracts import must resolve');
 assert(typeof errors === 'object' && errors !== null, './errors import must resolve');
 assert(typeof adapters === 'object' && adapters !== null, './adapters import must resolve');
+assert(
+  typeof interoperability === 'object' && interoperability !== null,
+  './interoperability import must resolve',
+);
 assert(ClaimType.Identity === 'Identity', 'ClaimType.Identity runtime value mismatch');
 assert(typeof AdapterRegistry === 'function', 'AdapterRegistry must be a class/constructor');
 assert(typeof AdapterTokens.AuditEventSink === 'object', 'AdapterTokens.AuditEventSink must resolve');
@@ -834,6 +839,277 @@ const productionPortabilityAcceptance = async () => {
   return bundleB.subject.sovereignAssetId;
 };
 
+
+/**
+ * SM-07 — the fifth production mineral from the installed tarball: an external
+ * system receives a canonical AOC representation, describes it, and determines
+ * whether it can consume it. Full, partial and incompatible are all exercised.
+ */
+const productionInteroperabilityAcceptance = async () => {
+  const correlationId = 'sm07-negotiation-js-001';
+  const integrityRef = sovereigntyCapabilities.getSovereigntyCapabilityRefByKey('integrity');
+  const identityRef = sovereigntyCapabilities.getSovereigntyCapabilityRefByKey('identity');
+  const provenanceRef = sovereigntyCapabilities.getSovereigntyCapabilityRefByKey('provenance');
+  const portabilityRef = sovereigntyCapabilities.getSovereigntyCapabilityRefByKey('portability');
+  const interoperabilityRef = sovereigntyCapabilities.getSovereigntyCapabilityRefByKey('interoperability');
+
+  const integrity = sovereigntyCapabilities.createIntegritySovereigntyCapabilityImplementation();
+  const identityCapsule = sovereigntyCapabilities.createIdentitySovereigntyCapabilityImplementation();
+  const provenance = sovereigntyCapabilities.createProvenanceSovereigntyCapabilityImplementation();
+  const portabilityCapsule = sovereigntyCapabilities.createPortabilitySovereigntyCapabilityImplementation();
+
+  const capsule = sovereigntyCapabilities.createInteroperabilitySovereigntyCapabilityImplementation();
+  assert(
+    capsule.capability.id === 'aoc:sovereignty-capability:interoperability',
+    'production Interoperability capsule does not advertise the canonical id',
+  );
+  assert(
+    capsule.capability.version === interoperabilityRef.version,
+    'production Interoperability capsule drifted from the canonical capability version',
+  );
+
+  const invoke = async (capability, input, options = {}) =>
+    sovereigntyCapabilities.invokeSovereigntyCapability(
+      sovereigntyCapabilities.buildSovereigntyCapabilityInvocation({
+        capability,
+        correlationId,
+        ...options,
+        input,
+      }),
+      options.implementation ?? capsule,
+    );
+
+  // ---- APPLICATION A ------------------------------------------------------
+  const integrityResult = await invoke(
+    integrityRef,
+    { operation: 'compute-content-identity', bytes: new TextEncoder().encode('sm07-js-consumer-fixture-bytes') },
+    { implementation: integrity },
+  );
+  assert(integrityResult.status === 'succeeded', 'real Integrity invocation failed');
+  const contentIdentity = integrityResult.output.contentIdentity;
+
+  const identityResult = await invoke(
+    identityRef,
+    {
+      registrant: 'principal:js-consumer',
+      contentIdentity,
+      externalReference: identity.buildSovereignExternalReference({
+        namespace: 'alien-system-v47',
+        id: 'alien-resource-92817',
+        locator: 'future://provider-p1/object/92817',
+      }),
+    },
+    { implementation: identityCapsule },
+  );
+  assert(identityResult.status === 'succeeded', 'real Identity invocation failed');
+  const subjectX = identityResult.output.subject;
+
+  const sourceResult = await invoke(
+    identityRef,
+    { registrant: 'principal:js-consumer' },
+    { implementation: identityCapsule },
+  );
+  assert(sourceResult.status === 'succeeded', 'real Identity invocation failed');
+
+  const originResult = await invoke(
+    provenanceRef,
+    {
+      operation: 'declare-origin',
+      claimId: 'claim:origin:sm07-js-consumer',
+      issuer: 'principal:js-consumer',
+      assertedOrigin: 'future-system-origin-42',
+    },
+    { implementation: provenance, subject: subjectX },
+  );
+  assert(originResult.status === 'succeeded', 'real Provenance declare-origin failed');
+
+  const derivationResult = await invoke(
+    provenanceRef,
+    {
+      operation: 'record-derivation',
+      claimId: 'claim:derivation:sm07-js-consumer',
+      issuer: 'principal:js-consumer',
+      sourceSovereignAssetIds: [sourceResult.output.subject.sovereignAssetId],
+      relation: 'TransformedFrom',
+    },
+    { implementation: provenance, subject: subjectX },
+  );
+  assert(derivationResult.status === 'succeeded', 'real Provenance record-derivation failed');
+
+  const contestResult = await invoke(
+    provenanceRef,
+    {
+      operation: 'contest-provenance-claim',
+      standingId: 'standing:sm07-js-consumer:001',
+      claim: originResult.output.claim,
+      reason: 'An independent party disputes the asserted origin',
+    },
+    { implementation: provenance, subject: subjectX },
+  );
+  assert(contestResult.status === 'succeeded', 'real Provenance contestation failed');
+
+  const exportResult = await invoke(
+    portabilityRef,
+    {
+      operation: 'export-bundle',
+      manifests: [{ kind: 'manifest', manifest: identityResult.output.manifest }],
+      claims: [
+        { kind: 'claim', claim: originResult.output.claim },
+        { kind: 'claim', claim: derivationResult.output.claim },
+      ],
+      standings: [contestResult.output.standing],
+    },
+    { implementation: portabilityCapsule, subject: subjectX },
+  );
+  assert(exportResult.status === 'succeeded', 'real Portability export failed');
+  const wire = exportResult.output.serializedBundle;
+
+  // ---- APPLICATION B: the string, and nothing else ------------------------
+  const importResult = await invoke(
+    portabilityRef,
+    { operation: 'import-bundle', serializedBundle: wire },
+    { implementation: sovereigntyCapabilities.createPortabilitySovereigntyCapabilityImplementation() },
+  );
+  assert(importResult.status === 'succeeded', 'real Portability import failed');
+  const importedBundle = importResult.output.bundle;
+
+  // Subjectless description: Application B has no local record of the subject.
+  const describeResult = await invoke(interoperabilityRef, {
+    operation: 'describe-bundle',
+    bundle: importedBundle,
+  });
+  assert(
+    describeResult.status === 'succeeded' && describeResult.output.operation === 'describe-bundle',
+    'real Interoperability describe-bundle failed',
+  );
+  assert(
+    describeResult.subject.sovereignAssetId === subjectX.sovereignAssetId,
+    'subjectless description did not return the bundle subject',
+  );
+
+  const { profile, descriptor } = describeResult.output;
+
+  // ---- the representation describes itself through public API only --------
+  assert(
+    profile.id === 'aoc:interoperability-profile:sovereignty-portability',
+    'the profile does not carry the canonical AOC interoperability profile id',
+  );
+  assert(profile.version === '1.0.0', 'the profile version is not readable');
+  assert(
+    profile.mediaType === interoperability.AOC_SOVEREIGNTY_PORTABILITY_MEDIA_TYPE
+      && profile.mediaType === 'application/vnd.aoc.sovereignty-portability+json',
+    'the canonical media type is not what an external system was told to expect',
+  );
+  assert(
+    profile.representation.schemaVersion === portability.SOVEREIGNTY_PORTABILITY_BUNDLE_SCHEMA_VERSION,
+    'the profile does not identify the SM-06 bundle schema',
+  );
+  assert(
+    profile.representation.canonicalizationProfile === canonical.CANONICAL_JSON_PROFILE,
+    'the profile does not identify the canonical JSON profile',
+  );
+  for (const kind of ['claim', 'manifest', 'signed-claim', 'signed-manifest', 'standing']) {
+    assert(profile.artifactKinds.includes(kind), `the profile does not advertise the '${kind}' artifact kind`);
+  }
+  for (const claimType of ['Origin', 'Authorship', 'Derivation']) {
+    assert(profile.claimTypes.includes(claimType), `the profile does not advertise ${claimType} semantics`);
+  }
+
+  // The semantic layer is readable data, not documentation.
+  const vocabularyTerms = interoperability.AOC_SOVEREIGNTY_CORE_SEMANTIC_VOCABULARY.categories
+    .flatMap((category) => [...category.termRefs]);
+  for (const termRef of [
+    'aoc.sovereignty:sovereign-asset-identity',
+    'aoc.sovereignty:content-identity',
+    'aoc.sovereignty:derivation-assertion',
+    'aoc.sovereignty:portable-sovereign-representation',
+  ]) {
+    assert(vocabularyTerms.includes(termRef), `the canonical sovereignty vocabulary does not define ${termRef}`);
+  }
+
+  assert(
+    JSON.stringify([...descriptor.present.claimTypes]) === JSON.stringify(['Derivation', 'Origin']),
+    'the descriptor did not detect the Origin and Derivation semantics',
+  );
+  assert(
+    JSON.stringify([...descriptor.present.standingStatuses]) === JSON.stringify(['Contested']),
+    'the descriptor did not detect the contested standing',
+  );
+  for (const leak of ['future-system-origin-42', 'principal:js-consumer', contentIdentity.digest]) {
+    assert(!JSON.stringify(descriptor).includes(leak), `the descriptor duplicated "${leak}"`);
+  }
+
+  const supportFor = (overrides = {}) =>
+    interoperability.buildSovereigntyInteroperabilityConsumerSupportV1({
+      profile: { id: descriptor.profile.id, acceptedVersions: [descriptor.profile.version] },
+      mediaTypes: [descriptor.mediaType],
+      representationSchemaVersions:
+        overrides.representationSchemaVersions ?? [descriptor.representation.schemaVersion],
+      canonicalizationProfiles: [descriptor.representation.canonicalizationProfile],
+      artifactKinds: [...interoperability.SOVEREIGNTY_INTEROPERABILITY_ARTIFACT_KINDS],
+      claimTypes: overrides.claimTypes ?? [...interoperability.INTEROPERABLE_CLAIM_TYPES],
+      standingStatuses: [...interoperability.INTEROPERABLE_STANDING_STATUSES],
+      semanticTerms: [...descriptor.present.semanticRequirements],
+    });
+
+  const assess = async (consumerSupport) =>
+    invoke(interoperabilityRef, { operation: 'assess-compatibility', descriptor, consumerSupport });
+
+  // ---- FULL ---------------------------------------------------------------
+  const full = await assess(supportFor());
+  assert(full.status === 'succeeded', 'a full assessment did not execute');
+  assert(full.output.report.status === 'compatible', 'expected a compatible report');
+  assert(full.output.report.reasonCodes.length === 0, 'a compatible report carried reason codes');
+
+  // ---- PARTIAL ------------------------------------------------------------
+  const partial = await assess(supportFor({ claimTypes: ['Authorship', 'Origin'] }));
+  assert(partial.status === 'succeeded', 'a partial assessment was reported as an execution failure');
+  assert(partial.output.report.status === 'partially-compatible', 'expected a partial report');
+  assert(
+    JSON.stringify([...partial.output.report.unsupportedClaimTypes]) === JSON.stringify(['Derivation']),
+    'the partial report did not name Derivation as the unsupported claim type',
+  );
+  // Partial never means data loss.
+  assert(
+    portability.serializeSovereigntyPortabilityBundle(importedBundle) === wire,
+    'the representation changed as a result of a partial compatibility result',
+  );
+  assert(importedBundle.claims.length === 2, 'an unsupported claim was dropped');
+
+  // ---- INCOMPATIBLE -------------------------------------------------------
+  const incompatible = await assess(supportFor({ representationSchemaVersions: ['some-other-representation/1'] }));
+  assert(incompatible.status === 'succeeded', 'an incompatibility was reported as an execution failure');
+  assert(incompatible.output.report.status === 'incompatible', 'expected an incompatible report');
+  assert(
+    incompatible.output.report.reasonCodes.includes('INTEROPERABILITY_UNSUPPORTED_REPRESENTATION_SCHEMA'),
+    'the incompatible report did not carry the unsupported-schema reason code',
+  );
+  assert(incompatible.evidence.outcome === 'succeeded', 'an ordinary incompatibility was recorded as failed');
+
+  // ---- evidence hygiene ---------------------------------------------------
+  for (const result of [describeResult, full, partial, incompatible]) {
+    assert(
+      sovereigntyCapabilities.isValidSovereigntyCapabilityInvocationEvidence(result.evidence),
+      'invalid Interoperability evidence',
+    );
+    assert(
+      result.evidence.capability.id === 'aoc:sovereignty-capability:interoperability',
+      'evidence does not attribute the canonical Interoperability capability',
+    );
+    assert(result.evidence.correlationId === correlationId, 'the correlation id did not survive');
+    const serializedEvidence = JSON.stringify(result.evidence);
+    for (const leak of [
+      'aoc-sovereignty-interoperability-descriptor/1', 'aoc-sovereignty-interoperability-report/1',
+      'aoc:interoperability-profile:sovereignty-portability', 'partially-compatible',
+      'unsupportedClaimTypes', 'Contested', 'Derivation', contentIdentity.digest,
+    ]) {
+      assert(!serializedEvidence.includes(leak), `generic Interoperability evidence leaked "${leak}"`);
+    }
+  }
+
+  return descriptor.subject.sovereignAssetId;
+};
+
 manifestApi
   .verifySovereignManifest(nonByteSubject.roundTripped)
   .then((verification) => {
@@ -852,8 +1128,9 @@ manifestApi
     const productionSubjectId = await productionMineralAcceptance();
     const provenanceDerivationId = await productionProvenanceAcceptance();
     const portableSubjectId = await productionPortabilityAcceptance();
+    const describedSubjectId = await productionInteroperabilityAcceptance();
     console.log(
-      `javascript-cjs consumer OK: claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${capabilities.length} nonByteSubject=${nonByteSubject.sovereignAssetId} capabilityInvocation=${capabilityInvocationId} productionMinerals=${productionSubjectId} provenanceDerivation=${provenanceDerivationId} portableSubject=${portableSubjectId}`,
+      `javascript-cjs consumer OK: claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${capabilities.length} nonByteSubject=${nonByteSubject.sovereignAssetId} capabilityInvocation=${capabilityInvocationId} productionMinerals=${productionSubjectId} provenanceDerivation=${provenanceDerivationId} portableSubject=${portableSubjectId} describedSubject=${describedSubjectId}`,
     );
   })
   .catch((error) => {

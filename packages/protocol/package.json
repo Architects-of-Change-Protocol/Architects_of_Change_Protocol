@@ -60,6 +60,10 @@
       "types": "./dist/portability/index.d.ts",
       "default": "./dist/portability/index.js"
     },
+    "./interoperability": {
+      "types": "./dist/interoperability/index.d.ts",
+      "default": "./dist/interoperability/index.js"
+    },
     "./sovereignty-capabilities": {
       "types": "./dist/sovereignty-capabilities/index.d.ts",
       "default": "./dist/sovereignty-capabilities/index.js"
