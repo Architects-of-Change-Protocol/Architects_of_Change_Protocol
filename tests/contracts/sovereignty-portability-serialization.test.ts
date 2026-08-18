@@ -348,7 +348,13 @@ describe('SM-06 / the parser fails closed (SERIAL TESTS 8-9)', () => {
     const signedClaim = signClaim(originFor(id, 'claim:origin:tampered'), privateKeyPem, signingKey);
     const tampered = {
       ...signedClaim,
-      proof: { ...signedClaim.proof, signature: signedClaim.proof.signature.replace(/^./, 'A') },
+      // Deterministically *different*: substituting a fixed character would be a
+      // no-op on the ~1-in-64 signatures that already start with it, and a
+      // tamper test that sometimes does not tamper is a flake, not a test.
+      proof: {
+        ...signedClaim.proof,
+        signature: `${signedClaim.proof.signature.startsWith('A') ? 'B' : 'A'}${signedClaim.proof.signature.slice(1)}`,
+      },
     };
 
     const bundle = buildSovereigntyPortabilityBundleV1({

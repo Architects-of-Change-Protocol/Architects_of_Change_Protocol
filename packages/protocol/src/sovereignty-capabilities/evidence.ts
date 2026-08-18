@@ -1,5 +1,6 @@
 import type { CanonicalEvidenceId } from '../claims/primitives';
 import type { AuditEventEnvelope, UtcDateTime } from '../contracts';
+import { SOVEREIGN_GOVERNED_RESOURCE_KIND } from '../governance-compatibility/resource';
 import { isValidSovereignSubjectRef, type SovereignSubjectRef } from '../identity';
 import { isValidSovereigntyCapabilityRef, type SovereigntyCapabilityRef } from './capability-ref';
 import {
@@ -122,6 +123,14 @@ export function isValidSovereigntyCapabilityInvocationEvidence(
  * architecture; both are imported as types only, so nothing is added to this
  * subpath's runtime graph.
  *
+ * The envelope's `subject` is a `ResourceRef` naming the sovereign subject, and
+ * its `kind` is the Protocol-owned `SOVEREIGN_GOVERNED_RESOURCE_KIND` rather
+ * than a literal repeated here. That constant became Protocol-owned with SM-10,
+ * which needed the same generic projection for its governance handoff; sharing
+ * it means the one wire value cannot be spelled two ways in two places. This is
+ * a reference to a frozen string constant and nothing more — no handoff is
+ * built here, and evidence still carries no governance payload.
+ *
  * The envelope's own fields are routing/indexing metadata; the authoritative
  * record is `payload.evidence`, carried whole and unmodified. `eventId` is
  * the invocation id because the contract is exactly one evidence record per
@@ -140,7 +149,7 @@ export function toSovereigntyCapabilityInvocationAuditEvent(
     occurredAt: evidence.requestedAt,
     ...(evidence.subject === undefined
       ? {}
-      : { subject: { kind: 'aoc:sovereign-asset', id: evidence.subject.sovereignAssetId } }),
+      : { subject: { kind: SOVEREIGN_GOVERNED_RESOURCE_KIND, id: evidence.subject.sovereignAssetId } }),
     ...(evidence.correlationId === undefined ? {} : { correlationId: evidence.correlationId }),
     ...(evidence.reasonCodes === undefined ? {} : { reasonCodes: evidence.reasonCodes }),
     payload: { evidence },

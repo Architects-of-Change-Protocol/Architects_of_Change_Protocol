@@ -59,6 +59,7 @@ module.exports = {
     '^@aoc/protocol/portability$': '<rootDir>/packages/protocol/src/portability',
     '^@aoc/protocol/interoperability$': '<rootDir>/packages/protocol/src/interoperability',
     '^@aoc/protocol/licensing$': '<rootDir>/packages/protocol/src/licensing',
+    '^@aoc/protocol/governance-compatibility$': '<rootDir>/packages/protocol/src/governance-compatibility',
     '^@aoc/protocol/sovereignty-capabilities$': '<rootDir>/packages/protocol/src/sovereignty-capabilities',
     '^@aoc/enterprise/assurance/(.*)$': '<rootDir>/enterprise/src/assurance/$1',
     '^@aoc/enterprise/assurance$': '<rootDir>/enterprise/src/assurance',

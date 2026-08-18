@@ -22,6 +22,18 @@ import {
 } from '@aoc/protocol/licensing';
 import type { LicenseTermsClaim, SovereignLicenseTermsRuleV1 } from '@aoc/protocol/licensing';
 import {
+  SOVEREIGN_GOVERNANCE_HANDOFF_SCHEMA_VERSION,
+  SOVEREIGN_GOVERNED_RESOURCE_KIND,
+  buildSovereignGovernanceHandoffV1,
+  buildSovereignGovernanceResourceRef,
+  isValidSovereignGovernanceHandoffV1,
+  validateSovereignGovernanceHandoffV1,
+} from '@aoc/protocol/governance-compatibility';
+import type {
+  SovereignGovernanceCompatibilityReasonCode,
+  SovereignGovernanceHandoffV1,
+} from '@aoc/protocol/governance-compatibility';
+import {
   buildSovereigntyCapabilityInvocation,
   createIdentitySovereigntyCapabilityImplementation,
   createIntegritySovereigntyCapabilityImplementation,
@@ -30,6 +42,8 @@ import {
   createPortabilitySovereigntyCapabilityImplementation,
   createProvenanceSovereigntyCapabilityImplementation,
   createVerifiabilitySovereigntyCapabilityImplementation,
+  createGovernanceCompatibilitySovereigntyCapabilityImplementation,
+  GOVERNANCE_COMPATIBILITY_SOVEREIGNTY_CAPABILITY_OPERATIONS,
   getSovereigntyCapability,
   getSovereigntyCapabilityByKey,
   getSovereigntyCapabilityRefByKey,
@@ -1925,6 +1939,239 @@ if (new Set(sm09FlowResults.map((result) => result.invocationId)).size !== 7) {
   throw new Error('two seven-mineral invocations shared one invocation id');
 }
 
+// ---------------------------------------------------------------------------
+// SM-10 — AOC.GOVERNANCE_COMPATIBILITY, the eighth and last canonical mineral.
+//
+// Continues the same correlated flow: the bundle that already travelled through
+// Portability, was described by Interoperability and whose signed terms
+// Verifiability independently checked is now projected into the boundary object
+// an external governance system receives. The Protocol stops there.
+// ---------------------------------------------------------------------------
+
+const sm10GovernanceRef = getSovereigntyCapabilityRefByKey(
+  'governance_compatibility',
+) as SovereigntyCapabilityRef;
+const sm10Governance = createGovernanceCompatibilitySovereigntyCapabilityImplementation();
+if (sm10Governance.capability.id !== 'aoc:sovereignty-capability:governance-compatibility') {
+  throw new Error('production Governance Compatibility capsule does not advertise the canonical id');
+}
+if (sm10Governance.capability.version !== sm10GovernanceRef.version || sm10Governance.capability.version !== '1.0.0') {
+  throw new Error('production Governance Compatibility capsule drifted from the canonical capability version');
+}
+if (
+  GOVERNANCE_COMPATIBILITY_SOVEREIGNTY_CAPABILITY_OPERATIONS.join(',')
+  !== 'prepare-governance-handoff,validate-governance-handoff'
+) {
+  throw new Error('the Governance Compatibility operation set changed');
+}
+
+const sm10Prepared = await sm09Run(sm10GovernanceRef, sm10Governance as never, {
+  operation: 'prepare-governance-handoff',
+  representation: sm09Bundle,
+  tenantId: 'tenant-alpha',
+});
+if (sm10Prepared.status !== 'succeeded') throw new Error('real Governance Compatibility prepare failed');
+const sm10Handoff = (sm10Prepared.output as { handoff: SovereignGovernanceHandoffV1 }).handoff;
+
+if (Object.keys(sm10Handoff).length !== 6) throw new Error('the governance handoff envelope gained a field');
+if (sm10Handoff.schemaVersion !== SOVEREIGN_GOVERNANCE_HANDOFF_SCHEMA_VERSION) {
+  throw new Error('the governance handoff schema drifted');
+}
+if (sm10Handoff.schemaVersion !== 'aoc-sovereign-governance-handoff/1') throw new Error('unexpected handoff schema');
+if (sm10Handoff.canonicalizationProfile !== CANONICAL_JSON_PROFILE) {
+  throw new Error('the handoff left the canonical profile');
+}
+if (sm10Handoff.resource.kind !== SOVEREIGN_GOVERNED_RESOURCE_KIND) {
+  throw new Error('unexpected governance resource kind');
+}
+if (sm10Handoff.resource.kind !== 'aoc:sovereign-asset') throw new Error('the generic sovereign resource kind changed');
+if (sm10Handoff.resource.id !== sm09Subject.sovereignAssetId) {
+  throw new Error('the governance resource is not the sovereign subject');
+}
+if (sm10Handoff.resource.tenantId !== 'tenant-alpha') throw new Error('the explicit tenant was not preserved');
+if (Object.prototype.hasOwnProperty.call(sm10Handoff.resource, 'attributes')) {
+  throw new Error('the governance resource carries attributes in v1');
+}
+if (canonicalizeJSON(sm10Handoff.subject) !== canonicalizeJSON(sm09Subject)) {
+  throw new Error('the handoff subject drifted from the subject the flow started with');
+}
+if (canonicalizeJSON(sm10Handoff.representation) !== canonicalizeJSON(sm09Bundle)) {
+  throw new Error('the handoff representation is not the bundle that arrived');
+}
+if (canonicalizeJSON(sm10Handoff.semantics) !== canonicalizeJSON(sm09Descriptor)) {
+  throw new Error('the handoff semantics are not the descriptor Interoperability produced');
+}
+
+// A tenant-free handoff omits the key entirely — no default is invented.
+const sm10Untenanted = await sm09Run(sm10GovernanceRef, sm10Governance as never, {
+  operation: 'prepare-governance-handoff',
+  representation: sm09Bundle,
+});
+if (sm10Untenanted.status !== 'succeeded') throw new Error('a tenant-free governance prepare failed');
+const sm10UntenantedHandoff = (sm10Untenanted.output as { handoff: SovereignGovernanceHandoffV1 }).handoff;
+if (Object.prototype.hasOwnProperty.call(sm10UntenantedHandoff.resource, 'tenantId')) {
+  throw new Error('a tenant was invented for a handoff that was given none');
+}
+// Determinism, and the standalone builder agreeing with the capsule.
+if (
+  canonicalizeJSON(sm10UntenantedHandoff)
+  !== canonicalizeJSON(buildSovereignGovernanceHandoffV1({ representation: sm09Bundle as never }))
+) {
+  throw new Error('the governance handoff is not deterministic');
+}
+if (
+  canonicalizeJSON(buildSovereignGovernanceResourceRef(sm09Subject, { tenantId: 'tenant-alpha' }))
+  !== canonicalizeJSON(sm10Handoff.resource)
+) {
+  throw new Error('the standalone resource projection disagrees with the capsule');
+}
+
+// Validation, across a wire round trip and under tampering.
+const sm10Wire: unknown = JSON.parse(JSON.stringify(sm10Handoff));
+const sm10Validated = await sm09Run(sm10GovernanceRef, sm10Governance as never, {
+  operation: 'validate-governance-handoff',
+  handoff: sm10Wire,
+});
+if (sm10Validated.status !== 'succeeded') throw new Error('real Governance Compatibility validation failed');
+if (!(sm10Validated.output as { validation: { valid: boolean } }).validation.valid) {
+  throw new Error('a handoff that crossed a wire failed validation');
+}
+if (!isValidSovereignGovernanceHandoffV1(sm10Wire)) {
+  throw new Error('the standalone handoff validator disagrees with the capsule');
+}
+const sm10Standalone: {
+  valid: boolean;
+  reasons: readonly SovereignGovernanceCompatibilityReasonCode[];
+} = validateSovereignGovernanceHandoffV1(sm10Wire);
+if (!sm10Standalone.valid || sm10Standalone.reasons.length !== 0) {
+  throw new Error('the standalone handoff validator reported reasons for a valid handoff');
+}
+
+const sm10ResourceTamper = JSON.parse(JSON.stringify(sm10Handoff)) as { resource: { id: string } };
+sm10ResourceTamper.resource.id = parseSovereignAssetId(mintSovereignAssetId());
+const sm10ResourceTampered = await sm09Run(sm10GovernanceRef, sm10Governance as never, {
+  operation: 'validate-governance-handoff',
+  handoff: sm10ResourceTamper,
+});
+if (sm10ResourceTampered.status !== 'succeeded') {
+  throw new Error('a tampered handoff was reported as an execution failure');
+}
+const sm10ResourceReport = (sm10ResourceTampered.output as {
+  validation: { valid: boolean; reasons: readonly string[] };
+}).validation;
+if (sm10ResourceReport.valid) throw new Error('a re-pointed governance resource validated');
+if (!sm10ResourceReport.reasons.includes('GOVERNANCE_COMPATIBILITY_RESOURCE_ID_MISMATCH')) {
+  throw new Error('a re-pointed governance resource produced the wrong reason code');
+}
+
+const sm10SemanticsTamper = JSON.parse(JSON.stringify(sm10Handoff)) as {
+  semantics: { present: { semanticRequirements: unknown[] } };
+};
+sm10SemanticsTamper.semantics.present.semanticRequirements =
+  sm10SemanticsTamper.semantics.present.semanticRequirements.slice(1);
+const sm10SemanticsTampered = await sm09Run(sm10GovernanceRef, sm10Governance as never, {
+  operation: 'validate-governance-handoff',
+  handoff: sm10SemanticsTamper,
+});
+if (sm10SemanticsTampered.status !== 'succeeded') {
+  throw new Error('a tampered descriptor was reported as an execution failure');
+}
+const sm10SemanticsReport = (sm10SemanticsTampered.output as {
+  validation: { valid: boolean; reasons: readonly string[] };
+}).validation;
+if (sm10SemanticsReport.valid) throw new Error('a descriptor missing a requirement validated');
+if (!sm10SemanticsReport.reasons.includes('GOVERNANCE_COMPATIBILITY_SEMANTICS_MISMATCH')) {
+  throw new Error('a mismatching descriptor produced the wrong reason code');
+}
+
+const sm10EmptyTarget = await sm09Run(sm10GovernanceRef, sm10Governance as never, {
+  operation: 'validate-governance-handoff',
+  handoff: {},
+});
+if (sm10EmptyTarget.status !== 'succeeded') {
+  throw new Error('an empty validation target was reported as an execution failure');
+}
+if ((sm10EmptyTarget.output as { validation: { valid: boolean } }).validation.valid) {
+  throw new Error('an empty object validated as a governance handoff');
+}
+if (sm10EmptyTarget.evidence.outcome !== 'succeeded') {
+  throw new Error('a negative governance validation was recorded as a failed invocation');
+}
+
+// An external governance consumer reads the handoff, and decides nothing.
+const sm10ExternalRead = {
+  resourceKind: sm10Handoff.resource.kind,
+  resourceId: sm10Handoff.resource.id,
+  semanticRequirements: sm10Handoff.semantics.present.semanticRequirements,
+  claimCount: sm10Handoff.representation.claims.length,
+};
+if (sm10ExternalRead.resourceId !== sm09Subject.sovereignAssetId) {
+  throw new Error('the external consumer read the wrong resource');
+}
+if (sm10ExternalRead.claimCount !== 2) throw new Error('the external consumer did not see both claims');
+if (!sm10ExternalRead.semanticRequirements.some((requirement) => requirement.termRef === 'example.domain:special-use')) {
+  throw new Error('an external semantic concept did not reach the governance consumer');
+}
+
+// No policy, decision, grant, authority or enforcement in what SM-10 owns. The
+// nested representation still legitimately carries a `proof.signature` — that
+// is SM-06's transport doing its job, and it is asserted intact separately.
+const sm10OwnedSurface = canonicalizeJSON({
+  schemaVersion: sm10Handoff.schemaVersion,
+  canonicalizationProfile: sm10Handoff.canonicalizationProfile,
+  subject: sm10Handoff.subject,
+  resource: sm10Handoff.resource,
+  envelopeKeys: Object.keys(sm10Handoff).sort(),
+  preparedKeys: Object.keys(sm10Prepared.output as object).sort(),
+  validation: (sm10Validated.output as { validation: unknown }).validation,
+}).toLowerCase();
+for (const forbidden of [
+  'allow', 'deny', 'grant', 'authority', 'decision', 'approval', 'enforce',
+  'policy', 'owner', 'scope', 'ready', 'complete', 'handoffid', 'generatedat',
+  'handoffdigest', 'signature', 'attributes',
+]) {
+  if (sm10OwnedSurface.includes(forbidden)) {
+    throw new Error(`the governance handoff surface contains ${forbidden}`);
+  }
+}
+if (canonicalizeJSON(sm10Handoff.representation) !== canonicalizeJSON(sm09Bundle)) {
+  throw new Error('the handoff altered the artifacts it carried');
+}
+
+for (const result of [sm10Prepared, sm10Untenanted, sm10Validated, sm10EmptyTarget]) {
+  if (!isValidSovereigntyCapabilityInvocationEvidence(result.evidence)) {
+    throw new Error('invalid Governance Compatibility evidence');
+  }
+  if (result.evidence.capability.id !== 'aoc:sovereignty-capability:governance-compatibility') {
+    throw new Error('evidence does not attribute the canonical Governance Compatibility capability');
+  }
+  const serializedGovernanceEvidence = JSON.stringify(result.evidence);
+  for (const leak of [
+    'tenant-alpha', 'aoc-sovereign-governance-handoff/1', '"resource"', '"representation"',
+    '"semantics"', '"handoff"', '"terms"', '"claims"', '"standings"',
+  ]) {
+    if (serializedGovernanceEvidence.includes(leak)) {
+      throw new Error(`Governance Compatibility evidence leaked "${leak.slice(0, 24)}"`);
+    }
+  }
+}
+
+// Eight distinct capabilities under one correlation id.
+const sm10FlowResults = [
+  sm09Integrity, sm09Identity, sm09Provenance, sm09Declare, sm09Export, sm09Describe, sm09Verified, sm10Prepared,
+];
+if (new Set(sm10FlowResults.map((result) => result.evidence.capability.id)).size !== 8) {
+  throw new Error('the eight-mineral flow did not attribute eight canonical capabilities');
+}
+for (const result of sm10FlowResults) {
+  if (result.evidence.correlationId !== sm09CorrelationId) {
+    throw new Error('the shared eight-mineral correlation id did not survive');
+  }
+}
+if (new Set(sm10FlowResults.map((result) => result.invocationId)).size !== 8) {
+  throw new Error('two eight-mineral invocations shared one invocation id');
+}
+
 console.log(
-  `typescript-esm consumer OK: token=${token.tokenId} claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${sovereigntyCapabilities.length} nonByteSubject=${sovereignAssetId} capabilityInvocation=${identityResult.invocationId} productionMinerals=${productionSubject.sovereignAssetId} provenanceDerivation=${consumerDerivationClaim.id} portableSubject=${portabilityImport.output.bundle.subject.sovereignAssetId} describedSubject=${interoperabilityDescriptor.subject.sovereignAssetId} verifiedSubject=${sm08Subject.sovereignAssetId} licenseTerms=${sm09LicenseClaim.id}`,
+  `typescript-esm consumer OK: token=${token.tokenId} claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${sovereigntyCapabilities.length} nonByteSubject=${sovereignAssetId} capabilityInvocation=${identityResult.invocationId} productionMinerals=${productionSubject.sovereignAssetId} provenanceDerivation=${consumerDerivationClaim.id} portableSubject=${portabilityImport.output.bundle.subject.sovereignAssetId} describedSubject=${interoperabilityDescriptor.subject.sovereignAssetId} verifiedSubject=${sm08Subject.sovereignAssetId} licenseTerms=${sm09LicenseClaim.id} governedResource=${sm10Handoff.resource.id}`,
 );

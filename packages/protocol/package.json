@@ -68,6 +68,10 @@
       "types": "./dist/licensing/index.d.ts",
       "default": "./dist/licensing/index.js"
     },
+    "./governance-compatibility": {
+      "types": "./dist/governance-compatibility/index.d.ts",
+      "default": "./dist/governance-compatibility/index.js"
+    },
     "./sovereignty-capabilities": {
       "types": "./dist/sovereignty-capabilities/index.d.ts",
       "default": "./dist/sovereignty-capabilities/index.js"

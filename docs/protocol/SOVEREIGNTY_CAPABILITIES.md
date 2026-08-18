@@ -291,9 +291,9 @@ result.evidence.capability;
 // { id: 'aoc:sovereignty-capability:verifiability', version: '1.0.0' }
 ```
 
-## Production capsules: Identity, Integrity, Provenance, Portability, Interoperability, Verifiability and Licensing & Terms
+## Production capsules: all eight canonical minerals
 
-Seven of the canonical eight are now real implementations of the socket above, exported from
+**All eight** of the canonical minerals are now real implementations of the socket above, exported from
 `@aoc/protocol/sovereignty-capabilities` and executed through `invokeSovereigntyCapability` like any
 other implementation. They are plain factories with no import-time side effects, they register
 themselves nowhere, and they expose no second entry point that would bypass the common result and
@@ -309,12 +309,13 @@ import {
   createPortabilitySovereigntyCapabilityImplementation,
   createProvenanceSovereigntyCapabilityImplementation,
   createVerifiabilitySovereigntyCapabilityImplementation,
+  createGovernanceCompatibilitySovereigntyCapabilityImplementation,
   getSovereigntyCapabilityRefByKey,
   invokeSovereigntyCapability,
 } from '@aoc/protocol/sovereignty-capabilities';
 ```
 
-All seven derive their advertised `capability` ref from the SM-01 registry, so none can drift from the
+All eight derive their advertised `capability` ref from the SM-01 registry, so none can drift from the
 canonical id or version. None reads the network, a provider, a chain, a registry or storage.
 
 ### AOC.IDENTITY
@@ -1961,6 +1962,224 @@ solved. Still open, and deliberately not papered over:
 - **A declaration is not a right.** Protocol records that an issuer declared terms; whether they had
   the authority to is outside what any offline structural check can establish.
 
+## AOC.GOVERNANCE_COMPATIBILITY
+
+The eighth and last production capsule, added by SM-10. It closes the canonical shelf, and it answers:
+
+> What does an external governance system need in order to *address* and *interpret* this sovereign
+> subject — and how does the Protocol supply it without becoming that governance system?
+
+```ts
+import { createGovernanceCompatibilitySovereigntyCapabilityImplementation } from '@aoc/protocol/sovereignty-capabilities';
+
+const governance = createGovernanceCompatibilitySovereigntyCapabilityImplementation();
+// governance.capability → { id: 'aoc:sovereignty-capability:governance-compatibility', version: '1.0.0' }
+```
+
+The reusable handoff model lives on its own subpath, `@aoc/protocol/governance-compatibility`, so the
+schema, the resource projection, the builder and the validator are usable without the capability
+socket — the same split SM-06, SM-07 and SM-09 already make between a contract layer and its capsule.
+A focused walkthrough lives in [`GOVERNANCE_COMPATIBILITY.md`](./GOVERNANCE_COMPATIBILITY.md).
+
+| | |
+| --- | --- |
+| Operations | `prepare-governance-handoff`, `validate-governance-handoff` |
+| Produces | `SovereignGovernanceHandoffV1` (`aoc-sovereign-governance-handoff/1`) |
+| Requires a subject | No — `prepare` derives it from the representation; an explicit one must match exactly |
+| Reads the clock | No |
+| Reaches outside | No — no network, filesystem, database, cache, registry, provider or chain |
+
+### Governance compatible is not governed
+
+This is the load-bearing boundary of the whole mineral, and of the Protocol:
+
+```
+governance compatible ≠ governed
+handoff               ≠ decision
+resource reference    ≠ grant
+license terms         ≠ policy
+claim                 ≠ authority
+signature             ≠ authority
+registrant            ≠ owner
+issuer                ≠ owner
+authority             ≠ decision
+decision              ≠ enforcement
+structural validity   ≠ policy sufficiency
+```
+
+A valid handoff does **not** mean ALLOW. It does **not** mean DENY. It does **not** mean approved. It
+means the external governance system can stably address and interpret the Protocol representation.
+
+```
+                    AOC PROTOCOL
+
+              Sovereign Subject
+                     │
+                     ▼
+            Portable Representation
+                     │
+                     ├─────────────► Semantic Descriptor
+                     │
+                     ▼
+             Canonical ResourceRef
+                     │
+                     ▼
+          SovereignGovernanceHandoffV1
+                     │
+═════════════════════╪══════════════════════════════════════
+                     │ Protocol ends
+                     ▼
+             External Governance
+                     │
+                     ▼
+                   Policy
+                     │
+                     ▼
+                  Decision
+                     │
+                     ▼
+                Obligations
+                     │
+                     ▼
+                   Grant
+                     │
+                     ▼
+                Enforcement
+```
+
+### The handoff
+
+Exactly six top-level fields, and a closed envelope — an unknown key such as `policy`, `decision`,
+`grant`, `owner`, `authority`, `status`, `approval` or `governanceReady` makes the document invalid:
+
+```ts
+interface SovereignGovernanceHandoffV1 {
+  readonly schemaVersion: 'aoc-sovereign-governance-handoff/1';
+  readonly canonicalizationProfile: 'aoc-canonical-json/1';
+  readonly subject: SovereignSubjectRef;                        // SM-02, reused
+  readonly resource: ResourceRef;                               // canonical Protocol contract, reused
+  readonly representation: SovereigntyPortabilityBundleV1;      // SM-06, unchanged
+  readonly semantics: SovereigntyInteroperabilityDescriptorV1;  // SM-07, derived
+}
+```
+
+There is deliberately no `handoffId`, no `generatedAt`, no `handoffDigest` and no `signature`. The
+handoff is a deterministic projection of an existing subject, not a new sovereign object: the same
+representation and tenant produce a byte-identical canonical handoff every time, *when* a projection
+happened is recorded in the SM-03 evidence, and integrity or proof over the document is explicit
+composition with AOC.INTEGRITY and AOC.VERIFIABILITY over its canonical serialization.
+
+### The resource projection
+
+```
+resource.kind       = SOVEREIGN_GOVERNED_RESOURCE_KIND   ('aoc:sovereign-asset')
+resource.id         = subject.sovereignAssetId
+resource.tenantId   = the caller's explicit governance context, if any
+resource.attributes = structurally absent in v1
+```
+
+One kind for every subject — a byte document, a physical painting, a plot of land, an external token,
+an autonomous agent, an API resource and a subject from a system nobody has heard of all project
+through the same code onto the same kind, and `subject.externalReference.namespace` is opaque. The id
+is the sovereignty anchor, never a manifest digest, `ContentIdentity.digest`, external-reference id,
+locator, CID, URL, provider id, database id, token address or registry record id: a subject that
+changes provider, locator, bytes or manifest version is still the same sovereign subject, and a grant
+keyed to a transient representation would silently detach the moment that representation changed.
+
+`SOVEREIGN_GOVERNED_RESOURCE_KIND` is now Protocol-owned. The Asset Protocolization vertical froze the
+same value as `PROTOCOLIZED_RESOURCE_KIND` in APV-02, explicitly as *temporarily* vertical-owned,
+stating that promotion becomes appropriate once a second generic producer of sovereign-resource
+references appeared. SM-10 is that producer, so there is now one authoritative definition. The
+dependency direction is unchanged: Asset Protocolization may consume Protocol, never the reverse.
+
+`tenantId` is optional, preserved exactly when supplied, rejected when blank, and **never** inferred —
+no `'default'`, no `'public'`, nothing read from the subject namespace, the registrant, the issuer, an
+environment variable or an Enterprise tenant. A specialized consumer may require one; narrowing a
+generic Protocol contract is where that constraint belongs.
+
+### Structural validity is not policy sufficiency
+
+A structurally valid handoff may carry zero claims, no licence terms, unsigned artifacts, contested
+standings, a `Permission` and a `Restriction` over the same action, cryptographic proofs that do not
+hold, semantic requirements nobody recognises, and no tenant. Every one of those is a legitimate
+sovereign state governance may need *in order to* decide.
+
+- **Verifiability is not run, and is not hidden.** `prepare-governance-handoff` checks no signature,
+  resolves no key and binds no issuer, so a representation carrying a tampered proof still prepares
+  successfully — while `AOC.VERIFIABILITY`, invoked independently over the same artifact, honestly
+  reports `valid: false`. Those two facts are supposed to coexist; conflating them would make "handed
+  to governance" silently read as "cryptographically sound". A handoff never embeds an ephemeral
+  verification result either, so its meaning cannot depend on when it was built.
+- **Contested claims travel.** A `StandingStatus.Contested` standing stays exactly as it was. The
+  dispute may be the entire reason a decision has to be made.
+- **Contradictory terms travel.** SM-09 can represent a `Permission` and a `Restriction` over the same
+  action; SM-10 carries both, with no winner, no precedence and no `resolvedTerms`.
+
+There is consequently no `ready`, `governanceReady`, `sufficient`, `complete` or `allEvidencePresent`
+flag anywhere: the Protocol cannot know what artifacts exist beyond the ones it was handed, and cannot
+know what a policy it has never seen requires.
+
+### Validation proves the descriptor belongs to the representation
+
+`validate-governance-handoff` re-derives the canonical SM-07 descriptor from the handoff's own
+representation, with SM-07's own pure helper, and compares it under `aoc-canonical-json/1`. A
+descriptor that is individually well-formed and about the same subject, but that describes some
+*other* bundle, is rejected with `GOVERNANCE_COMPATIBILITY_SEMANTICS_MISMATCH` — otherwise a
+governance engine could be handed a materially incomplete picture that looked entirely valid.
+
+An invalid *candidate* is an ordinary **successful** execution reporting `valid: false`, the same
+pattern Integrity, Interoperability, Verifiability and Licensing & Terms already established. Nothing
+is repaired: a re-pointed resource is reported, never rewritten to agree with the subject.
+
+### What Governance Compatibility never does
+
+- **Invoke another mineral.** `invokeSovereigntyCapability` is not called anywhere in it. The SM-06
+  bundle validator and the SM-07 descriptor helper are reused as *pure libraries*, so one prepare
+  produces exactly one evidence record rather than a hidden chain of them, and a caller may prepare a
+  handoff directly without running Interoperability first.
+- **Decide.** No `PolicyDecision`, no allow, no deny, no conditional, no default-deny and no
+  default-allow. There is no `evaluate`, `authorize`, `decide`, `approve`, `grant` or `enforce`
+  operation, and no condition language to write one with.
+- **Produce authority.** `CanonicalCapability`, `CanonicalAuthority` and `CanonicalDecision` already
+  exist in the Protocol and SM-10 auto-constructs **none** of them. Claims existing on a subject do not
+  mean a governance capability exists; a registrant, a claim issuer, a licence issuer and a valid
+  signature are none of them an authority; and an authority is not a decision. The trust chain
+  `Evidence → Assertion → Claim → Attestation → Verification → Standing → Capability → Authority →
+  Decision` must not be jumped from its left half to its right half.
+- **Grant or request access.** No `ScopedAccessRequest`, `CapabilityToken`, `CapabilityGrant`,
+  `ConsentGrant` or `Delegation`. A handoff is object/state context; an access request is an
+  actor/action event.
+- **Translate terms into policy.** A declared `Permission` becomes no grant and no scope, a
+  `Restriction` no deny, an `Obligation` no compliance status.
+- **Infer ownership.** No `owner`, `legalOwner`, `titleHolder` or `registeredOwner` field exists
+  anywhere in the surface, and none is derived from a registrant or an issuer.
+- **Mint, hash or assert.** No `mintSovereignAssetId`, no content bytes, no digest computation, no
+  origin, authorship or derivation claim.
+- **Reach outside or persist.** No network, filesystem, database, cache, chain or provider SDK; no
+  global registry and no import-time side effect. The handoff is returned, never stored.
+- **Depend on the legacy policy runtime.** This is not the `protocol/policy` resource/evaluation
+  model, and SM-10 rewrites none of it.
+
+`SovereigntyPortabilityBundleV1` is unchanged — the handoff *wraps* Portability rather than extending
+it, and no `governance-handoff` artifact kind exists, so a handoff can never contain a representation
+containing a handoff. The SM-07 profile, descriptor schema and core `aoc.sovereignty` vocabulary are
+unchanged too, and SM-10 adds no semantic vocabulary of its own: the handoff is a structural contract,
+and the nested descriptor already describes the semantic content.
+
+### What Governance Compatibility does not yet cover
+
+Production means the defined v1 contract is real and consumable — not that governance is solved.
+Still open, and deliberately so:
+
+- **No governance policy, decision, authority resolution, obligation state, grant issuance,
+  enforcement or revocation.** That is the mineral's boundary, not a gap.
+- **No actor/action request evaluation.** The handoff is about an object and its state.
+- **No `resource.attributes`** in v1.
+- **No adapter** for OPA, Cedar, AWS IAM, Azure, a DAO or AOC Enterprise. The standardized handoff
+  *is* the integration boundary; a mapping layer would be a consumer's concern, not the Protocol's.
+- **No handoff persistence.** It is returned to its caller.
+- **No payment, tokenization or legal adjudication.**
+
 ### Evidence from the capsules
 
 All three rely entirely on the common SM-03 invocation evidence, and none widens it. An Identity
@@ -1983,22 +2202,21 @@ resolution semantics in Protocol, leaving the field absent is the honest option 
 
 ### Status
 
-The socket exists and **seven of the eight** minerals now fill it. `AOC.IDENTITY`, `AOC.INTEGRITY`,
-`AOC.PROVENANCE`, `AOC.PORTABILITY`, `AOC.INTEROPERABILITY`, `AOC.VERIFIABILITY` and
-`AOC.LICENSING_TERMS` are production capsules consuming the common invocation and evidence
-architecture end-to-end, verified from a real `npm pack` tarball by all three fixtures in
-`test-consumers/` — including the first seven-mineral flow, in which Integrity measures bytes,
-Identity mints the subject, Provenance asserts its derivation, Licensing & Terms declares structured
-permissions, restrictions and obligations over it, a TEST-ONLY issuer signs the resulting claim
-through the existing low-level primitives, Portability exports the canonical bundle, a second runtime
-holding only the JSON string imports it, Interoperability describes what arrived and reports both full
-and partial compatibility against the licensing semantics it carries, and Verifiability independently
-checks the transported proof — reporting a valid signature, a fail-closed invalid result for terms
-tampered with in transit, and a signed-but-malformed document that is cryptographically valid and
-semantically invalid at once.
+The socket exists and **all eight** minerals now fill it. `AOC.IDENTITY`, `AOC.INTEGRITY`,
+`AOC.PROVENANCE`, `AOC.PORTABILITY`, `AOC.INTEROPERABILITY`, `AOC.VERIFIABILITY`,
+`AOC.LICENSING_TERMS` and `AOC.GOVERNANCE_COMPATIBILITY` are production capsules consuming the common
+invocation and evidence architecture end-to-end, verified from a real `npm pack` tarball by all three
+fixtures in `test-consumers/` — including the full eight-mineral flow, in which Integrity measures
+bytes, Identity mints the subject, Provenance asserts its derivation, Licensing & Terms declares
+structured permissions, restrictions and obligations over it, a TEST-ONLY issuer signs the resulting
+claim through the existing low-level primitives, Portability exports the canonical bundle, a second
+runtime holding only the JSON string imports it, Interoperability describes what arrived, Verifiability
+independently checks the transported proof, and Governance Compatibility projects the whole thing into
+a `SovereignGovernanceHandoffV1` that an external consumer reads — addressing a stable
+`aoc:sovereign-asset` resource, reading the semantics present in the representation, and reaching no
+decision at all, because the Protocol ends there.
 
-The remaining one is **not** a production capsule, and it does not become one merely because seven
-now are:
+Every mineral is now a production capsule:
 
 | Mineral | Production capsule |
 | --- | --- |
@@ -2009,10 +2227,10 @@ now are:
 | Interoperability | **yes** — self-describing profile, bundle descriptor, and full/partial/incompatible compatibility assessment |
 | Verifiability | **yes** — signed manifest, signed claim and generic sovereign proof verification, with explicit per-check outcomes and optional issuer/key binding |
 | Licensing & Terms | **yes** — structured, versioned terms declaration, validation and contestation, with no evaluation, precedence or enforcement |
-| Governance Compatibility | not yet |
+| Governance Compatibility | **yes** — deterministic sovereign governance handoff and its validation, with no policy, decision, authority, grant or enforcement |
 
-Its governance semantics belong to its own inputs and outputs — never to this common contract. Adding a production capsule is not a capability-contract change:
-capability versions remain `1.0.0`, and the canonical inventory remains eight. Derivation and lineage
+Adding a production capsule was never a capability-contract change: capability versions remain
+`1.0.0`, and the canonical inventory remains exactly eight. Derivation and lineage
 are Provenance *semantics*, not a ninth mineral — there is no `AOC.LINEAGE`, `AOC.AUTHORSHIP`,
 `AOC.DERIVATION` or `AOC.CUSTODY`. The portability bundle is likewise a Portability *contract*, not an
 `AOC.BUNDLE` or `AOC.EXPORT` mineral, and the interoperability profile, semantic vocabulary,
@@ -2021,7 +2239,11 @@ descriptor and compatibility report are Interoperability *artifacts* — there i
 likewise Verifiability *semantics*, not a ninth mineral: there is no `AOC.CRYPTOGRAPHY`,
 `AOC.SIGNATURE`, `AOC.TRUST`, `AOC.PROOF` or `AOC.KEYS`. The structured terms document, its licensing
 vocabulary and its rule model are Licensing & Terms *artifacts* for the same reason — there is no
-`AOC.LICENSE`, `AOC.RIGHTS`, `AOC.PERMISSION`, `AOC.RESTRICTIONS`, `AOC.ROYALTIES` or `AOC.DRM`. There is still no global implementation registry
+`AOC.LICENSE`, `AOC.RIGHTS`, `AOC.PERMISSION`, `AOC.RESTRICTIONS`, `AOC.ROYALTIES` or `AOC.DRM`. The
+governance handoff and its `ResourceRef` projection close the list the same way — they are Governance
+Compatibility *artifacts*, so there is no `AOC.GOVERNANCE`, `AOC.POLICY`, `AOC.AUTHORITY`, `AOC.GRANT`,
+`AOC.ACCESS`, `AOC.ENFORCEMENT`, `AOC.DECISION` or `AOC.RESOURCE` mineral, and SM-10 adds no ninth
+member to the inventory. There is still no global implementation registry
 and no profile registry: a capsule is passed explicitly to `invokeSovereigntyCapability`, the one
 canonical profile is a frozen constant, and wiring several capsules together is a future composition
 concern.

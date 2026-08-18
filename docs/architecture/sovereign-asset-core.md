@@ -896,3 +896,128 @@ inferred from the other. The licensing issuer is always supplied explicitly.
   no tokenization.
 
 See `docs/protocol/LICENSING_TERMS.md` for the terms model itself.
+
+## 18. The external governance boundary (AOC-P-SM-10)
+
+SM-09 gave a sovereign subject a way to say, machine-readably, what its issuer
+declares about it. SM-10 answers the question that follows: how does a system
+that is *not* AOC take custody of that sovereign state and govern it — and where
+does AOC Protocol stop?
+
+The answer is one new document, `SovereignGovernanceHandoffV1`, published as
+`@aoc/protocol/governance-compatibility` and produced by the eighth and last
+production capsule, `AOC.GOVERNANCE_COMPATIBILITY`. This section records the
+boundary; it changes none of the decisions frozen above.
+
+### 18.1 The projection
+
+```
+              Sovereign Subject
+                     │
+                     ▼
+            Portable Representation          (§16, SM-06)
+                     │
+                     ├─────────────► Semantic Descriptor   (SM-07)
+                     │
+                     ▼
+             Canonical ResourceRef
+                     │
+                     ▼
+          SovereignGovernanceHandoffV1
+                     │
+═════════════════════╪══════════════════════
+                     │ AOC Protocol ends
+                     ▼
+             External Governance
+                     │
+        Policy → Decision → Obligations → Grant → Enforcement
+```
+
+Six top-level fields, and a closed envelope:
+
+```ts
+interface SovereignGovernanceHandoffV1 {
+  readonly schemaVersion: 'aoc-sovereign-governance-handoff/1';
+  readonly canonicalizationProfile: 'aoc-canonical-json/1';
+  readonly subject: SovereignSubjectRef;                        // §15, reused
+  readonly resource: ResourceRef;                               // canonical contract, reused
+  readonly representation: SovereigntyPortabilityBundleV1;      // unchanged
+  readonly semantics: SovereigntyInteroperabilityDescriptorV1;  // derived
+}
+```
+
+Nothing here is a new model except the envelope. There is no `GovernedSubject`,
+no `GovernedResourceRef`, no `GovernanceBundleV1` and no second semantic
+descriptor — a parallel model of one thing is how two representations of that
+thing start to disagree.
+
+### 18.2 The governance resource is the sovereignty anchor
+
+`resource.kind` is the single generic `'aoc:sovereign-asset'`, for every subject
+there is, and `resource.id` is the subject's `SovereignAssetId` — never a
+`manifestDigest`, a `ContentIdentity.digest`, an `externalReference.id`, a
+locator, a CID, a provider id or a registry record id.
+
+This follows directly from §9 and §10. A subject can receive new bytes, gain a
+new manifest version, change provider and change locator without ceasing to be
+the same sovereign subject; §10 already made `SovereignAssetId` the thing that
+survives all of it. A grant or policy keyed to a content digest would bind
+governance to one transient representation and silently detach the moment that
+representation changed. Governance addresses the thing, not the copy.
+
+`resource.attributes` is structurally absent in v1, so no asset type,
+jurisdiction, classification, owner, licence or risk score can cross the boundary
+through it — each of those already belongs to a mineral contract where it is
+validated and attributable. `tenantId` is optional, preserved exactly when
+supplied and never inferred, because the Protocol has no way to know whose
+tenancy a subject belongs to.
+
+### 18.3 Registrant is still not owner, and now: nothing is authority
+
+§5 established that registration is not ownership. SM-10 extends the same
+refusal one step further along the trust chain:
+
+```
+Evidence → Assertion → Claim → Attestation → Verification → Standing
+        → Capability → Authority → Decision
+```
+
+The Protocol already defines `CanonicalCapability`, `CanonicalAuthority` and
+`CanonicalDecision`. SM-10 auto-constructs **none** of them, and infers none of
+them from a registrant, a claim issuer, a licence issuer or a cryptographically
+valid signature. A signature binds a key to a payload; it does not confer
+governance authority. Nor does SM-10 construct a `PolicyDecision`, a
+`ScopedAccessRequest`, a `CapabilityToken`, a `CapabilityGrant`, a `ConsentGrant`
+or a `Delegation`.
+
+### 18.4 Structural validity is not policy sufficiency
+
+A structurally valid handoff may carry zero claims, no licence terms, unsigned
+artifacts, contested standings, a `Permission` and a `Restriction` over the same
+action, and proofs that do not hold. Those are legitimate sovereign states that
+governance may need *in order to* decide, so the handoff carries them unchanged
+and reaches no verdict.
+
+In particular §6 and §7 stay exactly where they were: SM-10 verifies nothing.
+A representation carrying a tampered proof prepares successfully, while
+`AOC.VERIFIABILITY` invoked independently over the same artifact honestly reports
+`valid: false`. Both facts are true at once, and conflating them would make
+"handed to governance" read as "cryptographically sound".
+
+Consequently there is no `ready`, `governanceReady`, `sufficient` or `complete`
+flag: the Protocol cannot know what artifacts exist beyond the ones it was
+handed, and cannot know what a policy it has never seen requires.
+
+### 18.5 What SM-10 does not claim
+
+- **No policy evaluation, allow/deny, approval, grant, enforcement or
+  revocation.** That is the boundary, not a gap.
+- **No precedence** between contradictory declared terms or competing claims.
+- **No scope derivation.** A declared `Permission`/`Use` does not become
+  `scope: ['use']`; that is already policy interpretation.
+- **No ownership or legal conclusion**, extending §5 and §9.
+- **No Enterprise, Asset Protocolization or legacy policy-runtime dependency.**
+  Protocol may be consumed by all three; it depends on none of them.
+- **No persistence.** The handoff is returned to its caller, never stored.
+
+See `docs/protocol/GOVERNANCE_COMPATIBILITY.md` for the handoff model itself.

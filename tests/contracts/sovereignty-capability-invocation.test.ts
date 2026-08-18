@@ -820,6 +820,16 @@ describe('SM-03 / Protocol purity and non-goals (TESTS 49-51)', () => {
       const source = readFileSync(join(dir, file), 'utf8');
       for (const match of source.matchAll(/from\s+'([^']+)'/g)) {
         const specifier = match[1];
+        // `../governance-compatibility` is the SM-10 Protocol mineral subpath —
+        // the canonical home of `SOVEREIGN_GOVERNED_RESOURCE_KIND`, which the
+        // evidence audit-envelope projection and the capsule barrel both reuse
+        // rather than restating the wire value. It is Protocol-internal and
+        // relative, so it is exempted by name; every *external* governance
+        // runtime the pattern exists to keep out stays forbidden.
+        if (specifier.startsWith('../governance-compatibility')) {
+          expect(specifier.startsWith('.')).toBe(true);
+          continue;
+        }
         expect(specifier).not.toMatch(/enterprise|pmfreak|@aoc\/sdk|provider|runtime|storage|supabase|governance/i);
         // Only relative Protocol siblings and node builtins are permitted.
         expect(specifier.startsWith('.') || specifier.startsWith('node:')).toBe(true);

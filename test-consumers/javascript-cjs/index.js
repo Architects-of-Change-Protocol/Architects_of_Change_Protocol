@@ -13,6 +13,7 @@ const canonical = require('@aoc/protocol/canonical');
 const portability = require('@aoc/protocol/portability');
 const interoperability = require('@aoc/protocol/interoperability');
 const licensing = require('@aoc/protocol/licensing');
+const governanceCompatibility = require('@aoc/protocol/governance-compatibility');
 
 const assert = (condition, message) => {
   if (!condition) {
@@ -29,6 +30,10 @@ assert(
   './interoperability import must resolve',
 );
 assert(typeof licensing === 'object' && licensing !== null, './licensing import must resolve');
+assert(
+  typeof governanceCompatibility === 'object' && governanceCompatibility !== null,
+  './governance-compatibility import must resolve',
+);
 assert(ClaimType.Identity === 'Identity', 'ClaimType.Identity runtime value mismatch');
 assert(typeof AdapterRegistry === 'function', 'AdapterRegistry must be a class/constructor');
 assert(typeof AdapterTokens.AuditEventSink === 'object', 'AdapterTokens.AuditEventSink must resolve');
@@ -1817,6 +1822,401 @@ const productionLicensingTermsAcceptance = async () => {
   return licenseClaim.id;
 };
 
+/**
+ * SM-10 — AOC.GOVERNANCE_COMPATIBILITY, the eighth and last canonical mineral,
+ * exercised from plain CommonJS JavaScript against the installed tarball.
+ *
+ * Runs the whole eight-mineral flow under one correlation id, then reads the
+ * resulting handoff the way an external governance integration would: it knows
+ * the public contract and nothing about AOC's internals. It reads; it does not
+ * decide.
+ */
+const productionGovernanceCompatibilityAcceptance = async () => {
+  const correlationId = 'sm10-eight-mineral-js-001';
+  const refOf = (key) => sovereigntyCapabilities.getSovereigntyCapabilityRefByKey(key);
+  const governanceRef = refOf('governance_compatibility');
+
+  const integrity = sovereigntyCapabilities.createIntegritySovereigntyCapabilityImplementation();
+  const identityCapsule = sovereigntyCapabilities.createIdentitySovereigntyCapabilityImplementation();
+  const provenance = sovereigntyCapabilities.createProvenanceSovereigntyCapabilityImplementation();
+  const licensingCapsule = sovereigntyCapabilities.createLicensingTermsSovereigntyCapabilityImplementation();
+  const portabilityCapsule = sovereigntyCapabilities.createPortabilitySovereigntyCapabilityImplementation();
+  const interoperabilityCapsule = sovereigntyCapabilities.createInteroperabilitySovereigntyCapabilityImplementation();
+  const verifiability = sovereigntyCapabilities.createVerifiabilitySovereigntyCapabilityImplementation();
+
+  const governance = sovereigntyCapabilities.createGovernanceCompatibilitySovereigntyCapabilityImplementation();
+  assert(
+    governance.capability.id === 'aoc:sovereignty-capability:governance-compatibility',
+    'production Governance Compatibility capsule does not advertise the canonical id',
+  );
+  assert(
+    governance.capability.version === governanceRef.version && governance.capability.version === '1.0.0',
+    'production Governance Compatibility capsule drifted from the canonical capability version',
+  );
+  assert(
+    sovereigntyCapabilities.GOVERNANCE_COMPATIBILITY_SOVEREIGNTY_CAPABILITY_OPERATIONS.join(',')
+      === 'prepare-governance-handoff,validate-governance-handoff',
+    'the Governance Compatibility operation set changed',
+  );
+
+  const run = async (capability, implementation, input, subject) =>
+    sovereigntyCapabilities.invokeSovereigntyCapability(
+      sovereigntyCapabilities.buildSovereigntyCapabilityInvocation({
+        capability,
+        correlationId,
+        input,
+        ...(subject === undefined ? {} : { subject }),
+      }),
+      implementation,
+    );
+
+  // 1 — REAL AOC.INTEGRITY.
+  const integrityResult = await run(refOf('integrity'), integrity, {
+    operation: 'compute-content-identity',
+    bytes: new TextEncoder().encode('sm10-js-consumer-fixture-bytes'),
+  });
+  assert(integrityResult.status === 'succeeded', 'real Integrity invocation failed');
+
+  // 2 — REAL AOC.IDENTITY.
+  const identityResult = await run(refOf('identity'), identityCapsule, {
+    registrant: 'principal:sm10-js-registrant',
+    contentIdentity: integrityResult.output.contentIdentity,
+    externalReference: identity.buildSovereignExternalReference({
+      namespace: 'alien-system-v47',
+      id: 'alien-resource-92817',
+      locator: 'future://provider-p1/object/92817',
+    }),
+  });
+  assert(identityResult.status === 'succeeded', 'real Identity invocation failed');
+  const subjectX = identityResult.output.subject;
+  const manifestM = identityResult.output.manifest;
+
+  // 3 — REAL AOC.PROVENANCE.
+  const provenanceResult = await run(
+    refOf('provenance'),
+    provenance,
+    {
+      operation: 'record-derivation',
+      claimId: 'claim:sm10-js-derivation',
+      issuer: 'principal:sm10-js-issuer',
+      issuedAt: '2026-08-18T09:00:00.000Z',
+      sourceSovereignAssetIds: [identity.parseSovereignAssetId(identity.mintSovereignAssetId())],
+      relation: manifestApi.DerivationRelationKind.TransformedFrom,
+      statement: 'asserted, never established',
+    },
+    subjectX,
+  );
+  assert(provenanceResult.status === 'succeeded', 'real Provenance invocation failed');
+  const derivationClaim = provenanceResult.output.claim;
+
+  // 4 — REAL AOC.LICENSING_TERMS. Deliberately contradictory, and carrying one
+  // action from a semantic system the Protocol has never heard of.
+  const licenseResult = await run(
+    refOf('licensing_terms'),
+    licensingCapsule,
+    {
+      operation: 'declare-license-terms',
+      claimId: 'claim:sm10-js-license',
+      issuer: 'principal:sm10-js-issuer',
+      statement: 'Terms declared by the issuer over this subject.',
+      audience: { kind: 'Public' },
+      rules: [
+        {
+          id: 'R1',
+          effect: licensing.SovereignLicenseTermsRuleEffect.Permission,
+          action: {
+            namespace: licensing.AOC_LICENSING_SEMANTIC_NAMESPACE,
+            termRef: licensing.AOC_LICENSING_ACTION_TERM_IDS.commercialUse,
+          },
+          statement: 'Commercial use is permitted under Agreement A-17.',
+        },
+        {
+          id: 'R2',
+          effect: licensing.SovereignLicenseTermsRuleEffect.Restriction,
+          action: {
+            namespace: licensing.AOC_LICENSING_SEMANTIC_NAMESPACE,
+            termRef: licensing.AOC_LICENSING_ACTION_TERM_IDS.commercialUse,
+          },
+          statement: 'Commercial use is restricted outside the EU.',
+        },
+        {
+          id: 'R3',
+          effect: licensing.SovereignLicenseTermsRuleEffect.Permission,
+          action: { namespace: 'future-system-v77', termRef: 'future-system-v77:quantum-reproduction' },
+          statement: 'Quantum reproduction permitted.',
+        },
+      ],
+      issuedAt: '2026-08-18T09:00:00.000Z',
+    },
+    subjectX,
+  );
+  assert(licenseResult.status === 'succeeded', 'real Licensing & Terms declaration failed');
+  const licenseClaim = licenseResult.output.claim;
+
+  // 5 — TEST-ONLY issuer signing, via the existing public primitives.
+  const keyPair = manifestApi.generateSovereignKeyPair();
+  const signedLicenseClaim = manifestApi.signClaim(
+    licenseClaim,
+    keyPair.privateKeyPem,
+    keyPair.signingKey,
+    new Date('2026-08-18T09:00:00.000Z'),
+  );
+
+  // 6/7 — REAL AOC.PORTABILITY export, then import in a second runtime.
+  const exportResult = await run(
+    refOf('portability'),
+    portabilityCapsule,
+    {
+      operation: 'export-bundle',
+      manifests: [{ kind: 'manifest', manifest: manifestM }],
+      claims: [
+        { kind: 'claim', claim: derivationClaim },
+        { kind: 'signed-claim', signedClaim: signedLicenseClaim },
+      ],
+      standings: [
+        {
+          id: 'standing:sm10-js-1',
+          claimRef: derivationClaim.id,
+          status: 'Contested',
+          effectiveAt: '2026-08-18T09:00:00.000Z',
+        },
+      ],
+    },
+    subjectX,
+  );
+  assert(exportResult.status === 'succeeded', 'real Portability export failed');
+
+  const importResult = await run(refOf('portability'), portabilityCapsule, {
+    operation: 'import-bundle',
+    serializedBundle: exportResult.output.serializedBundle,
+  });
+  assert(importResult.status === 'succeeded', 'real Portability import failed');
+  const importedBundle = importResult.output.bundle;
+
+  // 8 — REAL AOC.INTEROPERABILITY.
+  const describeResult = await run(refOf('interoperability'), interoperabilityCapsule, {
+    operation: 'describe-bundle',
+    bundle: importedBundle,
+  });
+  assert(describeResult.status === 'succeeded', 'real Interoperability describe failed');
+  const descriptor = describeResult.output.descriptor;
+
+  // 9 — REAL AOC.VERIFIABILITY, run independently of the handoff.
+  const importedSigned = importedBundle.claims.find((artifact) => artifact.kind === 'signed-claim');
+  assert(importedSigned !== undefined, 'the signed licensing claim did not survive transport');
+  const verifiedResult = await run(refOf('verifiability'), verifiability, {
+    operation: 'verify-signed-claim',
+    signedClaim: importedSigned.signedClaim,
+  });
+  assert(verifiedResult.status === 'succeeded', 'real Verifiability invocation failed');
+  assert(verifiedResult.output.verification.valid, 'a genuine signature did not verify');
+
+  // 10 — REAL AOC.GOVERNANCE_COMPATIBILITY.
+  const prepared = await run(governanceRef, governance, {
+    operation: 'prepare-governance-handoff',
+    representation: importedBundle,
+    tenantId: 'tenant-alpha',
+  });
+  assert(prepared.status === 'succeeded', 'real Governance Compatibility prepare failed');
+  const handoff = prepared.output.handoff;
+
+  assert(Object.keys(handoff).length === 6, 'the governance handoff envelope gained a field');
+  assert(
+    handoff.schemaVersion === governanceCompatibility.SOVEREIGN_GOVERNANCE_HANDOFF_SCHEMA_VERSION
+      && handoff.schemaVersion === 'aoc-sovereign-governance-handoff/1',
+    'the governance handoff schema drifted',
+  );
+  assert(
+    handoff.canonicalizationProfile === canonical.CANONICAL_JSON_PROFILE,
+    'the handoff left the canonical profile',
+  );
+  assert(
+    handoff.resource.kind === governanceCompatibility.SOVEREIGN_GOVERNED_RESOURCE_KIND
+      && handoff.resource.kind === 'aoc:sovereign-asset',
+    'the generic sovereign resource kind changed',
+  );
+  assert(handoff.resource.id === subjectX.sovereignAssetId, 'the governance resource is not the sovereign subject');
+  assert(handoff.resource.tenantId === 'tenant-alpha', 'the explicit tenant was not preserved');
+  assert(
+    !Object.prototype.hasOwnProperty.call(handoff.resource, 'attributes'),
+    'the governance resource carries attributes in v1',
+  );
+  assert(
+    canonical.canonicalizeJSON(handoff.subject) === canonical.canonicalizeJSON(subjectX),
+    'the handoff subject drifted',
+  );
+  assert(
+    canonical.canonicalizeJSON(handoff.representation) === canonical.canonicalizeJSON(importedBundle),
+    'the handoff representation is not the bundle that arrived',
+  );
+  assert(
+    canonical.canonicalizeJSON(handoff.semantics) === canonical.canonicalizeJSON(descriptor),
+    'the handoff semantics are not the descriptor Interoperability produced',
+  );
+  assert(
+    handoff.semantics.present.standingStatuses.includes('Contested'),
+    'the contested standing did not reach governance',
+  );
+
+  // A tenant-free handoff omits the key entirely, and is deterministic.
+  const untenanted = await run(governanceRef, governance, {
+    operation: 'prepare-governance-handoff',
+    representation: importedBundle,
+  });
+  assert(untenanted.status === 'succeeded', 'a tenant-free governance prepare failed');
+  assert(
+    !Object.prototype.hasOwnProperty.call(untenanted.output.handoff.resource, 'tenantId'),
+    'a tenant was invented for a handoff that was given none',
+  );
+  assert(
+    canonical.canonicalizeJSON(untenanted.output.handoff)
+      === canonical.canonicalizeJSON(
+        governanceCompatibility.buildSovereignGovernanceHandoffV1({ representation: importedBundle }),
+      ),
+    'the governance handoff is not deterministic',
+  );
+  assert(
+    canonical.canonicalizeJSON(
+      governanceCompatibility.buildSovereignGovernanceResourceRef(subjectX, { tenantId: 'tenant-alpha' }),
+    ) === canonical.canonicalizeJSON(handoff.resource),
+    'the standalone resource projection disagrees with the capsule',
+  );
+
+  // 11 — REAL validation, across a wire round trip and under tampering.
+  const wireHandoff = JSON.parse(JSON.stringify(handoff));
+  const validated = await run(governanceRef, governance, {
+    operation: 'validate-governance-handoff',
+    handoff: wireHandoff,
+  });
+  assert(validated.status === 'succeeded', 'real Governance Compatibility validation failed');
+  assert(validated.output.validation.valid, 'a handoff that crossed a wire failed validation');
+  assert(
+    governanceCompatibility.isValidSovereignGovernanceHandoffV1(wireHandoff),
+    'the standalone handoff validator disagrees with the capsule',
+  );
+  const standalone = governanceCompatibility.validateSovereignGovernanceHandoffV1(wireHandoff);
+  assert(
+    standalone.valid && standalone.reasons.length === 0,
+    'the standalone handoff validator reported reasons for a valid handoff',
+  );
+
+  const resourceTamper = JSON.parse(JSON.stringify(handoff));
+  resourceTamper.resource.id = identity.parseSovereignAssetId(identity.mintSovereignAssetId());
+  const resourceTampered = await run(governanceRef, governance, {
+    operation: 'validate-governance-handoff',
+    handoff: resourceTamper,
+  });
+  assert(resourceTampered.status === 'succeeded', 'a tampered handoff was reported as an execution failure');
+  assert(!resourceTampered.output.validation.valid, 'a re-pointed governance resource validated');
+  assert(
+    resourceTampered.output.validation.reasons.includes('GOVERNANCE_COMPATIBILITY_RESOURCE_ID_MISMATCH'),
+    'a re-pointed governance resource produced the wrong reason code',
+  );
+
+  const semanticsTamper = JSON.parse(JSON.stringify(handoff));
+  semanticsTamper.semantics.present.semanticRequirements =
+    semanticsTamper.semantics.present.semanticRequirements.slice(1);
+  const semanticsTampered = await run(governanceRef, governance, {
+    operation: 'validate-governance-handoff',
+    handoff: semanticsTamper,
+  });
+  assert(semanticsTampered.status === 'succeeded', 'a tampered descriptor was reported as an execution failure');
+  assert(!semanticsTampered.output.validation.valid, 'a descriptor missing a requirement validated');
+  assert(
+    semanticsTampered.output.validation.reasons.includes('GOVERNANCE_COMPATIBILITY_SEMANTICS_MISMATCH'),
+    'a mismatching descriptor produced the wrong reason code',
+  );
+
+  const emptyTarget = await run(governanceRef, governance, {
+    operation: 'validate-governance-handoff',
+    handoff: {},
+  });
+  assert(emptyTarget.status === 'succeeded', 'an empty validation target was reported as an execution failure');
+  assert(!emptyTarget.output.validation.valid, 'an empty object validated as a governance handoff');
+  assert(
+    emptyTarget.evidence.outcome === 'succeeded',
+    'a negative governance validation was recorded as a failed invocation',
+  );
+
+  // 12 — an external governance consumer reads it, and decides nothing.
+  const externalRead = {
+    resourceKind: handoff.resource.kind,
+    resourceId: handoff.resource.id,
+    semanticRequirements: handoff.semantics.present.semanticRequirements,
+    claimCount: handoff.representation.claims.length,
+  };
+  assert(externalRead.resourceId === subjectX.sovereignAssetId, 'the external consumer read the wrong resource');
+  assert(externalRead.claimCount === 2, 'the external consumer did not see both claims');
+  assert(
+    externalRead.semanticRequirements.some(
+      (requirement) => requirement.termRef === 'future-system-v77:quantum-reproduction',
+    ),
+    'an external semantic concept did not reach the governance consumer',
+  );
+
+  // 13 — no policy, decision, grant, authority or enforcement in what SM-10
+  // owns. The nested representation still legitimately carries a
+  // `proof.signature`; that is SM-06's transport doing its job.
+  const ownedSurface = canonical
+    .canonicalizeJSON({
+      schemaVersion: handoff.schemaVersion,
+      canonicalizationProfile: handoff.canonicalizationProfile,
+      subject: handoff.subject,
+      resource: handoff.resource,
+      envelopeKeys: Object.keys(handoff).sort(),
+      preparedKeys: Object.keys(prepared.output).sort(),
+      validation: validated.output.validation,
+    })
+    .toLowerCase();
+  for (const forbidden of [
+    'allow', 'deny', 'grant', 'authority', 'decision', 'approval', 'enforce',
+    'policy', 'owner', 'scope', 'ready', 'complete', 'handoffid', 'generatedat',
+    'handoffdigest', 'signature', 'attributes',
+  ]) {
+    assert(!ownedSurface.includes(forbidden), `the governance handoff surface contains ${forbidden}`);
+  }
+  assert(
+    canonical.canonicalizeJSON(handoff.representation.claims)
+      === canonical.canonicalizeJSON(importedBundle.claims),
+    'the handoff altered the artifacts it carried',
+  );
+
+  // 14 — evidence hygiene.
+  for (const result of [prepared, untenanted, validated, resourceTampered, semanticsTampered, emptyTarget]) {
+    assert(
+      sovereigntyCapabilities.isValidSovereigntyCapabilityInvocationEvidence(result.evidence),
+      'invalid Governance Compatibility evidence',
+    );
+    assert(
+      result.evidence.capability.id === 'aoc:sovereignty-capability:governance-compatibility',
+      'evidence does not attribute the canonical Governance Compatibility capability',
+    );
+    const serializedEvidence = JSON.stringify(result.evidence);
+    for (const leak of [
+      'tenant-alpha', 'aoc-sovereign-governance-handoff/1', '"resource"', '"representation"',
+      '"semantics"', '"handoff"', '"terms"', '"claims"', '"standings"',
+      keyPair.privateKeyPem, signedLicenseClaim.digest,
+    ]) {
+      assert(!serializedEvidence.includes(leak), `Governance Compatibility evidence leaked "${leak.slice(0, 24)}"`);
+    }
+  }
+
+  // 15 — eight distinct capabilities under one correlation id.
+  const eightMineralResults = [
+    integrityResult, identityResult, provenanceResult, licenseResult,
+    exportResult, describeResult, verifiedResult, prepared,
+  ];
+  const attributed = new Set(eightMineralResults.map((result) => result.evidence.capability.id));
+  assert(attributed.size === 8, 'the eight-mineral flow did not attribute eight canonical capabilities');
+  for (const result of eightMineralResults) {
+    assert(result.evidence.correlationId === correlationId, 'the shared eight-mineral correlation id did not survive');
+  }
+  const invocationIds = new Set(eightMineralResults.map((result) => result.invocationId));
+  assert(invocationIds.size === 8, 'two eight-mineral invocations shared one invocation id');
+
+  return handoff.resource.id;
+};
+
 manifestApi
   .verifySovereignManifest(nonByteSubject.roundTripped)
   .then((verification) => {
@@ -1838,8 +2238,9 @@ manifestApi
     const describedSubjectId = await productionInteroperabilityAcceptance();
     const verifiedSubjectId = await productionVerifiabilityAcceptance();
     const licenseClaimId = await productionLicensingTermsAcceptance();
+    const governedResourceId = await productionGovernanceCompatibilityAcceptance();
     console.log(
-      `javascript-cjs consumer OK: claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${capabilities.length} nonByteSubject=${nonByteSubject.sovereignAssetId} capabilityInvocation=${capabilityInvocationId} productionMinerals=${productionSubjectId} provenanceDerivation=${provenanceDerivationId} portableSubject=${portableSubjectId} describedSubject=${describedSubjectId} verifiedSubject=${verifiedSubjectId} licenseTerms=${licenseClaimId}`,
+      `javascript-cjs consumer OK: claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${capabilities.length} nonByteSubject=${nonByteSubject.sovereignAssetId} capabilityInvocation=${capabilityInvocationId} productionMinerals=${productionSubjectId} provenanceDerivation=${provenanceDerivationId} portableSubject=${portableSubjectId} describedSubject=${describedSubjectId} verifiedSubject=${verifiedSubjectId} licenseTerms=${licenseClaimId} governedResource=${governedResourceId}`,
     );
   })
   .catch((error) => {
