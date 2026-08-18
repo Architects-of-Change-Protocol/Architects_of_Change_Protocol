@@ -216,3 +216,29 @@ export type {
   InteroperabilitySovereigntyCapabilityOutput,
   InteroperabilitySovereigntyCapabilityReasonCode,
 } from './capsules';
+
+// --- SM-08: production Verifiability capsule -------------------------------
+
+export {
+  VERIFIABILITY_SOVEREIGNTY_CAPABILITY_OPERATIONS,
+  VERIFIABILITY_SOVEREIGNTY_CAPABILITY_REASON_CODES,
+  createVerifiabilitySovereigntyCapabilityImplementation,
+  isValidVerifiabilitySovereigntyCapabilityInput,
+  validateVerifiabilitySovereigntyCapabilityInput,
+} from './capsules';
+export type {
+  CreateVerifiabilitySovereigntyCapabilityImplementationOptions,
+  SovereignProofVerificationResult,
+  VerifiabilitySovereigntyCapabilityImplementation,
+  VerifiabilitySovereigntyCapabilityInput,
+  VerifiabilitySovereigntyCapabilityInputValidationResult,
+  VerifiabilitySovereigntyCapabilityOperation,
+  VerifiabilitySovereigntyCapabilityOutput,
+  VerifiabilitySovereigntyCapabilityReasonCode,
+  VerifySignedSovereignClaimInput,
+  VerifySignedSovereignClaimOutput,
+  VerifySignedSovereignManifestInput,
+  VerifySignedSovereignManifestOutput,
+  VerifySovereignProofInput,
+  VerifySovereignProofOutput,
+} from './capsules';
