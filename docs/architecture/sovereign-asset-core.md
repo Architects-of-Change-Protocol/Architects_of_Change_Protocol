@@ -795,7 +795,13 @@ the bytes, and two subjects sharing a `ContentIdentity` are not thereby related.
 not closed for everything a reader might file under "provenance":
 
 - claims are **unsigned** until separately passed through the existing signing
-  primitives; there is still no formal Verifiability capsule;
+  primitives. SM-08 added the production `AOC.VERIFIABILITY` capsule, which
+  independently *verifies* a `SignedClaim`, a `SignedSovereignManifest` or a
+  generic `SovereignProof` — reporting claim structure, digest, signature and an
+  optional issuer/key binding as separate outcomes. It verifies and never signs:
+  proof issuance stays with these low-level primitives, and a valid signature
+  still proves only that the issuer asserted the claim, never that the assertion
+  is true, authorized or uncontested;
 - `evidenceRefs` are references, not resolved evidence, and a bare ref is not
   proof its target exists;
 - **custody** — possession, control, legal title, custodian roles, transfer

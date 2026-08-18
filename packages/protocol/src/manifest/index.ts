@@ -64,5 +64,15 @@ export type {
 } from './verify';
 export { verifySovereignManifest } from './verify';
 
+// --- SM-08: signed sovereign claim verification -----------------------------
+
+export type {
+  SovereignClaimVerificationChecks,
+  SovereignClaimVerificationResult,
+  VerifiableSovereignClaim,
+  VerifySignedSovereignClaimOptions,
+} from './verify';
+export { verifySignedSovereignClaim } from './verify';
+
 export type { SovereignAssetRegistry } from './registry';
 export { resolveSovereignAsset, resolveSovereignAssetVersion } from './registry';

@@ -19,6 +19,7 @@ import {
   createInteroperabilitySovereigntyCapabilityImplementation,
   createPortabilitySovereigntyCapabilityImplementation,
   createProvenanceSovereigntyCapabilityImplementation,
+  createVerifiabilitySovereigntyCapabilityImplementation,
   getSovereigntyCapability,
   getSovereigntyCapabilityByKey,
   getSovereigntyCapabilityRefByKey,
@@ -36,14 +37,16 @@ import type {
   SovereigntyCapabilityImplementation,
   SovereigntyCapabilityKey,
   SovereigntyCapabilityRef,
+  VerifiabilitySovereigntyCapabilityInput,
 } from '@aoc/protocol/sovereignty-capabilities';
-import type { AuditEventSink } from '@aoc/protocol/adapters';
+import type { AuditEventSink, VerificationKeyResolver } from '@aoc/protocol/adapters';
 import {
   buildSovereignExternalReference,
   computeContentIdentity,
   contentIdentitiesEqual,
   isValidSovereignSubjectRef,
   mintSovereignAssetId,
+  parseSovereignAssetId,
   sovereignExternalReferencesEqual,
 } from '@aoc/protocol/identity';
 import type { SovereignExternalReference, SovereignSubjectRef } from '@aoc/protocol/identity';
@@ -54,7 +57,9 @@ import {
   computeManifestDigest,
   generateSovereignKeyPair,
   isValidDerivationClaim,
+  signClaim,
   signSovereignManifest,
+  signSovereignPayload,
   verifySovereignManifest,
 } from '@aoc/protocol/manifest';
 import type { DerivationClaim, SignedSovereignManifest } from '@aoc/protocol/manifest';
@@ -1101,6 +1106,346 @@ for (const result of [interoperabilityDescribe, fullCompatibility, partialCompat
   }
 }
 
+// --- SM-08: AOC.VERIFIABILITY, the SIXTH production Sovereignty Mineral ------
+//
+// The key pair below is TEST ONLY fixture material: it exists so there is
+// something signed to verify. The capsule never receives it — Verifiability
+// verifies and never signs, and signing goes through the pre-existing public
+// low-level primitives, exactly as a real issuer with its own key management
+// would do it.
+
+const verifiabilityCorrelationId = 'sm08-esm-six-mineral-001';
+const verifiabilityRef = getSovereigntyCapabilityRefByKey('verifiability') as SovereigntyCapabilityRef;
+const verifiabilityCapsule = createVerifiabilitySovereigntyCapabilityImplementation();
+if (verifiabilityCapsule.capability.id !== 'aoc:sovereignty-capability:verifiability') {
+  throw new Error('production Verifiability capsule does not advertise the canonical id');
+}
+if (verifiabilityCapsule.capability.version !== verifiabilityRef.version) {
+  throw new Error('production Verifiability capsule drifted from the canonical capability version');
+}
+
+const sm08TestKeyPair = generateSovereignKeyPair();
+const sm08OtherTestKeyPair = generateSovereignKeyPair();
+
+const sm08IntegrityResult = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: getSovereigntyCapabilityRefByKey('integrity') as SovereigntyCapabilityRef,
+    correlationId: verifiabilityCorrelationId,
+    input: {
+      operation: 'compute-content-identity',
+      bytes: new TextEncoder().encode('sm08-esm-consumer-fixture-bytes'),
+    } as IntegritySovereigntyCapabilityInput,
+  }),
+  createIntegritySovereigntyCapabilityImplementation(),
+);
+if (sm08IntegrityResult.status !== 'succeeded' || sm08IntegrityResult.output.operation !== 'compute-content-identity') {
+  throw new Error('real Integrity invocation failed');
+}
+
+const sm08IdentityResult = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: getSovereigntyCapabilityRefByKey('identity') as SovereigntyCapabilityRef,
+    correlationId: verifiabilityCorrelationId,
+    input: {
+      registrant: 'principal:sm08-esm-issuer',
+      contentIdentity: sm08IntegrityResult.output.contentIdentity,
+      externalReference: buildSovereignExternalReference({
+        namespace: 'example:property-registry',
+        id: 'parcel-88-201-B',
+        locator: 'registry://county/parcel/88-201-B',
+      }),
+    } as IdentitySovereigntyCapabilityInput,
+  }),
+  createIdentitySovereigntyCapabilityImplementation(),
+);
+if (sm08IdentityResult.status !== 'succeeded') throw new Error('real Identity invocation failed');
+const sm08Subject: SovereignSubjectRef = sm08IdentityResult.output.subject;
+
+const sm08SignedManifest: SignedSovereignManifest = signSovereignManifest(
+  sm08IdentityResult.output.manifest,
+  sm08TestKeyPair.privateKeyPem,
+  sm08TestKeyPair.signingKey,
+  new Date('2026-04-01T09:00:00.000Z'),
+);
+
+const sm08SourceIdentityResult = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: getSovereigntyCapabilityRefByKey('identity') as SovereigntyCapabilityRef,
+    correlationId: verifiabilityCorrelationId,
+    input: { registrant: 'principal:sm08-esm-issuer' } as IdentitySovereigntyCapabilityInput,
+  }),
+  createIdentitySovereigntyCapabilityImplementation(),
+);
+if (sm08SourceIdentityResult.status !== 'succeeded') throw new Error('real Identity invocation failed');
+
+const sm08DerivationResult = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: getSovereigntyCapabilityRefByKey('provenance') as SovereigntyCapabilityRef,
+    subject: sm08Subject,
+    correlationId: verifiabilityCorrelationId,
+    input: {
+      operation: 'record-derivation',
+      claimId: 'claim:derivation:sm08-esm-consumer',
+      issuer: 'principal:sm08-esm-issuer',
+      issuedAt: '2026-04-01T09:00:00.000Z',
+      sourceSovereignAssetIds: [sm08SourceIdentityResult.output.subject.sovereignAssetId],
+      relation: DerivationRelationKind.TransformedFrom,
+    } as ProvenanceSovereigntyCapabilityInput,
+  }),
+  createProvenanceSovereigntyCapabilityImplementation(),
+);
+if (sm08DerivationResult.status !== 'succeeded' || sm08DerivationResult.output.operation !== 'record-derivation') {
+  throw new Error('real Provenance invocation failed');
+}
+const sm08SignedClaim = signClaim(
+  sm08DerivationResult.output.claim,
+  sm08TestKeyPair.privateKeyPem,
+  sm08TestKeyPair.signingKey,
+  new Date('2026-04-01T09:00:00.000Z'),
+);
+
+const sm08Portability = createPortabilitySovereigntyCapabilityImplementation();
+const sm08Export = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: getSovereigntyCapabilityRefByKey('portability') as SovereigntyCapabilityRef,
+    subject: sm08Subject,
+    correlationId: verifiabilityCorrelationId,
+    input: {
+      operation: 'export-bundle',
+      manifests: [{ kind: 'signed-manifest', signedManifest: sm08SignedManifest }],
+      claims: [{ kind: 'signed-claim', signedClaim: sm08SignedClaim }],
+    } as PortabilitySovereigntyCapabilityInput,
+  }),
+  sm08Portability,
+);
+if (sm08Export.status !== 'succeeded' || sm08Export.output.operation !== 'export-bundle') {
+  throw new Error('real Portability export failed');
+}
+const sm08Wire = sm08Export.output.serializedBundle;
+
+const sm08Import = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: getSovereigntyCapabilityRefByKey('portability') as SovereigntyCapabilityRef,
+    correlationId: verifiabilityCorrelationId,
+    input: { operation: 'import-bundle', serializedBundle: sm08Wire } as PortabilitySovereigntyCapabilityInput,
+  }),
+  sm08Portability,
+);
+if (sm08Import.status !== 'succeeded' || sm08Import.output.operation !== 'import-bundle') {
+  throw new Error('real Portability import failed');
+}
+const sm08ImportedManifestArtifact = sm08Import.output.bundle.manifests[0];
+const sm08ImportedClaimArtifact = sm08Import.output.bundle.claims[0];
+if (sm08ImportedManifestArtifact?.kind !== 'signed-manifest') {
+  throw new Error('the signed manifest did not survive transport');
+}
+if (sm08ImportedClaimArtifact?.kind !== 'signed-claim') {
+  throw new Error('the signed claim did not survive transport');
+}
+if (canonicalizeJSON(sm08ImportedManifestArtifact.signedManifest) !== canonicalizeJSON(sm08SignedManifest)) {
+  throw new Error('Portability altered the signed manifest in transit');
+}
+
+const sm08Describe = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: getSovereigntyCapabilityRefByKey('interoperability') as SovereigntyCapabilityRef,
+    correlationId: verifiabilityCorrelationId,
+    input: {
+      operation: 'describe-bundle',
+      bundle: sm08Import.output.bundle,
+    } as InteroperabilitySovereigntyCapabilityInput,
+  }),
+  createInteroperabilitySovereigntyCapabilityImplementation(),
+);
+if (sm08Describe.status !== 'succeeded' || sm08Describe.output.operation !== 'describe-bundle') {
+  throw new Error('real Interoperability describe failed');
+}
+if (!sm08Describe.output.descriptor.present.manifestArtifactKinds.includes('signed-manifest')) {
+  throw new Error('the descriptor did not detect the signed manifest');
+}
+if (!sm08Describe.output.descriptor.present.claimArtifactKinds.includes('signed-claim')) {
+  throw new Error('the descriptor did not detect the signed claim');
+}
+
+const verifySm08 = async (
+  input: VerifiabilitySovereigntyCapabilityInput,
+  options: { subject?: SovereignSubjectRef; resolver?: VerificationKeyResolver } = {},
+) =>
+  invokeSovereigntyCapability(
+    buildSovereigntyCapabilityInvocation({
+      capability: verifiabilityRef,
+      correlationId: verifiabilityCorrelationId,
+      input,
+      ...(options.subject === undefined ? {} : { subject: options.subject }),
+    }),
+    options.resolver === undefined
+      ? verifiabilityCapsule
+      : createVerifiabilitySovereigntyCapabilityImplementation({ verificationKeyResolver: options.resolver }),
+  );
+
+const sm08ManifestVerification = await verifySm08({
+  operation: 'verify-signed-manifest',
+  signedManifest: sm08ImportedManifestArtifact.signedManifest,
+});
+if (sm08ManifestVerification.status !== 'succeeded' || sm08ManifestVerification.output.operation !== 'verify-signed-manifest') {
+  throw new Error('real Verifiability manifest verification failed to execute');
+}
+if (!sm08ManifestVerification.output.verification.valid) throw new Error('a valid signed manifest did not verify');
+if (sm08ManifestVerification.output.verification.checks.signature !== 'valid') throw new Error('signature check missing');
+if (sm08ManifestVerification.output.verification.checks.manifestDigest !== 'valid') throw new Error('digest check missing');
+if (sm08ManifestVerification.output.verification.checks.contentDigest !== 'not_performed') {
+  throw new Error('Verifiability secretly performed a content-integrity check');
+}
+if (sm08ManifestVerification.output.verification.checks.issuerBinding !== 'not_performed') {
+  throw new Error('an issuer binding was reported without a resolver');
+}
+if (sm08ManifestVerification.subject?.sovereignAssetId !== sm08Subject.sovereignAssetId) {
+  throw new Error('Verifiability did not attribute the artifact subject');
+}
+
+const sm08ClaimVerification = await verifySm08({
+  operation: 'verify-signed-claim',
+  signedClaim: sm08ImportedClaimArtifact.signedClaim,
+});
+if (sm08ClaimVerification.status !== 'succeeded' || sm08ClaimVerification.output.operation !== 'verify-signed-claim') {
+  throw new Error('real Verifiability claim verification failed to execute');
+}
+if (!sm08ClaimVerification.output.verification.valid) throw new Error('a valid signed claim did not verify');
+
+const sm08GenericPayload = { resultType: 'example-protocol-result', value: 42 };
+const sm08GenericProof = signSovereignPayload(
+  sm08GenericPayload,
+  sm08TestKeyPair.privateKeyPem,
+  sm08TestKeyPair.signingKey,
+  new Date('2026-04-01T09:00:00.000Z'),
+);
+const sm08ProofVerification = await verifySm08({
+  operation: 'verify-sovereign-proof',
+  payload: sm08GenericPayload,
+  proof: sm08GenericProof,
+});
+if (sm08ProofVerification.status !== 'succeeded' || sm08ProofVerification.output.operation !== 'verify-sovereign-proof') {
+  throw new Error('generic proof verification failed to execute');
+}
+if (!sm08ProofVerification.output.verification.valid) throw new Error('a valid generic sovereign proof did not verify');
+if (sm08ProofVerification.subject !== undefined) throw new Error('the generic proof operation invented a subject');
+
+const sm08BoundVerification = await verifySm08(
+  { operation: 'verify-signed-manifest', signedManifest: sm08ImportedManifestArtifact.signedManifest },
+  {
+    resolver: {
+      resolveVerificationKey: (issuer) =>
+        issuer === 'principal:sm08-esm-issuer' ? { keyId: sm08TestKeyPair.signingKey.keyId, issuer } : undefined,
+    },
+  },
+);
+if (sm08BoundVerification.status !== 'succeeded' || sm08BoundVerification.output.operation !== 'verify-signed-manifest') {
+  throw new Error('the bound Verifiability invocation failed to execute');
+}
+if (sm08BoundVerification.output.verification.checks.issuerBinding !== 'verified') {
+  throw new Error('a correctly bound issuer key was not reported as verified');
+}
+
+const sm08WrongBinding = await verifySm08(
+  { operation: 'verify-signed-manifest', signedManifest: sm08ImportedManifestArtifact.signedManifest },
+  { resolver: { resolveVerificationKey: (issuer) => ({ keyId: sm08OtherTestKeyPair.signingKey.keyId, issuer }) } },
+);
+if (sm08WrongBinding.status !== 'succeeded' || sm08WrongBinding.output.operation !== 'verify-signed-manifest') {
+  throw new Error('a wrong binding was reported as an execution failure');
+}
+if (sm08WrongBinding.output.verification.checks.signature !== 'valid') {
+  throw new Error('a wrong binding invalidated the signature check');
+}
+if (sm08WrongBinding.output.verification.checks.issuerBinding !== 'unverified') {
+  throw new Error('a wrong issuer binding was not reported as unverified');
+}
+if (sm08WrongBinding.output.verification.valid) throw new Error('a wrong issuer binding still verified overall');
+
+// NEGATIVE: tamper a transported signed claim after signing.
+const sm08TamperedTransport = JSON.parse(sm08Wire) as {
+  claims: { signedClaim: { claim: { metadata: Record<string, unknown> } } }[];
+};
+sm08TamperedTransport.claims[0].signedClaim.claim.metadata.relation = 'CombinedFrom';
+const sm08TamperedImport = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: getSovereigntyCapabilityRefByKey('portability') as SovereigntyCapabilityRef,
+    correlationId: verifiabilityCorrelationId,
+    input: {
+      operation: 'import-bundle',
+      serializedBundle: JSON.stringify(sm08TamperedTransport),
+    } as PortabilitySovereigntyCapabilityInput,
+  }),
+  sm08Portability,
+);
+if (sm08TamperedImport.status !== 'succeeded' || sm08TamperedImport.output.operation !== 'import-bundle') {
+  throw new Error('the tampered bundle could not be imported');
+}
+const sm08TamperedArtifact = sm08TamperedImport.output.bundle.claims[0];
+if (sm08TamperedArtifact?.kind !== 'signed-claim') throw new Error('the tampered signed claim did not survive import');
+const sm08TamperedVerification = await verifySm08({
+  operation: 'verify-signed-claim',
+  signedClaim: sm08TamperedArtifact.signedClaim,
+});
+if (sm08TamperedVerification.status !== 'succeeded' || sm08TamperedVerification.output.operation !== 'verify-signed-claim') {
+  throw new Error('a tampered artifact was reported as an execution failure');
+}
+if (sm08TamperedVerification.output.verification.valid) throw new Error('a tampered signed claim verified');
+if (!sm08TamperedVerification.output.verification.reasons.includes('CLAIM_SIGNATURE_INVALID')) {
+  throw new Error('the tampered claim carried no signature reason');
+}
+if (sm08TamperedVerification.evidence.outcome !== 'succeeded') {
+  throw new Error('a fail-closed verification was recorded as a failed invocation');
+}
+
+// A malformed / signing-shaped invocation IS an execution failure.
+const sm08Malformed = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: verifiabilityRef,
+    input: { operation: 'sign-payload' } as unknown as VerifiabilitySovereigntyCapabilityInput,
+  }),
+  verifiabilityCapsule,
+);
+if (sm08Malformed.status !== 'failed' || sm08Malformed.reasonCodes[0] !== 'VERIFIABILITY_UNSUPPORTED_OPERATION') {
+  throw new Error('an unsupported (signing) operation was not rejected');
+}
+const sm08Mismatched = await verifySm08(
+  { operation: 'verify-signed-manifest', signedManifest: sm08ImportedManifestArtifact.signedManifest },
+  { subject: { sovereignAssetId: parseSovereignAssetId(mintSovereignAssetId()) } },
+);
+if (sm08Mismatched.status !== 'failed' || sm08Mismatched.reasonCodes[0] !== 'VERIFIABILITY_SUBJECT_MISMATCH') {
+  throw new Error('an explicitly mismatched verification subject was not rejected');
+}
+
+for (const result of [
+  sm08ManifestVerification,
+  sm08ClaimVerification,
+  sm08ProofVerification,
+  sm08BoundVerification,
+  sm08TamperedVerification,
+]) {
+  if (!isValidSovereigntyCapabilityInvocationEvidence(result.evidence)) {
+    throw new Error('invalid Verifiability evidence');
+  }
+  if (result.evidence.capability.id !== 'aoc:sovereignty-capability:verifiability') {
+    throw new Error('evidence does not attribute the canonical Verifiability capability');
+  }
+  const serialized = JSON.stringify(result.evidence);
+  for (const leak of [
+    sm08TestKeyPair.privateKeyPem,
+    sm08TestKeyPair.signingKey.publicKey,
+    sm08TestKeyPair.signingKey.keyId,
+    sm08SignedManifest.proof.signature,
+    sm08SignedManifest.manifestDigest,
+    'BEGIN PRIVATE KEY',
+    'issuerBinding',
+    'contentDigest',
+  ]) {
+    if (serialized.includes(leak)) {
+      throw new Error(`generic Verifiability evidence leaked "${leak.slice(0, 24)}"`);
+    }
+  }
+}
+
 console.log(
-  `typescript-esm consumer OK: token=${token.tokenId} claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${sovereigntyCapabilities.length} nonByteSubject=${sovereignAssetId} capabilityInvocation=${identityResult.invocationId} productionMinerals=${productionSubject.sovereignAssetId} provenanceDerivation=${consumerDerivationClaim.id} portableSubject=${portabilityImport.output.bundle.subject.sovereignAssetId} describedSubject=${interoperabilityDescriptor.subject.sovereignAssetId}`,
+  `typescript-esm consumer OK: token=${token.tokenId} claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${sovereigntyCapabilities.length} nonByteSubject=${sovereignAssetId} capabilityInvocation=${identityResult.invocationId} productionMinerals=${productionSubject.sovereignAssetId} provenanceDerivation=${consumerDerivationClaim.id} portableSubject=${portabilityImport.output.bundle.subject.sovereignAssetId} describedSubject=${interoperabilityDescriptor.subject.sovereignAssetId} verifiedSubject=${sm08Subject.sovereignAssetId}`,
 );

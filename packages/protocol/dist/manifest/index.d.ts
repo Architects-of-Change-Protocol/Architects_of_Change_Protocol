@@ -14,6 +14,8 @@ export type { SovereignManifestSchemaVersion, SovereignRegistrant, SovereignMani
 export { validateSovereignManifestV1, buildSovereignManifestV1, computeManifestDigest, signSovereignManifest } from './manifest';
 export type { CheckOutcome, BindingOutcome, SovereignManifestVerificationChecks, SovereignManifestVerificationResult, VerifySovereignManifestOptions, } from './verify';
 export { verifySovereignManifest } from './verify';
+export type { SovereignClaimVerificationChecks, SovereignClaimVerificationResult, VerifiableSovereignClaim, VerifySignedSovereignClaimOptions, } from './verify';
+export { verifySignedSovereignClaim } from './verify';
 export type { SovereignAssetRegistry } from './registry';
 export { resolveSovereignAsset, resolveSovereignAssetVersion } from './registry';
 //# sourceMappingURL=index.d.ts.map

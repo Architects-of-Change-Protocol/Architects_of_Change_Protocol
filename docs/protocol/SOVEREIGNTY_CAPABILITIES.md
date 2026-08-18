@@ -291,9 +291,9 @@ result.evidence.capability;
 // { id: 'aoc:sovereignty-capability:verifiability', version: '1.0.0' }
 ```
 
-## Production capsules: Identity, Integrity, Provenance, Portability and Interoperability
+## Production capsules: Identity, Integrity, Provenance, Portability, Interoperability and Verifiability
 
-Five of the canonical eight are now real implementations of the socket above, exported from
+Six of the canonical eight are now real implementations of the socket above, exported from
 `@aoc/protocol/sovereignty-capabilities` and executed through `invokeSovereigntyCapability` like any
 other implementation. They are plain factories with no import-time side effects, they register
 themselves nowhere, and they expose no second entry point that would bypass the common result and
@@ -307,12 +307,13 @@ import {
   createInteroperabilitySovereigntyCapabilityImplementation,
   createPortabilitySovereigntyCapabilityImplementation,
   createProvenanceSovereigntyCapabilityImplementation,
+  createVerifiabilitySovereigntyCapabilityImplementation,
   getSovereigntyCapabilityRefByKey,
   invokeSovereigntyCapability,
 } from '@aoc/protocol/sovereignty-capabilities';
 ```
 
-All five derive their advertised `capability` ref from the SM-01 registry, so none can drift from the
+All six derive their advertised `capability` ref from the SM-01 registry, so none can drift from the
 canonical id or version. None reads the network, a provider, a chain, a registry or storage.
 
 ### AOC.IDENTITY
@@ -611,8 +612,9 @@ before AOC.LICENSING_TERMS exists.
 Production means the defined v1 contract is real and consumable — not that every provenance problem is
 solved. Still open, and deliberately not papered over:
 
-- **Claims are unsigned.** Cryptographic attribution requires passing a claim through the existing
-  signing primitives; a formal Verifiability capsule does not exist yet.
+- **Claims are unsigned.** Provenance itself neither signs nor verifies: cryptographic attribution
+  requires passing a claim through the existing signing primitives, and the resulting `SignedClaim` is
+  then checked independently by `AOC.VERIFIABILITY` (SM-08), which verifies but never signs.
 - **`evidenceRefs` are references, not resolved evidence.** Protocol does not resolve them, and a bare
   ref is not proof its target exists. Caller-supplied refs are preserved verbatim and none is ever
   fabricated from a digest, invocation id, subject id or URL.
@@ -844,7 +846,8 @@ portability. Persistence is the consumer's infrastructure decision, made on data
   supplied `manifestDigest`. A tampered digest survives transport unchanged, for Integrity or
   Verifiability to reveal later.
 - **Verifiability.** Never signs and never verifies. Supplied proof material — public key, signature,
-  payload hash, timestamps, digests — is preserved exactly and judged later by whoever is entitled to.
+  payload hash, timestamps, digests — is preserved exactly and judged later by `AOC.VERIFIABILITY`, or
+  by whoever else is entitled to.
   A structurally transportable but cryptographically invalid artifact transports successfully; that is
   correct behaviour, not a portability failure.
 - **Provenance.** Moving a bundle asserts no origin, authorship, derivation or custody. Transport
@@ -1403,6 +1406,318 @@ The two invocations share one `correlationId` and keep distinct `invocationId`s.
 caller-chosen grouping: it implies no ordering, causality, dependency, workflow, policy or
 authorization. Integrity never saw the subject; Identity never recomputed the digest.
 
+## AOC.VERIFIABILITY
+
+Answers exactly one question: *given a sovereign artifact and the proof attached to it, can an
+independent party determine whether that proof is cryptographically and structurally sound?*
+
+It is the sixth of the canonical eight to become a real implementation of the SM-03 socket. The
+cryptographic primitives it consumes already existed in `@aoc/protocol/manifest` —
+`verifySovereignManifest`, `verifySignedClaim` and `verifySovereignSignature`. SM-08 does not add
+cryptography; it exposes the cryptography Protocol already owns through the common capability socket,
+so a consumer holding only the published package can ask the question and get an answer that is
+capability-attributed, machine-readable, and honest about what it did *not* check.
+
+| | |
+| --- | --- |
+| Input | `VerifiabilitySovereigntyCapabilityInput` — a closed union discriminated on `operation` |
+| Output | `VerifiabilitySovereigntyCapabilityOutput` — a matching closed union of verification reports |
+| Subject before | optional on every operation |
+| Subject after | the artifact's own subject for manifest and claim verification; absent for generic proofs |
+| Factory | `createVerifiabilitySovereigntyCapabilityImplementation({ verificationKeyResolver? })` |
+
+### Three operations, deliberately
+
+| Operation | Target | Report |
+| --- | --- | --- |
+| `verify-signed-manifest` | `SignedSovereignManifest` | structure, manifest digest, signature, content digest, issuer binding |
+| `verify-signed-claim` | `SignedClaim` over an Origin, Authorship or Derivation claim | claim structure, claim digest, signature, issuer binding |
+| `verify-sovereign-proof` | any canonicalizable payload + a `SovereignProof` | valid / invalid with a stable reason |
+
+That is the whole surface. There is deliberately **no** `generate-key-pair`, `sign-manifest`,
+`sign-claim` or `sign-payload` operation — see "Verification-first" below.
+
+```ts
+import {
+  buildSovereigntyCapabilityInvocation,
+  createVerifiabilitySovereigntyCapabilityImplementation,
+  getSovereigntyCapabilityRefByKey,
+  invokeSovereigntyCapability,
+} from '@aoc/protocol/sovereignty-capabilities';
+
+const verifiability = createVerifiabilitySovereigntyCapabilityImplementation();
+
+const result = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: getSovereigntyCapabilityRefByKey('verifiability')!,
+    input: { operation: 'verify-signed-manifest', signedManifest },
+    // no subject: the artifact carries its own
+  }),
+  verifiability,
+);
+
+result.output.verification;
+// {
+//   valid: true,
+//   checks: {
+//     manifestStructure: 'valid',
+//     manifestDigest:    'valid',
+//     signature:         'valid',
+//     contentDigest:     'not_performed',   // <- the Integrity boundary, reported
+//     issuerBinding:     'not_performed',   // <- no resolver was configured
+//   },
+//   reasons: [],
+// }
+result.subject;            // the manifest's own subject — nothing was minted
+result.evidence.outcome;   // 'succeeded'
+```
+
+### What a passing verification establishes
+
+At most:
+
+> The holder of the private key matching the proof's public key signed this canonical payload — and,
+> when `issuerBinding` is `verified`, the resolver the caller supplied binds that key id to the
+> asserted issuer.
+
+Nothing else. In particular:
+
+```
+signature valid           ≠  assertion true
+digest valid              ≠  legal ownership
+issuer key bound          ≠  issuer factually correct
+cryptographically valid   ≠  uncontested
+verification result       ≠  governance decision
+```
+
+A signature does not establish that the assertion is historically true, that the issuer owns the
+subject, that a derivation was authorized, that copyright or a licence exists, that a court would
+accept the claim, that the key has not been revoked, or that any system should act on it. Those
+distinctions are held in the code, the types, the reason codes and the tests, not only in this
+paragraph.
+
+### Verification-first: no signing, no private keys
+
+The capsule verifies and never produces proofs, and that is a design decision rather than missing
+work. A production signer needs an explicit key-management architecture, and the SM-03 invocation
+input is a *generic transport shared by every capability* — turning it into a carrier for
+`privateKeyPem`, seed phrases, KMS secrets or wallet secrets would solve the wrong problem and put key
+material somewhere no capability contract should put it.
+
+So: no operation accepts private key material in any spelling, nothing here calls
+`generateSovereignKeyPair`, and nothing here calls `signSovereignManifest`, `signClaim` or
+`signSovereignPayload`. All of those primitives remain public, unchanged and directly usable by
+issuers, fixtures and applications that have their own key management — which is exactly how the test
+suites and all three packed consumer fixtures produce the artifacts they then verify. A managed
+signer/KMS abstraction is deferred rather than invented to fill the gap.
+
+### `contentDigest` is `not_performed`, and that is the point
+
+`verify-signed-manifest` accepts **no** content bytes. The underlying `verifySovereignManifest`
+primitive supports them; this capsule calls it without them, and the resulting
+`contentDigest: 'not_performed'` is the honest report of a check nobody asked for.
+
+Accepting bytes here would make the mineral boundary read "Verifiability secretly performs Integrity".
+A caller who wants both runs them side by side:
+
+```
+bytes ──► AOC.INTEGRITY      ──► content check      ┐
+                                                    ├── one correlationId
+signed manifest ──► AOC.VERIFIABILITY ──► proof check ┘
+```
+
+Nothing in this module ever turns `not_performed` into `valid`, or reports a `contentVerified` flag. A
+manifest that genuinely carries a `ContentIdentity` still reports `contentDigest: 'not_performed'`,
+because the bytes were never supplied and never asked for.
+
+### Issuer binding is optional, and three-state
+
+A `SovereignProof` carries its own `publicKey`, so cryptographic self-consistency can be checked
+entirely offline. Binding a key to an *issuer* requires knowledge Protocol does not have, so the
+resolver is injected — never discovered, never global, never defaulted.
+
+| Configuration | `issuerBinding` | Execution |
+| --- | --- | --- |
+| no resolver | `not_performed` | succeeded |
+| resolver returns a descriptor whose `keyId` matches the proof | `verified` | succeeded |
+| resolver returns `undefined`, or a descriptor with a different `keyId` | `unverified` | succeeded, verification invalid |
+| resolver throws | — | **failed**, `VERIFIABILITY_KEY_RESOLUTION_FAILED` |
+
+"Not checked" and "checked and did not bind" are different facts, and collapsing them to a boolean
+would lose the one that matters. A resolver fault is a *dependency fault*, not a negative
+cryptographic result: returning a partial report whose binding line silently meant "the key service
+fell over" would be read as "the key did not bind". Exactly one resolver attempt is made per required
+binding — no retry, no backoff, no fallback resolver, and no raw exception text, stack or credential
+reaches the result or the evidence.
+
+Binding is a **key relationship** and nothing more. It is not ownership, not legal identity, not KYC,
+not a certificate chain, and not a statement that the key is currently valid or unrevoked.
+
+Signature validity and issuer binding are independent dimensions, and all four combinations are
+expressible:
+
+```
+signature valid   + binding verified       ->  valid
+signature valid   + binding not_performed  ->  valid   (binding was never claimed)
+signature valid   + binding unverified     ->  invalid
+signature invalid + binding verified       ->  invalid
+```
+
+### Invalid artifact vs unreadable invocation
+
+This distinction is load-bearing:
+
+| Situation | Outcome |
+| --- | --- |
+| bad signature, digest mismatch, malformed claim, unsupported proof algorithm, unsupported canonicalization profile, non-canonicalizable payload, unverified binding | **succeeded** execution, `verification.valid === false` |
+| missing `signedClaim`, unknown `operation`, input that is not an object, a subject that is not the artifact's, a resolver fault | **failed** execution with a `VERIFIABILITY_*` reason code |
+
+An artifact that can be inspected and is invalid is a *question that was answered*, exactly as an
+Integrity digest mismatch has successfully checked and an Interoperability incompatibility has
+successfully assessed. Capability failure is reserved for input that cannot be read at all. The input
+validator therefore checks only enough wrapper structure to hand the target to the real verifier
+safely — it never requires the inner manifest or claim to be *valid*, because an invalid one is
+precisely a legitimate verification target.
+
+### Signature over a malformed claim
+
+An issuer can cryptographically sign malformed data, so the claim report keeps structure and
+cryptography as independent dimensions:
+
+```
+claimStructure: 'invalid'    // the claim violates its canonical shape
+claimDigest:    'valid'      // it hashes to what SignedClaim.digest says
+signature:      'valid'      // the issuer really did sign exactly this
+valid:          false
+reasons:        ['INVALID_ASSERTED_ORIGIN']
+```
+
+`verify-signed-claim` reuses the real runtime validators — `validateOriginClaim`,
+`validateAuthorityClaim`, `validateDerivationClaim` — dispatched on `claim.type`, and a claim type with
+no runtime validator is reported as `UNSUPPORTED_SOVEREIGN_CLAIM_TYPE` rather than waved through on the
+strength of a passing signature.
+
+### Subject semantics
+
+| Operation | Invocation subject absent | Invocation subject present |
+| --- | --- | --- |
+| `verify-signed-manifest` | returns the manifest's own `SovereignSubjectRef` | must be **exactly** equal (SM-02 rules, external reference included), else `VERIFIABILITY_SUBJECT_MISMATCH` |
+| `verify-signed-claim` | returns `{ sovereignAssetId: claim.subject }` | its `sovereignAssetId` must equal `claim.subject`; the invocation's own external reference is what survives |
+| `verify-sovereign-proof` | no subject at all | preserved purely as attribution context |
+
+Attribution survives a negative result: an artifact whose signature does not verify is still
+identifiably about subject X, so a failed verification does not erase the subject. Conversely, nothing
+is fabricated — a claim whose subject is not a valid `SovereignAssetId` yields no subject rather than a
+minted one, and a generic payload is never inspected for `sovereignAssetId`, `subject` or `id`, because
+guessing a schema is how a proof check quietly becomes an identity claim.
+
+A claim carries sovereign identity, not the subject's current external reference. That is why the claim
+match rule is sovereign-identity equality only, and why no external reference is ever invented from a
+claim.
+
+### Reason codes: two layers, kept apart
+
+**Verification-result reasons** explain why a verification that ran came back negative. These are the
+underlying primitives' own codes, preserved verbatim rather than renamed or re-prefixed:
+`MANIFEST_DIGEST_MISMATCH`, `SIGNATURE_INVALID`, `PROOF_PAYLOAD_HASH_MISMATCH`, `CLAIM_DIGEST_MISMATCH`,
+`CLAIM_SIGNATURE_INVALID`, `ISSUER_BINDING_UNVERIFIED`, the `INVALID_CLAIM_*` structural codes, plus the
+capsule-owned `VERIFIABILITY_PAYLOAD_NOT_CANONICALIZABLE` and
+`VERIFIABILITY_SOVEREIGN_PROOF_INVALID`.
+
+**Capability-failure reasons** explain why the operation could not execute:
+`VERIFIABILITY_INVALID_INPUT`, `VERIFIABILITY_UNSUPPORTED_OPERATION`, `VERIFIABILITY_SUBJECT_MISMATCH`,
+`VERIFIABILITY_INVALID_SIGNED_MANIFEST_TARGET`, `VERIFIABILITY_INVALID_SIGNED_CLAIM_TARGET`,
+`VERIFIABILITY_INVALID_GENERIC_PROOF_TARGET`, `VERIFIABILITY_KEY_RESOLUTION_FAILED`.
+
+### Determinism
+
+A verification report is a deterministic function of its inputs: the same artifact and the same
+resolver answer produce the same report. It carries no `verifiedAt`, `checkedAt`, `generatedAt`,
+`reportId` or `verificationId` — *when* a verification happened, and under which invocation, is
+recorded truthfully in the SM-03 invocation evidence instead, and the report itself is never signed.
+There is no recursion: a consumer wanting a proof over a verification report uses
+`signSovereignPayload` externally.
+
+### Boundaries Verifiability holds
+
+- **Signing and keys.** No signing operation, no key generation, no key storage, no rotation, no PKI,
+  no global key registry, no trusted key store, no `generateSovereignKeyPair`, no private key field.
+- **Cryptography.** No second canonicalizer, SHA implementation, Ed25519 verifier, base64url decoder or
+  signature engine. `aoc-canonical-json/1` + SHA-256 + Ed25519 remain the only profile: no secp256k1,
+  ECDSA, RSA, BLS, P-256, Keccak, SHA-3, multihash, `personal_sign`, EIP-712 or chain signature format
+  is interpreted, and no new cryptographic dependency is added.
+- **Integrity.** No content bytes are accepted, hashed or compared, and `computeManifestDigest` is not
+  called to "fix" anything.
+- **Identity.** `mintSovereignAssetId` is not called. An imported signed manifest already contains its
+  `SovereignAssetId`.
+- **Provenance.** No claim, standing or lineage is created. A valid signature over a `DerivationClaim`
+  proves the issuer asserted the derivation, never that it happened.
+- **Standing.** No `StandingStatus` is read or written and `contestClaim` is not called. A
+  cryptographically valid claim can be `Contested` at the same moment, and both facts coexist without
+  either adjudicating the other.
+- **Records.** No `CanonicalVerification` is created — a cryptographic check is not a verifier's
+  assessment of whether a claim is *true* — no `VerificationStatus` member is added or assigned, no
+  `VerificationProvider` is required, and nothing is persisted.
+- **Revocation.** No `RevocationLookup`, OCSP, CRL, credential status or chain query. A `verified`
+  binding does **not** imply a non-revoked key.
+- **Trust chains.** No X.509, CA path, DID resolution (`did:key`, `did:web`), web of trust or trust
+  registry. A binding is only as authoritative as the resolver the caller injected.
+- **Time.** `proof.signedAt` is preserved and read, never turned into an expiry, freshness or
+  key-validity-window rule that no canonical primitive owns. A resolver descriptor's `validFrom` /
+  `validUntil` are not evaluated in v1.
+- **Scoring.** No trust, confidence, credibility, reputation, assurance or risk score. Every check
+  reports `valid` / `invalid` / `not_performed`.
+- **Deciding.** No allow, deny, approve, reject, grant, block or enforce. A governance system may
+  later require that verification passed; that is its policy.
+- **Legal semantics.** No `legalOwnerVerified`, `copyrightVerified`, `authorizedDerivative`,
+  `licenseValid` or `legalAuthorityConfirmed` field exists.
+- **Mutation.** The manifest, claim, proof and payload are read and left exactly as they were. No public
+  key is normalized, no `keyId` rewritten, no `payloadHash` repaired, no signature replaced, no artifact
+  re-signed, and no canonicalized rewrite is returned as a "fixed" artifact. A broken proof stays broken.
+- **Other minerals.** `invokeSovereigntyCapability` is not called here. Composition stays the caller's
+  decision, visible in the caller's own evidence.
+- **The outside world.** No filesystem, network, database, chain, RPC, wallet, provider or Enterprise
+  code. Key material either travels inside the `SovereignProof` or comes from the injected resolver;
+  how *that* finds a key is the adapter's concern.
+- **The subject.** No namespace, asset type or business domain is branched on. An alien namespace, a
+  property registry, an external token system, an AI agent and an API resource all verify through
+  exactly the same architecture, and produce byte-identical reports.
+
+### Verifiability alongside its neighbours
+
+| Mineral | Question | Verifiability's relationship |
+| --- | --- | --- |
+| **Integrity** | Do these bytes match this declared content identity? | separate operation, separate invocation; `contentDigest: 'not_performed'` is the seam |
+| **Provenance** | Who asserts what about this subject's origin and lineage? | Verifiability checks the signature on the assertion, never converts it into the assertion being true |
+| **Portability** | Can this representation move? | Portability preserves proof material byte for byte; Verifiability checks it after transport, with an identical report |
+| **Interoperability** | Can the receiver understand what arrived? | a descriptor reports that a `signed-claim` is *present*; it never reports that the signature holds |
+
+`SovereigntyPortabilityBundleV1` is unchanged by SM-08 — its six-field contract gained no verification
+field — and the SM-07 profile and descriptor are unchanged too: describing an artifact and verifying it
+are different jobs, and a descriptor that started saying `verified-signature` because a capsule now
+exists would be reporting a check it never ran.
+
+Verifiability is also not a runtime *dependency* of any of them. A caller holding a `SignedClaim`
+directly verifies it with no Identity, Portability or Interoperability invocation at all.
+
+### What Verifiability does not yet cover
+
+Production means the defined v1 contract is real and consumable — not that every verification problem
+is solved. Still open, and deliberately not papered over:
+
+- **Proof issuance is not a capability operation.** Signing remains available through the existing
+  low-level primitives; managed signing and KMS integration are deferred.
+- **No key lifecycle.** No generation, storage, rotation, escrow or recovery.
+- **No revocation or credential status.** Issuer binding does not imply a currently valid key.
+- **No certificate chain, PKI or DID resolution**, and no external wallet signature profiles.
+- **No key validity-window policy**, because no existing canonical primitive defines one.
+- **Issuer binding is optional**, and a resolver binding is only as authoritative as the resolver.
+- **Only three claim types are structurally verified** — Origin, Authorship and Derivation — because
+  those are the ones with real runtime validators.
+- **Nothing is persisted.** No verification result is stored, no `CanonicalVerification` record is
+  created, and claim standing is never altered.
+- **Cryptographic validity is not truth.** Protocol reports what the mathematics says and stops there.
+
 ### Evidence from the capsules
 
 All three rely entirely on the common SM-03 invocation evidence, and none widens it. An Identity
@@ -1425,16 +1740,18 @@ resolution semantics in Protocol, leaving the field absent is the honest option 
 
 ### Status
 
-The socket exists and **five of the eight** minerals now fill it. `AOC.IDENTITY`, `AOC.INTEGRITY`,
-`AOC.PROVENANCE`, `AOC.PORTABILITY` and `AOC.INTEROPERABILITY` are production capsules consuming the
-common invocation and evidence architecture end-to-end, verified from a real `npm pack` tarball by all
-three fixtures in `test-consumers/` — including the first five-mineral flow, in which Integrity
-measures bytes, Identity mints the subject, Provenance asserts its origin and derivation and records a
-contestation, Portability exports the canonical bundle, a second runtime holding only the JSON string
-imports it, and Interoperability describes what arrived and reports full, partial and incompatible
-consumption against three different declared support sets.
+The socket exists and **six of the eight** minerals now fill it. `AOC.IDENTITY`, `AOC.INTEGRITY`,
+`AOC.PROVENANCE`, `AOC.PORTABILITY`, `AOC.INTEROPERABILITY` and `AOC.VERIFIABILITY` are production
+capsules consuming the common invocation and evidence architecture end-to-end, verified from a real
+`npm pack` tarball by all three fixtures in `test-consumers/` — including the first six-mineral flow,
+in which Integrity measures bytes, Identity mints the subject, Provenance asserts its origin and
+derivation and records a contestation, a TEST-ONLY issuer signs the manifest and the claim through the
+existing low-level primitives, Portability exports the canonical bundle, a second runtime holding only
+the JSON string imports it, Interoperability describes what arrived, and Verifiability independently
+checks the transported proofs — reporting a valid signature, an honestly unperformed content check, an
+optional issuer/key binding, and a fail-closed invalid result for an artifact tampered with in transit.
 
-The remaining three are **not** production capsules, and they do not become ones merely because five
+The remaining two are **not** production capsules, and they do not become ones merely because six
 now are:
 
 | Mineral | Production capsule |
@@ -1444,18 +1761,20 @@ now are:
 | Provenance | **yes** — origin, authorship, derivation, contestation and lineage traversal |
 | Portability | **yes** — canonical bundle export and import, provider-neutral, no reminting |
 | Interoperability | **yes** — self-describing profile, bundle descriptor, and full/partial/incompatible compatibility assessment |
-| Verifiability | not yet — strong signing and verification *primitives* exist in `@aoc/protocol/manifest`, but no capsule wraps them |
+| Verifiability | **yes** — signed manifest, signed claim and generic sovereign proof verification, with explicit per-check outcomes and optional issuer/key binding |
 | Licensing & Terms | not yet |
 | Governance Compatibility | not yet |
 
-Their transfer, terms, verification and governance semantics belong to their own inputs and outputs —
-never to this common contract. Adding a production capsule is not a capability-contract change:
+Their terms and governance semantics belong to their own inputs and outputs — never to this common
+contract. Adding a production capsule is not a capability-contract change:
 capability versions remain `1.0.0`, and the canonical inventory remains eight. Derivation and lineage
 are Provenance *semantics*, not a ninth mineral — there is no `AOC.LINEAGE`, `AOC.AUTHORSHIP`,
 `AOC.DERIVATION` or `AOC.CUSTODY`. The portability bundle is likewise a Portability *contract*, not an
 `AOC.BUNDLE` or `AOC.EXPORT` mineral, and the interoperability profile, semantic vocabulary,
 descriptor and compatibility report are Interoperability *artifacts* — there is no `AOC.COMPATIBILITY`,
-`AOC.TRANSLATION`, `AOC.SCHEMA` or `AOC.SEMANTICS`. There is still no global implementation registry
+`AOC.TRANSLATION`, `AOC.SCHEMA` or `AOC.SEMANTICS`. Cryptographic proof and signature semantics are
+likewise Verifiability *semantics*, not a ninth mineral: there is no `AOC.CRYPTOGRAPHY`,
+`AOC.SIGNATURE`, `AOC.TRUST`, `AOC.PROOF` or `AOC.KEYS`. There is still no global implementation registry
 and no profile registry: a capsule is passed explicitly to `invokeSovereigntyCapability`, the one
 canonical profile is a frozen constant, and wiring several capsules together is a future composition
 concern.

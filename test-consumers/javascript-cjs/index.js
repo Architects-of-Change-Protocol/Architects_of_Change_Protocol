@@ -1110,6 +1110,301 @@ const productionInteroperabilityAcceptance = async () => {
   return descriptor.subject.sovereignAssetId;
 };
 
+/**
+ * SM-08 — the SIXTH production Sovereignty Mineral, AOC.VERIFIABILITY.
+ *
+ * The key pair below is TEST ONLY fixture material: it exists so there is
+ * something signed to verify. The Verifiability capsule never receives it —
+ * it verifies and never signs, and the signing here goes through the
+ * pre-existing public low-level primitives.
+ */
+const productionVerifiabilityAcceptance = async () => {
+  const correlationId = 'sm08-six-mineral-js-001';
+  const integrityRef = sovereigntyCapabilities.getSovereigntyCapabilityRefByKey('integrity');
+  const identityRef = sovereigntyCapabilities.getSovereigntyCapabilityRefByKey('identity');
+  const provenanceRef = sovereigntyCapabilities.getSovereigntyCapabilityRefByKey('provenance');
+  const portabilityRef = sovereigntyCapabilities.getSovereigntyCapabilityRefByKey('portability');
+  const interoperabilityRef = sovereigntyCapabilities.getSovereigntyCapabilityRefByKey('interoperability');
+  const verifiabilityRef = sovereigntyCapabilities.getSovereigntyCapabilityRefByKey('verifiability');
+
+  const integrity = sovereigntyCapabilities.createIntegritySovereigntyCapabilityImplementation();
+  const identityCapsule = sovereigntyCapabilities.createIdentitySovereigntyCapabilityImplementation();
+  const provenance = sovereigntyCapabilities.createProvenanceSovereigntyCapabilityImplementation();
+  const portabilityCapsule = sovereigntyCapabilities.createPortabilitySovereigntyCapabilityImplementation();
+  const interoperabilityCapsule = sovereigntyCapabilities.createInteroperabilitySovereigntyCapabilityImplementation();
+
+  const capsule = sovereigntyCapabilities.createVerifiabilitySovereigntyCapabilityImplementation();
+  assert(
+    capsule.capability.id === 'aoc:sovereignty-capability:verifiability',
+    'production Verifiability capsule does not advertise the canonical id',
+  );
+  assert(
+    capsule.capability.version === verifiabilityRef.version,
+    'production Verifiability capsule drifted from the canonical capability version',
+  );
+
+  const invoke = async (capability, input, options = {}) =>
+    sovereigntyCapabilities.invokeSovereigntyCapability(
+      sovereigntyCapabilities.buildSovereigntyCapabilityInvocation({
+        capability,
+        correlationId,
+        ...options,
+        input,
+      }),
+      options.implementation ?? capsule,
+    );
+
+  // 1 — REAL AOC.INTEGRITY.
+  const integrityResult = await invoke(
+    integrityRef,
+    { operation: 'compute-content-identity', bytes: new TextEncoder().encode('sm08-js-consumer-fixture-bytes') },
+    { implementation: integrity },
+  );
+  assert(integrityResult.status === 'succeeded', 'real Integrity invocation failed');
+  const contentIdentity = integrityResult.output.contentIdentity;
+
+  // 2 — REAL AOC.IDENTITY.
+  const identityResult = await invoke(
+    identityRef,
+    {
+      registrant: 'principal:sm08-js-issuer',
+      contentIdentity,
+      externalReference: identity.buildSovereignExternalReference({
+        namespace: 'example:external-token-system',
+        id: 'token-4471',
+        locator: 'ledger://chain-x/token/4471',
+      }),
+    },
+    { implementation: identityCapsule },
+  );
+  assert(identityResult.status === 'succeeded', 'real Identity invocation failed');
+  const subjectX = identityResult.output.subject;
+
+  // 3 — TEST-ONLY issuer signs the manifest with the existing public primitive.
+  const testKeyPair = manifestApi.generateSovereignKeyPair();
+  const otherTestKeyPair = manifestApi.generateSovereignKeyPair();
+  const signedManifest = manifestApi.signSovereignManifest(
+    identityResult.output.manifest,
+    testKeyPair.privateKeyPem,
+    testKeyPair.signingKey,
+    new Date('2026-04-01T09:00:00.000Z'),
+  );
+
+  // 4 — REAL AOC.PROVENANCE, then sign the claim.
+  const sourceIdentityResult = await invoke(
+    identityRef,
+    { registrant: 'principal:sm08-js-issuer' },
+    { implementation: identityCapsule },
+  );
+  assert(sourceIdentityResult.status === 'succeeded', 'real Identity invocation failed');
+  const derivationResult = await invoke(
+    provenanceRef,
+    {
+      operation: 'record-derivation',
+      claimId: 'claim:derivation:sm08-js-consumer',
+      issuer: 'principal:sm08-js-issuer',
+      issuedAt: '2026-04-01T09:00:00.000Z',
+      sourceSovereignAssetIds: [sourceIdentityResult.output.subject.sovereignAssetId],
+      relation: manifestApi.DerivationRelationKind.TransformedFrom,
+    },
+    { implementation: provenance, subject: subjectX },
+  );
+  assert(derivationResult.status === 'succeeded', 'real Provenance invocation failed');
+  const signedClaim = manifestApi.signClaim(
+    derivationResult.output.claim,
+    testKeyPair.privateKeyPem,
+    testKeyPair.signingKey,
+    new Date('2026-04-01T09:00:00.000Z'),
+  );
+
+  // 5 — REAL AOC.PORTABILITY: export, transport, import.
+  const exportResult = await invoke(
+    portabilityRef,
+    {
+      operation: 'export-bundle',
+      manifests: [{ kind: 'signed-manifest', signedManifest }],
+      claims: [{ kind: 'signed-claim', signedClaim }],
+    },
+    { implementation: portabilityCapsule, subject: subjectX },
+  );
+  assert(exportResult.status === 'succeeded', 'real Portability export failed');
+  const wire = exportResult.output.serializedBundle;
+
+  const importResult = await invoke(
+    portabilityRef,
+    { operation: 'import-bundle', serializedBundle: wire },
+    { implementation: portabilityCapsule },
+  );
+  assert(importResult.status === 'succeeded', 'real Portability import failed');
+  const importedManifestArtifact = importResult.output.bundle.manifests[0];
+  const importedClaimArtifact = importResult.output.bundle.claims[0];
+  assert(importedManifestArtifact.kind === 'signed-manifest', 'the signed manifest did not survive transport');
+  assert(importedClaimArtifact.kind === 'signed-claim', 'the signed claim did not survive transport');
+  assert(
+    canonical.canonicalizeJSON(importedManifestArtifact.signedManifest)
+      === canonical.canonicalizeJSON(signedManifest),
+    'Portability altered the signed manifest in transit',
+  );
+
+  // 6 — REAL AOC.INTEROPERABILITY describes what arrived.
+  const describeResult = await invoke(
+    interoperabilityRef,
+    { operation: 'describe-bundle', bundle: importResult.output.bundle },
+    { implementation: interoperabilityCapsule },
+  );
+  assert(describeResult.status === 'succeeded', 'real Interoperability describe failed');
+  assert(
+    describeResult.output.descriptor.present.manifestArtifactKinds.includes('signed-manifest'),
+    'the descriptor did not detect the signed manifest',
+  );
+  assert(
+    describeResult.output.descriptor.present.claimArtifactKinds.includes('signed-claim'),
+    'the descriptor did not detect the signed claim',
+  );
+
+  // 7 — REAL AOC.VERIFIABILITY: positive manifest case.
+  const manifestResult = await invoke(verifiabilityRef, {
+    operation: 'verify-signed-manifest',
+    signedManifest: importedManifestArtifact.signedManifest,
+  });
+  assert(manifestResult.status === 'succeeded', 'real Verifiability manifest verification failed to execute');
+  const manifestChecks = manifestResult.output.verification.checks;
+  assert(manifestResult.output.verification.valid, 'a valid signed manifest did not verify');
+  assert(manifestChecks.manifestStructure === 'valid', 'manifest structure check missing');
+  assert(manifestChecks.manifestDigest === 'valid', 'manifest digest check missing');
+  assert(manifestChecks.signature === 'valid', 'manifest signature check missing');
+  assert(
+    manifestChecks.contentDigest === 'not_performed',
+    `Verifiability performed a hidden content check: ${manifestChecks.contentDigest}`,
+  );
+  assert(manifestChecks.issuerBinding === 'not_performed', 'an issuer binding was reported without a resolver');
+  assert(
+    manifestResult.subject.sovereignAssetId === subjectX.sovereignAssetId,
+    'Verifiability did not attribute the artifact subject',
+  );
+
+  // 8 — positive claim case.
+  const claimResult = await invoke(verifiabilityRef, {
+    operation: 'verify-signed-claim',
+    signedClaim: importedClaimArtifact.signedClaim,
+  });
+  assert(claimResult.status === 'succeeded', 'real Verifiability claim verification failed to execute');
+  assert(claimResult.output.verification.valid, 'a valid signed claim did not verify');
+  assert(claimResult.output.verification.checks.claimStructure === 'valid', 'claim structure check missing');
+
+  // 9 — generic sovereign proof, subjectless.
+  const genericPayload = { resultType: 'example-protocol-result', value: 42 };
+  const genericProof = manifestApi.signSovereignPayload(
+    genericPayload,
+    testKeyPair.privateKeyPem,
+    testKeyPair.signingKey,
+    new Date('2026-04-01T09:00:00.000Z'),
+  );
+  const proofResult = await invoke(verifiabilityRef, {
+    operation: 'verify-sovereign-proof',
+    payload: genericPayload,
+    proof: genericProof,
+  });
+  assert(proofResult.status === 'succeeded', 'generic proof verification failed to execute');
+  assert(proofResult.output.verification.valid, 'a valid generic sovereign proof did not verify');
+  assert(proofResult.subject === undefined, 'the generic proof operation invented a subject');
+
+  // 10 — TEST-ONLY resolver proves the optional issuer/key binding.
+  const boundCapsule = sovereigntyCapabilities.createVerifiabilitySovereigntyCapabilityImplementation({
+    verificationKeyResolver: {
+      resolveVerificationKey: (issuer) =>
+        issuer === 'principal:sm08-js-issuer' ? { keyId: testKeyPair.signingKey.keyId, issuer } : undefined,
+    },
+  });
+  const boundResult = await invoke(
+    verifiabilityRef,
+    { operation: 'verify-signed-manifest', signedManifest: importedManifestArtifact.signedManifest },
+    { implementation: boundCapsule },
+  );
+  assert(boundResult.status === 'succeeded', 'the bound Verifiability invocation failed to execute');
+  assert(
+    boundResult.output.verification.checks.issuerBinding === 'verified',
+    'a correctly bound issuer key was not reported as verified',
+  );
+
+  const wrongBoundCapsule = sovereigntyCapabilities.createVerifiabilitySovereigntyCapabilityImplementation({
+    verificationKeyResolver: {
+      resolveVerificationKey: (issuer) => ({ keyId: otherTestKeyPair.signingKey.keyId, issuer }),
+    },
+  });
+  const wrongBindingResult = await invoke(
+    verifiabilityRef,
+    { operation: 'verify-signed-manifest', signedManifest: importedManifestArtifact.signedManifest },
+    { implementation: wrongBoundCapsule },
+  );
+  assert(wrongBindingResult.status === 'succeeded', 'a wrong binding was reported as an execution failure');
+  assert(
+    wrongBindingResult.output.verification.checks.signature === 'valid',
+    'a wrong binding invalidated the signature check',
+  );
+  assert(
+    wrongBindingResult.output.verification.checks.issuerBinding === 'unverified',
+    'a wrong issuer binding was not reported as unverified',
+  );
+  assert(!wrongBindingResult.output.verification.valid, 'a wrong issuer binding still verified overall');
+
+  // 11 — NEGATIVE: tamper a transported signed manifest after signing.
+  const tamperedTransport = JSON.parse(wire);
+  tamperedTransport.manifests[0].signedManifest.manifest.registrant = 'principal:someone-else-entirely';
+  const tamperedImport = await invoke(
+    portabilityRef,
+    { operation: 'import-bundle', serializedBundle: JSON.stringify(tamperedTransport) },
+    { implementation: portabilityCapsule },
+  );
+  assert(tamperedImport.status === 'succeeded', 'the tampered bundle could not be imported');
+  const tamperedResult = await invoke(verifiabilityRef, {
+    operation: 'verify-signed-manifest',
+    signedManifest: tamperedImport.output.bundle.manifests[0].signedManifest,
+  });
+  assert(tamperedResult.status === 'succeeded', 'a tampered artifact was reported as an execution failure');
+  assert(!tamperedResult.output.verification.valid, 'a tampered signed manifest verified');
+  assert(
+    tamperedResult.output.verification.reasons.includes('MANIFEST_DIGEST_MISMATCH'),
+    'the tampered manifest carried no digest reason',
+  );
+  assert(
+    tamperedResult.output.verification.reasons.includes('SIGNATURE_INVALID'),
+    'the tampered manifest carried no signature reason',
+  );
+  assert(tamperedResult.evidence.outcome === 'succeeded', 'a fail-closed verification was recorded as failed');
+
+  // 12 — malformed invocation IS an execution failure.
+  const malformed = await invoke(verifiabilityRef, { operation: 'sign-claim' });
+  assert(
+    malformed.status === 'failed' && malformed.reasonCodes[0] === 'VERIFIABILITY_UNSUPPORTED_OPERATION',
+    'an unsupported (signing) operation was not rejected',
+  );
+
+  // 13 — evidence hygiene.
+  for (const result of [manifestResult, claimResult, proofResult, boundResult, tamperedResult, malformed]) {
+    assert(
+      sovereigntyCapabilities.isValidSovereigntyCapabilityInvocationEvidence(result.evidence),
+      'invalid Verifiability evidence',
+    );
+    const serialized = JSON.stringify(result.evidence);
+    for (const leak of [
+      testKeyPair.privateKeyPem,
+      testKeyPair.signingKey.publicKey,
+      testKeyPair.signingKey.keyId,
+      signedManifest.proof.signature,
+      signedManifest.manifestDigest,
+      contentIdentity.digest,
+      'BEGIN PRIVATE KEY',
+      'issuerBinding',
+      'contentDigest',
+    ]) {
+      assert(!serialized.includes(leak), `generic Verifiability evidence leaked "${leak.slice(0, 24)}"`);
+    }
+  }
+
+  return subjectX.sovereignAssetId;
+};
+
 manifestApi
   .verifySovereignManifest(nonByteSubject.roundTripped)
   .then((verification) => {
@@ -1129,8 +1424,9 @@ manifestApi
     const provenanceDerivationId = await productionProvenanceAcceptance();
     const portableSubjectId = await productionPortabilityAcceptance();
     const describedSubjectId = await productionInteroperabilityAcceptance();
+    const verifiedSubjectId = await productionVerifiabilityAcceptance();
     console.log(
-      `javascript-cjs consumer OK: claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${capabilities.length} nonByteSubject=${nonByteSubject.sovereignAssetId} capabilityInvocation=${capabilityInvocationId} productionMinerals=${productionSubjectId} provenanceDerivation=${provenanceDerivationId} portableSubject=${portableSubjectId} describedSubject=${describedSubjectId}`,
+      `javascript-cjs consumer OK: claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${capabilities.length} nonByteSubject=${nonByteSubject.sovereignAssetId} capabilityInvocation=${capabilityInvocationId} productionMinerals=${productionSubjectId} provenanceDerivation=${provenanceDerivationId} portableSubject=${portableSubjectId} describedSubject=${describedSubjectId} verifiedSubject=${verifiedSubjectId}`,
     );
   })
   .catch((error) => {
