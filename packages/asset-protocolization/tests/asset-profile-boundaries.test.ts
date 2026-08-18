@@ -54,15 +54,28 @@ const sources = (): readonly { readonly file: string; readonly source: string }[
 
 describe('asset protocolization package boundaries', () => {
   it('imports nothing but declared @aoc/protocol subpaths, relative modules and Node built-ins', () => {
+    // The allow-list is read from Protocol's own `exports` rather than restated
+    // here, so a subpath Protocol adds or withdraws is honoured immediately and
+    // this test never becomes a second, drifting copy of LAW-004.
+    const protocolManifest = JSON.parse(
+      readFileSync(join(packageRoot, '..', 'protocol', 'package.json'), 'utf8'),
+    );
+    const declaredSubpaths = new Set(
+      Object.keys(protocolManifest.exports)
+        .filter((key) => key !== './package.json')
+        .map((key) => `@aoc/protocol${key === '.' ? '' : key.slice(1)}`),
+    );
+
     const foreign = verticalImports().filter(({ specifier }) => {
       if (specifier.startsWith('.')) return false;
       if (specifier.startsWith('node:')) return false;
-      return !/^@aoc\/protocol(?:\/(?:contracts|claims|errors|adapters|canonical|identity|manifest|portability|sovereignty-capabilities))?$/.test(
-        specifier,
-      );
+      return !declaredSubpaths.has(specifier);
     });
 
     expect(foreign).toEqual([]);
+    // Guard the guard: an empty allow-list would make the assertion above
+    // vacuous rather than meaningful.
+    expect(declaredSubpaths.has('@aoc/protocol/claims')).toBe(true);
   });
 
   it('never reaches into another package\'s source, internals or an Enterprise/runtime module', () => {
