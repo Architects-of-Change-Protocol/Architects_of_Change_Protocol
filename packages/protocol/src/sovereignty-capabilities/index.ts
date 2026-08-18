@@ -194,3 +194,25 @@ export type {
   PortabilitySovereigntyCapabilityOutput,
   PortabilitySovereigntyCapabilityReasonCode,
 } from './capsules';
+
+// --- SM-07: production Interoperability capsule ----------------------------
+
+export {
+  INTEROPERABILITY_SOVEREIGNTY_CAPABILITY_OPERATIONS,
+  INTEROPERABILITY_SOVEREIGNTY_CAPABILITY_REASON_CODES,
+  createInteroperabilitySovereigntyCapabilityImplementation,
+  isValidInteroperabilitySovereigntyCapabilityInput,
+  validateInteroperabilitySovereigntyCapabilityInput,
+} from './capsules';
+export type {
+  AssessInteroperabilityCompatibilityInput,
+  AssessInteroperabilityCompatibilityOutput,
+  DescribeInteroperabilityBundleInput,
+  DescribeInteroperabilityBundleOutput,
+  InteroperabilitySovereigntyCapabilityImplementation,
+  InteroperabilitySovereigntyCapabilityInput,
+  InteroperabilitySovereigntyCapabilityInputValidationResult,
+  InteroperabilitySovereigntyCapabilityOperation,
+  InteroperabilitySovereigntyCapabilityOutput,
+  InteroperabilitySovereigntyCapabilityReasonCode,
+} from './capsules';
