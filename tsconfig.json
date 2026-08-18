@@ -60,6 +60,9 @@
     },
     {
       "path": "packages/aoc-sdk"
+    },
+    {
+      "path": "packages/asset-protocolization"
     }
   ]
 }
