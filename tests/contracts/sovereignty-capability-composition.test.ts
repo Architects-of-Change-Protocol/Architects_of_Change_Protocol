@@ -352,21 +352,34 @@ describe('SM-04 / regression and boundary guarantees (REGRESSION TESTS)', () => 
     }
   });
 
-  it('REGRESSION 27 — no mineral beyond the shipped five is pulled forward', () => {
+  it('REGRESSION 27 — no mineral beyond the shipped six is pulled forward', () => {
     // SM-05 legitimately added `provenance` as the third production capsule,
-    // SM-06 `portability` as the fourth and SM-07 `interoperability` as the
-    // fifth, so none of them is forbidden here. The remaining three are still
-    // canonical descriptors with no implementation, and this guards against one
-    // of them being resolved by a capsule that does not exist yet.
+    // SM-06 `portability` as the fourth, SM-07 `interoperability` as the fifth
+    // and SM-08 `verifiability` as the sixth, so none of them is forbidden here.
+    // The remaining two are still canonical descriptors with no implementation,
+    // and this guards against one of them being resolved by a capsule that does
+    // not exist yet.
     for (const { source } of capsuleSources()) {
       for (const term of [
-        'verifiability',
         'licensing',
         'governance-compatibility',
       ]) {
         expect(source.toLowerCase()).not.toContain(`requiresovereigntycapabilityref('${term}`);
       }
     }
+    // Exactly one capsule resolves each shipped mineral, and exactly six do.
+    const resolved = capsuleSources()
+      .flatMap(({ source }) => [...source.matchAll(/requireSovereigntyCapabilityRef\('([a-z_]+)'\)/g)])
+      .map((match) => match[1])
+      .sort();
+    expect(resolved).toEqual([
+      'identity',
+      'integrity',
+      'interoperability',
+      'portability',
+      'provenance',
+      'verifiability',
+    ]);
   });
 
   it('the capsules import only Protocol-internal identity, manifest, claims, portability, interoperability and SM-03 modules', () => {
@@ -376,9 +389,13 @@ describe('SM-04 / regression and boundary guarantees (REGRESSION TESTS)', () => 
     // Portability capsule, which reads the portable bundle contract it exports
     // and imports. SM-07 adds the Interoperability capsule, which reads that
     // same bundle contract plus the interoperability contract layer it
-    // describes representations with. Still strictly Protocol-internal: no
-    // Enterprise, runtime, provider or storage module.
-    const allowed = /^(\.\.\/\.\.\/(identity|manifest|portability|interoperability|claims\/(primitives|standing|timestamps))|\.\.\/(capability-ref|implementation|invocation|ids|time)|\.\/(canonical-ref|identity|integrity|interoperability|portability|provenance))$/;
+    // describes representations with. SM-08 adds the Verifiability capsule,
+    // which reads the manifest layer's verification primitives, the one
+    // canonical JSON profile, and — type-only — the Protocol-owned
+    // `VerificationKeyResolver` adapter contract an optional issuer binding is
+    // injected through. Still strictly Protocol-internal: no Enterprise,
+    // runtime, provider or storage module.
+    const allowed = /^(\.\.\/\.\.\/(adapters|canonical|identity|manifest|portability|interoperability|claims\/(primitives|standing|timestamps))|\.\.\/(capability-ref|implementation|invocation|ids|time)|\.\/(canonical-ref|identity|integrity|interoperability|portability|provenance|verifiability))$/;
     for (const { file, source } of capsuleSources()) {
       const specifiers = [...source.matchAll(/(?:import|export)[^'"]*from\s+['"]([^'"]+)['"]/g)].map((m) => m[1]);
       for (const specifier of specifiers) {
