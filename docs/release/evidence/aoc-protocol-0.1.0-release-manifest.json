@@ -29,7 +29,7 @@
   },
   "source": {
     "repository": "git+https://github.com/Architects-of-Change-Protocol/Architects_of_Change_Protocol.git",
-    "gitCommit": "f30a72d46944e491a44ef51092dea790c24bc192",
+    "gitCommit": "73b259a5803628aea8108ec7927e790ed73deef0",
     "protocolWorkspaceClean": true
   },
   "toolchain": {
@@ -45,7 +45,7 @@
     "npmIntegrity": "sha512-4hIA1oWik+n3UBTS2rO2MhITYzFgjGxNDDeWks8m8W/mObxBBLodIDgkbja91I3o3BBdRl2EseGC1rgoA6pjDg==",
     "reproducible": true
   },
-  "generatedAt": "2026-08-18T20:20:50.778Z",
+  "generatedAt": "2026-08-18T20:53:49.509Z",
   "files": [
     "LICENSE",
     "NOTICE",
