@@ -98,6 +98,9 @@
       "@aoc/protocol/interoperability": [
         "packages/protocol/src/interoperability"
       ],
+      "@aoc/protocol/licensing": [
+        "packages/protocol/src/licensing"
+      ],
       "@aoc/protocol/sovereignty-capabilities": [
         "packages/protocol/src/sovereignty-capabilities"
       ],

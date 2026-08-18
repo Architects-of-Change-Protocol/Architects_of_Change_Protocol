@@ -13,10 +13,20 @@ import {
   serializeSovereigntyPortabilityBundle,
 } from '@aoc/protocol/portability';
 import {
+  AOC_LICENSING_ACTION_TERM_IDS,
+  AOC_LICENSING_DECLARATION_TERM_IDS,
+  AOC_LICENSING_SEMANTIC_NAMESPACE,
+  SOVEREIGN_LICENSE_TERMS_SCHEMA_VERSION,
+  SovereignLicenseTermsRuleEffect,
+  isValidLicenseTermsClaim,
+} from '@aoc/protocol/licensing';
+import type { LicenseTermsClaim, SovereignLicenseTermsRuleV1 } from '@aoc/protocol/licensing';
+import {
   buildSovereigntyCapabilityInvocation,
   createIdentitySovereigntyCapabilityImplementation,
   createIntegritySovereigntyCapabilityImplementation,
   createInteroperabilitySovereigntyCapabilityImplementation,
+  createLicensingTermsSovereigntyCapabilityImplementation,
   createPortabilitySovereigntyCapabilityImplementation,
   createProvenanceSovereigntyCapabilityImplementation,
   createVerifiabilitySovereigntyCapabilityImplementation,
@@ -1446,6 +1456,475 @@ for (const result of [
   }
 }
 
+// --- SM-09: the REAL production AOC.LICENSING_TERMS capsule ------------------
+// Composed with the other six into a seven-mineral flow, all from the installed
+// tarball. Nothing here is a fake, a stub or a re-implementation, and the only
+// signing uses the existing public low-level primitives with TEST-ONLY keys.
+
+const sm09CorrelationId = 'sm09-esm-seven-mineral-001';
+const sm09LicensingRef = getSovereigntyCapabilityRefByKey('licensing_terms') as SovereigntyCapabilityRef;
+const sm09Licensing = createLicensingTermsSovereigntyCapabilityImplementation();
+if (sm09Licensing.capability.id !== 'aoc:sovereignty-capability:licensing-terms') {
+  throw new Error('production Licensing & Terms capsule does not advertise the canonical id');
+}
+if (sm09Licensing.capability.version !== sm09LicensingRef.version) {
+  throw new Error('production Licensing & Terms capsule drifted from the canonical capability version');
+}
+
+const sm09Run = async <TOutput>(
+  capability: SovereigntyCapabilityRef,
+  implementation: SovereigntyCapabilityImplementation<never, TOutput>,
+  input: unknown,
+  subject?: SovereignSubjectRef,
+) =>
+  invokeSovereigntyCapability(
+    buildSovereigntyCapabilityInvocation({
+      capability,
+      correlationId: sm09CorrelationId,
+      input: input as never,
+      ...(subject === undefined ? {} : { subject }),
+    }),
+    implementation,
+  );
+
+const sm09Integrity = await sm09Run(
+  getSovereigntyCapabilityRefByKey('integrity') as SovereigntyCapabilityRef,
+  createIntegritySovereigntyCapabilityImplementation() as never,
+  { operation: 'compute-content-identity', bytes: new TextEncoder().encode('sm09-esm-consumer-fixture-bytes') },
+);
+if (sm09Integrity.status !== 'succeeded') throw new Error('real Integrity invocation failed');
+const sm09ContentIdentity = (sm09Integrity.output as { contentIdentity: unknown }).contentIdentity;
+
+const sm09Identity = await sm09Run(
+  getSovereigntyCapabilityRefByKey('identity') as SovereigntyCapabilityRef,
+  createIdentitySovereigntyCapabilityImplementation() as never,
+  {
+    registrant: 'principal:sm09-esm-registrant',
+    contentIdentity: sm09ContentIdentity,
+    externalReference: buildSovereignExternalReference({
+      namespace: 'example.real-estate',
+      id: 'parcel-77',
+      locator: 'registry://land/parcel-77',
+    }),
+  },
+);
+if (sm09Identity.status !== 'succeeded') throw new Error('real Identity invocation failed');
+const sm09Subject = (sm09Identity.output as { subject: SovereignSubjectRef }).subject;
+const sm09Manifest = (sm09Identity.output as { manifest: { registrant: unknown } }).manifest;
+
+const sm09Provenance = await sm09Run(
+  getSovereigntyCapabilityRefByKey('provenance') as SovereigntyCapabilityRef,
+  createProvenanceSovereigntyCapabilityImplementation() as never,
+  {
+    operation: 'record-derivation',
+    claimId: 'claim:sm09-esm-derivation',
+    issuer: 'principal:sm09-esm-issuer',
+    issuedAt: '2026-08-18T09:00:00.000Z',
+    sourceSovereignAssetIds: [parseSovereignAssetId(mintSovereignAssetId())],
+    relation: DerivationRelationKind.TransformedFrom,
+    statement: 'asserted, never established',
+  },
+  sm09Subject,
+);
+if (sm09Provenance.status !== 'succeeded') throw new Error('real Provenance invocation failed');
+const sm09DerivationClaim = (sm09Provenance.output as { claim: DerivationClaim }).claim;
+
+// Fixture data only: one issuer's declaration in one test, claiming no legal
+// universality, and Protocol draws no conclusion from it.
+const sm09Rules: readonly SovereignLicenseTermsRuleV1[] = [
+  {
+    id: 'R1',
+    effect: SovereignLicenseTermsRuleEffect.Permission,
+    action: { namespace: AOC_LICENSING_SEMANTIC_NAMESPACE, termRef: AOC_LICENSING_ACTION_TERM_IDS.use },
+    statement: 'Use is permitted.',
+  },
+  {
+    id: 'R2',
+    effect: SovereignLicenseTermsRuleEffect.Permission,
+    action: { namespace: AOC_LICENSING_SEMANTIC_NAMESPACE, termRef: AOC_LICENSING_ACTION_TERM_IDS.reproduce },
+    statement: 'Reproduction is permitted.',
+  },
+  {
+    id: 'R3',
+    effect: SovereignLicenseTermsRuleEffect.Restriction,
+    action: { namespace: AOC_LICENSING_SEMANTIC_NAMESPACE, termRef: AOC_LICENSING_ACTION_TERM_IDS.commercialUse },
+    statement: 'Commercial use is restricted.',
+  },
+  {
+    id: 'R4',
+    effect: SovereignLicenseTermsRuleEffect.Obligation,
+    action: { namespace: AOC_LICENSING_SEMANTIC_NAMESPACE, termRef: AOC_LICENSING_ACTION_TERM_IDS.attribute },
+    statement: 'Attribution must be retained.',
+  },
+  {
+    id: 'R5',
+    effect: SovereignLicenseTermsRuleEffect.Permission,
+    action: { namespace: 'example.domain', termRef: 'example.domain:special-use' },
+    statement: 'Special use permitted per Agreement A-17.',
+  },
+];
+
+const sm09Declare = await sm09Run(
+  sm09LicensingRef,
+  sm09Licensing as never,
+  {
+    operation: 'declare-license-terms',
+    claimId: 'claim:sm09-esm-license',
+    issuer: 'principal:sm09-esm-issuer',
+    statement: 'Terms declared by the issuer over this subject.',
+    audience: { kind: 'Public' },
+    rules: sm09Rules,
+    issuedAt: '2026-08-18T09:00:00.000Z',
+    effectiveAt: '2026-09-01T00:00:00.000Z',
+    expiresAt: '2027-09-01T00:00:00.000Z',
+    evidenceRefs: ['evidence:contract:A-17'],
+  },
+  sm09Subject,
+);
+if (sm09Declare.status !== 'succeeded') throw new Error('real Licensing & Terms declaration failed');
+const sm09LicenseClaim = (sm09Declare.output as { claim: LicenseTermsClaim }).claim;
+
+if (sm09LicenseClaim.subject !== sm09Subject.sovereignAssetId) {
+  throw new Error('terms were declared over the wrong subject');
+}
+if (sm09LicenseClaim.type !== ClaimType.Authorship) {
+  throw new Error('the licensing claim left the AuthorityClaim family');
+}
+if (sm09LicenseClaim.metadata.kind !== AuthorityClaimKind.License) {
+  throw new Error('the licensing claim lost its License kind');
+}
+if (sm09LicenseClaim.metadata.terms.schemaVersion !== SOVEREIGN_LICENSE_TERMS_SCHEMA_VERSION) {
+  throw new Error('the terms schema version drifted');
+}
+if (sm09LicenseClaim.metadata.terms.rules.map((rule) => rule.id).join(',') !== 'R1,R2,R3,R4,R5') {
+  throw new Error('caller-authored rule order was not preserved');
+}
+if (sm09LicenseClaim.metadata.terms.effectiveAt !== '2026-09-01T00:00:00.000Z') {
+  throw new Error('effectiveAt was lost');
+}
+if (sm09LicenseClaim.expiresAt !== '2027-09-01T00:00:00.000Z') throw new Error('expiresAt was lost');
+if (!isValidLicenseTermsClaim(sm09LicenseClaim)) {
+  throw new Error('the declared claim does not satisfy its own validator');
+}
+if (sm09LicenseClaim.issuer === sm09Manifest.registrant) {
+  throw new Error('the licensing issuer collapsed into the manifest registrant');
+}
+
+const sm09ValidPositive = await sm09Run(
+  sm09LicensingRef,
+  sm09Licensing as never,
+  { operation: 'validate-license-terms', claim: sm09LicenseClaim },
+  sm09Subject,
+);
+if (sm09ValidPositive.status !== 'succeeded') throw new Error('real Licensing & Terms validation failed');
+if (!(sm09ValidPositive.output as { validation: { valid: boolean } }).validation.valid) {
+  throw new Error('a valid licensing claim was reported invalid');
+}
+
+const sm09ValidNegative = await sm09Run(sm09LicensingRef, sm09Licensing as never, {
+  operation: 'validate-license-terms',
+  claim: {},
+});
+if (sm09ValidNegative.status !== 'succeeded') {
+  throw new Error('an invalid validation target was reported as an execution failure');
+}
+if ((sm09ValidNegative.output as { validation: { valid: boolean } }).validation.valid) {
+  throw new Error('an empty object validated as licensing terms');
+}
+if (sm09ValidNegative.evidence.outcome !== 'succeeded') {
+  throw new Error('a negative validation was recorded as a failed invocation');
+}
+
+const sm09MalformedDeclare = await sm09Run(
+  sm09LicensingRef,
+  sm09Licensing as never,
+  {
+    operation: 'declare-license-terms',
+    claimId: 'claim:sm09-esm-bad',
+    issuer: 'principal:sm09-esm-issuer',
+    statement: 'no clauses',
+    audience: { kind: 'Public' },
+    rules: [],
+  },
+  sm09Subject,
+);
+if (sm09MalformedDeclare.status !== 'failed'
+  || sm09MalformedDeclare.reasonCodes[0] !== 'LICENSING_TERMS_RULES_REQUIRED') {
+  throw new Error('a declaration with no rules was not rejected');
+}
+
+// TEST-ONLY issuer signing, via the existing public primitives.
+const sm09KeyPair = generateSovereignKeyPair();
+const sm09SignedLicense = signClaim(
+  sm09LicenseClaim as never,
+  sm09KeyPair.privateKeyPem,
+  sm09KeyPair.signingKey,
+  new Date('2026-08-18T09:00:00.000Z'),
+);
+
+const sm09Export = await sm09Run(
+  getSovereigntyCapabilityRefByKey('portability') as SovereigntyCapabilityRef,
+  createPortabilitySovereigntyCapabilityImplementation() as never,
+  {
+    operation: 'export-bundle',
+    manifests: [{ kind: 'manifest', manifest: sm09Manifest }],
+    claims: [
+      { kind: 'claim', claim: sm09DerivationClaim },
+      { kind: 'signed-claim', signedClaim: sm09SignedLicense },
+    ],
+  },
+  sm09Subject,
+);
+if (sm09Export.status !== 'succeeded') throw new Error('real Portability export failed');
+
+const sm09Import = await sm09Run(
+  getSovereigntyCapabilityRefByKey('portability') as SovereigntyCapabilityRef,
+  createPortabilitySovereigntyCapabilityImplementation() as never,
+  {
+    operation: 'import-bundle',
+    serializedBundle: (sm09Export.output as { serializedBundle: string }).serializedBundle,
+  },
+);
+if (sm09Import.status !== 'succeeded') throw new Error('real Portability import failed');
+const sm09Bundle = (sm09Import.output as { bundle: { claims: readonly { kind: string }[] } }).bundle;
+if (Object.keys(sm09Bundle).length !== 6) throw new Error('the portability envelope gained a field');
+
+const sm09ImportedArtifact = sm09Bundle.claims.find((artifact) => artifact.kind === 'signed-claim');
+if (sm09ImportedArtifact === undefined) throw new Error('the signed licensing claim did not survive transport');
+const sm09ImportedClaim = portableClaimOf(sm09ImportedArtifact as never);
+if (canonicalizeJSON(sm09ImportedClaim) !== canonicalizeJSON(sm09LicenseClaim)) {
+  throw new Error('the licensing claim did not round-trip exactly');
+}
+if (!isValidLicenseTermsClaim(sm09ImportedClaim)) {
+  throw new Error('the imported licensing claim failed its own validator');
+}
+
+const sm09Describe = await sm09Run(
+  getSovereigntyCapabilityRefByKey('interoperability') as SovereigntyCapabilityRef,
+  createInteroperabilitySovereigntyCapabilityImplementation() as never,
+  { operation: 'describe-bundle', bundle: sm09Bundle },
+);
+if (sm09Describe.status !== 'succeeded') throw new Error('real Interoperability describe failed');
+const sm09Descriptor = (sm09Describe.output as {
+  descriptor: {
+    schemaVersion: string;
+    profile: { id: string; version: string };
+    mediaType: string;
+    representation: { schemaVersion: string; canonicalizationProfile: string };
+    present: { semanticRequirements: readonly { namespace: string; termRef: string }[] };
+  };
+}).descriptor;
+if (sm09Descriptor.schemaVersion !== 'aoc-sovereignty-interoperability-descriptor/1') {
+  throw new Error('the Interoperability descriptor schema changed');
+}
+const sm09RequirementKeys = new Set(
+  sm09Descriptor.present.semanticRequirements.map((requirement) => `${requirement.namespace}|${requirement.termRef}`),
+);
+for (const required of [
+  `${AOC_LICENSING_SEMANTIC_NAMESPACE}|${AOC_LICENSING_DECLARATION_TERM_IDS.licenseTermsDeclaration}`,
+  `${AOC_LICENSING_SEMANTIC_NAMESPACE}|${AOC_LICENSING_DECLARATION_TERM_IDS.permissionRule}`,
+  `${AOC_LICENSING_SEMANTIC_NAMESPACE}|${AOC_LICENSING_DECLARATION_TERM_IDS.restrictionRule}`,
+  `${AOC_LICENSING_SEMANTIC_NAMESPACE}|${AOC_LICENSING_DECLARATION_TERM_IDS.obligationRule}`,
+  `${AOC_LICENSING_SEMANTIC_NAMESPACE}|${AOC_LICENSING_ACTION_TERM_IDS.commercialUse}`,
+  'example.domain|example.domain:special-use',
+]) {
+  if (!sm09RequirementKeys.has(required)) throw new Error(`the descriptor did not surface ${required}`);
+}
+
+const sm09SupportFor = (
+  semanticTerms: readonly { namespace: string; termRef: string }[],
+): SovereigntyInteroperabilityConsumerSupportV1 =>
+  buildSovereigntyInteroperabilityConsumerSupportV1({
+    profile: { id: sm09Descriptor.profile.id, acceptedVersions: [sm09Descriptor.profile.version] },
+    mediaTypes: [sm09Descriptor.mediaType],
+    representationSchemaVersions: [sm09Descriptor.representation.schemaVersion],
+    canonicalizationProfiles: [sm09Descriptor.representation.canonicalizationProfile],
+    artifactKinds: [...SOVEREIGNTY_INTEROPERABILITY_ARTIFACT_KINDS],
+    claimTypes: [...INTEROPERABLE_CLAIM_TYPES],
+    standingStatuses: [...INTEROPERABLE_STANDING_STATUSES],
+    semanticTerms,
+  });
+
+const sm09Compatible = await sm09Run(
+  getSovereigntyCapabilityRefByKey('interoperability') as SovereigntyCapabilityRef,
+  createInteroperabilitySovereigntyCapabilityImplementation() as never,
+  {
+    operation: 'assess-compatibility',
+    descriptor: sm09Descriptor,
+    consumerSupport: sm09SupportFor([...sm09Descriptor.present.semanticRequirements]),
+  },
+);
+if (sm09Compatible.status !== 'succeeded') throw new Error('real compatibility assessment failed');
+if ((sm09Compatible.output as { report: { status: string } }).report.status !== 'compatible') {
+  throw new Error('a fully supporting consumer was not reported compatible');
+}
+
+const sm09Partial = await sm09Run(
+  getSovereigntyCapabilityRefByKey('interoperability') as SovereigntyCapabilityRef,
+  createInteroperabilitySovereigntyCapabilityImplementation() as never,
+  {
+    operation: 'assess-compatibility',
+    descriptor: sm09Descriptor,
+    consumerSupport: sm09SupportFor(
+      sm09Descriptor.present.semanticRequirements.filter(
+        (requirement) => requirement.termRef !== 'example.domain:special-use',
+      ),
+    ),
+  },
+);
+if (sm09Partial.status !== 'succeeded') throw new Error('the partial compatibility assessment failed');
+if ((sm09Partial.output as { report: { status: string } }).report.status !== 'partially-compatible') {
+  throw new Error('a consumer missing one licensing concept was not reported partially compatible');
+}
+if (sm09Bundle.claims.length !== 2) throw new Error('partial compatibility dropped an artifact');
+
+const sm09Verifiability = createVerifiabilitySovereigntyCapabilityImplementation();
+const sm09Verified = await sm09Run(
+  getSovereigntyCapabilityRefByKey('verifiability') as SovereigntyCapabilityRef,
+  sm09Verifiability as never,
+  {
+    operation: 'verify-signed-claim',
+    signedClaim: (sm09ImportedArtifact as unknown as { signedClaim: unknown }).signedClaim,
+  },
+);
+if (sm09Verified.status !== 'succeeded') throw new Error('real Verifiability could not check the signed terms');
+if (!(sm09Verified.output as { verification: { valid: boolean } }).verification.valid) {
+  throw new Error('a genuinely signed licensing claim did not verify');
+}
+
+// Tampered terms are detected, and never repaired.
+const sm09Tampered = {
+  ...sm09LicenseClaim,
+  metadata: {
+    ...sm09LicenseClaim.metadata,
+    terms: {
+      ...sm09LicenseClaim.metadata.terms,
+      rules: sm09LicenseClaim.metadata.terms.rules.map((rule, index) =>
+        index === 2 ? { ...rule, effect: SovereignLicenseTermsRuleEffect.Permission } : rule),
+    },
+  },
+};
+const sm09TamperedVerification = await sm09Run(
+  getSovereigntyCapabilityRefByKey('verifiability') as SovereigntyCapabilityRef,
+  sm09Verifiability as never,
+  { operation: 'verify-signed-claim', signedClaim: { ...sm09SignedLicense, claim: sm09Tampered } },
+);
+if (sm09TamperedVerification.status !== 'succeeded') {
+  throw new Error('a tampered artifact was reported as an execution failure');
+}
+if ((sm09TamperedVerification.output as { verification: { valid: boolean } }).verification.valid) {
+  throw new Error('tampered terms verified');
+}
+
+// Cryptographically valid AND semantically invalid — both true at once.
+const sm09Malformed = {
+  ...sm09LicenseClaim,
+  metadata: {
+    ...sm09LicenseClaim.metadata,
+    terms: {
+      schemaVersion: SOVEREIGN_LICENSE_TERMS_SCHEMA_VERSION,
+      audience: { kind: 'Public' as const },
+      rules: [],
+    },
+  },
+};
+const sm09SignedMalformed = signClaim(
+  sm09Malformed as never,
+  sm09KeyPair.privateKeyPem,
+  sm09KeyPair.signingKey,
+  new Date('2026-08-18T09:00:00.000Z'),
+);
+const sm09MalformedVerification = await sm09Run(
+  getSovereigntyCapabilityRefByKey('verifiability') as SovereigntyCapabilityRef,
+  sm09Verifiability as never,
+  { operation: 'verify-signed-claim', signedClaim: sm09SignedMalformed },
+);
+if (sm09MalformedVerification.status !== 'succeeded'
+  || !(sm09MalformedVerification.output as { verification: { valid: boolean } }).verification.valid) {
+  throw new Error('a genuinely signed malformed document did not verify cryptographically');
+}
+const sm09MalformedValidation = await sm09Run(
+  sm09LicensingRef,
+  sm09Licensing as never,
+  { operation: 'validate-license-terms', claim: sm09Malformed },
+  sm09Subject,
+);
+if (sm09MalformedValidation.status !== 'succeeded') throw new Error('the malformed terms could not be validated');
+const sm09MalformedReport = (sm09MalformedValidation.output as {
+  validation: { valid: boolean; reasons: readonly string[] };
+}).validation;
+if (sm09MalformedReport.valid) throw new Error('empty terms validated');
+if (!sm09MalformedReport.reasons.includes('LICENSING_TERMS_RULES_REQUIRED')) {
+  throw new Error('the malformed terms carried no rules reason');
+}
+
+// Contestation: cryptographically valid AND Contested.
+const sm09Contested = await sm09Run(
+  sm09LicensingRef,
+  sm09Licensing as never,
+  {
+    operation: 'contest-license-terms-claim',
+    standingId: 'standing:sm09-esm-001',
+    claim: sm09LicenseClaim,
+    reason: 'A competing party disputes the declared terms.',
+    effectiveAt: '2026-08-19T09:00:00.000Z',
+  },
+  sm09Subject,
+);
+if (sm09Contested.status !== 'succeeded') throw new Error('real Licensing & Terms contestation failed');
+const sm09Standing = (sm09Contested.output as { claim: unknown; standing: { status: string } });
+if (sm09Standing.standing.status !== StandingStatus.Contested) {
+  throw new Error('contestation did not record a Contested standing');
+}
+if (canonicalizeJSON(sm09Standing.claim) !== canonicalizeJSON(sm09LicenseClaim)) {
+  throw new Error('contestation modified the claim');
+}
+const sm09Reverified = await sm09Run(
+  getSovereigntyCapabilityRefByKey('verifiability') as SovereigntyCapabilityRef,
+  sm09Verifiability as never,
+  { operation: 'verify-signed-claim', signedClaim: sm09SignedLicense },
+);
+if (sm09Reverified.status !== 'succeeded'
+  || !(sm09Reverified.output as { verification: { valid: boolean } }).verification.valid) {
+  throw new Error('contesting a claim invalidated its signature');
+}
+
+// Evidence hygiene: capability-attributed, and free of every terms payload.
+for (const result of [sm09Declare, sm09ValidPositive, sm09ValidNegative, sm09Contested]) {
+  if (!isValidSovereigntyCapabilityInvocationEvidence(result.evidence)) {
+    throw new Error('invalid Licensing & Terms evidence');
+  }
+  if (result.evidence.capability.id !== 'aoc:sovereignty-capability:licensing-terms') {
+    throw new Error('evidence does not attribute the canonical Licensing & Terms capability');
+  }
+  const serialized = JSON.stringify(result.evidence);
+  for (const leak of [
+    'Commercial use is restricted.', 'Attribution must be retained.', 'Agreement A-17',
+    'aoc.licensing', 'commercial-use', '"terms"', '"rules"', '"audience"', '"claim"', '"statement"',
+    sm09KeyPair.privateKeyPem, sm09SignedLicense.digest,
+  ]) {
+    if (serialized.includes(leak)) {
+      throw new Error(`Licensing & Terms evidence leaked "${leak.slice(0, 24)}"`);
+    }
+  }
+}
+
+// Seven distinct capabilities under one correlation id.
+const sm09FlowResults = [
+  sm09Integrity, sm09Identity, sm09Provenance, sm09Declare, sm09Export, sm09Describe, sm09Verified,
+];
+if (new Set(sm09FlowResults.map((result) => result.evidence.capability.id)).size !== 7) {
+  throw new Error('the seven-mineral flow did not attribute seven canonical capabilities');
+}
+for (const result of sm09FlowResults) {
+  if (result.evidence.correlationId !== sm09CorrelationId) {
+    throw new Error('the shared seven-mineral correlation id did not survive');
+  }
+}
+if (new Set(sm09FlowResults.map((result) => result.invocationId)).size !== 7) {
+  throw new Error('two seven-mineral invocations shared one invocation id');
+}
+
 console.log(
-  `typescript-esm consumer OK: token=${token.tokenId} claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${sovereigntyCapabilities.length} nonByteSubject=${sovereignAssetId} capabilityInvocation=${identityResult.invocationId} productionMinerals=${productionSubject.sovereignAssetId} provenanceDerivation=${consumerDerivationClaim.id} portableSubject=${portabilityImport.output.bundle.subject.sovereignAssetId} describedSubject=${interoperabilityDescriptor.subject.sovereignAssetId} verifiedSubject=${sm08Subject.sovereignAssetId}`,
+  `typescript-esm consumer OK: token=${token.tokenId} claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${sovereigntyCapabilities.length} nonByteSubject=${sovereignAssetId} capabilityInvocation=${identityResult.invocationId} productionMinerals=${productionSubject.sovereignAssetId} provenanceDerivation=${consumerDerivationClaim.id} portableSubject=${portabilityImport.output.bundle.subject.sovereignAssetId} describedSubject=${interoperabilityDescriptor.subject.sovereignAssetId} verifiedSubject=${sm08Subject.sovereignAssetId} licenseTerms=${sm09LicenseClaim.id}`,
 );

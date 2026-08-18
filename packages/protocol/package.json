@@ -64,6 +64,10 @@
       "types": "./dist/interoperability/index.d.ts",
       "default": "./dist/interoperability/index.js"
     },
+    "./licensing": {
+      "types": "./dist/licensing/index.d.ts",
+      "default": "./dist/licensing/index.js"
+    },
     "./sovereignty-capabilities": {
       "types": "./dist/sovereignty-capabilities/index.d.ts",
       "default": "./dist/sovereignty-capabilities/index.js"

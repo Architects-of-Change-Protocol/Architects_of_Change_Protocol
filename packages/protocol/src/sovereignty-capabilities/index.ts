@@ -242,3 +242,40 @@ export type {
   VerifySovereignProofInput,
   VerifySovereignProofOutput,
 } from './capsules';
+
+// --- SM-09: production Licensing & Terms capsule ----------------------------
+
+export {
+  LICENSING_TERMS_SOVEREIGNTY_CAPABILITY_OPERATIONS,
+  createLicensingTermsSovereigntyCapabilityImplementation,
+  isValidLicensingTermsSovereigntyCapabilityInput,
+  validateLicensingTermsSovereigntyCapabilityInput,
+} from './capsules';
+export type {
+  ContestLicenseTermsClaimInput,
+  ContestLicenseTermsClaimOutput,
+  CreateLicensingTermsSovereigntyCapabilityImplementationOptions,
+  DeclareLicenseTermsInput,
+  DeclareLicenseTermsOutput,
+  LicensingTermsSovereigntyCapabilityImplementation,
+  LicensingTermsSovereigntyCapabilityInput,
+  LicensingTermsSovereigntyCapabilityInputValidationResult,
+  LicensingTermsSovereigntyCapabilityOperation,
+  LicensingTermsSovereigntyCapabilityOutput,
+  ValidateLicenseTermsInput,
+  ValidateLicenseTermsOutput,
+} from './capsules';
+
+/**
+ * Re-exported so a consumer holding only `@aoc/protocol/sovereignty-capabilities`
+ * can read the reason codes AOC.LICENSING_TERMS reports without also importing
+ * `@aoc/protocol/licensing`.
+ *
+ * These are the **same** frozen constant and the same type, not a capsule-local
+ * copy. Licensing is the one mineral whose reason codes live in its contract
+ * layer rather than in its capsule, because the terms validators are
+ * deliberately usable on their own — so both readers share one vocabulary
+ * instead of two spellings drifting apart.
+ */
+export { LICENSING_TERMS_REASON_CODES } from '../licensing';
+export type { LicensingTermsReasonCode, LicensingTermsValidationResult } from '../licensing';
