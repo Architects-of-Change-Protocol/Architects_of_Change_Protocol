@@ -445,7 +445,9 @@ document does not claim:
 - Full lineage: ancestor/descendant traversal, multi-parent derivation
   (`SAP-GAP-005`) — out of scope for *this slice*, and since implemented by
   AOC-P-SM-05 (§16). Inherited obligations remain out of scope permanently at
-  this layer: provenance describes history, it does not transfer rights.
+  this layer: provenance describes history, it does not transfer rights, and
+  AOC-P-SM-09 (§17) does not change that — declared terms never travel along a
+  derivation edge.
 - Fingerprinting: ISCC, acoustic fingerprinting, perceptual hashing,
   watermarking.
 - Any Enterprise concept: `AccessGrant`, `ExecutionGrant`,
@@ -455,7 +457,7 @@ document does not claim:
 - Blockchain of any kind.
 - (SM-02) A common capability invocation layer, evidence-on-invocation,
   Provenance lineage, a Portability capsule, an Interoperability capsule,
-  structured Licensing & Terms, a Governance Compatibility bundle,
+  a Governance Compatibility bundle,
   tokenization of anything, provider resolution, or convergence of the
   legacy access-governance runtime (`consent/ScopeEntry`,
   `protocol/enforcement`, `protocol/execution`) onto the canonical subject
@@ -811,3 +813,86 @@ not closed for everything a reader might file under "provenance":
   versions (§10) remain unbuilt;
 - legal and historical truth remain external. Protocol records assertions and
   disputes; it adjudicates neither.
+
+## 17. Structured licensing terms as a claim (AOC-P-SM-09)
+
+SM-05 closed lineage; SM-09 closes the adjacent question this document has
+deferred since §14: *what does an issuer declare about what may be done with a
+sovereign subject?* The answer is another claim, not another identity field and
+not a new subsystem.
+
+### 17.1 It reuses the authority claim family
+
+`AuthorityClaimKind` has carried `Authorship`, `Rights`, `License` and `Custom`
+since the manifest layer was written, and SM-05 deliberately exposed only
+`Authorship` from the formal Provenance capsule (§16), leaving `License` for
+this mineral. SM-09 therefore adds **no** `ClaimType.License`, forks no
+`CanonicalClaim`, and introduces no parallel licensing claim hierarchy.
+
+`LicenseTermsClaim` is an `AuthorityClaim` with `metadata.kind === License` and a
+versioned `metadata.terms` document — the piece that was genuinely missing,
+because a generic `AuthorityClaim` requires only free text and that is not
+enough for a production capability.
+
+`ClaimType.Authorization` is deliberately not used either. It means "principal P
+is authorized to perform action A" — a conclusion about an actor — while a
+licensing declaration is a premise somebody else may later reason from.
+
+### 17.2 Declaration is not enforcement
+
+This is the same discipline §9 applies to content matching and §16.6 applies to
+lineage edges, applied to terms:
+
+```
+declared permission    ≠ runtime authorization
+declared restriction   ≠ enforced denial
+declared obligation    ≠ proof of compliance
+signed license claim   ≠ legal validity
+issuer declares rights ≠ issuer proven to hold rights
+license terms          ≠ ownership transfer
+license terms          ≠ access grant
+license terms          ≠ DRM
+```
+
+A `Permission` clause issues no `CapabilityGrant`, `CapabilityToken`,
+`AccessGrant`, credential, signed URL or ACL entry — every one of which §14
+places outside this layer, and none of which SM-09 brings back in. A
+`Restriction` clause blocks nothing. An `Obligation` clause proves nothing
+happened. Enforcement, pricing, royalties and settlement remain exactly where
+§14 put them: outside Protocol.
+
+### 17.3 Nothing is inherited, still
+
+§16.6 states that nothing travels along a lineage edge — specifically not `A`'s
+licence, rights assertions, restrictions or obligations. SM-09 does not weaken
+that. A child recorded as derived from `A` receives **no** licensing claim
+automatically, and a `Permission`/`Derive` clause on `A` declares that deriving
+is permitted while saying nothing about what terms the resulting child carries.
+The child needs its own explicit declaration.
+
+### 17.4 The registrant is not the licensing issuer
+
+§8 already separates registration from ownership. SM-09 keeps a third fact
+separate too: the `registrant` that recorded a manifest and the `issuer` that
+declares terms over the subject may be different parties, and neither is
+inferred from the other. The licensing issuer is always supplied explicitly.
+
+### 17.5 What SM-09 does not claim
+
+- **No evaluation.** There is no `evaluate-license`, `is-action-permitted`,
+  `isAllowed`, `isDenied` or `check-obligation` operation, and no condition
+  language to write one with.
+- **No precedence.** Contradictory clauses inside one declaration, and multiple
+  declarations from different issuers over one subject, are all representable.
+  Protocol records that they were declared and resolves nothing.
+- **No current-terms resolution and no supersession.** `issuedAt` never selects
+  a winner.
+- **No wall-clock effect.** `effectiveAt` and `expiresAt` are declaration data;
+  nothing compares them to now and no `StandingStatus` is derived from a date.
+- **No legal conclusion.** A declaration establishes no ownership, title,
+  copyright or enforceability, and a valid signature over one proves only that
+  the issuer made it.
+- **No external standard mapping** (SPDX, Creative Commons, ODRL, RightsML) and
+  no tokenization.
+
+See `docs/protocol/LICENSING_TERMS.md` for the terms model itself.

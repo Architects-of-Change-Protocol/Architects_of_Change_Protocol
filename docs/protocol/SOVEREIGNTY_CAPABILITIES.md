@@ -291,9 +291,9 @@ result.evidence.capability;
 // { id: 'aoc:sovereignty-capability:verifiability', version: '1.0.0' }
 ```
 
-## Production capsules: Identity, Integrity, Provenance, Portability, Interoperability and Verifiability
+## Production capsules: Identity, Integrity, Provenance, Portability, Interoperability, Verifiability and Licensing & Terms
 
-Six of the canonical eight are now real implementations of the socket above, exported from
+Seven of the canonical eight are now real implementations of the socket above, exported from
 `@aoc/protocol/sovereignty-capabilities` and executed through `invokeSovereigntyCapability` like any
 other implementation. They are plain factories with no import-time side effects, they register
 themselves nowhere, and they expose no second entry point that would bypass the common result and
@@ -305,6 +305,7 @@ import {
   createIdentitySovereigntyCapabilityImplementation,
   createIntegritySovereigntyCapabilityImplementation,
   createInteroperabilitySovereigntyCapabilityImplementation,
+  createLicensingTermsSovereigntyCapabilityImplementation,
   createPortabilitySovereigntyCapabilityImplementation,
   createProvenanceSovereigntyCapabilityImplementation,
   createVerifiabilitySovereigntyCapabilityImplementation,
@@ -313,7 +314,7 @@ import {
 } from '@aoc/protocol/sovereignty-capabilities';
 ```
 
-All six derive their advertised `capability` ref from the SM-01 registry, so none can drift from the
+All seven derive their advertised `capability` ref from the SM-01 registry, so none can drift from the
 canonical id or version. None reads the network, a provider, a chain, a registry or storage.
 
 ### AOC.IDENTITY
@@ -1718,6 +1719,248 @@ is solved. Still open, and deliberately not papered over:
   created, and claim standing is never altered.
 - **Cryptographic validity is not truth.** Protocol reports what the mathematics says and stops there.
 
+## AOC.LICENSING_TERMS
+
+The seventh production capsule, added by SM-09. It answers:
+
+> What permissions, restrictions and obligations does an issuer declare over this sovereign subject —
+> in a structured, attributable, portable form another system can read?
+
+```ts
+import { createLicensingTermsSovereigntyCapabilityImplementation } from '@aoc/protocol/sovereignty-capabilities';
+
+const licensing = createLicensingTermsSovereigntyCapabilityImplementation();
+// licensing.capability → { id: 'aoc:sovereignty-capability:licensing-terms', version: '1.0.0' }
+```
+
+The reusable terms model lives on its own subpath, `@aoc/protocol/licensing`, so the schema, builder
+and validators are usable without the capability socket — the same split SM-06 and SM-07 already make
+between a contract layer and its capsule. A focused walkthrough of the model lives in
+[`LICENSING_TERMS.md`](./LICENSING_TERMS.md).
+
+### Declaration is not enforcement
+
+This is the load-bearing boundary of the whole mineral, and it holds in every direction:
+
+```
+declared permission    ≠ runtime authorization
+declared restriction   ≠ enforced denial
+declared obligation    ≠ proof of compliance
+signed license claim   ≠ legal validity
+issuer declares rights ≠ issuer proven to hold rights
+license terms          ≠ ownership transfer
+license terms          ≠ policy decision
+license terms          ≠ access grant
+license terms          ≠ DRM
+```
+
+A `Permission`/`CommercialUse` clause means *"the issuer declares commercial use permitted under
+these terms"*. It produces no `CapabilityGrant`, no `CapabilityToken`, no `AccessGrant`, no
+credential, no signed URL, no ACL entry and no authorization result. A `Restriction` clause blocks no
+request, deletes no file, revokes no URL, disables no playback and prevents no copy. An
+`Obligation`/`Attribute` clause does not establish that attribution happened, and an `Obligation` to
+pay does not establish that anyone paid.
+
+```
+                        AOC PROTOCOL
+                    LicenseTermsClaim
+                            │
+                            ▼
+                  portable declaration
+                            │
+        ────────────────────┼────────────────────  ← Protocol stops here
+                            ▼
+           External Governance / AOC Enterprise
+                            │
+                            ▼
+                   policy interpretation
+                            │
+                            ▼
+                        decision
+                            │
+                            ▼
+                      enforcement
+```
+
+### Why `AuthorityClaimKind.License`, and not a new claim type
+
+The claim architecture already had the right primitive. `AuthorityClaimKind` has carried
+`Authorship`, `Rights`, `License` and `Custom` since the manifest layer was written, and SM-05
+deliberately exposed only `Authorship` from the formal Provenance capsule — leaving `License` for
+this mineral. SM-09 therefore adds **no** `ClaimType.License`, forks no `CanonicalClaim`, and
+introduces no `LicenseClaimBase`, `TermsClaimBase`, `PermissionClaimBase` or `RestrictionClaimBase`.
+
+What was genuinely missing was *structure*. A generic `AuthorityClaim` requires only a free-text
+`statement`, which is not enough for a production Licensing & Terms capability, so
+`metadata.terms` carries a versioned `SovereignLicenseTermsV1` document beside it.
+
+`ClaimType.Authorization` is deliberately **not** the representation either.
+
+| | means | is |
+| --- | --- | --- |
+| `ClaimType.Authorization` | "principal P is authorized to perform action A" | a conclusion about an actor |
+| `LicenseTermsClaim` | "issuer I declares these permissions, restrictions and obligations over subject X" | a premise somebody else may reason from |
+
+A declaration may later *inform* an authorization. It is not itself one, and collapsing the two would
+make every stored declaration read as an evaluated verdict.
+
+### Three operations, deliberately
+
+```
+declare-license-terms         terms over invocation.subject   -> LicenseTermsClaim
+validate-license-terms        an unknown candidate            -> valid/invalid + reasons
+contest-license-terms-claim   a licensing claim + a reason    -> the claim, unchanged, + Contested standing
+```
+
+That is the whole surface. There is deliberately no `evaluate-license`, `is-action-permitted`,
+`is-action-restricted`, `isAllowed`, `isDenied`, `authorize-use`, `canUse`, `canDistribute`,
+`canDerive` or `check-obligation` operation, and no condition language to write one with — no `and`,
+`or`, `not`, comparison operator, expression tree, CEL, Rego, Cedar, JSON Logic or XACML. This is an
+absolute boundary rather than deferred work.
+
+`supersede-license-terms` is **not** implemented in v1 either. The standing model can already express
+`Superseded`, but supersession implies precedence between declarations, and precedence deserves its
+own explicit design rather than arriving as a side effect of a convenience operation.
+
+### No precedence, ever
+
+A document may declare a `Permission` and a `Restriction` over the identical action. Both are
+structurally valid, both are recorded, and Protocol says only *"the issuer declared both"*. It does
+not say commercial use is allowed, does not say it is denied, and does not decide that restriction
+beats permission, that the latest claim wins, that a signed claim beats an unsigned one, that a
+verified issuer beats an unverified one, or that a principal-specific document beats a public one.
+
+A subject may carry many licensing declarations, from many issuers, with different dates, audiences
+and contradictory terms. Nothing in Protocol resolves which is "current".
+
+### No wall clock, no derived standing
+
+`issuedAt`, `effectiveAt` and `expiresAt` are declaration *data*.
+
+| Field | Lives on | Means |
+| --- | --- | --- |
+| `issuedAt` | `CanonicalClaim` | when the claim was asserted/recorded |
+| `effectiveAt` | `SovereignLicenseTermsV1` | when the issuer says the terms begin applying |
+| `expiresAt` | `CanonicalClaim` | when the declaration stops applying |
+
+`issuedAt: 2026-08-18` with `effectiveAt: 2026-09-01` is an ordinary case, so `effectiveAt` is never
+defaulted from `issuedAt` — absent means absent. There is no second expiration field inside the terms
+document: `CanonicalClaim.expiresAt` is the one source of truth. Nothing compares any of them to now,
+so there is no `isActive`, `isCurrentlyEffective`, `isExpiredNow` or `isNotYetEffective`, and no
+`StandingStatus.Active` or `StandingStatus.Expired` is ever created. A future-effective declaration
+is structurally valid; an expired historical declaration is structurally valid historical data. No
+ordering between the three is enforced either, so a backdated correction and a retroactive licence
+stay expressible.
+
+### Invalid candidate vs unreadable request
+
+The distinction matters, and the two are kept apart:
+
+| Case | Execution | Report |
+| --- | --- | --- |
+| `validate-license-terms` over `{}` | **succeeded** | `validation.valid === false` |
+| `declare-license-terms` with no rules | **failed** | `LICENSING_TERMS_RULES_REQUIRED`, and no partial claim |
+
+Asking "is this valid?" and being told "no" is a successful execution: the capability answered the
+question. Capability failure is reserved for input that cannot be read at all — an unknown operation,
+a missing subject for a declaration, or a candidate about a different subject than the invocation.
+
+Validation runs with **no** invocation subject at all, which is what lets a receiving system holding
+only a document ask whether it is well formed; a valid candidate's own subject then becomes the
+result's attribution, and an invalid one never has a subject fabricated for it.
+
+### Crypto validity is not terms validity
+
+An issuer can perfectly well sign a structurally malformed terms document. Both of these are true of
+the same artifact at the same moment, and neither is wrong:
+
+```
+AOC.VERIFIABILITY   signature valid
+AOC.LICENSING_TERMS terms invalid
+```
+
+The licensing capsule never signs — no operation accepts a private key, seed, mnemonic or KMS secret
+in any spelling, and it calls no signing primitive. An issuer signs a returned claim with the existing
+public `signClaim`, and AOC.VERIFIABILITY checks it. Tampering with a rule effect, a rule statement,
+an audience or an action after signing is detected by Verifiability as a digest/signature failure, and
+Licensing repairs nothing: it evaluates whatever structure it is actually handed.
+
+Contestation composes the same way. A signed licensing claim that verifies stays byte-identical
+through `contest-license-terms-claim`, so *cryptographically valid* and *Contested* coexist without
+contradiction — the standing records that a challenge exists, not that anybody is right.
+
+### Boundaries Licensing & Terms holds
+
+- **Creates no identity.** `mintSovereignAssetId` is never called; `declare-license-terms` requires
+  `invocation.subject` and accepts no `sovereignAssetId` of its own, so a claim can never disagree
+  with the invocation it was made under.
+- **Requires no content.** No bytes, no `ContentIdentity`, no manifest digest. Terms attach to
+  sovereign subject *identity*, which is what lets a building, a parcel of land, an API resource, an
+  AI agent, an external token and a physical painting receive terms exactly as a file does.
+- **Creates no provenance.** No `OriginClaim`, authorship claim or `DerivationClaim` appears as a side
+  effect. One declaration produces one licensing claim.
+- **Inherits nothing.** Terms never travel along a derivation edge. There is no `inheritLicense`,
+  `copyTerms`, `propagateRestrictions` or `propagateRights`, and a `Permission`/`Derive` clause on a
+  parent does not give a child the parent's terms — the child needs its own declaration.
+- **Concludes no ownership.** No `owner`, `legalOwner`, `copyrightOwner`, `titleHolder` or
+  `beneficialOwner` field exists, and a manifest's `registrant` is never read as the licensing issuer:
+  registering a subject and declaring terms over it are different acts, possibly by different parties.
+  There is no `transfer`, `assign`, `convey`, `sell` or `title-transfer` operation.
+- **Does no economics.** No price, currency, royalty rate, fee, revenue share, payment schedule,
+  wallet or settlement address; no `calculateRoyalty`, `settleRoyalty`, `splitRevenue`, `invoice` or
+  `meterUsage`; no billing, tax or jurisdiction engine. A payment expectation is expressible as an
+  `Obligation` over an external action concept plus a `statement`, with the instrument referenced
+  through `evidenceRefs` — and nothing is calculated or settled.
+- **Does no DRM.** No encryption, watermarking, playback control, kill switch, remote disable or copy
+  prevention.
+- **Translates to no external standard.** No SPDX, Creative Commons, ODRL, RightsML or NFT-licence
+  mapping. Those are adapters over this model, and inventing them here would bake somebody else's
+  semantics into the Protocol contract.
+- **Reaches nothing.** No filesystem, network, database, chain, provider, registry or resolver. An
+  action term is an identifier and is never dereferenced, URL-shaped or not; a custom audience is
+  never expanded into members.
+- **Invokes no other mineral.** `invokeSovereigntyCapability` is not called from the capsule.
+- **Branches on nothing.** No namespace, media type, filename, asset type or business domain is read,
+  and even the core action concepts — `CommercialUse`, `Derive`, `Attribute` — trigger no distinct
+  production behaviour.
+
+### Licensing & Terms alongside its neighbours
+
+| Mineral | Question | Licensing's relationship |
+| --- | --- | --- |
+| **Identity** | What is this subject? | required, never created; the claim's subject is the invocation's |
+| **Integrity** | Do these bytes match? | irrelevant — a declaration needs no byte representation at all |
+| **Provenance** | Where did it come from? | coexists over one subject; nothing is inferred in either direction, and nothing is inherited along a derivation edge |
+| **Portability** | Can it move? | a `LicenseTermsClaim` is an `AuthorityClaim`, so the existing `claims` array carries it — unsigned as `claim`, signed as `signed-claim` |
+| **Interoperability** | Can the receiver understand it? | the claim's `semanticRefs` surface the licensing concepts, which the unchanged SM-07 machinery discovers generically |
+| **Verifiability** | Does the proof hold? | verifies a signed licensing claim; a valid signature says nothing about whether the terms are well formed, lawful or owned |
+
+`SovereigntyPortabilityBundleV1` is **unchanged** by SM-09 — its six-field contract gained no
+`licenses`, `terms` or `permissions` field — and the SM-07 profile, descriptor schema and core
+`aoc.sovereignty` vocabulary are unchanged too. Licensing concepts live in their own `aoc.licensing`
+namespace precisely so a later mineral shipping could not change what the interoperability profile
+advertises.
+
+### What Licensing & Terms does not yet cover
+
+Production means the defined v1 contract is real and consumable — not that every licensing problem is
+solved. Still open, and deliberately not papered over:
+
+- **No evaluation, decision or enforcement**, in any form. That is the mineral's boundary, not a gap.
+- **No precedence, supersession or current-terms resolution.**
+- **No terms inheritance** across derivation.
+- **No condition language.** Clause conditions live in the human-readable `statement` and are never
+  parsed.
+- **No money model.** No pricing, royalties, billing, settlement or tax.
+- **No legal interpretation.** No jurisdiction model, no choice-of-law evaluation, no enforceability
+  finding.
+- **No external standard adapters** (SPDX, Creative Commons, ODRL, RightsML, NFT licences).
+- **No principal validation beyond the structural floor.** `CanonicalPrincipalRef` still has no fully
+  canonical runtime validator — the gap SM-04 and SM-05 recorded — and SM-09 documents rather than
+  closes it.
+- **A declaration is not a right.** Protocol records that an issuer declared terms; whether they had
+  the authority to is outside what any offline structural check can establish.
+
 ### Evidence from the capsules
 
 All three rely entirely on the common SM-03 invocation evidence, and none widens it. An Identity
@@ -1740,18 +1983,21 @@ resolution semantics in Protocol, leaving the field absent is the honest option 
 
 ### Status
 
-The socket exists and **six of the eight** minerals now fill it. `AOC.IDENTITY`, `AOC.INTEGRITY`,
-`AOC.PROVENANCE`, `AOC.PORTABILITY`, `AOC.INTEROPERABILITY` and `AOC.VERIFIABILITY` are production
-capsules consuming the common invocation and evidence architecture end-to-end, verified from a real
-`npm pack` tarball by all three fixtures in `test-consumers/` — including the first six-mineral flow,
-in which Integrity measures bytes, Identity mints the subject, Provenance asserts its origin and
-derivation and records a contestation, a TEST-ONLY issuer signs the manifest and the claim through the
-existing low-level primitives, Portability exports the canonical bundle, a second runtime holding only
-the JSON string imports it, Interoperability describes what arrived, and Verifiability independently
-checks the transported proofs — reporting a valid signature, an honestly unperformed content check, an
-optional issuer/key binding, and a fail-closed invalid result for an artifact tampered with in transit.
+The socket exists and **seven of the eight** minerals now fill it. `AOC.IDENTITY`, `AOC.INTEGRITY`,
+`AOC.PROVENANCE`, `AOC.PORTABILITY`, `AOC.INTEROPERABILITY`, `AOC.VERIFIABILITY` and
+`AOC.LICENSING_TERMS` are production capsules consuming the common invocation and evidence
+architecture end-to-end, verified from a real `npm pack` tarball by all three fixtures in
+`test-consumers/` — including the first seven-mineral flow, in which Integrity measures bytes,
+Identity mints the subject, Provenance asserts its derivation, Licensing & Terms declares structured
+permissions, restrictions and obligations over it, a TEST-ONLY issuer signs the resulting claim
+through the existing low-level primitives, Portability exports the canonical bundle, a second runtime
+holding only the JSON string imports it, Interoperability describes what arrived and reports both full
+and partial compatibility against the licensing semantics it carries, and Verifiability independently
+checks the transported proof — reporting a valid signature, a fail-closed invalid result for terms
+tampered with in transit, and a signed-but-malformed document that is cryptographically valid and
+semantically invalid at once.
 
-The remaining two are **not** production capsules, and they do not become ones merely because six
+The remaining one is **not** a production capsule, and it does not become one merely because seven
 now are:
 
 | Mineral | Production capsule |
@@ -1762,11 +2008,10 @@ now are:
 | Portability | **yes** — canonical bundle export and import, provider-neutral, no reminting |
 | Interoperability | **yes** — self-describing profile, bundle descriptor, and full/partial/incompatible compatibility assessment |
 | Verifiability | **yes** — signed manifest, signed claim and generic sovereign proof verification, with explicit per-check outcomes and optional issuer/key binding |
-| Licensing & Terms | not yet |
+| Licensing & Terms | **yes** — structured, versioned terms declaration, validation and contestation, with no evaluation, precedence or enforcement |
 | Governance Compatibility | not yet |
 
-Their terms and governance semantics belong to their own inputs and outputs — never to this common
-contract. Adding a production capsule is not a capability-contract change:
+Its governance semantics belong to its own inputs and outputs — never to this common contract. Adding a production capsule is not a capability-contract change:
 capability versions remain `1.0.0`, and the canonical inventory remains eight. Derivation and lineage
 are Provenance *semantics*, not a ninth mineral — there is no `AOC.LINEAGE`, `AOC.AUTHORSHIP`,
 `AOC.DERIVATION` or `AOC.CUSTODY`. The portability bundle is likewise a Portability *contract*, not an
@@ -1774,7 +2019,9 @@ are Provenance *semantics*, not a ninth mineral — there is no `AOC.LINEAGE`, `
 descriptor and compatibility report are Interoperability *artifacts* — there is no `AOC.COMPATIBILITY`,
 `AOC.TRANSLATION`, `AOC.SCHEMA` or `AOC.SEMANTICS`. Cryptographic proof and signature semantics are
 likewise Verifiability *semantics*, not a ninth mineral: there is no `AOC.CRYPTOGRAPHY`,
-`AOC.SIGNATURE`, `AOC.TRUST`, `AOC.PROOF` or `AOC.KEYS`. There is still no global implementation registry
+`AOC.SIGNATURE`, `AOC.TRUST`, `AOC.PROOF` or `AOC.KEYS`. The structured terms document, its licensing
+vocabulary and its rule model are Licensing & Terms *artifacts* for the same reason — there is no
+`AOC.LICENSE`, `AOC.RIGHTS`, `AOC.PERMISSION`, `AOC.RESTRICTIONS`, `AOC.ROYALTIES` or `AOC.DRM`. There is still no global implementation registry
 and no profile registry: a capsule is passed explicitly to `invokeSovereigntyCapability`, the one
 canonical profile is a frozen constant, and wiring several capsules together is a future composition
 concern.

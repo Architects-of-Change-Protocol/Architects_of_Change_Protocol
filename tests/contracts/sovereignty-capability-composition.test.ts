@@ -352,22 +352,22 @@ describe('SM-04 / regression and boundary guarantees (REGRESSION TESTS)', () => 
     }
   });
 
-  it('REGRESSION 27 — no mineral beyond the shipped six is pulled forward', () => {
+  it('REGRESSION 27 — no mineral beyond the shipped seven is pulled forward', () => {
     // SM-05 legitimately added `provenance` as the third production capsule,
-    // SM-06 `portability` as the fourth, SM-07 `interoperability` as the fifth
-    // and SM-08 `verifiability` as the sixth, so none of them is forbidden here.
-    // The remaining two are still canonical descriptors with no implementation,
-    // and this guards against one of them being resolved by a capsule that does
-    // not exist yet.
+    // SM-06 `portability` as the fourth, SM-07 `interoperability` as the fifth,
+    // SM-08 `verifiability` as the sixth and SM-09 `licensing_terms` as the
+    // seventh, so none of them is forbidden here. Governance Compatibility is
+    // still a canonical descriptor with no implementation, and this guards
+    // against it being resolved by a capsule that does not exist yet.
     for (const { source } of capsuleSources()) {
       for (const term of [
-        'licensing',
+        'governance_compatibility',
         'governance-compatibility',
       ]) {
         expect(source.toLowerCase()).not.toContain(`requiresovereigntycapabilityref('${term}`);
       }
     }
-    // Exactly one capsule resolves each shipped mineral, and exactly six do.
+    // Exactly one capsule resolves each shipped mineral, and exactly seven do.
     const resolved = capsuleSources()
       .flatMap(({ source }) => [...source.matchAll(/requireSovereigntyCapabilityRef\('([a-z_]+)'\)/g)])
       .map((match) => match[1])
@@ -376,6 +376,7 @@ describe('SM-04 / regression and boundary guarantees (REGRESSION TESTS)', () => 
       'identity',
       'integrity',
       'interoperability',
+      'licensing_terms',
       'portability',
       'provenance',
       'verifiability',
@@ -393,9 +394,11 @@ describe('SM-04 / regression and boundary guarantees (REGRESSION TESTS)', () => 
     // which reads the manifest layer's verification primitives, the one
     // canonical JSON profile, and — type-only — the Protocol-owned
     // `VerificationKeyResolver` adapter contract an optional issuer binding is
-    // injected through. Still strictly Protocol-internal: no Enterprise,
-    // runtime, provider or storage module.
-    const allowed = /^(\.\.\/\.\.\/(adapters|canonical|identity|manifest|portability|interoperability|claims\/(primitives|standing|timestamps))|\.\.\/(capability-ref|implementation|invocation|ids|time)|\.\/(canonical-ref|identity|integrity|interoperability|portability|provenance|verifiability))$/;
+    // injected through. SM-09 adds the Licensing & Terms capsule, which reads
+    // the structured terms contract it declares and validates, plus the
+    // manifest layer's `contestClaim`. Still strictly Protocol-internal: no
+    // Enterprise, runtime, provider or storage module.
+    const allowed = /^(\.\.\/\.\.\/(adapters|canonical|identity|licensing|manifest|portability|interoperability|claims\/(primitives|standing|timestamps))|\.\.\/(capability-ref|implementation|invocation|ids|time)|\.\/(canonical-ref|identity|integrity|interoperability|licensing-terms|portability|provenance|verifiability))$/;
     for (const { file, source } of capsuleSources()) {
       const specifiers = [...source.matchAll(/(?:import|export)[^'"]*from\s+['"]([^'"]+)['"]/g)].map((m) => m[1]);
       for (const specifier of specifiers) {

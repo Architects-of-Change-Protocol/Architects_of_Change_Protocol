@@ -1,17 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateVerifiabilitySovereigntyCapabilityInput = exports.isValidVerifiabilitySovereigntyCapabilityInput = exports.createVerifiabilitySovereigntyCapabilityImplementation = exports.VERIFIABILITY_SOVEREIGNTY_CAPABILITY_REASON_CODES = exports.VERIFIABILITY_SOVEREIGNTY_CAPABILITY_OPERATIONS = exports.validateInteroperabilitySovereigntyCapabilityInput = exports.isValidInteroperabilitySovereigntyCapabilityInput = exports.createInteroperabilitySovereigntyCapabilityImplementation = exports.INTEROPERABILITY_SOVEREIGNTY_CAPABILITY_REASON_CODES = exports.INTEROPERABILITY_SOVEREIGNTY_CAPABILITY_OPERATIONS = exports.validatePortabilitySovereigntyCapabilityInput = exports.isValidPortabilitySovereigntyCapabilityInput = exports.createPortabilitySovereigntyCapabilityImplementation = exports.PORTABILITY_SOVEREIGNTY_CAPABILITY_REASON_CODES = exports.PORTABILITY_SOVEREIGNTY_CAPABILITY_OPERATIONS = exports.validateProvenanceSovereigntyCapabilityInput = exports.isValidProvenanceSovereigntyCapabilityInput = exports.createProvenanceSovereigntyCapabilityImplementation = exports.PROVENANCE_SOVEREIGNTY_CAPABILITY_REASON_CODES = exports.PROVENANCE_SOVEREIGNTY_CAPABILITY_OPERATIONS = exports.validateIntegritySovereigntyCapabilityInput = exports.isValidIntegritySovereigntyCapabilityInput = exports.createIntegritySovereigntyCapabilityImplementation = exports.INTEGRITY_SOVEREIGNTY_CAPABILITY_REASON_CODES = exports.INTEGRITY_SOVEREIGNTY_CAPABILITY_OPERATIONS = exports.validateIdentitySovereigntyCapabilityInput = exports.isValidIdentitySovereigntyCapabilityInput = exports.createIdentitySovereigntyCapabilityImplementation = exports.IDENTITY_SOVEREIGNTY_CAPABILITY_REASON_CODES = void 0;
+exports.validateLicensingTermsSovereigntyCapabilityInput = exports.isValidLicensingTermsSovereigntyCapabilityInput = exports.createLicensingTermsSovereigntyCapabilityImplementation = exports.LICENSING_TERMS_SOVEREIGNTY_CAPABILITY_OPERATIONS = exports.validateVerifiabilitySovereigntyCapabilityInput = exports.isValidVerifiabilitySovereigntyCapabilityInput = exports.createVerifiabilitySovereigntyCapabilityImplementation = exports.VERIFIABILITY_SOVEREIGNTY_CAPABILITY_REASON_CODES = exports.VERIFIABILITY_SOVEREIGNTY_CAPABILITY_OPERATIONS = exports.validateInteroperabilitySovereigntyCapabilityInput = exports.isValidInteroperabilitySovereigntyCapabilityInput = exports.createInteroperabilitySovereigntyCapabilityImplementation = exports.INTEROPERABILITY_SOVEREIGNTY_CAPABILITY_REASON_CODES = exports.INTEROPERABILITY_SOVEREIGNTY_CAPABILITY_OPERATIONS = exports.validatePortabilitySovereigntyCapabilityInput = exports.isValidPortabilitySovereigntyCapabilityInput = exports.createPortabilitySovereigntyCapabilityImplementation = exports.PORTABILITY_SOVEREIGNTY_CAPABILITY_REASON_CODES = exports.PORTABILITY_SOVEREIGNTY_CAPABILITY_OPERATIONS = exports.validateProvenanceSovereigntyCapabilityInput = exports.isValidProvenanceSovereigntyCapabilityInput = exports.createProvenanceSovereigntyCapabilityImplementation = exports.PROVENANCE_SOVEREIGNTY_CAPABILITY_REASON_CODES = exports.PROVENANCE_SOVEREIGNTY_CAPABILITY_OPERATIONS = exports.validateIntegritySovereigntyCapabilityInput = exports.isValidIntegritySovereigntyCapabilityInput = exports.createIntegritySovereigntyCapabilityImplementation = exports.INTEGRITY_SOVEREIGNTY_CAPABILITY_REASON_CODES = exports.INTEGRITY_SOVEREIGNTY_CAPABILITY_OPERATIONS = exports.validateIdentitySovereigntyCapabilityInput = exports.isValidIdentitySovereigntyCapabilityInput = exports.createIdentitySovereigntyCapabilityImplementation = exports.IDENTITY_SOVEREIGNTY_CAPABILITY_REASON_CODES = void 0;
 /**
  * The production Sovereignty Capability capsules.
  *
  * SM-04 shipped the first two of the canonical eight as real implementations
  * of the SM-03 socket — AOC.IDENTITY and AOC.INTEGRITY — SM-05 added the third,
  * AOC.PROVENANCE, SM-06 the fourth, AOC.PORTABILITY, SM-07 the fifth,
- * AOC.INTEROPERABILITY, and SM-08 adds the sixth, AOC.VERIFIABILITY. Licensing
- * & Terms and Governance Compatibility remain canonical descriptors with no
- * production capsule.
+ * AOC.INTEROPERABILITY, SM-08 the sixth, AOC.VERIFIABILITY, and SM-09 adds the
+ * seventh, AOC.LICENSING_TERMS. Governance Compatibility remains a canonical
+ * descriptor with no production capsule.
  *
- * All six are plain factories with no import-time side effects. None registers
+ * All seven are plain factories with no import-time side effects. None registers
  * itself anywhere: there is no global implementation registry, and a capsule is
  * passed explicitly to `invokeSovereigntyCapability`.
  */
@@ -50,3 +50,8 @@ Object.defineProperty(exports, "VERIFIABILITY_SOVEREIGNTY_CAPABILITY_REASON_CODE
 Object.defineProperty(exports, "createVerifiabilitySovereigntyCapabilityImplementation", { enumerable: true, get: function () { return verifiability_1.createVerifiabilitySovereigntyCapabilityImplementation; } });
 Object.defineProperty(exports, "isValidVerifiabilitySovereigntyCapabilityInput", { enumerable: true, get: function () { return verifiability_1.isValidVerifiabilitySovereigntyCapabilityInput; } });
 Object.defineProperty(exports, "validateVerifiabilitySovereigntyCapabilityInput", { enumerable: true, get: function () { return verifiability_1.validateVerifiabilitySovereigntyCapabilityInput; } });
+var licensing_terms_1 = require("./licensing-terms");
+Object.defineProperty(exports, "LICENSING_TERMS_SOVEREIGNTY_CAPABILITY_OPERATIONS", { enumerable: true, get: function () { return licensing_terms_1.LICENSING_TERMS_SOVEREIGNTY_CAPABILITY_OPERATIONS; } });
+Object.defineProperty(exports, "createLicensingTermsSovereigntyCapabilityImplementation", { enumerable: true, get: function () { return licensing_terms_1.createLicensingTermsSovereigntyCapabilityImplementation; } });
+Object.defineProperty(exports, "isValidLicensingTermsSovereigntyCapabilityInput", { enumerable: true, get: function () { return licensing_terms_1.isValidLicensingTermsSovereigntyCapabilityInput; } });
+Object.defineProperty(exports, "validateLicensingTermsSovereigntyCapabilityInput", { enumerable: true, get: function () { return licensing_terms_1.validateLicensingTermsSovereigntyCapabilityInput; } });
