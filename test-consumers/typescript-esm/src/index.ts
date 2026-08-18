@@ -16,6 +16,7 @@ import {
   buildSovereigntyCapabilityInvocation,
   createIdentitySovereigntyCapabilityImplementation,
   createIntegritySovereigntyCapabilityImplementation,
+  createInteroperabilitySovereigntyCapabilityImplementation,
   createPortabilitySovereigntyCapabilityImplementation,
   createProvenanceSovereigntyCapabilityImplementation,
   getSovereigntyCapability,
@@ -28,6 +29,7 @@ import {
 import type {
   IdentitySovereigntyCapabilityInput,
   IntegritySovereigntyCapabilityInput,
+  InteroperabilitySovereigntyCapabilityInput,
   PortabilitySovereigntyCapabilityInput,
   ProvenanceSovereigntyCapabilityInput,
   SovereigntyCapabilityId,
@@ -56,7 +58,16 @@ import {
   verifySovereignManifest,
 } from '@aoc/protocol/manifest';
 import type { DerivationClaim, SignedSovereignManifest } from '@aoc/protocol/manifest';
-import { canonicalizeJSON } from '@aoc/protocol/canonical';
+import { CANONICAL_JSON_PROFILE, canonicalizeJSON } from '@aoc/protocol/canonical';
+import {
+  AOC_SOVEREIGNTY_CORE_SEMANTIC_VOCABULARY,
+  AOC_SOVEREIGNTY_PORTABILITY_MEDIA_TYPE,
+  INTEROPERABLE_CLAIM_TYPES,
+  INTEROPERABLE_STANDING_STATUSES,
+  SOVEREIGNTY_INTEROPERABILITY_ARTIFACT_KINDS,
+  buildSovereigntyInteroperabilityConsumerSupportV1,
+} from '@aoc/protocol/interoperability';
+import type { SovereigntyInteroperabilityConsumerSupportV1 } from '@aoc/protocol/interoperability';
 
 const assertType = <T>(_value: T): void => undefined;
 
@@ -874,6 +885,222 @@ if (portabilityExport.invocationId === portabilityImport.invocationId) {
   throw new Error('two Portability invocations shared one invocation id');
 }
 
+// --- SM-07: AOC.INTEROPERABILITY over the representation that just arrived ---
+//
+// Application B holds `portabilityImport.output.bundle` and nothing else. It
+// now works out what the representation is, and whether it can consume it.
+
+const interoperabilityCapabilityRef =
+  getSovereigntyCapabilityRefByKey('interoperability') as SovereigntyCapabilityRef;
+const applicationBInteroperability = createInteroperabilitySovereigntyCapabilityImplementation();
+
+if (applicationBInteroperability.capability.id !== 'aoc:sovereignty-capability:interoperability') {
+  throw new Error('production Interoperability capsule does not advertise the canonical id');
+}
+if (applicationBInteroperability.capability.version !== interoperabilityCapabilityRef.version) {
+  throw new Error('production Interoperability capsule drifted from the canonical capability version');
+}
+
+// Subjectless: this runtime has no local record of the arrived subject.
+const interoperabilityDescribe = await invokeSovereigntyCapability(
+  buildSovereigntyCapabilityInvocation({
+    capability: interoperabilityCapabilityRef,
+    correlationId: portabilityCorrelationId,
+    input: {
+      operation: 'describe-bundle',
+      bundle: portabilityImport.output.bundle,
+    } as InteroperabilitySovereigntyCapabilityInput,
+  }),
+  applicationBInteroperability,
+);
+if (
+  interoperabilityDescribe.status !== 'succeeded'
+  || interoperabilityDescribe.output.operation !== 'describe-bundle'
+) {
+  throw new Error('production describe-bundle did not execute');
+}
+if (
+  interoperabilityDescribe.subject?.sovereignAssetId
+  !== portabilityImport.output.bundle.subject.sovereignAssetId
+) {
+  throw new Error('subjectless description did not return the bundle subject');
+}
+
+const interoperabilityProfile = interoperabilityDescribe.output.profile;
+const interoperabilityDescriptor = interoperabilityDescribe.output.descriptor;
+
+// The representation identifies itself, through public API only.
+if (interoperabilityProfile.id !== 'aoc:interoperability-profile:sovereignty-portability') {
+  throw new Error('the profile does not carry the canonical AOC interoperability profile id');
+}
+if (interoperabilityProfile.version !== '1.0.0') throw new Error('the profile version is not readable');
+if (
+  interoperabilityProfile.mediaType !== AOC_SOVEREIGNTY_PORTABILITY_MEDIA_TYPE
+  || interoperabilityProfile.mediaType !== 'application/vnd.aoc.sovereignty-portability+json'
+) {
+  throw new Error('the canonical media type is not what an external system was told to expect');
+}
+if (interoperabilityProfile.representation.schemaVersion !== SOVEREIGNTY_PORTABILITY_BUNDLE_SCHEMA_VERSION) {
+  throw new Error('the profile does not identify the SM-06 bundle schema');
+}
+if (interoperabilityProfile.representation.canonicalizationProfile !== CANONICAL_JSON_PROFILE) {
+  throw new Error('the profile does not identify the canonical JSON profile');
+}
+for (const kind of ['claim', 'manifest', 'signed-claim', 'signed-manifest', 'standing'] as const) {
+  if (!(interoperabilityProfile.artifactKinds as readonly string[]).includes(kind)) {
+    throw new Error(`the profile does not advertise the '${kind}' artifact kind`);
+  }
+}
+for (const claimType of ['Origin', 'Authorship', 'Derivation'] as const) {
+  if (!(interoperabilityProfile.claimTypes as readonly string[]).includes(claimType)) {
+    throw new Error(`the profile does not advertise ${claimType} claim semantics`);
+  }
+}
+
+// The semantic layer is readable data an external system can act on.
+const sovereigntyVocabularyTerms = AOC_SOVEREIGNTY_CORE_SEMANTIC_VOCABULARY.categories.flatMap(
+  (category) => [...category.termRefs],
+);
+for (const termRef of [
+  'aoc.sovereignty:sovereign-asset-identity',
+  'aoc.sovereignty:content-identity',
+  'aoc.sovereignty:derivation-assertion',
+  'aoc.sovereignty:portable-sovereign-representation',
+]) {
+  if (!sovereigntyVocabularyTerms.includes(termRef)) {
+    throw new Error(`the canonical sovereignty vocabulary does not define ${termRef}`);
+  }
+}
+
+// What is actually present in THIS representation.
+if (JSON.stringify([...interoperabilityDescriptor.present.claimTypes]) !== JSON.stringify(['Derivation'])) {
+  throw new Error('the descriptor did not detect the Derivation semantics that travelled');
+}
+if (JSON.stringify([...interoperabilityDescriptor.present.claimArtifactKinds]) !== JSON.stringify(['claim'])) {
+  throw new Error('the descriptor did not detect the unsigned claim wrapper');
+}
+for (const leak of ['sourceSovereignAssetIds', 'TransformedFrom', 'claim:derivation:consumer']) {
+  if (JSON.stringify(interoperabilityDescriptor).includes(leak)) {
+    throw new Error(`the descriptor duplicated "${leak}"`);
+  }
+}
+
+const consumerSupportFor = (
+  overrides: {
+    claimTypes?: readonly (typeof INTEROPERABLE_CLAIM_TYPES)[number][];
+    representationSchemaVersions?: readonly string[];
+  } = {},
+): SovereigntyInteroperabilityConsumerSupportV1 =>
+  buildSovereigntyInteroperabilityConsumerSupportV1({
+    profile: {
+      id: interoperabilityDescriptor.profile.id,
+      acceptedVersions: [interoperabilityDescriptor.profile.version],
+    },
+    mediaTypes: [interoperabilityDescriptor.mediaType],
+    representationSchemaVersions:
+      overrides.representationSchemaVersions ?? [interoperabilityDescriptor.representation.schemaVersion],
+    canonicalizationProfiles: [interoperabilityDescriptor.representation.canonicalizationProfile],
+    artifactKinds: [...SOVEREIGNTY_INTEROPERABILITY_ARTIFACT_KINDS],
+    claimTypes: overrides.claimTypes ?? [...INTEROPERABLE_CLAIM_TYPES],
+    standingStatuses: [...INTEROPERABLE_STANDING_STATUSES],
+    semanticTerms: [...interoperabilityDescriptor.present.semanticRequirements],
+  });
+
+const assessCompatibility = async (
+  consumerSupport: SovereigntyInteroperabilityConsumerSupportV1,
+) =>
+  invokeSovereigntyCapability(
+    buildSovereigntyCapabilityInvocation({
+      capability: interoperabilityCapabilityRef,
+      correlationId: portabilityCorrelationId,
+      input: {
+        operation: 'assess-compatibility',
+        descriptor: interoperabilityDescriptor,
+        consumerSupport,
+      } as InteroperabilitySovereigntyCapabilityInput,
+    }),
+    applicationBInteroperability,
+  );
+
+// FULL
+const fullCompatibility = await assessCompatibility(consumerSupportFor());
+if (
+  fullCompatibility.status !== 'succeeded'
+  || fullCompatibility.output.operation !== 'assess-compatibility'
+) {
+  throw new Error('production assess-compatibility did not execute');
+}
+if (fullCompatibility.output.report.status !== 'compatible') {
+  throw new Error(`expected a compatible report, got ${fullCompatibility.output.report.status}`);
+}
+
+// PARTIAL — and an incompatibility of understanding never means data loss.
+const wireBeforeAssessment = portabilityImport.output.serializedBundle;
+const partialCompatibility = await assessCompatibility(
+  consumerSupportFor({ claimTypes: ['Authorship', 'Origin'] }),
+);
+if (
+  partialCompatibility.status !== 'succeeded'
+  || partialCompatibility.output.operation !== 'assess-compatibility'
+) {
+  throw new Error('a partial assessment was reported as an execution failure');
+}
+if (partialCompatibility.output.report.status !== 'partially-compatible') {
+  throw new Error(`expected a partial report, got ${partialCompatibility.output.report.status}`);
+}
+if (
+  JSON.stringify([...partialCompatibility.output.report.unsupportedClaimTypes])
+  !== JSON.stringify(['Derivation'])
+) {
+  throw new Error('the partial report did not name Derivation as the unsupported claim type');
+}
+if (serializeSovereigntyPortabilityBundle(portabilityImport.output.bundle) !== wireBeforeAssessment) {
+  throw new Error('the representation changed as a result of a partial compatibility result');
+}
+if (portabilityImport.output.bundle.claims.length !== 1) throw new Error('an unsupported claim was dropped');
+
+// INCOMPATIBLE — still an ordinary successful execution.
+const incompatible = await assessCompatibility(
+  consumerSupportFor({ representationSchemaVersions: ['some-other-representation/1'] }),
+);
+if (incompatible.status !== 'succeeded' || incompatible.output.operation !== 'assess-compatibility') {
+  throw new Error('an incompatibility was reported as an execution failure');
+}
+if (incompatible.output.report.status !== 'incompatible') {
+  throw new Error(`expected an incompatible report, got ${incompatible.output.report.status}`);
+}
+if (
+  !incompatible.output.report.reasonCodes.includes('INTEROPERABILITY_UNSUPPORTED_REPRESENTATION_SCHEMA')
+) {
+  throw new Error('the incompatible report did not carry the unsupported-schema reason code');
+}
+if (incompatible.evidence.outcome !== 'succeeded') {
+  throw new Error('an ordinary incompatibility was recorded as a failed invocation');
+}
+
+for (const result of [interoperabilityDescribe, fullCompatibility, partialCompatibility, incompatible]) {
+  const evidence = result.evidence;
+  if (!isValidSovereigntyCapabilityInvocationEvidence(evidence)) {
+    throw new Error('invalid Interoperability evidence');
+  }
+  if (evidence.capability.id !== 'aoc:sovereignty-capability:interoperability') {
+    throw new Error('evidence does not attribute the canonical Interoperability capability');
+  }
+  if (evidence.correlationId !== portabilityCorrelationId) {
+    throw new Error('the correlation id did not survive');
+  }
+  const serializedInteroperabilityEvidence = JSON.stringify(evidence);
+  for (const leak of [
+    'aoc-sovereignty-interoperability-descriptor/1', 'aoc-sovereignty-interoperability-report/1',
+    'aoc:interoperability-profile:sovereignty-portability', 'partially-compatible',
+    'unsupportedClaimTypes', 'Derivation', 'semanticVocabulary',
+  ]) {
+    if (serializedInteroperabilityEvidence.includes(leak)) {
+      throw new Error(`generic Interoperability evidence leaked "${leak}"`);
+    }
+  }
+}
+
 console.log(
-  `typescript-esm consumer OK: token=${token.tokenId} claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${sovereigntyCapabilities.length} nonByteSubject=${sovereignAssetId} capabilityInvocation=${identityResult.invocationId} productionMinerals=${productionSubject.sovereignAssetId} provenanceDerivation=${consumerDerivationClaim.id} portableSubject=${portabilityImport.output.bundle.subject.sovereignAssetId}`,
+  `typescript-esm consumer OK: token=${token.tokenId} claimType=${ClaimType.Identity} registry=${registry.constructor.name} sovereigntyCapabilities=${sovereigntyCapabilities.length} nonByteSubject=${sovereignAssetId} capabilityInvocation=${identityResult.invocationId} productionMinerals=${productionSubject.sovereignAssetId} provenanceDerivation=${consumerDerivationClaim.id} portableSubject=${portabilityImport.output.bundle.subject.sovereignAssetId} describedSubject=${interoperabilityDescriptor.subject.sovereignAssetId}`,
 );

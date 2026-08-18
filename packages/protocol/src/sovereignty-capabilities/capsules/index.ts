@@ -3,11 +3,11 @@
  *
  * SM-04 shipped the first two of the canonical eight as real implementations
  * of the SM-03 socket — AOC.IDENTITY and AOC.INTEGRITY — SM-05 added the third,
- * AOC.PROVENANCE, and SM-06 adds the fourth, AOC.PORTABILITY. Interoperability,
- * Verifiability, Licensing & Terms and Governance Compatibility remain canonical
- * descriptors with no production capsule.
+ * AOC.PROVENANCE, SM-06 the fourth, AOC.PORTABILITY, and SM-07 adds the fifth,
+ * AOC.INTEROPERABILITY. Verifiability, Licensing & Terms and Governance
+ * Compatibility remain canonical descriptors with no production capsule.
  *
- * All four are plain factories with no import-time side effects. None registers
+ * All five are plain factories with no import-time side effects. None registers
  * itself anywhere: there is no global implementation registry, and a capsule is
  * passed explicitly to `invokeSovereigntyCapability`.
  */
@@ -95,3 +95,23 @@ export type {
   PortabilitySovereigntyCapabilityOutput,
   PortabilitySovereigntyCapabilityReasonCode,
 } from './portability';
+
+export {
+  INTEROPERABILITY_SOVEREIGNTY_CAPABILITY_OPERATIONS,
+  INTEROPERABILITY_SOVEREIGNTY_CAPABILITY_REASON_CODES,
+  createInteroperabilitySovereigntyCapabilityImplementation,
+  isValidInteroperabilitySovereigntyCapabilityInput,
+  validateInteroperabilitySovereigntyCapabilityInput,
+} from './interoperability';
+export type {
+  AssessInteroperabilityCompatibilityInput,
+  AssessInteroperabilityCompatibilityOutput,
+  DescribeInteroperabilityBundleInput,
+  DescribeInteroperabilityBundleOutput,
+  InteroperabilitySovereigntyCapabilityImplementation,
+  InteroperabilitySovereigntyCapabilityInput,
+  InteroperabilitySovereigntyCapabilityInputValidationResult,
+  InteroperabilitySovereigntyCapabilityOperation,
+  InteroperabilitySovereigntyCapabilityOutput,
+  InteroperabilitySovereigntyCapabilityReasonCode,
+} from './interoperability';

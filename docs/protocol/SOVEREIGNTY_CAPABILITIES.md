@@ -291,9 +291,9 @@ result.evidence.capability;
 // { id: 'aoc:sovereignty-capability:verifiability', version: '1.0.0' }
 ```
 
-## Production capsules: Identity, Integrity, Provenance and Portability
+## Production capsules: Identity, Integrity, Provenance, Portability and Interoperability
 
-Four of the canonical eight are now real implementations of the socket above, exported from
+Five of the canonical eight are now real implementations of the socket above, exported from
 `@aoc/protocol/sovereignty-capabilities` and executed through `invokeSovereigntyCapability` like any
 other implementation. They are plain factories with no import-time side effects, they register
 themselves nowhere, and they expose no second entry point that would bypass the common result and
@@ -304,6 +304,7 @@ import {
   buildSovereigntyCapabilityInvocation,
   createIdentitySovereigntyCapabilityImplementation,
   createIntegritySovereigntyCapabilityImplementation,
+  createInteroperabilitySovereigntyCapabilityImplementation,
   createPortabilitySovereigntyCapabilityImplementation,
   createProvenanceSovereigntyCapabilityImplementation,
   getSovereigntyCapabilityRefByKey,
@@ -311,7 +312,7 @@ import {
 } from '@aoc/protocol/sovereignty-capabilities';
 ```
 
-All four derive their advertised `capability` ref from the SM-01 registry, so none can drift from the
+All five derive their advertised `capability` ref from the SM-01 registry, so none can drift from the
 canonical id or version. None reads the network, a provider, a chain, a registry or storage.
 
 ### AOC.IDENTITY
@@ -868,9 +869,9 @@ SM-06 establishes **one canonical AOC wire representation** and a versioned sche
 representation can be safely imported at all. Schema versioning is basic serialization safety, not
 interoperability.
 
-Whether a *non-AOC* system can understand, map, translate, negotiate or consume these semantics —
-W3C VC, DID, C2PA, SPDX, JSON-LD contexts, media-type registries, cross-protocol adapters — is a
-different question, and none of it exists here. That is AOC.INTEROPERABILITY's contract.
+Whether a receiving system can work out what arrived, which of its semantics that system
+understands, and whether it can safely consume it is a different question. That is
+AOC.INTEROPERABILITY's contract, documented below.
 
 ### A migration, end to end
 
@@ -891,6 +892,467 @@ SOURCE APP                                   DESTINATION APP
 ```
 
 No source provider is required at any point, and nothing was reminted.
+
+### AOC.INTEROPERABILITY
+
+Answers exactly one question: *when a sovereign representation arrives somewhere else, can the
+receiving system determine what it is, which of its semantics that system understands, which it does
+not, and whether it can safely consume it?*
+
+Two operations, and no more:
+
+```
+describe-bundle        canonical bundle       ─►  profile + descriptor
+assess-compatibility   descriptor + support   ─►  compatibility report
+```
+
+The interoperability *data contracts* live in `@aoc/protocol/interoperability`; this capsule makes
+describing and assessing ordinary capability invocations producing capability-attributed evidence —
+the same split SM-06 uses between `@aoc/protocol/portability` and its capsule.
+
+#### Portability versus Interoperability
+
+| | Question | Answer |
+| --- | --- | --- |
+| **Portability** | Can the representation *move*? | a canonical bundle, and a parser that reconstructs it |
+| **Interoperability** | Can the receiver *understand* what arrived, and assess whether it can consume it? | a profile, a descriptor, and a compatibility report |
+
+Interoperability operates **beside** the portability bundle, never inside it.
+`SovereigntyPortabilityBundleV1` is untouched: its six-field contract gained no `interop`, `profile`,
+`mediaType`, `descriptor` or `compatibility` field, because adding one would mutate a completed
+Portability contract, break its six-field invariant, change its deterministic serialization, and
+couple two minerals that have no reason to be coupled.
+
+#### Three artifacts, three different jobs
+
+**The profile** is a static Protocol contract describing a *family* of representations: what an AOC
+sovereign representation means, at all. It is the same value in every process, for every subject.
+
+**The descriptor** describes one *concrete* bundle: what is actually present in it. "Representations
+in this family may contain signed manifests and Derivation claims" is a profile statement; "this
+bundle contains one unsigned manifest and one Derivation claim" is a descriptor statement. Collapsing
+the two would leave a consumer unable to distinguish what the format allows from what arrived.
+
+**The consumer support declaration** is supplied by the *receiving system*, stating what it
+understands. The compatibility report is the comparison.
+
+#### The canonical profile
+
+```ts
+AOC_SOVEREIGNTY_INTEROPERABILITY_PROFILE_V1 = {
+  schemaVersion: 'aoc-sovereignty-interoperability-profile/1',
+  id:            'aoc:interoperability-profile:sovereignty-portability',
+  version:       '1.0.0',
+  mediaType:     'application/vnd.aoc.sovereignty-portability+json',
+  representation: {
+    schemaVersion:          'aoc-sovereignty-portability-bundle/1',   // the SM-06 constant
+    canonicalizationProfile: 'aoc-canonical-json/1',                  // the canonical JSON constant
+  },
+  artifactKinds:         ['claim', 'manifest', 'signed-claim', 'signed-manifest', 'standing'],
+  manifestArtifactKinds: ['manifest', 'signed-manifest'],
+  claimArtifactKinds:    ['claim', 'signed-claim'],
+  claimTypes:            ['Authorship', 'Derivation', 'Origin'],
+  standingStatuses:      [...],
+  semanticVocabulary:    AOC_SOVEREIGNTY_CORE_SEMANTIC_VOCABULARY,
+}
+```
+
+A consumer holding this document can read the profile id, the profile version, the wire media type,
+the bundle schema, the canonicalization profile, the artifact kinds, the claim semantics and the full
+semantic vocabulary **without inspecting AOC source code**. That is the principal machine-readable
+output of SM-07.
+
+The profile version is deliberately **not** the npm package version. The package version moves
+whenever any part of `@aoc/protocol` changes; the semantics an external system negotiates against
+must move only when those semantics do.
+
+The representation constants are imported from SM-06 and the canonical JSON profile rather than
+re-typed as literals, so the profile cannot describe a bundle schema the bundle no longer uses.
+
+It is a frozen constant, not something a builder assembles per invocation: no clock, no environment
+inspection, no capability discovery, and no `registerProfile` / `findProfile` / profile registry. One
+canonical profile is what SM-07 needs; generalising to many before a second one exists would invent a
+lookup problem Protocol does not have.
+
+##### The media type
+
+`application/vnd.aoc.sovereignty-portability+json` is an **AOC Protocol media-type identifier**. It
+is *not* registered with IANA, and this constant claims no such registration. Its purpose is to let a
+receiving system name the representation it is holding during negotiation. Protocol performs no HTTP
+content negotiation, sets no header, reads no header and ships no server: the string is metadata.
+
+##### What the profile deliberately does not contain
+
+- **`implementedCapabilities`** — a representation profile describes semantics, never which capsules
+  happen to be constructed inside some runtime. The canonical capability catalog and a given
+  process's capability availability are different facts, and conflating them would let a consumer
+  infer execution readiness from a document that knows nothing about any runtime.
+- **Translation tables** — no `mapToW3C`, no `mapToC2PA`. The base profile is AOC-native.
+- **Trust** — no score, confidence, reputation or `verifiedIssuer`.
+- **Presentation** — no labels, icons or colours. Semantics, not UI.
+- **Business rules** — no `billingTier`, `premiumFeature` or `requiredForCommercialUse`.
+- **Storage** — no provider, endpoint or storage URI. The media type identifies the representation,
+  never where a copy of one is kept.
+- **`generatedAt` / `digest` / `signature`** — the profile is a constant, so a timestamp would be a
+  lie; integrity or proof over its serialization is explicit composition with AOC.INTEGRITY or
+  AOC.VERIFIABILITY.
+
+#### The semantic vocabulary
+
+A receiving system can read an AOC bundle's field names — `sovereignAssetId`, `contentIdentity`,
+`assertedOrigin` — and still not know what any of them *mean*. Field names are not semantics.
+
+`AOC_SOVEREIGNTY_CORE_SEMANTIC_VOCABULARY` is the Protocol-owned statement of those meanings, built
+from the **existing** `CanonicalSemanticVocabulary`, `CanonicalSemanticCategory` and
+`CanonicalSemanticTerm` contracts in `@aoc/protocol/claims`. There is no `InteropSemanticTerm` and no
+parallel semantic model: two semantic models for one Protocol is how two descriptions of one concept
+start to disagree.
+
+Ten terms under the `aoc.sovereignty` namespace, grouped by the mineral whose contract they belong
+to:
+
+| Category | Terms |
+| --- | --- |
+| Identity Semantics | Sovereign Subject, Sovereign Asset Identity, External Reference, Sovereign Manifest |
+| Integrity Semantics | Content Identity |
+| Provenance Semantics | Origin Assertion, Authorship Assertion, Derivation Assertion, Claim Standing |
+| Portability Semantics | Portable Sovereign Representation |
+
+Descriptions are factual and mineral-boundary-safe. *Content Identity* says it is "not the sovereign
+identity"; *Derivation Assertion* says it "establishes no legal authorization"; *Claim Standing* says
+it "neither removes the claim nor settles the dispute it describes".
+
+The vocabulary describes meaning and does nothing else, preserving the behaviour-free philosophy the
+claims-layer contracts were written under. Nothing in it classifies runtime data, resolves an
+ontology, walks a graph, scores confidence, derives authority, evaluates a rule or reaches a
+conclusion. Every id is an explicit, stable Protocol constant — nothing is minted at import time,
+because a vocabulary whose term ids changed per process could never be referenced from a claim, a
+support declaration or a report.
+
+It is **not** a ninth mineral. There is no `AOC.SEMANTIC_VOCABULARY`, and the canonical inventory
+stays at eight — the vocabulary supports AOC.INTEROPERABILITY the same way the portability bundle
+supports AOC.PORTABILITY.
+
+#### The representation descriptor
+
+```ts
+SovereigntyInteroperabilityDescriptorV1 {
+  schemaVersion: 'aoc-sovereignty-interoperability-descriptor/1';
+  profile:       { id; version };            // versioned reference, never a bare name
+  mediaType;
+  subject:       SovereignSubjectRef;        // the bundle's own, passed through
+  representation: { schemaVersion; canonicalizationProfile };
+  present: {
+    manifestArtifactKinds;   // 'manifest' | 'signed-manifest', unique + sorted
+    manifestVersions;        // historical manifestVersion values, ascending
+    claimArtifactKinds;      // 'claim' | 'signed-claim', unique + sorted
+    claimTypes;              // Origin | Authorship | Derivation, unique + sorted
+    standingStatuses;        // verbatim, unique + sorted
+    semanticRequirements;    // { namespace, termRef }, unique + sorted
+  };
+}
+```
+
+The descriptor is **not a copy of the bundle**. Manifests, claims, standings, proofs, digests,
+statements, evidence references and metadata are never duplicated into it: it reports which semantic
+shapes are present, and the bundle carries the data. A descriptor that inlined the payload would be a
+second representation of the same sovereign facts, free to drift from the first, and would leak that
+payload into every place a description was safe to send.
+
+There is deliberately **no `descriptorId`** and **no `describedAt`**. A descriptor is a deterministic
+description of an existing representation, not a new sovereign object with an owner and a lifecycle,
+and describing the same bundle twice must produce the same value. *When* a description was produced
+is recorded truthfully in the SM-03 invocation evidence.
+
+`manifestVersions` is *historical manifest version* information about the subject — the versions of
+its record that travelled. It is not the manifest schema version, the bundle schema version or the
+profile version, each of which is a single value elsewhere in the document.
+
+A **subject-only** bundle is describable, and its feature arrays are simply empty. An external system
+still learns that it is holding an AOC sovereign subject representation.
+
+Wrapper kind and semantic type are independent facts, and both are reported. A signed `Derivation`
+contributes `signed-claim` to `claimArtifactKinds` and `Derivation` to `claimTypes`. A manifest's
+*embedded* `originClaim` and `authorityClaims` contribute their semantic concepts, but are never
+promoted into `claimArtifactKinds` or `claimTypes`: an embedded assertion is part of the manifest, not
+a separately presented claim artifact.
+
+##### Semantic requirements: concept identity, not occurrence identity
+
+Where artifacts carry `semanticRefs`, the descriptor extracts the concepts a consumer must understand
+as `{ namespace, termRef }`:
+
+```ts
+InteroperabilitySemanticRequirement { namespace; termRef }
+```
+
+This does not replace `CanonicalSemanticRef` — it is a compatibility requirement extracted *from*
+one. The distinction is the whole point: `CanonicalSemanticRef.id` identifies one *occurrence* of a
+reference, the particular pointer sitting on one particular claim, while `namespace` + `termRef`
+identify the *concept* being pointed at. Two refs `{id: 'ref-a', namespace: 'x', termRef: 't'}` and
+`{id: 'ref-b', namespace: 'x', termRef: 't'}` are the same requirement, listed once. Requirements
+union across every supplied artifact, deterministically ordered, and the source refs are never
+mutated or resolved.
+
+If a representation carries no semantic refs, it imposes no semantic requirements, and that dimension
+is satisfied. No requirement is invented to have something to check.
+
+#### The consumer support declaration
+
+```ts
+SovereigntyInteroperabilityConsumerSupportV1 {
+  schemaVersion: 'aoc-sovereignty-interoperability-support/1';
+  profile: { id; acceptedVersions };
+  mediaTypes;
+  representationSchemaVersions;
+  canonicalizationProfiles;
+  artifactKinds;
+  claimTypes;
+  standingStatuses;
+  semanticTerms;    // { namespace, termRef }
+}
+```
+
+**Explicit declaration, never inference.** AOC never derives this from a user-agent, a package name,
+an installed dependency, a runtime version, a browser, a request header or a provider — every one of
+those would be Protocol guessing at semantic understanding from an operational signal. "This system
+has `@aoc/protocol` installed" is not the same fact as "this system understands Derivation
+assertions".
+
+**Never fetched.** No well-known URL, no DID document lookup, no service discovery, no registry, no
+DNS. Support is caller input. A convenience layer that retrieves a declaration over the network can be
+built later, on top, without changing what the declaration means.
+
+**No consumer identity.** There is no `consumerId`, `application`, `tenant`, `company` or `user`.
+Compatibility is a relation between what a representation requires and what a consumer declares —
+*who* is asking changes nothing about the answer.
+
+**Fails closed, and never cleans.** A malformed declaration is rejected rather than repaired: nothing
+trims a blank entry, drops an unrecognised artifact kind, coerces a value, or deduplicates a repeated
+one. Silently cleaning a dirty declaration would mean assessing compatibility against a document the
+consumer never wrote, and reporting the result as if it had. Duplicates are rejected for the same
+reason a duplicate manifest version is rejected by the SM-06 bundle: `['claim', 'claim']` is
+ambiguous input, not emphasis. Callers wanting normalization use
+`buildSovereigntyInteroperabilityConsumerSupportV1`, which sorts and deduplicates *their own* input
+before it becomes a contract.
+
+Profile versions are matched **exactly**. A consumer that accepts `1.0.0` is not assumed to accept
+`2.0.0`, and one that accepts `2.0.0` is not assumed to accept `1.0.0`. No "closest version" is
+chosen. Exact matching is sufficient for v1 and adds no dependency; when the profile grows a second
+same-major version, `acceptedVersions` is where that widening is declared, additively.
+
+#### The compatibility report
+
+```ts
+SovereigntyInteroperabilityCompatibilityReportV1 {
+  schemaVersion: 'aoc-sovereignty-interoperability-report/1';
+  status: 'compatible' | 'partially-compatible' | 'incompatible';
+  core: { profile; mediaType; representationSchema; canonicalizationProfile };
+  unsupportedArtifactKinds;
+  unsupportedClaimTypes;
+  unsupportedStandingStatuses;
+  unsupportedSemanticTerms;
+  reasonCodes;
+}
+```
+
+##### Core versus feature requirements
+
+| | Requirement | Missing means |
+| --- | --- | --- |
+| **Core** | interoperability profile id + version | `incompatible` |
+| | media type | `incompatible` |
+| | portability bundle schema | `incompatible` |
+| | canonicalization profile | `incompatible` |
+| **Feature** | artifact kinds present | `partially-compatible` |
+| | claim types present | `partially-compatible` |
+| | standing statuses present | `partially-compatible` |
+| | semantic concepts required | `partially-compatible` |
+
+Core means: without this, the consumer cannot read the representation as the representation it is. A
+consumer that supports `application/json` but not the AOC media type is **incompatible** — generic
+JSON support is never read as semantic support. A consumer that can parse JSON but does not declare
+`aoc-canonical-json/1` is likewise incompatible: canonical wire semantics matter.
+
+Feature gaps are computed whether or not core support holds, so an `incompatible` result still tells
+a consumer which features it would *also* have been missing.
+
+```
+FULL          consumer understands the profile, the wire form, and every artifact kind, claim
+              type, standing status and semantic concept actually present
+
+PARTIAL       core representation understood, but one or more represented features are not
+
+INCOMPATIBLE  one or more core representation requirements are unsupported
+```
+
+##### Partial never authorizes data loss
+
+This is the critical point. `partially-compatible` means *"the consumer reports incomplete semantic
+understanding"*. It does **not** mean "drop the unsupported artifacts and continue".
+
+Protocol produces no reduced bundle, strips nothing, downgrades nothing and projects nothing. There
+is no `stripUnsupportedArtifacts`, no `downgradeBundle`, no `convertToSupportedSubset` and no
+`bestEffortImport`. After a partial report, the bundle, its canonical wire form and the descriptor are
+byte-for-byte what they were. Whether to reject the representation, keep the unsupported parts as
+opaque data, ask for a translation, or proceed knowingly is the **caller's** decision — silently
+making it for them is how sovereign data disappears in transit.
+
+An unsupported `Derivation` is reported as unsupported. It is not rewritten into `ClaimType.Custom`
+and it is not discarded.
+
+##### Explicit, never scored
+
+There is no "80% compatible", no `0.74` match and no confidence value. A consuming system cannot act
+responsibly on a number: it needs to know *which* semantics it does not understand. The result is an
+enumerated status plus concrete, deterministically sorted gaps and stable reason codes:
+
+```
+INTEROPERABILITY_UNSUPPORTED_PROFILE
+INTEROPERABILITY_UNSUPPORTED_MEDIA_TYPE
+INTEROPERABILITY_UNSUPPORTED_REPRESENTATION_SCHEMA
+INTEROPERABILITY_UNSUPPORTED_CANONICALIZATION_PROFILE
+INTEROPERABILITY_UNSUPPORTED_ARTIFACT_KIND
+INTEROPERABILITY_UNSUPPORTED_CLAIM_TYPE
+INTEROPERABILITY_UNSUPPORTED_STANDING_STATUS
+INTEROPERABILITY_UNSUPPORTED_SEMANTIC_TERM
+```
+
+Reason codes and every unsupported array are explicitly sorted, so `Set` iteration order can never
+define public output. The same descriptor and the same support declaration always produce the same
+report: no `reportId`, no `assessedAt`, no random value.
+
+#### Incompatibility is not execution failure
+
+A caller asks: *"is consumer C compatible with descriptor D?"* Interoperability determines the answer:
+*"no."* That is a **successful assessment**.
+
+| Outcome | SM-03 result | report status |
+| --- | --- | --- |
+| Consumer understands everything present | `succeeded` | `compatible` |
+| Consumer understands the core but not every feature | `succeeded` | `partially-compatible` |
+| Consumer does not understand the core | `succeeded` | `incompatible` |
+| Descriptor malformed | `failed` | *(none)* |
+| Support declaration malformed | `failed` | *(none)* |
+| Bundle malformed | `failed` | *(none)* |
+| Explicit invocation subject ≠ representation subject | `failed` | *(none)* |
+
+This mirrors the Integrity pattern: an Integrity check that correctly reports a digest mismatch has
+successfully checked. Returning a capability failure for an ordinary incompatibility would make "the
+question could not be answered" indistinguishable from "the answer was negative".
+
+#### Subjectless description
+
+`describe-bundle` works with **no** `invocation.subject`, and that is load-bearing: the receiving
+application usually has no local record of the subject yet, which is the ordinary case for a bundle
+that arrived from somewhere else. On success the outcome returns `bundle.subject`, so the common
+result and evidence resolve onto the subject the representation is about. Nothing is minted — it is
+the same `SovereignAssetId` the exporting runtime had.
+
+Supplying `invocation.subject` asserts that the bundle is expected to be about exactly that
+reference. It is checked for **exact** SM-02 equality, never reconciled: the same `SovereignAssetId`
+under a different external reference is a mismatch, and no winner is picked.
+
+#### Boundaries Interoperability holds
+
+- **Verifiability.** `verifySignedClaim`, `verifySovereignManifest` and `verifySovereignSignature`
+  are never called. A descriptor may report that a `signed-claim` is present and that its underlying
+  type is `Derivation`; it never reports that the signature holds. Understanding what an artifact
+  *claims to be* is Interoperability; establishing whether its proof is *authentic* is Verifiability.
+- **Integrity.** `computeContentIdentity` and `computeManifestDigest` are never called and no digest
+  is repaired. Describing that a representation canonicalizes under `aoc-canonical-json/1` is
+  describing integrity metadata, not producing it.
+- **Identity.** `mintSovereignAssetId` is never called, on either operation.
+- **Provenance.** Describing a `DerivationClaim` asserts nothing about derivation. No claim, standing
+  or lineage is built.
+- **Portability.** The Portability *contract* is reused — the bundle type and its validator — because
+  describing a representation requires knowing what a valid one is. The AOC.PORTABILITY *capsule* is
+  never invoked: `invokeSovereigntyCapability` does not appear in this source at all, so composing
+  minerals stays the caller's decision, visible in the caller's own evidence.
+- **Governance.** A report never says allow, deny, approve, reject, grant or enforce. What an
+  application does with an incomplete understanding belongs to the application or Enterprise layer.
+- **Trust.** No trust score, confidence, reputation, authority level or `verifiedIssuer`. A system can
+  perfectly understand a claim it has every reason to distrust: understandable ≠ trusted, and
+  compatible ≠ true.
+- **Ownership.** Understanding a representation says nothing about who owns the subject, who
+  presented it, or who the issuer is.
+- **The outside world.** No fetch, no filesystem, no database, no persistence, no dynamic code
+  execution, no key material. Both operations are pure functions of their inputs.
+- **The subject's domain.** No namespace, asset type or business domain is read. A physical property,
+  an external token, an autonomous agent, an API resource and a subject from a system nobody has heard
+  of all describe through exactly the same architecture, differing only in their data.
+
+#### A cross-system negotiation, end to end
+
+```
+SOURCE SYSTEM                              RECEIVING SYSTEM
+
+  AOC.PORTABILITY / export-bundle            AOC.PORTABILITY / import-bundle
+        │                                          ▲   (no local subject needed)
+        ▼                                          │
+  canonical bundle ──────► transport (JSON) ───────┘
+                                                   │
+                                                   ▼
+                                     AOC.INTEROPERABILITY / describe-bundle
+                                                   │
+                                     ┌─────────────┴─────────────┐
+                                     ▼                           ▼
+                            canonical profile            bundle descriptor
+                       (id, version, media type,      ├── representation schema
+                        bundle schema, canonical      ├── artifact kinds present
+                        JSON profile, artifact        ├── claim types present
+                        kinds, claim types,           ├── standing statuses present
+                        semantic vocabulary)          └── semantic requirements
+                                     └─────────────┬─────────────┘
+                                                   ▼
+                                        consumer support declaration
+                                        (supplied by the receiver)
+                                                   │
+                                     AOC.INTEROPERABILITY / assess-compatibility
+                                                   │
+                        ┌──────────────────────────┼──────────────────────────┐
+                        ▼                          ▼                          ▼
+                   COMPATIBLE            PARTIALLY COMPATIBLE            INCOMPATIBLE
+              understands everything    understands the core,       does not understand
+                   present              not every feature —          the bundle schema,
+                                        nothing is dropped           media type, profile
+                                                                     or canonicalization
+```
+
+Nothing was translated, nothing was verified, nothing was adjudicated and nothing was discarded.
+
+#### External standard mappings are deferred
+
+W3C Verifiable Credentials, DIDs, C2PA, SPDX, CycloneDX, JSON-LD contexts, Open Badges, XACML,
+OPA/Rego, Cedar and chain metadata are **not implemented**, in any form. No adapter, no translation
+table, no mapping, and no dependency on any of them.
+
+That does not make SM-07 incomplete. Those are mappings *between* AOC semantics and someone else's;
+they presuppose a stable, self-describing statement of what AOC semantics *are*, which is what this
+capsule establishes. Each may later become an optional mapping profile, an adapter, or an ecosystem
+bridge — layered on top of this handshake, never in place of it. Regulated-sector profiles (health,
+finance, public sector) are deferred on the same basis.
+
+There is deliberately no adapter framework to hang them on yet: no `registerInteropAdapter`, no
+adapter marketplace, no global translation registry, no schema-bridge registry and no dynamic adapter
+discovery. Building the mutable plugin surface before the stable semantic handshake would be building
+the extension point before the thing being extended.
+
+#### JSON Schema
+
+The repository publishes no JSON Schema files for any contract today, and SM-07 does not invent a
+parallel schema system for its four. The interoperability contracts are validated by the runtime
+validators described above. Publishing stable JSON Schemas at versioned URIs remains the documented
+direction in `docs/architecture/versioning-strategy.md`, and is future interoperability hardening
+across the whole contract surface rather than a per-capsule concern.
+
+#### Profile evolution
+
+Future profile versions follow the existing repository versioning strategy: an explicit
+`schemaVersion` on every document, additive change wherever it is safe, unsupported profile schemas
+and major versions rejected rather than best-effort read, no field repurposing, and stable
+identifiers. A future version may add claim types, artifact kinds, external mapping metadata or
+sector vocabularies without redefining any meaning established here.
 
 ### Identity is not Integrity
 
@@ -963,14 +1425,16 @@ resolution semantics in Protocol, leaving the field absent is the honest option 
 
 ### Status
 
-The socket exists and **four of the eight** minerals now fill it. `AOC.IDENTITY`, `AOC.INTEGRITY`,
-`AOC.PROVENANCE` and `AOC.PORTABILITY` are production capsules consuming the common invocation and
-evidence architecture end-to-end, verified from a real `npm pack` tarball by all three fixtures in
-`test-consumers/` — including the first four-mineral flow, in which Integrity measures bytes, Identity
-mints the subject, Provenance asserts its origin, Portability exports the canonical bundle, and
-Integrity digests the wire string identically on both sides of a transport.
+The socket exists and **five of the eight** minerals now fill it. `AOC.IDENTITY`, `AOC.INTEGRITY`,
+`AOC.PROVENANCE`, `AOC.PORTABILITY` and `AOC.INTEROPERABILITY` are production capsules consuming the
+common invocation and evidence architecture end-to-end, verified from a real `npm pack` tarball by all
+three fixtures in `test-consumers/` — including the first five-mineral flow, in which Integrity
+measures bytes, Identity mints the subject, Provenance asserts its origin and derivation and records a
+contestation, Portability exports the canonical bundle, a second runtime holding only the JSON string
+imports it, and Interoperability describes what arrived and reports full, partial and incompatible
+consumption against three different declared support sets.
 
-The remaining four are **not** production capsules, and they do not become ones merely because four
+The remaining three are **not** production capsules, and they do not become ones merely because five
 now are:
 
 | Mineral | Production capsule |
@@ -979,7 +1443,7 @@ now are:
 | Integrity | **yes** |
 | Provenance | **yes** — origin, authorship, derivation, contestation and lineage traversal |
 | Portability | **yes** — canonical bundle export and import, provider-neutral, no reminting |
-| Interoperability | not yet |
+| Interoperability | **yes** — self-describing profile, bundle descriptor, and full/partial/incompatible compatibility assessment |
 | Verifiability | not yet — strong signing and verification *primitives* exist in `@aoc/protocol/manifest`, but no capsule wraps them |
 | Licensing & Terms | not yet |
 | Governance Compatibility | not yet |
@@ -989,6 +1453,9 @@ never to this common contract. Adding a production capsule is not a capability-c
 capability versions remain `1.0.0`, and the canonical inventory remains eight. Derivation and lineage
 are Provenance *semantics*, not a ninth mineral — there is no `AOC.LINEAGE`, `AOC.AUTHORSHIP`,
 `AOC.DERIVATION` or `AOC.CUSTODY`. The portability bundle is likewise a Portability *contract*, not an
-`AOC.BUNDLE` or `AOC.EXPORT` mineral. There is still no global implementation registry: a capsule is
-passed explicitly to `invokeSovereigntyCapability`, and wiring several together is a future
-composition concern.
+`AOC.BUNDLE` or `AOC.EXPORT` mineral, and the interoperability profile, semantic vocabulary,
+descriptor and compatibility report are Interoperability *artifacts* — there is no `AOC.COMPATIBILITY`,
+`AOC.TRANSLATION`, `AOC.SCHEMA` or `AOC.SEMANTICS`. There is still no global implementation registry
+and no profile registry: a capsule is passed explicitly to `invokeSovereigntyCapability`, the one
+canonical profile is a frozen constant, and wiring several capsules together is a future composition
+concern.
