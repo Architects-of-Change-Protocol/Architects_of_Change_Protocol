@@ -101,6 +101,9 @@
       "@aoc/protocol/licensing": [
         "packages/protocol/src/licensing"
       ],
+      "@aoc/protocol/governance-compatibility": [
+        "packages/protocol/src/governance-compatibility"
+      ],
       "@aoc/protocol/sovereignty-capabilities": [
         "packages/protocol/src/sovereignty-capabilities"
       ],

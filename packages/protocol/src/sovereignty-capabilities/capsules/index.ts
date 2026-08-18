@@ -4,11 +4,13 @@
  * SM-04 shipped the first two of the canonical eight as real implementations
  * of the SM-03 socket — AOC.IDENTITY and AOC.INTEGRITY — SM-05 added the third,
  * AOC.PROVENANCE, SM-06 the fourth, AOC.PORTABILITY, SM-07 the fifth,
- * AOC.INTEROPERABILITY, SM-08 the sixth, AOC.VERIFIABILITY, and SM-09 adds the
- * seventh, AOC.LICENSING_TERMS. Governance Compatibility remains a canonical
- * descriptor with no production capsule.
+ * AOC.INTEROPERABILITY, SM-08 the sixth, AOC.VERIFIABILITY, SM-09 the seventh,
+ * AOC.LICENSING_TERMS, and SM-10 adds the eighth and last,
+ * AOC.GOVERNANCE_COMPATIBILITY. The canonical inventory is now fully
+ * implemented: eight definitions, eight production capsules, and no ninth
+ * mineral.
  *
- * All seven are plain factories with no import-time side effects. None registers
+ * All eight are plain factories with no import-time side effects. None registers
  * itself anywhere: there is no global implementation registry, and a capsule is
  * passed explicitly to `invokeSovereigntyCapability`.
  */
@@ -161,3 +163,23 @@ export type {
   ValidateLicenseTermsInput,
   ValidateLicenseTermsOutput,
 } from './licensing-terms';
+
+export {
+  GOVERNANCE_COMPATIBILITY_SOVEREIGNTY_CAPABILITY_OPERATIONS,
+  GOVERNANCE_COMPATIBILITY_SOVEREIGNTY_CAPABILITY_REASON_CODES,
+  createGovernanceCompatibilitySovereigntyCapabilityImplementation,
+  isValidGovernanceCompatibilitySovereigntyCapabilityInput,
+  validateGovernanceCompatibilitySovereigntyCapabilityInput,
+} from './governance-compatibility';
+export type {
+  GovernanceCompatibilitySovereigntyCapabilityImplementation,
+  GovernanceCompatibilitySovereigntyCapabilityInput,
+  GovernanceCompatibilitySovereigntyCapabilityInputValidationResult,
+  GovernanceCompatibilitySovereigntyCapabilityOperation,
+  GovernanceCompatibilitySovereigntyCapabilityOutput,
+  GovernanceCompatibilitySovereigntyCapabilityReasonCode,
+  PrepareGovernanceHandoffInput,
+  PrepareGovernanceHandoffOutput,
+  ValidateGovernanceHandoffInput,
+  ValidateGovernanceHandoffOutput,
+} from './governance-compatibility';

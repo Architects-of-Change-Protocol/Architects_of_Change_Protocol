@@ -131,9 +131,24 @@ Three deliberate decisions:
   the leak this ADR exists to prevent. Enterprise governs *a sovereign asset*; which kind
   of asset it is, is the vertical's business. `ResourceRef.kind` is an open `string` in
   `@aoc/protocol/contracts`, and existing usages (`'document'`, `'dataset'`, `'record'`)
-  set no conflicting convention, so this constant is vertical-owned. If a second producer
-  of sovereign-asset resources ever appears, promoting the constant to Protocol becomes a
-  genuinely generic proposal — that is a later, separate gate.
+  set no conflicting convention, so this constant was vertical-owned. If a second producer
+  of sovereign-asset resources ever appeared, promoting the constant to Protocol would become
+  a genuinely generic proposal — that was a later, separate gate.
+
+  > **Superseded by AOC-P-SM-10.** That gate has now been passed. `AOC.GOVERNANCE_COMPATIBILITY`
+  > projects an arbitrary sovereign subject — with no vertical, no asset profile and no
+  > protocolization case involved — onto a governance `ResourceRef`, which is exactly the second,
+  > generic producer this paragraph anticipated. The semantic is therefore **now owned by
+  > Protocol**, as `SOVEREIGN_GOVERNED_RESOURCE_KIND` in `@aoc/protocol/governance-compatibility`,
+  > with the identical value `'aoc:sovereign-asset'`. Nothing about this contract's behaviour
+  > changes: `governedResource` is still derived, still constant-kind, still keyed to the
+  > `SovereignAssetId`, and still attribute-free. When the vertical's implementation needs the
+  > constant it should import the Protocol one rather than declare a second definition of one wire
+  > value — the dependency direction is unchanged and non-negotiable: **Asset Protocolization may
+  > consume AOC Protocol, never the reverse.** This vertical's *stricter* rules stay vertical:
+  > SM-10 makes `tenantId` optional for a generic governance consumer, and §4's required tenant
+  > remains a constraint of this contract, which is exactly where a specialized consumer's
+  > narrowing of a generic Protocol contract belongs.
 - **`id` is the `SovereignAssetId`, never the manifest digest, content digest, external
   reference id or locator.** Those are all things that legitimately change while the
   subject stays the same (`sovereign-asset-core.md` §15.8); an Enterprise grant keyed to

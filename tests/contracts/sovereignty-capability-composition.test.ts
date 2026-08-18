@@ -12,6 +12,7 @@ import {
 import { validateSovereignManifestV1 } from '@aoc/protocol/manifest';
 import {
   SOVEREIGNTY_CAPABILITY_IDS,
+  SOVEREIGNTY_CAPABILITY_KEYS,
   buildSovereigntyCapabilityInvocation,
   createIdentitySovereigntyCapabilityImplementation,
   createIntegritySovereigntyCapabilityImplementation,
@@ -352,27 +353,18 @@ describe('SM-04 / regression and boundary guarantees (REGRESSION TESTS)', () => 
     }
   });
 
-  it('REGRESSION 27 — no mineral beyond the shipped seven is pulled forward', () => {
+  it('REGRESSION 27 — exactly the canonical eight are implemented, and no ninth mineral exists', () => {
     // SM-05 legitimately added `provenance` as the third production capsule,
     // SM-06 `portability` as the fourth, SM-07 `interoperability` as the fifth,
-    // SM-08 `verifiability` as the sixth and SM-09 `licensing_terms` as the
-    // seventh, so none of them is forbidden here. Governance Compatibility is
-    // still a canonical descriptor with no implementation, and this guards
-    // against it being resolved by a capsule that does not exist yet.
-    for (const { source } of capsuleSources()) {
-      for (const term of [
-        'governance_compatibility',
-        'governance-compatibility',
-      ]) {
-        expect(source.toLowerCase()).not.toContain(`requiresovereigntycapabilityref('${term}`);
-      }
-    }
-    // Exactly one capsule resolves each shipped mineral, and exactly seven do.
-    const resolved = capsuleSources()
-      .flatMap(({ source }) => [...source.matchAll(/requireSovereigntyCapabilityRef\('([a-z_]+)'\)/g)])
-      .map((match) => match[1])
-      .sort();
-    expect(resolved).toEqual([
+    // SM-08 `verifiability` as the sixth, SM-09 `licensing_terms` as the
+    // seventh and SM-10 `governance_compatibility` as the eighth and last. The
+    // canonical inventory is now fully implemented, so this guard changes shape:
+    // it no longer forbids a mineral, it pins the set closed. A capsule
+    // resolving anything outside the canonical eight — a policy, authority,
+    // grant, access, decision or enforcement capability — would be a ninth
+    // mineral, and the registry lookup would in any case refuse it.
+    const canonical = [
+      'governance_compatibility',
       'identity',
       'integrity',
       'interoperability',
@@ -380,7 +372,15 @@ describe('SM-04 / regression and boundary guarantees (REGRESSION TESTS)', () => 
       'portability',
       'provenance',
       'verifiability',
-    ]);
+    ];
+    // Exactly one capsule resolves each canonical mineral, and exactly eight do.
+    const resolved = capsuleSources()
+      .flatMap(({ source }) => [...source.matchAll(/requireSovereigntyCapabilityRef\('([a-z_]+)'\)/g)])
+      .map((match) => match[1])
+      .sort();
+    expect(resolved).toEqual(canonical);
+    expect(new Set(resolved).size).toBe(8);
+    expect([...SOVEREIGNTY_CAPABILITY_KEYS].sort()).toEqual(canonical);
   });
 
   it('the capsules import only Protocol-internal identity, manifest, claims, portability, interoperability and SM-03 modules', () => {
@@ -396,9 +396,14 @@ describe('SM-04 / regression and boundary guarantees (REGRESSION TESTS)', () => 
     // `VerificationKeyResolver` adapter contract an optional issuer binding is
     // injected through. SM-09 adds the Licensing & Terms capsule, which reads
     // the structured terms contract it declares and validates, plus the
-    // manifest layer's `contestClaim`. Still strictly Protocol-internal: no
+    // manifest layer's `contestClaim`. SM-10 adds the Governance Compatibility
+    // capsule, which reads the handoff contract it projects and validates, plus
+    // the canonical `ResourceRef`/`CanonicalId` types that projection is
+    // expressed in — `contracts` is a types-only module with no runtime
+    // behaviour and is the canonical home of `ResourceRef`, so importing it is
+    // reuse rather than a new dependency. Still strictly Protocol-internal: no
     // Enterprise, runtime, provider or storage module.
-    const allowed = /^(\.\.\/\.\.\/(adapters|canonical|identity|licensing|manifest|portability|interoperability|claims\/(primitives|standing|timestamps))|\.\.\/(capability-ref|implementation|invocation|ids|time)|\.\/(canonical-ref|identity|integrity|interoperability|licensing-terms|portability|provenance|verifiability))$/;
+    const allowed = /^(\.\.\/\.\.\/(adapters|canonical|contracts|governance-compatibility|identity|licensing|manifest|portability|interoperability|claims\/(primitives|standing|timestamps))|\.\.\/(capability-ref|implementation|invocation|ids|time)|\.\/(canonical-ref|governance-compatibility|identity|integrity|interoperability|licensing-terms|portability|provenance|verifiability))$/;
     for (const { file, source } of capsuleSources()) {
       const specifiers = [...source.matchAll(/(?:import|export)[^'"]*from\s+['"]([^'"]+)['"]/g)].map((m) => m[1]);
       for (const specifier of specifiers) {

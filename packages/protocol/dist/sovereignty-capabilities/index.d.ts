@@ -55,4 +55,18 @@ export type { ContestLicenseTermsClaimInput, ContestLicenseTermsClaimOutput, Cre
  */
 export { LICENSING_TERMS_REASON_CODES } from '../licensing';
 export type { LicensingTermsReasonCode, LicensingTermsValidationResult } from '../licensing';
+export { GOVERNANCE_COMPATIBILITY_SOVEREIGNTY_CAPABILITY_OPERATIONS, GOVERNANCE_COMPATIBILITY_SOVEREIGNTY_CAPABILITY_REASON_CODES, createGovernanceCompatibilitySovereigntyCapabilityImplementation, isValidGovernanceCompatibilitySovereigntyCapabilityInput, validateGovernanceCompatibilitySovereigntyCapabilityInput, } from './capsules';
+export type { GovernanceCompatibilitySovereigntyCapabilityImplementation, GovernanceCompatibilitySovereigntyCapabilityInput, GovernanceCompatibilitySovereigntyCapabilityInputValidationResult, GovernanceCompatibilitySovereigntyCapabilityOperation, GovernanceCompatibilitySovereigntyCapabilityOutput, GovernanceCompatibilitySovereigntyCapabilityReasonCode, PrepareGovernanceHandoffInput, PrepareGovernanceHandoffOutput, ValidateGovernanceHandoffInput, ValidateGovernanceHandoffOutput, } from './capsules';
+/**
+ * Re-exported so a consumer holding only `@aoc/protocol/sovereignty-capabilities`
+ * can read the reason codes AOC.GOVERNANCE_COMPATIBILITY reports without also
+ * importing `@aoc/protocol/governance-compatibility`.
+ *
+ * These are the **same** frozen constant and the same type, not a capsule-local
+ * copy — the identical arrangement Licensing & Terms uses, and for the identical
+ * reason: the handoff validators are deliberately usable on their own, so both
+ * readers share one vocabulary instead of two spellings drifting apart.
+ */
+export { SOVEREIGN_GOVERNANCE_COMPATIBILITY_REASON_CODES } from '../governance-compatibility';
+export type { SovereignGovernanceCompatibilityReasonCode } from '../governance-compatibility';
 //# sourceMappingURL=index.d.ts.map
