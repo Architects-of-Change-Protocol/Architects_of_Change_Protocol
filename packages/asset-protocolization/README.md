@@ -131,19 +131,88 @@ All declarations present !=  case ready.
 Conflicting declarations coexist: APV-06 preserves both and adjudicates neither. Declaration
 history is append-only — a correction is a new declaration, never a rewrite.
 
+### APV-07 — the verification pipeline
+
+How the automated checks a pinned profile *declares* are actually executed. A check is
+resolved by `AssetVerificationCheckId` through a registry, handed a bounded read-only view of
+one case, and returns one of five explicit outcomes together with the basis it evaluated.
+
+```ts
+import {
+  createVerificationCheckRegistry,
+  BUILT_IN_VERIFICATION_CHECKS,
+  executeProtocolizationVerificationCheck,
+  runProtocolizationVerification,
+} from '@aoc/asset-protocolization';
+
+// Registration is the extension mechanism: a new check needs no engine change,
+// no case-core change and no Protocol change.
+const checks = createVerificationCheckRegistry([...BUILT_IN_VERIFICATION_CHECKS, myCheck]);
+
+const { result, event } = await executeProtocolizationVerificationCheck(
+  { catalog, clock, tenantId: 'tenant-a', checks, resolvers: { claim, content } },
+  openCase,
+  {
+    executionId: 'execution-0001',
+    requirementId: 'verification.integrity', // must be a Verification requirement
+    checkId: 'check.content.digest',         // must be one that requirement declares
+    evidenceReceipts,                        // APV-05 receipts, reused not duplicated
+    declarations,                            // APV-06 records, reused not duplicated
+  },
+);
+
+result.outcome;               // 'Pass' | 'Fail' | 'Warning' | 'ManualReview' | 'Unavailable'
+result.evaluatedCaseRevision; // the exact case state this finding is about
+result.profile;               // the exact pinned (profileId, profileVersion)
+```
+
+**An APV check outcome is not Protocol's `VerificationStatus`.** `VerificationStatus`
+(`Pending | Verified | Failed`) is the status of a `CanonicalVerification` record; a
+`VerificationCheckOutcome` is the result of executing one profile-declared check at one case
+revision. Protocol's enum is untouched, and this package never imports it.
+
+Executing a check **mutates no case**: results are separate append-only records bound to the
+revision they evaluated, so a `Pass` at revision 4 never silently becomes a `Pass` over
+evidence added at revision 5, and recording a finding can never become the input to the next
+one. Re-running produces a *new* immutable result; the earlier one stays.
+
+```text
+APV outcome     !=  Protocol VerificationStatus.
+PASS            !=  universal truth.
+FAIL            !=  case rejection.
+WARNING         !=  PASS.
+MANUAL_REVIEW   !=  attestation.
+UNAVAILABLE     !=  FAIL.
+All checks PASS !=  READY.
+```
+
+`Unavailable` in particular is load-bearing: a registry that cannot be reached, a canonical
+record that cannot be resolved and content bytes that cannot be read are all reported as
+"could not evaluate", never as a negative finding. A check the pinned profile declares with no
+registered implementation is a different thing again — a loud configuration error, not an
+outcome.
+
+Anything the pipeline cannot do itself arrives through an injected port
+(`VerificationClaimResolver`, `VerificationContentResolver`). No registry connector, object
+store, identity provider or crypto primitive is implemented here; digest comparison reuses
+Protocol's `verifyContentIdentity`.
+
 ## What it does not contain
 
 No evidence, claim, attestation, verification, standing, credential, proof,
 provenance-source, subject-identity, principal-reference or integrity type — every
-one of those is Protocol's and is referenced, never redefined. No verification
-execution, no conflict adjudication, no identity resolution, no authority or
-delegation resolution, no readiness decision, no protocolization finalization, no
-review workflow, no registry connector, no fee assessment, no governance, no
-tokenization, and no database adapter or blob store (the case, evidence-intake and
-declaration persistence **ports** are here; binding any of them to a store is not).
-No file, blob or upload handling: evidence reaches this package as a reference,
-never as bytes. No concrete product profile: the fixtures under `tests/fixtures/`
-are test-only.
+one of those is Protocol's and is referenced, never redefined, and Protocol's
+`VerificationStatus` is neither widened nor reinterpreted. No identity resolution, no
+authority or delegation resolution, no readiness decision, no case-level verdict, no
+professional review or attestation workflow, no protocolization finalization, no registry
+connector, no fee assessment, no governance, no tokenization, and no database adapter or
+blob store (the case, evidence-intake, declaration and verification-result persistence
+**ports** are here; binding any of them to a store is not). No cryptography of its own: no
+hashing algorithm, signature format, key model or proof format is defined here. No file,
+blob or upload handling: evidence reaches this package as a reference, never as bytes, and
+content bytes for a digest check arrive through an injected resolver. No concrete product
+profile: the fixtures under `tests/fixtures/` are test-only, including every `test.check.*`
+executor.
 
 ## Dependency envelope
 
@@ -160,6 +229,7 @@ Protocol-declared port, bound in a composition root.
 - `docs/asset-protocolization/APV_05_EVIDENCE_INTAKE.md` — the evidence intake slice.
 - `docs/asset-protocolization/APV_06_DECLARATION_CLAIM_PREPARATION.md` — the declaration
   slice.
+- `docs/asset-protocolization/APV_07_VERIFICATION_PIPELINE.md` — the verification slice.
 - `docs/asset-protocolization/README.md` — the workstream and the Gate A0 record.
 - `docs/architecture/adr-asset-protocolization-vertical-boundary.md` — the frozen
   boundary.

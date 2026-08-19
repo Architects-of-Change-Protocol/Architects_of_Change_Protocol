@@ -35,10 +35,26 @@
  * claim verified; evidence linked is never a claim proven; a declarant is never
  * an authority; and all declarations present is never a case ready.
  *
+ * APV-07 delivers the fifth: the **verification pipeline** — how the automated
+ * checks a pinned `AssetProfile` version declares are actually executed. It
+ * resolves an `AssetVerificationCheckId` to a registered implementation, hands
+ * it a bounded read-only view of one case, and records an immutable result
+ * carrying an explicit outcome, a machine-readable reason, the references it
+ * evaluated, the exact profile pin and the case revision it evaluated. It
+ * mutates no case, so recording a finding can never become the input to the next
+ * one, and it declares its own outcome vocabulary rather than widening
+ * Protocol's `VerificationStatus`, which is a different concept.
+ *
+ * An APV check outcome is never Protocol's `VerificationStatus`; a `Pass` is
+ * never universal truth; a `Fail` is never a case rejection; a `Warning` is never
+ * a `Pass`; a `ManualReview` is never an attestation; an `Unavailable` is never a
+ * `Fail`; and every check passing is never a case ready.
+ *
  * See `docs/asset-protocolization/APV_03_ASSET_PROFILE_FRAMEWORK.md`,
  * `docs/asset-protocolization/APV_04_PROTOCOLIZATION_CASE.md`,
- * `docs/asset-protocolization/APV_05_EVIDENCE_INTAKE.md` and
- * `docs/asset-protocolization/APV_06_DECLARATION_CLAIM_PREPARATION.md`.
+ * `docs/asset-protocolization/APV_05_EVIDENCE_INTAKE.md`,
+ * `docs/asset-protocolization/APV_06_DECLARATION_CLAIM_PREPARATION.md` and
+ * `docs/asset-protocolization/APV_07_VERIFICATION_PIPELINE.md`.
  */
 export { ASSET_IDENTIFIER_MAX_LENGTH, assetProfileVersionKey, compareAssetProfileVersions, isValidAssetCategoryId, isValidAssetProfileId, isValidAssetProfileVersion, isValidAssetRequirementConditionId, isValidAssetRequirementId, isValidAssetVerificationCheckId, } from './identifiers';
 export type { AssetCategoryId, AssetProfileId, AssetProfileVersion, AssetRequirementConditionId, AssetRequirementId, AssetVerificationCheckId, } from './identifiers';
@@ -116,4 +132,28 @@ export { createInMemoryDeclarationRepository } from './declarations/declaration-
 export type { DeclarationRepository } from './declarations/declaration-repository';
 export { DECLARATION_ERROR_CODES, DeclarationError } from './declarations/declaration-errors';
 export type { DeclarationErrorCode, DeclarationErrorDetails } from './declarations/declaration-errors';
+export { VERIFICATION_CHECK_OUTCOMES, VerificationCheckOutcome, isVerificationCheckOutcome, } from './verification/verification-outcome';
+export { isValidVerificationExecutionId, isValidVerificationReasonCode, } from './verification/verification-identifiers';
+export type { VerificationExecutionId, VerificationReasonCode, } from './verification/verification-identifiers';
+export { VerificationResolutionStatus } from './verification/verification-ports';
+export type { VerificationClaimResolution, VerificationClaimResolver, VerificationContentResolution, VerificationContentResolver, VerificationResolvers, } from './verification/verification-ports';
+export type { VerificationCheckContext } from './verification/verification-context';
+export type { AssetVerificationCheck, VerificationCheckExecution, } from './verification/verification-check';
+export { createVerificationCheckRegistry } from './verification/verification-check-registry';
+export type { VerificationCheckRegistry } from './verification/verification-check-registry';
+export { PROTOCOLIZATION_VERIFICATION_RESULT_SCHEMA_VERSION, VerificationInputKind, isVerificationInputKind, } from './verification/verification-result';
+export type { ProtocolizationVerificationResult, VerificationInputRef, } from './verification/verification-result';
+export { VERIFICATION_VALIDATION_CODES, isAdmissibleVerificationCheckExecution, isValidProtocolizationVerificationResult, validateProtocolizationVerificationResult, validateVerificationCheckExecution, } from './verification/verification-validation';
+export type { VerificationValidationCode, VerificationValidationResult, } from './verification/verification-validation';
+export { PROTOCOLIZATION_VERIFICATION_EVENT_TYPES } from './verification/verification-events';
+export type { ProtocolizationVerificationCheckExecutedEvent, ProtocolizationVerificationEvent, ProtocolizationVerificationEventType, } from './verification/verification-events';
+export { executeProtocolizationVerificationCheck, listProtocolizationVerificationPlan, reconstituteProtocolizationVerificationResult, runProtocolizationVerification, } from './verification/verification-operations';
+export type { ExecuteProtocolizationVerificationInput, ProtocolizationVerificationContext, ProtocolizationVerificationInputs, ProtocolizationVerificationPlanEntry, ProtocolizationVerificationRun, ProtocolizationVerificationTransition, RunProtocolizationVerificationInput, } from './verification/verification-operations';
+export { createInMemoryVerificationResultRepository } from './verification/verification-repository';
+export type { VerificationResultRepository } from './verification/verification-repository';
+export { countVerificationOutcomes, isVerificationResultCurrentForRevision, listLatestVerificationResults, listVerificationResultsForRevision, } from './verification/verification-projections';
+export type { VerificationOutcomeCounts, VerificationResultKey, } from './verification/verification-projections';
+export { BUILT_IN_VERIFICATION_CHECKS, competingDeclarationCheck, contentDigestCheck, declarationClaimTypeCheck, evidenceFreshnessCheck, identityStrategyCheck, minimumMaterialCountCheck, requiredMaterialPresentCheck, } from './verification/verification-builtin-checks';
+export { VERIFICATION_ERROR_CODES, VerificationError } from './verification/verification-errors';
+export type { VerificationErrorCode, VerificationErrorDetails, } from './verification/verification-errors';
 //# sourceMappingURL=index.d.ts.map
