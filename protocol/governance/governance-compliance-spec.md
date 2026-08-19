@@ -1,16 +1,16 @@
-# AOC Protocol — Governance & Compliance Specification
+# Soberanía Protocol — Governance & Compliance Specification
 
 **Version:** 0.1.0
 **Status:** Draft — Normative
 **Scope:** All market makers, adapters, and protocol participants
-**Authority:** Derived from the AOC Charter (§8 Governance Philosophy)
+**Authority:** Derived from the Soberanía Charter (§8 Governance Philosophy)
 
 ---
 
 ## Preamble
 
 This document defines the governance and compliance framework for the
-Architects of Change (AOC) Protocol. It establishes the behavioral
+Soberanía Protocol. It establishes the behavioral
 boundaries, violation taxonomy, enforcement mechanisms, and dispute
 resolution model that apply to all market makers operating within the
 protocol — including, but not limited to, HRKey.
@@ -46,12 +46,12 @@ checklist. It governs protocol behavior, not jurisdictional law.
 This specification governs the following:
 
 1. **Protocol behavior.** Any action taken by a market maker that
-   invokes, relies on, or produces AOC protocol objects — including
+   invokes, relies on, or produces Soberanía protocol objects — including
    Consent Objects, Capability Tokens, Pack Manifests, Field Manifests,
    Content Objects, and SDL paths.
 
 2. **Adapter compliance.** The correctness of any adapter that bridges a
-   market maker's domain logic to the AOC Vault interface. The adapter
+   market maker's domain logic to the Soberanía Vault interface. The adapter
    MUST NOT re-implement, circumvent, or weaken any invariant enforced
    by the Vault.
 
@@ -91,7 +91,7 @@ over** the following:
    their own jurisdictional obligations.
 
 5. **Network transport.** Choice of HTTP, gRPC, WebSocket, or any other
-   transport protocol. The AOC Protocol defines no transport layer.
+   transport protocol. The Soberanía Protocol defines no transport layer.
 
 6. **Storage implementation.** Whether a market maker uses in-memory,
    database, filesystem, IPFS, or any other persistence mechanism for
@@ -106,7 +106,7 @@ over** the following:
 
 ## 2. Market Maker Compliance Requirements
 
-A market maker is any service that operates through the AOC Protocol by
+A market maker is any service that operates through the Soberanía Protocol by
 publishing schematics, requesting SDL fields via consent tokens, and
 returning value to participants. Compliance requirements apply uniformly
 regardless of the market maker's size, vertical, or commercial
@@ -270,7 +270,7 @@ when a previous consent expires or is revoked.
 #### 2.2.4 Vault Circumvention
 
 A market maker MUST NOT obtain candidate data through any channel that
-bypasses the AOC Vault.
+bypasses the Soberanía Vault.
 
 - A market maker MUST NOT scrape, crawl, or harvest candidate data from
   public or semi-public sources and correlate it with Vault-authorized
@@ -472,7 +472,7 @@ conceal violations or misrepresent compliance.
 ### 3.3 Protocol-Breaking Violations (Class P)
 
 Protocol-breaking violations attack the foundational semantics of the
-AOC Protocol. They undermine not just individual trust relationships but
+Soberanía Protocol. They undermine not just individual trust relationships but
 the integrity of the protocol itself. These violations are existential
 threats.
 
@@ -535,7 +535,7 @@ explicit denial as consent.
 
 ## 4. Enforcement Mechanisms
 
-Enforcement is non-custodial. The AOC Protocol does not operate a
+Enforcement is non-custodial. The Soberanía Protocol does not operate a
 central authority that can unilaterally punish, ban, or fine market
 makers. Enforcement emerges from cryptographic verifiability,
 reputational consequences, and community governance.
@@ -691,7 +691,7 @@ Any future governance mechanism adopted under this specification MUST:
 
 ### 5.1 Scope of Dispute Resolution
 
-The AOC Protocol's dispute resolution model covers disputes that
+The Soberanía Protocol's dispute resolution model covers disputes that
 concern **protocol behavior** — specifically, whether a market maker's
 actions comply with this specification. It does not cover commercial
 disputes, pricing disagreements, or service quality complaints.
@@ -776,9 +776,9 @@ Where market makers interoperate (composability per Market Maker Spec
 follow the same process. The party alleging a violation provides
 evidence; the accused party provides audit logs; the community reviews.
 
-### 5.5 What AOC Can and Cannot Arbitrate
+### 5.5 What Soberanía Can and Cannot Arbitrate
 
-#### 5.5.1 AOC Can Arbitrate
+#### 5.5.1 Soberanía Can Arbitrate
 
 - Whether a market maker's behavior conforms to this specification
 - Whether a consent grant, revocation, or capability derivation was
@@ -786,7 +786,7 @@ evidence; the accused party provides audit logs; the community reviews.
 - Whether audit logs are complete, consistent, and non-fabricated
 - Whether an adapter correctly implements the Vault interface contract
 
-#### 5.5.2 AOC Cannot Arbitrate
+#### 5.5.2 Soberanía Cannot Arbitrate
 
 - **Commercial disputes.** Disagreements about pricing, payment terms,
   service levels, or contractual obligations between parties.
@@ -806,7 +806,7 @@ evidence; the accused party provides audit logs; the community reviews.
 
 ## 6. Fork & Exit Guarantees
 
-The AOC Protocol is sovereign by design. No participant — candidate,
+The Soberanía Protocol is sovereign by design. No participant — candidate,
 employer, or market maker — is locked into any relationship. This
 section formalizes the guarantees that preserve sovereignty even under
 adverse conditions.
@@ -862,7 +862,7 @@ When a candidate wishes to move from one market maker to another:
 
 ### 6.3 Protocol Fork Rights
 
-1. **Open protocol.** The AOC Protocol is open source and publicly
+1. **Open protocol.** The Soberanía Protocol is open source and publicly
    specified (Charter §7). Any party MAY fork the protocol
    specification, reference implementation, or any component thereof.
 
@@ -872,35 +872,35 @@ When a candidate wishes to move from one market maker to another:
    Objects are self-contained and self-verifiable.
 
 3. **Interoperability after fork.** A forked protocol that maintains
-   compatibility with the AOC object specifications (Consent Object,
+   compatibility with the Soberanía object specifications (Consent Object,
    Capability Token, Pack, Field, Content, SDL) MAY interoperate with
    non-forked implementations. A fork that breaks these specifications
    is a separate protocol.
 
 4. **Exit without penalty.** No participant — candidate, employer, or
    market maker — incurs any protocol-level penalty for leaving the
-   AOC Protocol, switching to a fork, or operating on multiple forks
+   Soberanía Protocol, switching to a fork, or operating on multiple forks
    simultaneously.
 
 ---
 
 ## 7. Explicit Non-Goals
 
-The following are actions the AOC Protocol governance framework
+The following are actions the Soberanía Protocol governance framework
 refuses to take, regardless of external pressure, commercial
 incentive, or community request. These non-goals are structural
 commitments, not temporary limitations.
 
 ### 7.1 No Custodianship
 
-The AOC Protocol MUST NOT take custody of candidate data, encryption
+The Soberanía Protocol MUST NOT take custody of candidate data, encryption
 keys, consent grants, or any other sovereign artifact. The protocol
 defines interfaces, invariants, and verification rules. It does not
 hold anything.
 
 ### 7.2 No Centralized Consent Authority
 
-The AOC Protocol MUST NOT operate or designate a central authority that
+The Soberanía Protocol MUST NOT operate or designate a central authority that
 can grant, revoke, or modify consent on behalf of a candidate. Consent
 is exclusively the candidate's sovereign act. No governance mechanism,
 DAO vote, community resolution, or emergency process may override a
@@ -908,7 +908,7 @@ candidate's consent decision.
 
 ### 7.3 No Algorithm Governance
 
-The AOC Protocol MUST NOT govern, regulate, audit, or certify market
+The Soberanía Protocol MUST NOT govern, regulate, audit, or certify market
 makers' algorithms, scoring models, matching heuristics, or business
 logic. The protocol governs the consent boundary — what data enters and
 leaves the Vault. What a market maker does with authorized data within
@@ -916,14 +916,14 @@ the bounds of the consent grant is that market maker's domain.
 
 ### 7.4 No Market Favoritism
 
-The AOC Protocol MUST NOT grant preferential treatment to any market
+The Soberanía Protocol MUST NOT grant preferential treatment to any market
 maker, regardless of that market maker's size, investment, contribution
 to the protocol, or relationship with the protocol's maintainers. All
 market makers are subject to identical compliance requirements.
 
 ### 7.5 No Forced Identity Disclosure
 
-The AOC Protocol MUST NOT require candidates to disclose their legal
+The Soberanía Protocol MUST NOT require candidates to disclose their legal
 identity, nationality, location, or any personal information as a
 condition of protocol participation. The protocol operates on
 cryptographic identity (DIDs). The mapping between a DID and a natural
@@ -931,7 +931,7 @@ person is outside the protocol's scope and governance.
 
 ### 7.6 No Kill Switch
 
-The AOC Protocol MUST NOT implement a mechanism that allows any party
+The Soberanía Protocol MUST NOT implement a mechanism that allows any party
 — including the protocol's maintainers, a governance DAO, or a
 nation-state — to unilaterally disable a candidate's wallet, void their
 consent grants, or render their data inaccessible. The Fork & Exit
@@ -946,7 +946,7 @@ change MUST NOT reclassify it as a violation.
 
 ### 7.8 No Consent by Default
 
-The AOC Protocol MUST NOT introduce any mechanism, default setting, or
+The Soberanía Protocol MUST NOT introduce any mechanism, default setting, or
 configuration that results in consent being granted without explicit
 candidate action. Opt-out consent models are incompatible with this
 protocol. Silence is not consent.
@@ -957,7 +957,7 @@ protocol. Silence is not consent.
 
 | Document | Version | Relevance |
 |---|---|---|
-| AOC Charter | Current | Foundational principles (§2, §8) |
+| Soberanía Charter | Current | Foundational principles (§2, §8) |
 | Consent Object Specification | 0.1.2 | Consent structure, lifecycle, invariants |
 | Capability Token Specification | 0.1 | Derivation rules, attenuation, expiration |
 | Pack Object Specification | 0.1 | Data aggregation, content addressing |
@@ -975,7 +975,7 @@ protocol. Silence is not consent.
 
 | Term | Definition |
 |---|---|
-| **Adapter** | A software component that bridges a market maker's domain logic to the AOC Vault interface. The adapter translates domain calls into Vault operations without introducing business logic. |
+| **Adapter** | A software component that bridges a market maker's domain logic to the Soberanía Vault interface. The adapter translates domain calls into Vault operations without introducing business logic. |
 | **Attestation** | A cryptographically signed, content-addressed statement about a market maker's behavior — either positive (compliance) or negative (violation). |
 | **Candidate** | An individual who owns data in a sovereign Vault and grants consent for market makers to access it. |
 | **Candidate share** | Any value (monetary, reputational, informational) that a market maker declares it will deliver to a candidate in exchange for data access. |

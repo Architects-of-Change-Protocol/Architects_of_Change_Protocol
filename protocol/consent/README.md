@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This module is the **protocol-level reusable Consent Engine baseline** for AOC.
+This module is the **protocol-level reusable Consent Engine baseline** for Soberanía.
 It centralizes fail-closed consent parsing, normalization, validation, state evaluation,
 and scope checks so market makers (including HRKey) consume one canonical core.
 
@@ -54,7 +54,7 @@ The following stays in `integration/hrkey/*` because it is market-maker domain l
 ## Transitional adoption status
 
 HRKey adapter now runs protocol consent parse/normalize/validate before persistence.
-This is an intermediate integration bridge so HRKey can migrate to full AOC protocol-core consumption without breaking current flow.
+This is an intermediate integration bridge so HRKey can migrate to full Soberanía protocol-core consumption without breaking current flow.
 
 ## Not included in this extraction
 

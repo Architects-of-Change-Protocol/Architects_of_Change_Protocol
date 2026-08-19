@@ -17,7 +17,7 @@ Prevent uncontrolled constitutional drift during ratification.
 ## Versioning Rule
 
 - Development versions v2.0–v18.0 were construction-era constitutional development versions.
-- AOC Constitution v1.0 is the first ratified sovereign baseline.
+- Soberanía Constitution v1.0 is the first ratified sovereign baseline.
 - Future versions after ratification follow: v1.1, v1.2, v1.3 for minor amendments; v2.0 for major constitutional amendments.
 
 ## Lock Registry

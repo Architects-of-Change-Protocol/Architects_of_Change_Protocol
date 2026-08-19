@@ -64,7 +64,7 @@ export function FileToAsset() {
       <SectionHeader
         eyebrow="From File to Digital Asset"
         title="A file contains content. A digital asset carries more."
-        description="Any file — a photo, a document, a dataset — is just bytes with a format and a place it happens to sit. An AOC-compatible digital asset adds a layer that compatible systems can interpret: who it belongs to, whether it's intact, where it came from, and what it's allowed to do."
+        description="Any file — a photo, a document, a dataset — is just bytes with a format and a place it happens to sit. A Soberanía-compatible digital asset adds a layer that compatible systems can interpret: who it belongs to, whether it's intact, where it came from, and what it's allowed to do."
         mineral="amethyst"
       />
 
@@ -81,7 +81,7 @@ export function FileToAsset() {
 
         <div className={`flex flex-col rounded-2xl border ${m.border} ${m.soft} p-6 md:h-60 md:p-5`}>
           <p className={`text-xs uppercase tracking-[0.2em] font-mono ${m.text}`}>
-            AOC-Compatible Digital Asset
+            Soberanía-Compatible Digital Asset
           </p>
           <p className="mt-2 font-mono text-slate-700 text-base leading-5">photo.jpg + protocol context</p>
           {/*
@@ -110,7 +110,7 @@ export function FileToAsset() {
       </div>
 
       <p className="mt-8 max-w-3xl text-sm text-slate-500 leading-relaxed">
-        Not every raw file is automatically an AOC-compatible asset. An application or tool that
+        Not every raw file is automatically a Soberanía-compatible asset. An application or tool that
         speaks the protocol creates or registers that context — see{' '}
         <a href="#creation" className={`${m.text} ${m.textHover} underline underline-offset-2`}>
           how an asset is created

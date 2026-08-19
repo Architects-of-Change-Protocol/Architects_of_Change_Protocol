@@ -1,6 +1,6 @@
 # Hosted Runtime (Optional Infrastructure Layer)
 
-This `runtime/` package is the **optional hosted infrastructure layer** for AOC.
+This `runtime/` package is the **optional hosted infrastructure layer** for Soberanía.
 
 - The protocol core remains permissionless and can be used directly.
 - The hosted runtime adds an API layer, API keys, basic rate limits, and structured logs.

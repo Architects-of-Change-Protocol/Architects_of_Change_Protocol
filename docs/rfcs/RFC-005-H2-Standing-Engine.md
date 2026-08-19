@@ -6,17 +6,17 @@
 | Title | Standing Engine |
 | Status | Draft |
 | Category | Core Protocol / Constitutional Specification |
-| Authors | AOC Protocol Architecture Working Group |
+| Authors | Soberanía Protocol Architecture Working Group |
 | Created | 2026-06-03 |
 | Last Updated | 2026-06-07 |
 | Supersedes | RFC-005-H2 (Standing Engine, 2026-06-03 initial draft) |
-| Related | AOC Charter, RFC-001 Identity Layer, RFC-004 Evidence Layer v1.0, RFC-005 AOC Claims Framework, RFC-005-H1 Standing Traceability, RFC-005-H3 Standing Governance, RFC-005-H4 Capability Mapping, RFC-005-H5 Delegated Standing, RFC-005-H6 Standing Algorithms, RFC-005-H7 Capability Engine, RFC-005-H8 Authority Model |
+| Related | Soberanía Charter, RFC-001 Identity Layer, RFC-004 Evidence Layer v1.0, RFC-005 Soberanía Claims Framework, RFC-005-H1 Standing Traceability, RFC-005-H3 Standing Governance, RFC-005-H4 Capability Mapping, RFC-005-H5 Delegated Standing, RFC-005-H6 Standing Algorithms, RFC-005-H7 Capability Engine, RFC-005-H8 Authority Model |
 
 ---
 
 ## Abstract
 
-This document defines the **Standing Engine** as the constitutional core of the Standing Layer within the AOC Protocol. The Standing Engine is the deterministic evaluation system that transforms a collection of verified Claims, supported by Evidence and recognized by Governance, into a Standing state that is reproducible, explainable, contestable, and auditable.
+This document defines the **Standing Engine** as the constitutional core of the Standing Layer within the Soberanía Protocol. The Standing Engine is the deterministic evaluation system that transforms a collection of verified Claims, supported by Evidence and recognized by Governance, into a Standing state that is reproducible, explainable, contestable, and auditable.
 
 Standing is the constitutional bridge between the Claims Layer and the Capability Layer. Without Standing, Claims remain uninterpreted assertions. Without Standing, Capability would have no principled evidentiary basis. Standing is the layer at which the protocol asks: *given everything we can verify about this subject, what is the current recognized state of that subject for this purpose, under this policy, at this moment?*
 
@@ -30,7 +30,7 @@ Standing is the constitutional bridge between the Claims Layer and the Capabilit
 
 **Standing is not permanent.** Every Standing state carries temporal bounds, decay behavior, challenge susceptibility, and revocability.
 
-This RFC derives its legitimacy from the AOC Charter and is subordinate to it. No interpretation of this RFC may expand powers, eliminate limits, or reduce rights recognized by the Charter. This RFC makes operational, in the domain of recognition, the constitutional principles of determinism, explainability, contestability, accountability, anti-capture, and reversibility that the Charter demands.
+This RFC derives its legitimacy from the Soberanía Charter and is subordinate to it. No interpretation of this RFC may expand powers, eliminate limits, or reduce rights recognized by the Charter. This RFC makes operational, in the domain of recognition, the constitutional principles of determinism, explainability, contestability, accountability, anti-capture, and reversibility that the Charter demands.
 
 ---
 
@@ -74,7 +74,7 @@ This RFC derives its legitimacy from the AOC Charter and is subordinate to it. N
 
 ### 1.1 Scope
 
-This RFC governs exclusively the constitutional semantics of Standing in AOC. It defines:
+This RFC governs exclusively the constitutional semantics of Standing in Soberanía. It defines:
 
 - what Standing is and what it is not;
 - the canonical model through which Standing is constituted;
@@ -112,9 +112,9 @@ The keywords MUST, MUST NOT, REQUIRED, SHALL, SHALL NOT, SHOULD, SHOULD NOT, REC
 
 Normative requirements are stated in present tense with MUST or MUST NOT. Guidance is stated with SHOULD or SHOULD NOT. Permissive design space is stated with MAY.
 
-### 1.3 Relationship to the AOC Charter
+### 1.3 Relationship to the Soberanía Charter
 
-The AOC Charter is the supreme constitutive document of the AOC Protocol. All RFCs, including this one, derive their legitimacy from the Charter and are subordinate to it. Where this RFC is silent, the Charter governs. Where this RFC appears to conflict with the Charter, the Charter prevails and the apparent conflict MUST be resolved by constitutional interpretation, not by amendment of the Charter.
+The Soberanía Charter is the supreme constitutive document of the Soberanía Protocol. All RFCs, including this one, derive their legitimacy from the Charter and are subordinate to it. Where this RFC is silent, the Charter governs. Where this RFC appears to conflict with the Charter, the Charter prevails and the apparent conflict MUST be resolved by constitutional interpretation, not by amendment of the Charter.
 
 This RFC operationalizes Charter principles in the domain of recognition: how a protocol recognizes the state of a subject, under what conditions, with what limits, and subject to what oversight.
 
@@ -122,7 +122,7 @@ This RFC operationalizes Charter principles in the domain of recognition: how a 
 
 ## 2. Constitutional Alignment
 
-Standing is not a technical convenience. Standing is a constitutional instrument. Each structural element of the Standing Engine is designed to operationalize a specific constitutional principle derived from the AOC Charter.
+Standing is not a technical convenience. Standing is a constitutional instrument. Each structural element of the Standing Engine is designed to operationalize a specific constitutional principle derived from the Soberanía Charter.
 
 | Constitutional Principle | How Standing Operationalizes It |
 |---|---|
@@ -992,7 +992,7 @@ The Standing Engine MUST be capable of explaining:
 
 ## 13. Standing Challenges
 
-The Challenge System is the constitutional mechanism by which the legitimacy of any standing determination may be contested. Without a challenge system, standing becomes an unreviewable administrative determination — constitutionally illegitimate under the AOC Charter.
+The Challenge System is the constitutional mechanism by which the legitimacy of any standing determination may be contested. Without a challenge system, standing becomes an unreviewable administrative determination — constitutionally illegitimate under the Soberanía Charter.
 
 ### 13.1 Challenge Types
 
@@ -1097,7 +1097,7 @@ Temporal standing is standing valid only for a defined time period or a defined 
 
 ### 14.7 Hereditary Standing
 
-Certain standing types — particularly institutional standing — may be structured to survive governance transitions, leadership changes, or organizational restructuring. This is hereditary standing: it passes to a constituted successor under defined conditions. Hereditary standing MUST be governed by succession rules defined in the applicable institutional governance and recognized by AOC Protocol governance. Hereditary standing is not automatic; it requires a governed succession process.
+Certain standing types — particularly institutional standing — may be structured to survive governance transitions, leadership changes, or organizational restructuring. This is hereditary standing: it passes to a constituted successor under defined conditions. Hereditary standing MUST be governed by succession rules defined in the applicable institutional governance and recognized by Soberanía Protocol governance. Hereditary standing is not automatic; it requires a governed succession process.
 
 ---
 
@@ -1558,7 +1558,7 @@ Standing informs all of these but constitutes none of them. A subject with the h
 
 This design prevents three categories of constitutional failure:
 
-1. **Identity-to-Authority collapse:** Where merely being identified grants operational power. This is the design of credential-based access control systems that conflate identity with authorization. AOC's constitutional chain prevents this.
+1. **Identity-to-Authority collapse:** Where merely being identified grants operational power. This is the design of credential-based access control systems that conflate identity with authorization. Soberanía's constitutional chain prevents this.
 
 2. **Standing-to-Authority collapse:** Where a high standing score directly triggers governance privileges. This is prevented by requiring the Capability and Authority layers to interpose their own governed processes.
 
@@ -1756,11 +1756,11 @@ Partial conformance is not conformance. An implementation that satisfies 59 of t
 
 ## Conclusion
 
-RFC-005-H2 establishes the Standing Engine as the constitutional instrument of the Standing Layer in the AOC Protocol. Standing is the bridge between the formal claims that describe a subject and the capabilities that may be granted to that subject. It is the layer at which the protocol asks its most important interpretive question: *given everything we can verify, what is the recognized state of this subject for this purpose, right now?*
+RFC-005-H2 establishes the Standing Engine as the constitutional instrument of the Standing Layer in the Soberanía Protocol. Standing is the bridge between the formal claims that describe a subject and the capabilities that may be granted to that subject. It is the layer at which the protocol asks its most important interpretive question: *given everything we can verify, what is the recognized state of this subject for this purpose, right now?*
 
 Standing is not identity. Identity is governed by RFC-001 and precedes standing. Standing is not authority. Authority is governed by RFC-005-H8 and follows from standing through the Capability Layer. Standing is not capability. Capability is governed by RFC-005-H7 and requires standing as an input but standing alone is never sufficient.
 
-Standing is evidence-derived, claim-mediated, context-bound, policy-governed, deterministic, explainable, contestable, revocable, temporal, reconstructable, and governed. Every one of these properties is constitutional. Every one of them is enforceable through the invariants defined in this RFC. And every one of them is necessary to prevent standing from becoming the kind of opaque, manipulable, unaccountable administrative label that would corrupt the integrity of the entire AOC constitutional chain.
+Standing is evidence-derived, claim-mediated, context-bound, policy-governed, deterministic, explainable, contestable, revocable, temporal, reconstructable, and governed. Every one of these properties is constitutional. Every one of them is enforceable through the invariants defined in this RFC. And every one of them is necessary to prevent standing from becoming the kind of opaque, manipulable, unaccountable administrative label that would corrupt the integrity of the entire Soberanía constitutional chain.
 
 ```text
 Standing = Evaluate(
@@ -1770,4 +1770,4 @@ Standing = Evaluate(
 )
 ```
 
-This is the constitutional function of the Standing Engine. Everything in this RFC defines what it means for this function to be executed legitimately, transparently, accountably, and in service of the constitutional principles the AOC Charter demands.
+This is the constitutional function of the Standing Engine. Everything in this RFC defines what it means for this function to be executed legitimately, transparently, accountably, and in service of the constitutional principles the Soberanía Charter demands.

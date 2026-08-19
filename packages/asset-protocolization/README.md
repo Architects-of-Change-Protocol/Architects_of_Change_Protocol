@@ -1,8 +1,8 @@
 # `@aoc/asset-protocolization`
 
-The Asset Protocolization Vertical — a vertical built **on** AOC Protocol.
+The Asset Protocolization Vertical — a vertical built **on** Soberanía Protocol.
 
-> It is not AOC Protocol, it is not AOC Enterprise, and it does not tokenize.
+> It is not Soberanía Protocol, it is not Soberanía Enterprise, and it does not tokenize.
 
 ## What this package contains
 

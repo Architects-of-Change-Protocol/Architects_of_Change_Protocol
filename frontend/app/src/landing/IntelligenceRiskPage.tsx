@@ -11,7 +11,7 @@ import { Breadcrumbs } from './components/Breadcrumbs';
 import { useIntelligenceRiskPageMeta } from './useIntelligenceRiskPageMeta';
 import './assurance.css';
 
-// Intelligence Risk is a specialized assessment module inside AOC Assurance
+// Intelligence Risk is a specialized assessment module inside Soberanía Assurance
 // (see docs/w007-assurance-canonical-assessment-layer.md) — not a top-level
 // Enterprise offering. Its own nav therefore points back up to Assurance
 // (its immediate parent), not directly to Enterprise or Protocol. See
@@ -50,10 +50,10 @@ const FOOTER_LINK_GROUPS = [
   {
     title: 'Company',
     links: [
-      { label: 'About AOC Assurance', href: '/assurance/about' },
-      { label: 'AOC Assurance', href: '/?view=assurance' },
-      { label: 'AOC Enterprise', href: '/?view=enterprise' },
-      { label: 'About AOC Protocol', href: '/' },
+      { label: 'About Soberanía Assurance', href: '/assurance/about' },
+      { label: 'Soberanía Assurance', href: '/?view=assurance' },
+      { label: 'Soberanía Enterprise', href: '/?view=enterprise' },
+      { label: 'About Soberanía Protocol', href: '/' },
       { label: 'Privacy Policy', href: '/assurance/privacy' },
       { label: 'Terms of Service', href: '/assurance/terms' },
     ],
@@ -292,20 +292,20 @@ const ASK_YOURSELF_QUESTIONS = [
 
 const FAQ_ITEMS = [
   {
-    q: 'Is Intelligence Risk a separate product from AOC Assurance?',
-    a: 'No. Intelligence Risk is one specialized assessment module inside AOC Assurance, focused on institutional knowledge continuity. AOC Assurance itself evaluates the full sovereignty capability surface defined by AOC Protocol and the governance capability surface operated by AOC Enterprise — see the AOC Assurance overview.',
+    q: 'Is Intelligence Risk a separate product from Soberanía Assurance?',
+    a: 'No. Intelligence Risk is one specialized assessment module inside Soberanía Assurance, focused on institutional knowledge continuity. Soberanía Assurance itself evaluates the full sovereignty capability surface defined by Soberanía Protocol and the governance capability surface operated by Soberanía Enterprise — see the Soberanía Assurance overview.',
   },
   {
-    q: 'Is AOC Assurance a knowledge management tool?',
-    a: 'No. Knowledge management stores information. AOC Assurance measures whether critical organizational intelligence is governed, traceable, resilient, and usable through change.',
+    q: 'Is Soberanía Assurance a knowledge management tool?',
+    a: 'No. Knowledge management stores information. Soberanía Assurance measures whether critical organizational intelligence is governed, traceable, resilient, and usable through change.',
   },
   {
     q: 'Is this replacing the Constitutional Index?',
-    a: 'No. The Constitutional Index remains a core AOC evidence layer. The new positioning explains why Governance and Sovereignty matter commercially: they determine whether organizational intelligence can survive change.',
+    a: 'No. The Constitutional Index remains a core Soberanía evidence layer. The new positioning explains why Governance and Sovereignty matter commercially: they determine whether organizational intelligence can survive change.',
   },
   {
     q: 'Is this a compliance audit?',
-    a: 'No. AOC Assurance is an Institutional Intelligence Risk, Knowledge Loss, Continuity, and Constitutional Resilience assessment. It may support governance and compliance conversations, but it is not positioned as a regulatory certification.',
+    a: 'No. Soberanía Assurance is an Institutional Intelligence Risk, Knowledge Loss, Continuity, and Constitutional Resilience assessment. It may support governance and compliance conversations, but it is not positioned as a regulatory certification.',
   },
   {
     q: 'Why does this matter for AI transformation?',
@@ -324,7 +324,7 @@ function PublicResearchBridge() {
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">PUBLIC RESEARCH INITIATIVE</p>
           <h2 id="research-bridge-heading">Mapping the constitutional posture of the AI industry.</h2>
-          <p>AOC Assurance continuously evaluates AI organizations using publicly observable evidence to better understand the evolving relationship between Governance and Sovereignty across the industry.</p>
+          <p>Soberanía Assurance continuously evaluates AI organizations using publicly observable evidence to better understand the evolving relationship between Governance and Sovereignty across the industry.</p>
         </div>
         <a href="/assurance/research" className="assurance-research-bridge-link">Explore the Research Initiative</a>
       </div>
@@ -337,12 +337,12 @@ function AssuranceFooter() {
     <footer className="assurance-footer px-6" aria-labelledby="assurance-footer-title">
       <div className="max-w-7xl mx-auto assurance-footer-inner">
         <div className="assurance-footer-brand">
-          <h2 id="assurance-footer-title">AOC Assurance</h2>
-          <p>AOC Assurance measures Knowledge Loss, Key Person Dependency, Decision Amnesia, Continuity, and Constitutional Resilience through the AOC Constitutional Framework.</p>
+          <h2 id="assurance-footer-title">Soberanía Assurance</h2>
+          <p>Soberanía Assurance measures Knowledge Loss, Key Person Dependency, Decision Amnesia, Continuity, and Constitutional Resilience through the Soberanía Constitutional Framework.</p>
           <p className="assurance-footer-tagline">Measure Governance.<br />Measure Sovereignty.<br />Understand Resilience.</p>
-          <p className="assurance-footer-institutional">AOC Assurance and AOC Protocol are initiatives of OnchainFest LLC.</p>
+          <p className="assurance-footer-institutional">Soberanía Assurance and Soberanía Protocol are initiatives of OnchainFest LLC.</p>
         </div>
-        <nav className="assurance-footer-links" aria-label="AOC Assurance footer navigation">
+        <nav className="assurance-footer-links" aria-label="Soberanía Assurance footer navigation">
           {FOOTER_LINK_GROUPS.map((group) => (
             <section key={group.title} aria-labelledby={`footer-${group.title.toLowerCase()}`}>
               <h3 id={`footer-${group.title.toLowerCase()}`}>{group.title}</h3>
@@ -364,7 +364,7 @@ function AssuranceFooter() {
         </nav>
         <div className="assurance-footer-legal">
           <p>© 2026 OnchainFest LLC. All rights reserved.</p>
-          <p>AOC Assurance does not certify organizations as safe, secure, compliant, trustworthy, or risk-free.</p>
+          <p>Soberanía Assurance does not certify organizations as safe, secure, compliant, trustworthy, or risk-free.</p>
           <p>The Constitutional Index is an evidence-based assessment framework designed to evaluate governance and sovereignty characteristics using publicly observable and/or supplied evidence. Constitutional scores represent analytical assessments and should not be interpreted as guarantees, certifications, or endorsements.</p>
         </div>
       </div>
@@ -448,7 +448,7 @@ const IntelligenceRiskPage = () => {
           <a href="/" className="flex items-center gap-3">
             <LogoRotating size={28} inverted />
             <div className="flex items-baseline gap-2">
-              <span className="text-xl font-semibold tracking-tighter">AOC</span>
+              <span className="text-xl font-semibold tracking-tighter">Soberanía</span>
               <span className="text-xs text-emerald-400 uppercase tracking-[0.2em]">Intelligence Risk</span>
             </div>
           </a>
@@ -516,7 +516,7 @@ const IntelligenceRiskPage = () => {
       {/* ── Hero ── */}
       <section className="assurance-hero-glow relative pt-28 pb-32 text-center px-6">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-6">
-          AOC Assurance &middot; Intelligence Risk Module
+          Soberanía Assurance &middot; Intelligence Risk Module
         </p>
         <h1 className="text-5xl md:text-7xl font-semibold tracking-[-2.5px] leading-[1.05] max-w-4xl mx-auto mb-8">
           How much of your company's intelligence would survive tomorrow?
@@ -539,7 +539,7 @@ const IntelligenceRiskPage = () => {
           </a>
         </div>
         <p className="text-xs text-white/40 tracking-wide">
-          Powered by the AOC Constitutional Framework
+          Powered by the Soberanía Constitutional Framework
         </p>
       </section>
 
@@ -901,7 +901,7 @@ const IntelligenceRiskPage = () => {
             Assessment is the first step. Enterprise is how intelligence becomes durable.
           </h2>
           <p className="text-white/55 text-lg mb-10 leading-relaxed">
-            AOC Assurance identifies where institutional intelligence is fragile. AOC Enterprise helps
+            Soberanía Assurance identifies where institutional intelligence is fragile. Soberanía Enterprise helps
             organizations build the operating layer required to preserve decisions, govern accountability,
             improve learning, and maintain sovereignty over critical knowledge as the organization grows.
           </p>
@@ -909,7 +909,7 @@ const IntelligenceRiskPage = () => {
             href="/?view=enterprise"
             className="inline-flex items-center px-10 py-4 border border-white/15 hover:border-white/30 text-white font-semibold text-lg rounded-2xl transition-colors"
           >
-            Explore AOC Enterprise
+            Explore Soberanía Enterprise
           </a>
         </div>
       </section>
@@ -924,7 +924,7 @@ const IntelligenceRiskPage = () => {
               Research &amp; Framework
             </p>
             <h2 className="text-4xl md:text-5xl font-semibold tracking-tight mb-4">
-              Explore the research behind AOC Assurance.
+              Explore the research behind Soberanía Assurance.
             </h2>
             <p className="text-white/55 text-lg leading-relaxed max-w-2xl">
               The framework, the founder's perspective, and the public benchmark — for those who want to understand the thinking before or after purchasing.
@@ -955,7 +955,7 @@ const IntelligenceRiskPage = () => {
               {openLearnMore === 'framework' && (
                 <div className="assurance-learn-more-body">
                   <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">
-                    AOC Constitutional Framework
+                    Soberanía Constitutional Framework
                   </p>
                   <h3 className="text-2xl md:text-3xl font-semibold tracking-tight mb-5">
                     These are not just knowledge problems. They are constitutional failures.
@@ -963,7 +963,7 @@ const IntelligenceRiskPage = () => {
                   <p className="text-white/60 text-base leading-relaxed mb-8">
                     Most organizations do not have a data problem. They have a continuity problem. Intelligence
                     cannot survive without governance. Learning cannot scale without accountability. Resilience
-                    cannot exist without sovereignty. AOC Assurance evaluates the constitutional conditions that
+                    cannot exist without sovereignty. Soberanía Assurance evaluates the constitutional conditions that
                     determine whether organizational intelligence remains durable, traceable, and usable through change.
                   </p>
 
@@ -977,7 +977,7 @@ const IntelligenceRiskPage = () => {
                   </div>
 
                   <h4 className="text-xl md:text-2xl font-semibold tracking-tight mb-5">
-                    AOC Assurance measures whether your intelligence can survive change.
+                    Soberanía Assurance measures whether your intelligence can survive change.
                   </h4>
                   <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {ASSESSMENT_DIMENSIONS.map((dim) => (
@@ -991,7 +991,7 @@ const IntelligenceRiskPage = () => {
               )}
             </div>
 
-            {/* Card 2: Why did we create AOC? — Founder Essay */}
+            {/* Card 2: Why did we create Soberanía? — Founder Essay */}
             <div className={`assurance-learn-more-card${openLearnMore === 'founder-essay' ? ' assurance-learn-more-card--open' : ''}`}>
               <button
                 type="button"
@@ -1000,7 +1000,7 @@ const IntelligenceRiskPage = () => {
                 onClick={() => toggleLearnMore('founder-essay')}
               >
                 <div className="assurance-learn-more-trigger-text">
-                  <span className="assurance-learn-more-trigger-title">Why did we create AOC?</span>
+                  <span className="assurance-learn-more-trigger-title">Why did we create Soberanía?</span>
                   <span className="assurance-learn-more-trigger-desc">Read the founder's essay explaining the constitutional problem behind modern organizational intelligence loss.</span>
                 </div>
                 <span
@@ -1058,7 +1058,7 @@ const IntelligenceRiskPage = () => {
               >
                 <div className="assurance-learn-more-trigger-text">
                   <span className="assurance-learn-more-trigger-title">See the Public Benchmark</span>
-                  <span className="assurance-learn-more-trigger-desc">Explore how AI organizations compare across Governance and Sovereignty dimensions in the AOC Constitutional Index.</span>
+                  <span className="assurance-learn-more-trigger-desc">Explore how AI organizations compare across Governance and Sovereignty dimensions in the Soberanía Constitutional Index.</span>
                 </div>
                 <span
                   aria-hidden="true"
@@ -1077,7 +1077,7 @@ const IntelligenceRiskPage = () => {
                       A public benchmark for Governance and Sovereignty in the AI industry.
                     </h3>
                     <p className="text-white/60 text-base leading-relaxed mb-4">
-                      The AOC Constitutional Index evaluates AI organizations across Governance and Sovereignty
+                      The Soberanía Constitutional Index evaluates AI organizations across Governance and Sovereignty
                       dimensions. It provides a public evidence layer for understanding how organizations balance
                       accountability, control, dependency, and institutional resilience.
                     </p>

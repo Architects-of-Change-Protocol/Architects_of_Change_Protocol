@@ -41,7 +41,7 @@ in advance so the eventual release ships with accurate, reviewed documentation.
 
 ## Enterprise reference consumer
 
-AOC Enterprise validated this exact contract surface as a real external consumer against the
+Soberanía Enterprise validated this exact contract surface as a real external consumer against the
 pinned 0.1.0 tarball (SHA-256 `4e5289b7…96b27`; byte-identical to fresh packs from this repository
 until the Apache-2.0 relicense in PR #319 changed the packaged `package.json` — see
 [`RELEASE_CANDIDATE_READINESS.md`](RELEASE_CANDIDATE_READINESS.md)), with blocking CI, no ambient

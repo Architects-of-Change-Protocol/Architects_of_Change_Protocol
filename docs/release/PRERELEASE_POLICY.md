@@ -12,7 +12,7 @@ These five states are distinct. Documents and announcements must never conflate 
 
 | State | What it is | What it is not |
 | --- | --- | --- |
-| **Internal tarball** | An `npm pack` artifact built from a known commit and handed directly to a consumer (e.g. the `vendor/aoc-protocol-0.1.0.tgz` pinned by AOC Enterprise). Verified by checksum, never fetched from a registry. | A release. It carries no registry existence, no tag, and no support commitment beyond the commit it was built from. |
+| **Internal tarball** | An `npm pack` artifact built from a known commit and handed directly to a consumer (e.g. the `vendor/aoc-protocol-0.1.0.tgz` pinned by Soberanía Enterprise). Verified by checksum, never fetched from a registry. | A release. It carries no registry existence, no tag, and no support commitment beyond the commit it was built from. |
 | **Prerelease** | A registry-published version with a prerelease suffix (e.g. `0.2.0-rc.0`) under a non-`latest` dist-tag. Exists so real consumers can validate a candidate before it becomes stable. | A stable release. Consumers must expect it to be superseded and must pin exactly. |
 | **Stable release** | A registry-published version without a prerelease suffix (e.g. `0.2.0`), promoted from a prerelease that survived consumer validation. Covered by `docs/versioning-and-stability.md` semver intent. | A guarantee of API permanence — pre-1.0, minor versions may still evolve the surface additively. |
 | **1.0** | The first major version, declared only once `contracts`, `claims`, and `errors` have been stable across at least one real consumer migration and the experimental subpaths (`adapters`, `runtime-registry`) have stabilized or been re-scoped. | Implied by any 0.x release, however polished. |
@@ -74,7 +74,7 @@ prerelease may be cut.
 ## Duration and promotion to stable
 
 - A prerelease window should be **time-boxed** (guideline: 1–4 weeks) and exists to collect
-  validation from at least one real consumer — for `@aoc/protocol`, that consumer is AOC Enterprise,
+  validation from at least one real consumer — for `@aoc/protocol`, that consumer is Soberanía Enterprise,
   which must build green against the candidate before promotion.
 - Promotion to stable requires: (1) consumer validation evidence recorded in
   `docs/release/` (readiness report or successor); (2) no open defects against the candidate's

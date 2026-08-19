@@ -1,6 +1,6 @@
 # Protocol Execution Layer (PR4)
 
-Esta capa implementa el **handoff canónico de autorización de ejecución** entre AOC y market makers/adapters.
+Esta capa implementa el **handoff canónico de autorización de ejecución** entre Soberanía y market makers/adapters.
 
 ## Qué hace
 
@@ -20,7 +20,7 @@ Esta capa implementa el **handoff canónico de autorización de ejecución** ent
 
 ## Responsabilidades arquitectónicas
 
-- **AOC core protocol**: decide canónicamente si una ejecución está autorizada.
+- **Soberanía core protocol**: decide canónicamente si una ejecución está autorizada.
 - **Market makers/adapters**: ejecutan acciones reales fuera del core.
 - **Execution layer**: puente formal entre decisión protocolar y ejecución externa, sin centralizar runtime de side effects.
 

@@ -25,12 +25,12 @@ export function Architecture() {
       />
 
       <div className="rounded-xl bg-slate-100 px-6 py-5">
-        <p className="text-sm font-extrabold tracking-[0.05em] text-slate-500">AOC PROTOCOL</p>
+        <p className="text-sm font-extrabold tracking-[0.05em] text-slate-500">SOBERANÍA PROTOCOL</p>
         <p className="mt-2 text-[12.5px] text-slate-500">identity &middot; consent &middot; capability tokens &middot; audit envelopes</p>
       </div>
       <ArrowDown />
       <div className="rounded-xl bg-teal-600 px-6 py-5 shadow-[0_8px_24px_rgba(15,23,42,0.08)]">
-        <p className="text-sm font-extrabold tracking-[0.05em] text-white">AOC ENTERPRISE &mdash; GOVERNED ACCESS</p>
+        <p className="text-sm font-extrabold tracking-[0.05em] text-white">SOBERANÍA ENTERPRISE &mdash; GOVERNED ACCESS</p>
         <p className="mt-2 text-[12.5px] text-teal-200">
           Decision &middot; Policy &middot; Grant &middot; Revocation &middot; Usage &middot; Evidence
         </p>
@@ -43,7 +43,7 @@ export function Architecture() {
 
       <p className="mt-8 text-sm text-slate-500 leading-relaxed max-w-2xl">
         This is the same stack Enterprise composes for every capability it offers. Governed Access is the first
-        capability to ship on it — see <a href="/?view=enterprise#architecture" className="text-teal-600 hover:text-teal-500 font-semibold">the full architecture on AOC Enterprise</a>.
+        capability to ship on it — see <a href="/?view=enterprise#architecture" className="text-teal-600 hover:text-teal-500 font-semibold">the full architecture on Soberanía Enterprise</a>.
       </p>
     </section>
   );

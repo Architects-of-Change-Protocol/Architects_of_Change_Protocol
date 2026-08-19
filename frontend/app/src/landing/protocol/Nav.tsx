@@ -26,7 +26,7 @@ export function ProtocolNav() {
         <div className="flex h-16 items-center gap-3">
           <a href="/" className="flex items-center gap-3 shrink-0">
             <LogoRotating size={26} inverted />
-            <span className="font-semibold tracking-tight text-white">AOC Protocol</span>
+            <span className="font-semibold tracking-tight text-white">Soberanía Protocol</span>
           </a>
 
           <div className="hidden lg:flex flex-1 min-w-0 items-center gap-0.5 text-[13px] overflow-x-auto no-scrollbar">

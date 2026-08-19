@@ -1,22 +1,22 @@
-# AOC Protocol — Threat Model & Abuse Prevention Specification
+# Soberanía Protocol — Threat Model & Abuse Prevention Specification
 
 **Version:** 0.1  
 **Status:** Normative  
 **Layer:** Protocol-wide Security & Economics  
-**Applies to:** AOC v0.1 and all market makers built on top
+**Applies to:** Soberanía v0.1 and all market makers built on top
 
 ---
 
 ## 1. Purpose
 
-This document defines the **explicit threat model** for the AOC Protocol and
+This document defines the **explicit threat model** for the Soberanía Protocol and
 the **abuse-resistance boundaries** enforced by design.
 
 Its goal is not to eliminate all possible abuse, but to:
 - Prevent protocol-fatal attacks
 - Make abusive behavior **economically unprofitable**
 - Preserve user sovereignty, consent integrity, and auditability
-- Clearly state what AOC **does and does NOT attempt to prevent**
+- Clearly state what Soberanía **does and does NOT attempt to prevent**
 
 This specification is **normative**.
 
@@ -100,7 +100,7 @@ A buyer attempts to request more data than is justified by purpose.
 A dominant market maker attempts to define schemas or flows that undermine user sovereignty.
 
 **Mitigation:**
-- AOC defines primitives, not products
+- Soberanía defines primitives, not products
 - Market makers operate externally
 - Wallets remain user-controlled
 
@@ -234,7 +234,7 @@ Overloading users with frequent approval prompts.
 
 ## 7. Explicit Non-Goals
 
-The AOC Protocol does NOT attempt to:
+The Soberanía Protocol does NOT attempt to:
 
 - Prevent off-platform collusion
 - Judge data truthfulness beyond provenance

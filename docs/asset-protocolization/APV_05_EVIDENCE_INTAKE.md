@@ -272,7 +272,7 @@ entered a case. A correction is a new intake with a new `intakeId`.
 This is what lets an asset protocolization process *begin* before every external or formal
 process has completed. The architecture records what has been received so far and what has
 not; it presumes no formal external recognition merely because evidence was received, and
-it makes no legal claim of any kind. AOC records; it does not replace an official registry.
+it makes no legal claim of any kind. Soberanía records; it does not replace an official registry.
 
 ## 9. Requirement correlation and progress
 
@@ -404,7 +404,7 @@ not added:    database, migration, schema, blob store, file store
 ```
 
 Receipts live in the vertical, discharging Gate A0 `U-6` for the intake layer exactly as
-APV-04 discharged it for cases: no vertical workflow persistence port goes into AOC
+APV-04 discharged it for cases: no vertical workflow persistence port goes into Soberanía
 Protocol, and Protocol never learns intake exists.
 
 The repository stores **receipts, not evidence**. A `CanonicalEvidence` record lives wherever
@@ -567,7 +567,7 @@ Protocolization          != Tokenization
 ## 19. Architecture after APV-05
 
 ```text
-AOC Protocol
+Soberanía Protocol
 │  generic identity / evidence / claim / attestation / verification primitives
 │  CanonicalEvidence, EvidenceType, CanonicalReferenceSource, proof & credential refs
 ▼
@@ -585,7 +585,7 @@ Evidence intake                     (APV-05)  receive · admit structurally ·
 ▼
 Protocolized asset
 ▼
-AOC Enterprise
+Soberanía Enterprise
 ▼
 External capability
 └── optional TOKENIZE ──▶ Tokenizer

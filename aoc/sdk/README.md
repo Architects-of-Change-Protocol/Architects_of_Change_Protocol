@@ -1,10 +1,10 @@
-# AOC Capability SDK
+# Soberanía Capability SDK
 
-A minimal developer entry layer for using Architects of Change (AOC) capabilities in external applications.
+A minimal developer entry layer for using Soberanía Protocol capabilities in external applications.
 
-## 1) What is the AOC Capability Layer?
+## 1) What is the Soberanía Capability Layer?
 
-The AOC capability layer is a consent-first authorization system for sovereign data exchange.
+The Soberanía capability layer is a consent-first authorization system for sovereign data exchange.
 
 - **Consent-based access**: access starts from an explicit consent grant.
 - **Capability tokens**: scoped, signed protocol objects derived from consent.

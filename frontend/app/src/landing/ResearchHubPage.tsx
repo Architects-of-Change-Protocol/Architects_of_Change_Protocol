@@ -40,7 +40,7 @@ function usePageMeta() {
     };
 
     document.title =
-      'AI Governance, Sovereignty & Constitutional AI Research | AOC Assurance';
+      'AI Governance, Sovereignty & Constitutional AI Research | Soberanía Assurance';
 
     setMeta(
       'description',
@@ -48,13 +48,13 @@ function usePageMeta() {
     );
     setMeta(
       'keywords',
-      'AI Governance Research, AI Sovereignty Research, AI Constitutional Assessment, Constitutional AI, AI Governance Framework, AI Sovereignty Framework, AI Trust Assessment, Governance Score, Sovereignty Score, AI Constitutional Index, AI Risk Assessment, AI Governance Benchmark, AOC Assurance',
+      'AI Governance Research, AI Sovereignty Research, AI Constitutional Assessment, Constitutional AI, AI Governance Framework, AI Sovereignty Framework, AI Trust Assessment, Governance Score, Sovereignty Score, AI Constitutional Index, AI Risk Assessment, AI Governance Benchmark, Soberanía Assurance',
     );
     setMeta('robots', 'index, follow');
 
     const { el: canonicalEl, prevHref: prevCanonical } = setLink('canonical', PAGE_URL);
 
-    setMeta('og:title', 'The Constitutional AI Research Hub | AOC Assurance', true);
+    setMeta('og:title', 'The Constitutional AI Research Hub | Soberanía Assurance', true);
     setMeta(
       'og:description',
       'Research, assessments, essays, and benchmarks exploring Governance, Sovereignty, and Constitutional AI.',
@@ -63,10 +63,10 @@ function usePageMeta() {
     setMeta('og:url', PAGE_URL, true);
     setMeta('og:type', 'website', true);
     setMeta('og:image', 'https://www.aocprotocol.org/og-image.png', true);
-    setMeta('og:site_name', 'AOC Assurance', true);
+    setMeta('og:site_name', 'Soberanía Assurance', true);
 
     setMeta('twitter:card', 'summary_large_image');
-    setMeta('twitter:title', 'The Constitutional AI Research Hub | AOC Assurance');
+    setMeta('twitter:title', 'The Constitutional AI Research Hub | Soberanía Assurance');
     setMeta(
       'twitter:description',
       'Research, assessments, essays, and benchmarks exploring Governance, Sovereignty, and Constitutional AI.',
@@ -93,13 +93,13 @@ function buildJsonLd() {
     {
       '@context': 'https://schema.org',
       '@type': 'CollectionPage',
-      name: 'The Constitutional AI Research Hub | AOC Assurance',
+      name: 'The Constitutional AI Research Hub | Soberanía Assurance',
       description:
         'Research, public assessments, constitutional frameworks, governance analysis, and sovereignty benchmarks for AI systems and organizations.',
       url: PAGE_URL,
       publisher: {
         '@type': 'Organization',
-        name: 'AOC Assurance',
+        name: 'Soberanía Assurance',
         url: 'https://www.aocprotocol.org',
         logo: {
           '@type': 'ImageObject',
@@ -109,7 +109,7 @@ function buildJsonLd() {
       breadcrumb: {
         '@type': 'BreadcrumbList',
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'AOC Assurance', item: 'https://www.aocprotocol.org' },
+          { '@type': 'ListItem', position: 1, name: 'Soberanía Assurance', item: 'https://www.aocprotocol.org' },
           { '@type': 'ListItem', position: 2, name: 'Research Hub', item: PAGE_URL },
         ],
       },
@@ -117,8 +117,8 @@ function buildJsonLd() {
     {
       '@context': 'https://schema.org',
       '@type': 'ItemList',
-      name: 'AOC Research Resources',
-      description: 'Constitutional AI research, essays, and methodology resources from AOC Assurance.',
+      name: 'Soberanía Research Resources',
+      description: 'Constitutional AI research, essays, and methodology resources from Soberanía Assurance.',
       url: PAGE_URL,
       itemListElement: [
         {
@@ -157,10 +157,10 @@ function buildJsonLd() {
     {
       '@context': 'https://schema.org',
       '@type': 'Organization',
-      name: 'AOC Assurance',
+      name: 'Soberanía Assurance',
       url: 'https://www.aocprotocol.org',
       description:
-        'AOC Assurance provides constitutional assessments of AI systems, evaluating Governance and Sovereignty to establish constitutional posture and trust.',
+        'Soberanía Assurance provides constitutional assessments of AI systems, evaluating Governance and Sovereignty to establish constitutional posture and trust.',
     },
   ];
 }
@@ -361,9 +361,9 @@ function ResearchNav() {
       className="sticky top-0 z-40 flex items-center justify-between gap-4 border-b border-white/8 bg-[#070d0b]/90 px-4 py-3 backdrop-blur-md sm:px-6"
       aria-label="Research Hub navigation"
     >
-      <a href="/assurance/intelligence-risk" className="flex items-center gap-2.5" aria-label="Back to AOC Assurance">
+      <a href="/assurance/intelligence-risk" className="flex items-center gap-2.5" aria-label="Back to Soberanía Assurance">
         <LogoRotating size={26} inverted />
-        <span className="text-sm font-semibold text-white/90">AOC Assurance</span>
+        <span className="text-sm font-semibold text-white/90">Soberanía Assurance</span>
       </a>
       <div className="flex items-center gap-4">
         <a href="#assessments" className="hidden sm:inline text-xs text-white/50 hover:text-white/80 transition-colors">Assessments</a>
@@ -425,7 +425,7 @@ function ResearchFooter() {
             </ul>
           </div>
           <div>
-            <h4 className="text-xs font-medium uppercase tracking-[0.18em] text-white/40">AOC Assurance</h4>
+            <h4 className="text-xs font-medium uppercase tracking-[0.18em] text-white/40">Soberanía Assurance</h4>
             <ul className="mt-4 space-y-2.5">
               {[
                 { label: 'Constitutional Index', href: '/assurance/intelligence-risk' },
@@ -444,8 +444,8 @@ function ResearchFooter() {
           </div>
         </div>
         <div className="mt-10 border-t border-white/8 pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <p className="text-xs text-white/30">© 2026 AOC Protocol / OnchainFest LLC</p>
-          <p className="text-xs text-white/30">AOC Assurance Research Hub</p>
+          <p className="text-xs text-white/30">© 2026 Soberanía Protocol / OnchainFest LLC</p>
+          <p className="text-xs text-white/30">Soberanía Assurance Research Hub</p>
         </div>
       </div>
     </footer>
@@ -473,7 +473,7 @@ export function ResearchHubPage() {
 
         <div className="relative mx-auto max-w-4xl text-center">
           <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-cyan-300/70">
-            AOC RESEARCH
+            SOBERANÍA RESEARCH
           </p>
           <h1
             id="hero-heading"
@@ -524,7 +524,7 @@ export function ResearchHubPage() {
               provider dependency, and continuity often receive far less attention.
             </p>
             <p>
-              The AOC Research Hub exists to explore both dimensions and better understand the
+              The Soberanía Research Hub exists to explore both dimensions and better understand the
               constitutional posture of AI systems.
             </p>
             <p>Our objective is not simply to measure risk.</p>
@@ -548,7 +548,7 @@ export function ResearchHubPage() {
             >
               Founder Essays
             </h2>
-            <p className="mt-3 text-base text-white/50">Ideas that shaped the AOC Constitutional Index.</p>
+            <p className="mt-3 text-base text-white/50">Ideas that shaped the Soberanía Constitutional Index.</p>
           </div>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -561,7 +561,7 @@ export function ResearchHubPage() {
                 I Started Looking for Sovereignty. I Found a Constitutional Problem.
               </h3>
               <p className="text-sm text-white/55 leading-relaxed">
-                The origin story behind the AOC Constitutional Index and the discovery of the
+                The origin story behind the Soberanía Constitutional Index and the discovery of the
                 constitutional tension between Governance and Sovereignty.
               </p>
               <a
@@ -677,7 +677,7 @@ export function ResearchHubPage() {
                 Constitutional Matrix
               </h2>
               <p className="mt-5 text-base text-white/60 leading-relaxed">
-                The AOC Constitutional Index evaluates organizations across two dimensions:
+                The Soberanía Constitutional Index evaluates organizations across two dimensions:
                 Governance and Sovereignty.
               </p>
               <p className="mt-4 text-base text-white/60 leading-relaxed">
@@ -722,7 +722,7 @@ export function ResearchHubPage() {
             Research Methodology
           </h2>
           <p className="mt-6 text-base text-white/65 leading-relaxed">
-            AOC Assurance evaluates publicly observable evidence, technical architecture,
+            Soberanía Assurance evaluates publicly observable evidence, technical architecture,
             operational disclosures, documentation, governance signals, portability indicators,
             and dependency characteristics.
           </p>
@@ -795,7 +795,7 @@ export function ResearchHubPage() {
               href="/?view=contact"
               className="inline-flex items-center justify-center rounded-2xl bg-cyan-300/90 px-8 py-4 text-base font-semibold text-[#031018] transition-colors hover:bg-cyan-200"
             >
-              Contact AOC Assurance
+              Contact Soberanía Assurance
             </a>
           </div>
         </div>

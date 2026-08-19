@@ -1,4 +1,4 @@
-# AOC Dashboard MVP Audit (Control Plane)
+# Soberanía Dashboard MVP Audit (Control Plane)
 
 **Date:** 2026-04-20  
 **Scope audited:** current repository state for MVP control-plane dashboard readiness
@@ -8,7 +8,7 @@
 - Frontend routing is currently path-conditional (`/enterprise` vs fallback landing) with no router/auth/session layer, so the 3-surface dashboard model is not implemented.
 - Runtime has useful API endpoints (`/data/access`, `/trust/consent/grant`, `/audit/events`, `/usage/summary`) and in-memory services that can back an MVP prototype.
 - Current auth is machine/API-key based (`x-api-key`) and in-memory; there is no user login, role identity, or tenant/session model.
-- Consent/Capability/Audit protocol-level meta structures exist and are reasonably mature; they can anchor AOC control-plane objects without imposing business schemas.
+- Consent/Capability/Audit protocol-level meta structures exist and are reasonably mature; they can anchor Soberanía control-plane objects without imposing business schemas.
 - Persistence is missing across runtime services (in-memory maps only), which is the biggest blocker for a real multi-actor dashboard MVP.
 - There is notable duplication/legacy surface in frontend (`frontend/landing/*` and `frontend/app/src/landing/*`) and at least one broken enterprise-page JSX composition that should be corrected before building on it.
 - Overall: **Go for incremental build only if P0 foundations are done first** (auth/roles, persistent storage, proper app routing + dashboard shells).
@@ -42,7 +42,7 @@
 - Runtime audit service aggregates trust/payout/access audit events and filters by subject/consumer/event/time.
 - Separate in-memory protocol audit service records protocol audit events with query filtering.
 
-### Wallet-related integration relevant to AOC flows
+### Wallet-related integration relevant to Soberanía flows
 - Trust credential records include optional `wallet_address`, and trust audit emits `WALLET_LINKED` when present.
 - HRKey integration adapter exists around the in-memory vault, including consent/capability/access mediation.
 
@@ -76,7 +76,7 @@
 ## 4) What Is Missing Entirely
 
 ### P0 for requested MVP product
-- No authenticated neutral AOC entry dashboard that detects role and routes accordingly.
+- No authenticated neutral Soberanía entry dashboard that detects role and routes accordingly.
 - No user dashboard with: Active Accesses, Requests Inbox (approve/deny), Activity feed, Revoke access, summary metrics.
 - No market-maker dashboard with: Active Access Inventory, Requests Sent, Expiring Soon, audit/access events, summary metrics.
 

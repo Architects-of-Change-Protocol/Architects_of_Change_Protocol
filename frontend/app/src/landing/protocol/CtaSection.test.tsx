@@ -14,7 +14,7 @@ describe('Protocol closing handoff', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(
-        'AOC Protocol makes identity, capabilities and governance portable by design.',
+        'Soberanía Protocol makes identity, capabilities and governance portable by design.',
       ),
     ).toBeInTheDocument();
 

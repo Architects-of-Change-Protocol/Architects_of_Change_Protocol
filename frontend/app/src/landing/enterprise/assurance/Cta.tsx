@@ -1,10 +1,10 @@
 const EMAIL = 'hello@aocprotocol.xyz';
-const CTA_HREF = `mailto:${EMAIL}?subject=${encodeURIComponent('AOC Assurance — Technical Assessment Request')}`;
+const CTA_HREF = `mailto:${EMAIL}?subject=${encodeURIComponent('Soberanía Assurance — Technical Assessment Request')}`;
 
 // Section 10 — closing CTA. Dark bookend matching governed-access/
 // Assessment.tsx and ../CtaSection.tsx. One CTA, no pricing, no checkout,
 // no secondary product pitch — the same email intake route the rest of
-// AOC Enterprise uses for "Request Technical Assessment", since no
+// Soberanía Enterprise uses for "Request Technical Assessment", since no
 // dedicated assessment-intake workflow exists yet. See
 // docs/w007-assurance-canonical-assessment-layer.md "Accuracy Boundaries".
 export function Cta() {

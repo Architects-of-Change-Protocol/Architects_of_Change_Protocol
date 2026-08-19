@@ -1,6 +1,6 @@
-# Reference Consumer Evidence: AOC Enterprise
+# Reference Consumer Evidence: Soberanía Enterprise
 
-AOC Enterprise is `@aoc/protocol`'s **real reference consumer, validated against the pinned
+Soberanía Enterprise is `@aoc/protocol`'s **real reference consumer, validated against the pinned
 tarball**. This document records that evidence precisely. It does **not** claim a production
 deployment — no deployment evidence exists in either repository, and none is asserted; what is
 evidenced is merged, CI-enforced consumption of the real packaged artifact.

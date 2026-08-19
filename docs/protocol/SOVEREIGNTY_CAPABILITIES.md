@@ -1,6 +1,6 @@
 # Sovereignty Capabilities (the canonical eight)
 
-AOC Protocol defines exactly eight Sovereignty Capabilities — the "sovereignty minerals". This
+Soberanía Protocol defines exactly eight Sovereignty Capabilities — the "sovereignty minerals". This
 document is a pointer to the contract, not a second source of truth: the canonical inventory lives in
 `packages/protocol/src/sovereignty-capabilities/` and is published as
 `@aoc/protocol/sovereignty-capabilities`.
@@ -40,7 +40,7 @@ No legacy type was renamed; convergence is later work.
 
 ## Identity and version contract
 
-- **Identifier grammar** — `aoc:sovereignty-capability:<slug>`, following the existing AOC scheme
+- **Identifier grammar** — `aoc:sovereignty-capability:<slug>`, following the existing Soberanía scheme
   established by `SovereignAssetId` (`aoc:sovereign-asset:<uuid>`). Unlike a `SovereignAssetId`, a
   capability id is never minted: it is a deterministic, human-readable Protocol constant, independent
   of subject, provider, grant, evidence and runtime.
@@ -221,7 +221,7 @@ safe enough to hand to someone not entitled to the payload. Capability-specific 
 **Evidence is not proof of truth.** It states exactly one thing: *this Protocol record says
 capability `id` at version `version` ran under invocation `invocationId` and reported this outcome.*
 Unsigned invocation evidence is not cryptographic proof and must not be called that. It does not
-establish that the implementation was trustworthy, that the subject exists outside AOC, that any
+establish that the implementation was trustworthy, that the subject exists outside Soberanía, that any
 claim is true, that ownership exists, or that a provider behaved. Verifiability is what strengthens
 evidence where strengthening is warranted.
 
@@ -257,7 +257,7 @@ invoked at most once.
 
 ### What this layer is not
 
-It executes a Sovereignty Capability implementation; it makes no AOC Enterprise governance decision.
+It executes a Sovereignty Capability implementation; it makes no Soberanía Enterprise governance decision.
 No policy is evaluated, no grant is issued or checked, no access is authorized, no credential is
 brokered, nothing is enforced, priced, metered, rate-limited or settled. Implementations are passed
 in explicitly — there is no global mutable implementation registry, because a registration API here
@@ -320,7 +320,7 @@ canonical id or version. None reads the network, a provider, a chain, a registry
 
 ### AOC.IDENTITY
 
-Answers exactly one question: *create a new canonical AOC sovereign identity for this registration
+Answers exactly one question: *create a new canonical Soberanía sovereign identity for this registration
 action, and return the canonical subject representation.*
 
 | | |
@@ -358,7 +358,7 @@ canonical record, not cryptographic proof.
 
 **Identity does not claim ownership.** `registrant` records who submitted the registration. It is not
 `owner`, `legalOwner` or `beneficialOwner`, and nothing in the output asserts that the registrant
-owns, controls or holds any legal right over the referenced external thing. The record says *this AOC
+owns, controls or holds any legal right over the referenced external thing. The record says *this Soberanía
 subject references this external identifier*, and no more. Declared (and disputable) authority
 assertions are `AuthorityClaim`, which belongs to Provenance.
 
@@ -582,7 +582,7 @@ claim **unmodified** alongside a `CanonicalStanding` with `status: Contested`.
 
 Protocol records that a challenge exists. It does not record that the challenger is correct. No claim
 is deleted or superseded, no manifest lifecycle state is changed as a side effect, and no policy,
-approval, governance body, oracle or human reviewer is consulted — AOC Enterprise may later decide
+approval, governance body, oracle or human reviewer is consulted — Soberanía Enterprise may later decide
 operationally not to act on contested provenance, but that is an operational decision, not an
 adjudication of history.
 
@@ -828,7 +828,7 @@ transport one.
 | | |
 | --- | --- |
 | Imported | **yes** |
-| Reconstructed in memory as a canonical AOC representation | **yes** |
+| Reconstructed in memory as a canonical Soberanía representation | **yes** |
 | Registered in a `SovereignAssetRegistry` | **no** — not performed |
 | Stored in a database, filesystem or provider | **no** — not performed |
 | Cryptographically verified | **no** — not performed |
@@ -870,7 +870,7 @@ portability. Persistence is the consumer's infrastructure decision, made on data
 
 ### Portability is not Interoperability
 
-SM-06 establishes **one canonical AOC wire representation** and a versioned schema so that the
+SM-06 establishes **one canonical Soberanía wire representation** and a versioned schema so that the
 representation can be safely imported at all. Schema versioning is basic serialization safety, not
 interoperability.
 
@@ -930,7 +930,7 @@ couple two minerals that have no reason to be coupled.
 
 #### Three artifacts, three different jobs
 
-**The profile** is a static Protocol contract describing a *family* of representations: what an AOC
+**The profile** is a static Protocol contract describing a *family* of representations: what a Soberanía
 sovereign representation means, at all. It is the same value in every process, for every subject.
 
 **The descriptor** describes one *concrete* bundle: what is actually present in it. "Representations
@@ -964,7 +964,7 @@ AOC_SOVEREIGNTY_INTEROPERABILITY_PROFILE_V1 = {
 
 A consumer holding this document can read the profile id, the profile version, the wire media type,
 the bundle schema, the canonicalization profile, the artifact kinds, the claim semantics and the full
-semantic vocabulary **without inspecting AOC source code**. That is the principal machine-readable
+semantic vocabulary **without inspecting Soberanía source code**. That is the principal machine-readable
 output of SM-07.
 
 The profile version is deliberately **not** the npm package version. The package version moves
@@ -981,7 +981,7 @@ lookup problem Protocol does not have.
 
 ##### The media type
 
-`application/vnd.aoc.sovereignty-portability+json` is an **AOC Protocol media-type identifier**. It
+`application/vnd.aoc.sovereignty-portability+json` is an **Soberanía Protocol media-type identifier**. It
 is *not* registered with IANA, and this constant claims no such registration. Its purpose is to let a
 receiving system name the representation it is holding during negotiation. Protocol performs no HTTP
 content negotiation, sets no header, reads no header and ships no server: the string is metadata.
@@ -1004,7 +1004,7 @@ content negotiation, sets no header, reads no header and ships no server: the st
 
 #### The semantic vocabulary
 
-A receiving system can read an AOC bundle's field names — `sovereignAssetId`, `contentIdentity`,
+A receiving system can read a Soberanía bundle's field names — `sovereignAssetId`, `contentIdentity`,
 `assertedOrigin` — and still not know what any of them *mean*. Field names are not semantics.
 
 `AOC_SOVEREIGNTY_CORE_SEMANTIC_VOCABULARY` is the Protocol-owned statement of those meanings, built
@@ -1074,7 +1074,7 @@ its record that travelled. It is not the manifest schema version, the bundle sch
 profile version, each of which is a single value elsewhere in the document.
 
 A **subject-only** bundle is describable, and its feature arrays are simply empty. An external system
-still learns that it is holding an AOC sovereign subject representation.
+still learns that it is holding a Soberanía sovereign subject representation.
 
 Wrapper kind and semantic type are independent facts, and both are reported. A signed `Derivation`
 contributes `signed-claim` to `claimArtifactKinds` and `Derivation` to `claimTypes`. A manifest's
@@ -1118,7 +1118,7 @@ SovereigntyInteroperabilityConsumerSupportV1 {
 }
 ```
 
-**Explicit declaration, never inference.** AOC never derives this from a user-agent, a package name,
+**Explicit declaration, never inference.** Soberanía never derives this from a user-agent, a package name,
 an installed dependency, a runtime version, a browser, a request header or a provider — every one of
 those would be Protocol guessing at semantic understanding from an operational signal. "This system
 has `@aoc/protocol` installed" is not the same fact as "this system understands Derivation
@@ -1175,7 +1175,7 @@ SovereigntyInteroperabilityCompatibilityReportV1 {
 | | semantic concepts required | `partially-compatible` |
 
 Core means: without this, the consumer cannot read the representation as the representation it is. A
-consumer that supports `application/json` but not the AOC media type is **incompatible** — generic
+consumer that supports `application/json` but not the Soberanía media type is **incompatible** — generic
 JSON support is never read as semantic support. A consumer that can parse JSON but does not declare
 `aoc-canonical-json/1` is likewise incompatible: canonical wire semantics matter.
 
@@ -1332,8 +1332,8 @@ W3C Verifiable Credentials, DIDs, C2PA, SPDX, CycloneDX, JSON-LD contexts, Open 
 OPA/Rego, Cedar and chain metadata are **not implemented**, in any form. No adapter, no translation
 table, no mapping, and no dependency on any of them.
 
-That does not make SM-07 incomplete. Those are mappings *between* AOC semantics and someone else's;
-they presuppose a stable, self-describing statement of what AOC semantics *are*, which is what this
+That does not make SM-07 incomplete. Those are mappings *between* Soberanía semantics and someone else's;
+they presuppose a stable, self-describing statement of what Soberanía semantics *are*, which is what this
 capsule establishes. Each may later become an optional mapping profile, an adapter, or an ecosystem
 bridge — layered on top of this handshake, never in place of it. Regulated-sector profiles (health,
 finance, public sector) are deferred on the same basis.
@@ -1763,7 +1763,7 @@ request, deletes no file, revokes no URL, disables no playback and prevents no c
 pay does not establish that anyone paid.
 
 ```
-                        AOC PROTOCOL
+                  SOBERANÍA PROTOCOL
                     LicenseTermsClaim
                             │
                             ▼
@@ -1771,7 +1771,7 @@ pay does not establish that anyone paid.
                             │
         ────────────────────┼────────────────────  ← Protocol stops here
                             ▼
-           External Governance / AOC Enterprise
+     External Governance / Soberanía Enterprise
                             │
                             ▼
                    policy interpretation
@@ -2011,7 +2011,7 @@ A valid handoff does **not** mean ALLOW. It does **not** mean DENY. It does **no
 means the external governance system can stably address and interpret the Protocol representation.
 
 ```
-                    AOC PROTOCOL
+              SOBERANÍA PROTOCOL
 
               Sovereign Subject
                      │
@@ -2175,7 +2175,7 @@ Still open, and deliberately so:
   enforcement or revocation.** That is the mineral's boundary, not a gap.
 - **No actor/action request evaluation.** The handoff is about an object and its state.
 - **No `resource.attributes`** in v1.
-- **No adapter** for OPA, Cedar, AWS IAM, Azure, a DAO or AOC Enterprise. The standardized handoff
+- **No adapter** for OPA, Cedar, AWS IAM, Azure, a DAO or Soberanía Enterprise. The standardized handoff
   *is* the integration boundary; a mapping layer would be a consumer's concern, not the Protocol's.
 - **No handoff persistence.** It is returned to its caller.
 - **No payment, tokenization or legal adjudication.**

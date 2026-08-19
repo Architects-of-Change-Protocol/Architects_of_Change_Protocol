@@ -2,7 +2,7 @@
 
 ## Executive result
 
-AOC now has an executable first Constitutional Enforcement Layer. Protocol purity, Enterprise/compatibility ownership, package exports, dependency direction, composition ownership, and registry resolution are represented as law IDs, scanners, tests, CI gates, and release prerequisites.
+Soberanía now has an executable first Constitutional Enforcement Layer. Protocol purity, Enterprise/compatibility ownership, package exports, dependency direction, composition ownership, and registry resolution are represented as law IDs, scanners, tests, CI gates, and release prerequisites.
 
 ## Laws enforced
 

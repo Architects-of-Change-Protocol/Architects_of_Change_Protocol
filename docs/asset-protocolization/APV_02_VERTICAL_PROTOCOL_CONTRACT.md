@@ -145,7 +145,7 @@ Three deliberate decisions:
   > `SovereignAssetId`, and still attribute-free. When the vertical's implementation needs the
   > constant it should import the Protocol one rather than declare a second definition of one wire
   > value — the dependency direction is unchanged and non-negotiable: **Asset Protocolization may
-  > consume AOC Protocol, never the reverse.** This vertical's *stricter* rules stay vertical:
+  > consume Soberanía Protocol, never the reverse.** This vertical's *stricter* rules stay vertical:
   > SM-10 makes `tenantId` optional for a generic governance consumer, and §4's required tenant
   > remains a constraint of this contract, which is exactly where a specialized consumer's
   > narrowing of a generic Protocol contract belongs.

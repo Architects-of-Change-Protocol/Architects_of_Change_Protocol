@@ -1,4 +1,4 @@
-# AOC Protocol — Consent Object Specification
+# Soberanía Protocol — Consent Object Specification
 
 **Version:** 0.1.2
 **Status:** Draft
@@ -32,7 +32,7 @@
 
 ### 1.1 Definition
 
-A **Consent Object** is an immutable, cryptographically verifiable record that represents explicit authorization granted by a subject to a grantee over specified AOC protocol objects.
+A **Consent Object** is an immutable, cryptographically verifiable record that represents explicit authorization granted by a subject to a grantee over specified Soberanía protocol objects.
 
 ```
 ConsentObject := {
@@ -242,11 +242,11 @@ ConsentObject := {
 | **Constraints** | MUST NOT be empty; minimum 1 entry |
 | **Max Entries** | 10000 |
 
-**Description:** The set of AOC protocol objects to which this consent applies.
+**Description:** The set of Soberanía protocol objects to which this consent applies.
 
 **Semantic Rules:**
 
-1. Each scope entry MUST reference exactly one AOC object.
+1. Each scope entry MUST reference exactly one Soberanía object.
 2. Scope entries MUST be unique within a Consent Object.
 3. Authorization applies only to objects explicitly listed.
 4. An empty scope array is invalid; consent MUST have explicit targets.
@@ -394,7 +394,7 @@ These strings are the canonical action vocabulary used by consent builders, capa
 
 ### 4.1 Scope Entry Structure
 
-A scope entry identifies a single AOC protocol object to which consent applies.
+A scope entry identifies a single Soberanía protocol object to which consent applies.
 
 ```
 ScopeEntry := {
@@ -407,7 +407,7 @@ ScopeEntry := {
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `type` | string | REQUIRED | AOC object type identifier |
+| `type` | string | REQUIRED | Soberanía object type identifier |
 | `ref` | string | REQUIRED | Hash reference to the object |
 
 #### 4.2.1 type
@@ -420,7 +420,7 @@ ScopeEntry := {
 | **Format** | Enumerated value |
 | **Constraints** | One of: `"field"`, `"content"`, `"pack"` |
 
-**Description:** The type of AOC protocol object being referenced.
+**Description:** The type of Soberanía protocol object being referenced.
 
 **Type Mapping:**
 
@@ -440,7 +440,7 @@ ScopeEntry := {
 | **Format** | SHA-256 hash (lowercase hexadecimal) |
 | **Constraints** | Pattern: `^[a-f0-9]{64}$`; exactly 64 characters |
 
-**Description:** The hash identifier of the referenced AOC object.
+**Description:** The hash identifier of the referenced Soberanía object.
 
 **Semantic Rules:**
 
@@ -692,7 +692,7 @@ The `consent_hash` serves as the canonical identifier for a Consent Object.
 
 ### 8.2 URI Form
 
-Consent Objects MAY be referenced using the AOC URI scheme:
+Consent Objects MAY be referenced using the Soberanía URI scheme:
 
 ```
 aoc://consent/v{major}/{minor}/0x{consent_hash}
@@ -1035,7 +1035,7 @@ The following field name prefixes are reserved:
 |--------|---------|
 | `_` | Implementation-private metadata |
 | `x-` | Vendor extensions |
-| `aoc-` | Future AOC protocol use |
+| `aoc-` | Future Soberanía protocol use |
 
 ### 13.4 Vendor Extensions
 

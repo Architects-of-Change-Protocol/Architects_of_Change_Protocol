@@ -12,12 +12,12 @@ import { WhoBenefits } from './governed-access/WhoBenefits';
 import { Examples } from './governed-access/Examples';
 import { Assessment } from './governed-access/Assessment';
 
-// Governed Access is AOC Enterprise's first commercial Solution (see
+// Governed Access is Soberanía Enterprise's first commercial Solution (see
 // ./SolutionsAndServices.tsx / ../routes.ts). This is its dedicated product
 // landing — W006 — built on the same W005 commercial design system as
 // ../EnterprisePage.tsx (light-primary, dark hero/CTA bookends, indigo
 // accent) so it reads as the same product family, but tells the narrower,
-// sharper story of this one capability rather than AOC Enterprise as a
+// sharper story of this one capability rather than Soberanía Enterprise as a
 // whole. See docs/w006-governed-access-product-landing.md for the section
 // map and design rationale.
 export function GovernedAccessPage() {

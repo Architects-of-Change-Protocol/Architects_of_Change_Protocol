@@ -1,4 +1,4 @@
-# AOC Ecosystem Release Governance
+# Soberanía Ecosystem Release Governance
 
 ## Package manager and local dependency strategy
 - Repository package manager is npm (`packageManager: npm@11.4.2`).

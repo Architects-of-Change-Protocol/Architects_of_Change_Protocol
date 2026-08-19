@@ -4,16 +4,16 @@
 |---|---|
 | Status | Accepted — **frozen** (GATE A0) |
 | Work package | APV-01 (Workstream A, Asset Protocolization Vertical) |
-| Decision owner | Founder / AOC Architecture Authority |
-| Scope | AOC Protocol, the Asset Protocolization Vertical, AOC Enterprise, external tokenizers |
+| Decision owner | Founder / Soberanía Architecture Authority |
+| Scope | Soberanía Protocol, the Asset Protocolization Vertical, Soberanía Enterprise, external tokenizers |
 | Supersedes | Nothing |
 | Depends on | `docs/asset-protocolization/APV_00_RECONNAISSANCE.md`, `docs/architecture/sovereign-asset-core.md`, `docs/protocol/SOVEREIGNTY_CAPABILITIES.md`, `docs/constitution/ARCHITECTURAL-LAWS.md`, `docs/architecture/aoc-layering.md` |
 | Baseline commit | `5ed0670` |
 
 ## Context
 
-AOC is about to grow a commercial vertical that turns an asset — a file, a recording, a
-painting, a plot of land — into a verifiable AOC record backed by evidence, automated
+Soberanía is about to grow a commercial vertical that turns an asset — a file, a recording, a
+painting, a plot of land — into a verifiable Soberanía record backed by evidence, automated
 checks and, where the asset class requires it, a professional or notarial attestation.
 
 There is a well-known failure mode for work of this kind: the vertical's requirements leak
@@ -38,24 +38,24 @@ rules by which a violation becomes a build failure rather than a review opinion.
 
 ## Decision
 
-### 1. Asset Protocolization is a vertical built on AOC Protocol. It is not AOC Protocol.
+### 1. Asset Protocolization is a vertical built on Soberanía Protocol. It is not Soberanía Protocol.
 
 This is the load-bearing sentence of this ADR. Three corollaries, each of which is
 independently binding:
 
-- **Asset Protocolization ≠ AOC Protocol.** The vertical is a consumer of the substrate.
+- **Asset Protocolization ≠ Soberanía Protocol.** The vertical is a consumer of the substrate.
   It may not extend, alter, or be imported by `packages/protocol/src/**`.
-- **Asset Protocolization ≠ AOC Enterprise.** The vertical does not resolve authority,
+- **Asset Protocolization ≠ Soberanía Enterprise.** The vertical does not resolve authority,
   evaluate policy, issue grants, enforce, or revoke. It produces a record; Enterprise
   governs actions on it.
-- **AOC Enterprise ≠ tokenizer.** Enterprise governs the authority to act. It does not
+- **Soberanía Enterprise ≠ tokenizer.** Enterprise governs the authority to act. It does not
   issue tokens, hold custody, or settle.
 
 ### 2. Ownership
 
 Names below are the repository's **actual** symbols, not invented ones.
 
-#### 2.1 AOC Protocol owns
+#### 2.1 Soberanía Protocol owns
 
 | Domain | Canonical symbols |
 |---|---|
@@ -100,7 +100,7 @@ painting, an AI agent and a plot of land alike.
 The vertical's defining property: **it is the only layer that is allowed to know what a
 house, a WAV file or a notary is — and it governs nothing.**
 
-#### 2.3 AOC Enterprise owns
+#### 2.3 Soberanía Enterprise owns
 
 Authority resolution; policy; approval orchestration; decisions; obligations; grants;
 enforcement; revocation; usage evidence; the enforcement adapter surface toward external

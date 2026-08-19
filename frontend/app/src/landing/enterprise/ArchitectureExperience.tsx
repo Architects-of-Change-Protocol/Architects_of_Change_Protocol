@@ -22,8 +22,8 @@ export function ArchitectureExperience() {
 
       <SectionHeader
         eyebrow="Capability Composition"
-        title="AOC Enterprise composes protocol capabilities into your architecture."
-        description="AOC Protocol defines the capabilities — identity, authority, delegation, evidence, and more. AOC Enterprise is where an organization chooses what its architecture is sovereign around, and composes the capabilities that architecture actually needs."
+        title="Soberanía Enterprise composes protocol capabilities into your architecture."
+        description="Soberanía Protocol defines the capabilities — identity, authority, delegation, evidence, and more. Soberanía Enterprise is where an organization chooses what its architecture is sovereign around, and composes the capabilities that architecture actually needs."
       />
 
       <ArchitectureBuilder selected={selected} onSelect={setSelectedId} />

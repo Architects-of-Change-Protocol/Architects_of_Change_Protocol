@@ -2,7 +2,7 @@
 
 **Status: 0.2.0 is a *proposed* version derived from pending Changesets. It has NOT been cut,
 published, or tagged.** This guide exists so consumers can prepare; today the only distributed
-artifact remains the 0.1.0 internal tarball that AOC Enterprise pinned (SHA-256
+artifact remains the 0.1.0 internal tarball that Soberanía Enterprise pinned (SHA-256
 `4e5289b74bc30bcbd63afe87cd00d5417aa6bc665fe50d7c9c1b845bf1896b27`), which already contains the
 stabilized contract shapes described below — the 0.1.0→0.2.0 bump is a version-number recognition
 of those changes, not a second contract change. (Builds after the Apache-2.0 relicense, PR #319,
@@ -26,7 +26,7 @@ Five new **optional** fields:
 
 Required fields (`eventId`, `eventType`, `emittedAt`, `payload`) and optional `actorId` are
 unchanged. **No action is required**; adopt the new fields only if you have richer product-specific
-audit shapes to map onto the canonical envelope. The reference pattern is AOC Enterprise's
+audit shapes to map onto the canonical envelope. The reference pattern is Soberanía Enterprise's
 `toProtocolAuditEventEnvelope()` mapper: a single, explicit, field-by-field boundary function from
 the product's legacy shape to the envelope — no object spreads, no structural casts.
 
@@ -93,7 +93,7 @@ Both are supported; pick one style per codebase. All six public subpaths are lis
 ## 7. Rollback to 0.1.0
 
 Per [`ROLLBACK_PLAN.md`](ROLLBACK_PLAN.md): reinstall the pinned 0.1.0 tarball, verify its SHA-256
-against the checksum recorded when you pinned it (for AOC Enterprise that is `4e5289b7…96b27` in
+against the checksum recorded when you pinned it (for Soberanía Enterprise that is `4e5289b7…96b27` in
 its `protocol-consumer.lock.json`), and revert your pin/lock record in one commit. Because the
 0.1.0 tarball already carries the stabilized shapes, code migrated per this guide also compiles
 against it — rollback does not force un-migrating.

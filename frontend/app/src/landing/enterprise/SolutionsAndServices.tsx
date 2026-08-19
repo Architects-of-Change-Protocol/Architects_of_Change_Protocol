@@ -1,6 +1,6 @@
 import { SectionHeader } from './primitives';
 
-// AOC Enterprise is the commercial umbrella; Solutions, Services, and
+// Soberanía Enterprise is the commercial umbrella; Solutions, Services, and
 // Architecture are the three pieces the One Pager breaks the platform into
 // ("The solution." / "The service." / "The foundation."). Copy below is
 // taken from that One Pager's pill row, extended here with links into each
@@ -25,7 +25,7 @@ const PILLS = [
     tone: 'foundation' as const,
     href: '#architecture',
     lead: 'The foundation.',
-    body: 'Proven reference patterns on the open AOC Protocol standards — provider-neutral, never locked in.',
+    body: 'Proven reference patterns on the open Soberanía Protocol standards — provider-neutral, never locked in.',
   },
 ];
 
@@ -39,7 +39,7 @@ export function SolutionsAndServices() {
   return (
     <section id="solutions-services" className="scroll-mt-16 max-w-5xl mx-auto px-6 py-20 border-t border-slate-200">
       <SectionHeader
-        eyebrow="What AOC Enterprise Is"
+        eyebrow="What Soberanía Enterprise Is"
         title="The complete governed access lifecycle — delivered, not assembled."
       />
 

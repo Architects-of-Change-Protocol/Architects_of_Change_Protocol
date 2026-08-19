@@ -35,7 +35,7 @@ export function Methodology() {
                 <dd className="mt-1 text-[13.5px] leading-relaxed text-slate-700">{stage.customerInput}</dd>
               </div>
               <div>
-                <dt className="text-[11px] font-bold uppercase tracking-wide text-slate-400">AOC Activity</dt>
+                <dt className="text-[11px] font-bold uppercase tracking-wide text-slate-400">Soberanía Activity</dt>
                 <dd className="mt-1 text-[13.5px] leading-relaxed text-slate-700">{stage.aocActivity}</dd>
               </div>
               <div>

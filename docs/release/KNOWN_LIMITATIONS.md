@@ -17,7 +17,7 @@ Consumers and decision-makers should read this alongside
 5. **Release authority is incomplete.** Founder authorization is defined as required, but no
    release owner or backup publisher has been designated
    ([`RELEASE_AUTHORITY.md`](RELEASE_AUTHORITY.md)).
-6. **AOC Enterprise consumes a pinned internal tarball**, not a registry package. Its validation
+6. **Soberanía Enterprise consumes a pinned internal tarball**, not a registry package. Its validation
    evidence ([`REFERENCE_CONSUMER_EVIDENCE.md`](REFERENCE_CONSUMER_EVIDENCE.md)) is real and
    CI-blocking, but it is consumption of `file:./vendor/aoc-protocol-0.1.0.tgz` — no deployment
    claim is made.

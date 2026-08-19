@@ -1,4 +1,4 @@
-# Sovereign Runtime Layer (AOC Core)
+# Sovereign Runtime Layer (Soberanía Protocol Core)
 
 Sovereign runtimes are first-class governance actors: each runtime has identity, trust posture, policy envelope, capability boundaries, isolation guarantees, and AI execution governance. This closes the gap where runtimes were merely opaque IDs.
 

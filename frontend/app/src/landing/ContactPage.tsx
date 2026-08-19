@@ -26,7 +26,7 @@ function ContactPage() {
     ].join('\n');
 
     window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(
-      subject || 'AOC Protocol Inquiry'
+      subject || 'Soberanía Protocol Inquiry'
     )}&body=${encodeURIComponent(body)}`;
   };
 
@@ -35,7 +35,7 @@ function ContactPage() {
       <section className="border-b border-white/10">
         <div className="mx-auto max-w-6xl px-6 py-20 md:py-24">
           <p className="text-[11px] uppercase tracking-[0.24em] text-cyan-300/70">
-            Contact AOC Protocol
+            Contact Soberanía Protocol
           </p>
           <h1 className="mt-4 text-5xl font-semibold tracking-tight md:text-6xl">
             Let&apos;s design explicit access together.

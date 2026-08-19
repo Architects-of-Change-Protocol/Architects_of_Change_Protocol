@@ -1,8 +1,8 @@
-# AOC Capability Module
+# Soberanía Capability Module
 
 ## Purpose
 
-`aoc/capabilities` is the protocol-level capability enforcement module for Architects of Change. It is the reusable core for capability authorization and consumption across market-maker domains (HRKey, health, finance, and future integrations).
+`aoc/capabilities` is the protocol-level capability enforcement module for Soberanía. It is the reusable core for capability authorization and consumption across market-maker domains (HRKey, health, finance, and future integrations).
 
 ## What this module provides
 

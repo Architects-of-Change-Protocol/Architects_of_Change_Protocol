@@ -1,10 +1,10 @@
-# AOC Adapter Identity + Optional Registry
+# Soberanía Adapter Identity + Optional Registry
 
-This module defines the canonical adapter identity model for AOC and provides an **official but optional** in-memory adapter registry.
+This module defines the canonical adapter identity model for Soberanía and provides an **official but optional** in-memory adapter registry.
 
 ## Permissionless by design
 
-- AOC remains an open, permissionless protocol.
+- Soberanía remains an open, permissionless protocol.
 - No adapter registration is required to use consent, capability lifecycle, enforcement, or execution flows.
 - This registry is an ecosystem utility layer for discovery, metadata, and trust signaling.
 
@@ -12,11 +12,11 @@ This module defines the canonical adapter identity model for AOC and provides an
 
 The official registry layer is intended for:
 
-- discovery of known adapters in the AOC ecosystem
+- discovery of known adapters in the Soberanía ecosystem
 - standardized metadata
 - trust signals (`declared`, `verified`, `revoked`)
 - future compliance overlays
-- future hosted/official AOC infrastructure
+- future hosted/official Soberanía infrastructure
 
 It is **not** a protocol gatekeeper.
 
@@ -28,7 +28,7 @@ It is **not** a protocol gatekeeper.
 
 ## Notes for integrators
 
-- You can run AOC integrations without this registry.
+- You can run Soberanía integrations without this registry.
 - You can run your own private/public adapter index.
 - Using the official registry does not invalidate adapters that are outside of it.
 

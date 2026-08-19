@@ -1,7 +1,7 @@
-// Content model for the AOC Enterprise homepage.
+// Content model for the Soberanía Enterprise homepage.
 //
-// The homepage has one job: explain why AOC Enterprise exists. AOC Protocol
-// defines governed capabilities. AOC Enterprise is where an organization
+// The homepage has one job: explain why Soberanía Enterprise exists. Soberanía Protocol
+// defines governed capabilities. Soberanía Enterprise is where an organization
 // composes the subset of those capabilities its own architecture needs.
 // Governance is what that composition produces, not where it starts.
 
@@ -106,7 +106,7 @@ export type ArchitecturePattern = {
 };
 
 // The six centers of gravity a business architecture can be built around. Picking
-// one is the first decision AOC Enterprise asks of an organization — it determines
+// one is the first decision Soberanía Enterprise asks of an organization — it determines
 // which capabilities and, later, which governance concepts apply.
 export const ARCHITECTURE_PATTERNS: ArchitecturePattern[] = [
   {

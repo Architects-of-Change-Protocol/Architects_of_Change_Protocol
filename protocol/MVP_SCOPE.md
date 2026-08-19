@@ -1,4 +1,4 @@
-# AOC Protocol — MVP Scope (Sovereign Enforcement)
+# Soberanía Protocol — MVP Scope (Sovereign Enforcement)
 
 ## MVP Goal
 The MVP goal is to make sovereign enforcement **impossible to bypass**: market makers, adapters, and integrators MUST NOT obtain, expand, or retain access outside user-authorized scope, even if they are the primary commercial path.
@@ -48,7 +48,7 @@ A centralized capability access decision layer now exists as the recommended enf
 When a capability is bound to a `marketMakerId`, registry lookup and lifecycle trust are distinct checks: unknown IDs deny as unknown, `deprecated` and `revoked` operators deny fail-closed at runtime, and only `active` operators are trusted to proceed. This trust enforcement sits below pricing, usage metering, and interpreter execution, and is intentionally not a governance or reputation system.
 
 ## Explicit Non-Goals (Not in MVP)
-- New cryptographic primitives, new object schemas, or changes to core AOC primitives.
+- New cryptographic primitives, new object schemas, or changes to core Soberanía primitives.
 - Economic optimization features (pricing strategy, fee experiments, revenue analytics).
 - Advanced trust-scoring/ML risk models beyond deterministic checks already specified.
 - Cross-jurisdiction legal policy automation beyond existing governance/compliance requirements.

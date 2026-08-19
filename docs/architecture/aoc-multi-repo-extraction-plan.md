@@ -1,7 +1,7 @@
-# AOC Multi-Repo Extraction Plan (Protocol + Enterprise)
+# Soberanía Multi-Repo Extraction Plan (Protocol + Enterprise)
 
 ## Objective
-Create a controlled extraction path for reusable AOC assets into:
+Create a controlled extraction path for reusable Soberanía assets into:
 - `Architects-of-Change-Protocol`
 - `AOC-Enterprise`
 
@@ -57,7 +57,7 @@ Create a controlled extraction path for reusable AOC assets into:
 | `src/lib/security/agent-attestation.ts` | Agent attestation runtime | Enterprise | copy then shim | Runtime verification and authz. |
 | `src/lib/security/capability-flow.ts` | Capability request/grant runtime | Enterprise | copy then shim | Enterprise API/runtime/persistence layer. |
 | `docs/architecture/aoc-layering.md` | Architectural contract | Protocol | copy | Canonical layering spec belongs to protocol; enterprise keeps implementation addendum. |
-| `docs/architecture/persistent-conversational-memory.md` | PM product architecture | PMFreak | stay | PM feature architecture, not core AOC protocol/runtime. |
+| `docs/architecture/persistent-conversational-memory.md` | PM product architecture | PMFreak | stay | PM feature architecture, not core Soberanía protocol/runtime. |
 | `docs/api/api-v1-structure.md` | API contract + route map | Protocol + Enterprise | shared temporarily | Split into protocol API contract + enterprise implementation mapping. |
 | `docs/api/api-inventory.md` | Endpoint/runtime inventory | Enterprise | copy | Runtime inventory tracks implementation. |
 | `src/sdk/types.ts` | SDK interface contracts | Protocol | move | Contract-first surface. |
@@ -99,7 +99,7 @@ Create a controlled extraction path for reusable AOC assets into:
 1. `Architects-of-Change-Protocol` must have **zero** imports from PMFreak or enterprise runtime internals.  
 2. `AOC-Enterprise` may import Protocol contracts, never the reverse.  
 3. `PMFreak` may import Protocol and Enterprise packages, but PM-only UX/workflow modules cannot be imported by either external repo.  
-4. Supabase schema ownership for AOC runtime tables lives in Enterprise; PMFreak consumes via API/runtime packages only.  
+4. Supabase schema ownership for Soberanía runtime tables lives in Enterprise; PMFreak consumes via API/runtime packages only.  
 5. Shared temporary shims in PMFreak must be explicitly marked deprecated with removal PR target.
 
 ## Phased migration plan
@@ -199,7 +199,7 @@ cp /workspace/pmfreak/supabase/migrations/20260512120000_deterministic_verificat
 - Gate rollout with CI matrix:
   - PMFreak against local modules
   - PMFreak against published `@aoc/*` prerelease packages
-- Freeze new AOC table migrations in PMFreak once Enterprise schema authority is live; mirror migration IDs during transition.
+- Freeze new Soberanía table migrations in PMFreak once Enterprise schema authority is live; mirror migration IDs during transition.
 
 ## Recommended next PR sequence
 1. **PR-1 (Protocol bootstrap):** create `Architects-of-Change-Protocol` with contracts + SDK types + docs; add adapter interfaces; no PMFreak behavior changes.

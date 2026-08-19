@@ -2,7 +2,7 @@
   "name": "@aoc/asset-protocolization",
   "version": "0.1.0",
   "private": true,
-  "description": "Asset Protocolization Vertical — asset profile framework built on AOC Protocol.",
+  "description": "Asset Protocolization Vertical — asset profile framework built on Soberanía Protocol.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {

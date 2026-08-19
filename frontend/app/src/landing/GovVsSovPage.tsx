@@ -38,23 +38,23 @@ function usePageMeta() {
       return { el, prevHref, created };
     };
 
-    document.title = 'AI Governance vs AI Sovereignty | AOC Assurance';
+    document.title = 'AI Governance vs AI Sovereignty | Soberanía Assurance';
 
     setMeta('description', 'AI Governance defines how AI systems are supervised, controlled, and made accountable. AI Sovereignty defines who controls, owns, moves, replaces, and operates the underlying AI capability.');
-    setMeta('keywords', 'AI Governance vs AI Sovereignty, What is AI Sovereignty, What is AI Governance, AI Governance Score, AI Sovereignty Score, AI Trust Assessment, AI Constitutional Assessment, Constitutional AI Operations, AOC Assurance, AOC Constitutional Index');
+    setMeta('keywords', 'AI Governance vs AI Sovereignty, What is AI Sovereignty, What is AI Governance, AI Governance Score, AI Sovereignty Score, AI Trust Assessment, AI Constitutional Assessment, Constitutional AI Operations, Soberanía Assurance, Soberanía Constitutional Index');
     setMeta('robots', 'index, follow');
 
     const { el: canonicalEl, prevHref: prevCanonical } = setLink('canonical', PAGE_URL);
 
-    setMeta('og:title', 'AI Governance vs AI Sovereignty | AOC Assurance', true);
+    setMeta('og:title', 'AI Governance vs AI Sovereignty | Soberanía Assurance', true);
     setMeta('og:description', 'Governance explains how AI is supervised. Sovereignty explains who truly controls the capability. Trust requires both.', true);
     setMeta('og:url', PAGE_URL, true);
     setMeta('og:type', 'article', true);
     setMeta('og:image', 'https://www.aocprotocol.org/og-image.png', true);
-    setMeta('og:site_name', 'AOC Assurance', true);
+    setMeta('og:site_name', 'Soberanía Assurance', true);
 
     setMeta('twitter:card', 'summary_large_image');
-    setMeta('twitter:title', 'AI Governance vs AI Sovereignty | AOC Assurance');
+    setMeta('twitter:title', 'AI Governance vs AI Sovereignty | Soberanía Assurance');
     setMeta('twitter:description', 'Governance explains how AI is supervised. Sovereignty explains who truly controls the capability. Trust requires both.');
     setMeta('twitter:site', '@archofchange');
 
@@ -89,23 +89,23 @@ function buildJsonLd() {
     },
     {
       q: 'Can an AI system have strong governance but weak sovereignty?',
-      a: 'Yes. This is the "Trusted Custodian" position in the AOC Constitutional Matrix. Strong oversight exists, but the organization retains limited control over the underlying AI capability, creating dependency risk.',
+      a: 'Yes. This is the "Trusted Custodian" position in the Soberanía Constitutional Matrix. Strong oversight exists, but the organization retains limited control over the underlying AI capability, creating dependency risk.',
     },
     {
       q: 'Can an AI system have strong sovereignty but weak governance?',
       a: 'Yes. This is the "Sovereignty Pioneer" position. The organization controls the infrastructure but lacks oversight, audit trails, accountability structures, and process maturity to govern it safely.',
     },
     {
-      q: 'What is the AOC Constitutional Index?',
-      a: 'The AOC Constitutional Index is a public evaluation framework developed by AOC Assurance that measures the Governance Score and Sovereignty Score of AI systems and positions them in the Constitutional Matrix across four quadrants.',
+      q: 'What is the Soberanía Constitutional Index?',
+      a: 'The Soberanía Constitutional Index is a public evaluation framework developed by Soberanía Assurance that measures the Governance Score and Sovereignty Score of AI systems and positions them in the Constitutional Matrix across four quadrants.',
     },
     {
       q: 'What is an AI Constitutional Assessment?',
       a: 'An AI Constitutional Assessment evaluates the structural balance between governance and sovereignty to understand the trust posture of an AI system. It produces a Governance Score, Sovereignty Score, and Constitutional Position.',
     },
     {
-      q: 'How does AOC Assurance measure AI trust?',
-      a: 'AOC Assurance evaluates public evidence, documentation, product architecture, policy disclosures, operational signals, and technical posture to estimate an organization\'s Governance Score and Sovereignty Score — producing a Constitutional Position in the AOC Constitutional Matrix.',
+      q: 'How does Soberanía Assurance measure AI trust?',
+      a: 'Soberanía Assurance evaluates public evidence, documentation, product architecture, policy disclosures, operational signals, and technical posture to estimate an organization\'s Governance Score and Sovereignty Score — producing a Constitutional Position in the Soberanía Constitutional Matrix.',
     },
   ];
 
@@ -115,8 +115,8 @@ function buildJsonLd() {
       {
         '@type': 'Organization',
         '@id': 'https://www.aocprotocol.org/#organization',
-        name: 'AOC Assurance',
-        alternateName: 'AOC Protocol',
+        name: 'Soberanía Assurance',
+        alternateName: 'Soberanía Protocol',
         url: 'https://www.aocprotocol.org/',
         logo: { '@type': 'ImageObject', url: 'https://www.aocprotocol.org/og-image.png' },
         founder: { '@type': 'Person', name: 'Victor Valverde', sameAs: 'https://www.linkedin.com/in/victorvalverde/' },
@@ -130,7 +130,7 @@ function buildJsonLd() {
         '@type': 'WebPage',
         '@id': `${PAGE_URL}#webpage`,
         url: PAGE_URL,
-        name: 'AI Governance vs AI Sovereignty | AOC Assurance',
+        name: 'AI Governance vs AI Sovereignty | Soberanía Assurance',
         description: 'AI Governance defines how AI systems are supervised, controlled, and made accountable. AI Sovereignty defines who controls, owns, moves, replaces, and operates the underlying AI capability.',
         isPartOf: { '@id': 'https://www.aocprotocol.org/#website' },
         about: { '@id': 'https://www.aocprotocol.org/#organization' },
@@ -153,7 +153,7 @@ function buildJsonLd() {
         about: [
           { '@type': 'Thing', name: 'AI Governance' },
           { '@type': 'Thing', name: 'AI Sovereignty' },
-          { '@type': 'Thing', name: 'AOC Constitutional Index' },
+          { '@type': 'Thing', name: 'Soberanía Constitutional Index' },
         ],
       },
       {
@@ -170,7 +170,7 @@ function buildJsonLd() {
         '@id': `${PAGE_URL}#breadcrumb`,
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.aocprotocol.org/' },
-          { '@type': 'ListItem', position: 2, name: 'AOC Assurance', item: 'https://www.aocprotocol.org/assurance/intelligence-risk' },
+          { '@type': 'ListItem', position: 2, name: 'Soberanía Assurance', item: 'https://www.aocprotocol.org/assurance/intelligence-risk' },
           { '@type': 'ListItem', position: 3, name: 'AI Governance vs AI Sovereignty', item: PAGE_URL },
         ],
       },
@@ -231,7 +231,7 @@ function ConstitutionalMatrixSimple() {
   ];
 
   return (
-    <div className="w-full max-w-2xl mx-auto" role="img" aria-label="AOC Constitutional Matrix — four quadrants of AI Governance vs Sovereignty">
+    <div className="w-full max-w-2xl mx-auto" role="img" aria-label="Soberanía Constitutional Matrix — four quadrants of AI Governance vs Sovereignty">
       {/* Axis labels */}
       <div className="flex items-end justify-between mb-2 px-1">
         <span className="text-[10px] uppercase tracking-[0.18em] text-white/35">← Low Sovereignty · High Sovereignty →</span>
@@ -305,7 +305,7 @@ const TABLE_ROWS: { label: string; gov: string; sov: string }[] = [
     sov: 'Vendor lock-in, dependency risk, reduced autonomy, loss of continuity.',
   },
   {
-    label: 'AOC score',
+    label: 'Soberanía score',
     gov: 'Governance Score',
     sov: 'Sovereignty Score',
   },
@@ -379,23 +379,23 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Can an AI system have strong governance but weak sovereignty?',
-    a: 'Yes. This is the Trusted Custodian position in the AOC Constitutional Matrix — strong oversight, but limited autonomy. The organization has controls in place but remains dependent on external providers for the underlying capability.',
+    a: 'Yes. This is the Trusted Custodian position in the Soberanía Constitutional Matrix — strong oversight, but limited autonomy. The organization has controls in place but remains dependent on external providers for the underlying capability.',
   },
   {
     q: 'Can an AI system have strong sovereignty but weak governance?',
     a: 'Yes. This is the Sovereignty Pioneer position. The organization controls the infrastructure and capability, but lacks the oversight, audit trails, accountability structures, and process maturity needed to govern it safely.',
   },
   {
-    q: 'What is the AOC Constitutional Index?',
-    a: 'The AOC Constitutional Index is a public evaluation framework developed by AOC Assurance that measures the Governance Score and Sovereignty Score of AI systems, positioning them in the Constitutional Matrix across four quadrants: Constitutional Leaders, Trusted Custodians, Sovereignty Pioneers, and Dependency Platforms.',
+    q: 'What is the Soberanía Constitutional Index?',
+    a: 'The Soberanía Constitutional Index is a public evaluation framework developed by Soberanía Assurance that measures the Governance Score and Sovereignty Score of AI systems, positioning them in the Constitutional Matrix across four quadrants: Constitutional Leaders, Trusted Custodians, Sovereignty Pioneers, and Dependency Platforms.',
   },
   {
     q: 'What is an AI Constitutional Assessment?',
-    a: 'An AI Constitutional Assessment evaluates the structural balance between governance and sovereignty to understand the trust posture of an AI system. It produces a Governance Score, Sovereignty Score, and Constitutional Position within the AOC Constitutional Matrix.',
+    a: 'An AI Constitutional Assessment evaluates the structural balance between governance and sovereignty to understand the trust posture of an AI system. It produces a Governance Score, Sovereignty Score, and Constitutional Position within the Soberanía Constitutional Matrix.',
   },
   {
-    q: 'How does AOC Assurance measure AI trust?',
-    a: 'AOC Assurance evaluates public evidence, documentation, product architecture, policy disclosures, operational signals, and technical posture to estimate an organization\'s Governance Score and Sovereignty Score — producing a Constitutional Position that identifies trust posture, dependency risk, and improvement priorities.',
+    q: 'How does Soberanía Assurance measure AI trust?',
+    a: 'Soberanía Assurance evaluates public evidence, documentation, product architecture, policy disclosures, operational signals, and technical posture to estimate an organization\'s Governance Score and Sovereignty Score — producing a Constitutional Position that identifies trust posture, dependency risk, and improvement priorities.',
   },
 ];
 
@@ -433,7 +433,7 @@ function GovSovNav() {
         <a href="/assurance/intelligence-risk" className="flex items-center gap-3">
           <LogoRotating size={28} inverted />
           <div className="flex items-baseline gap-2">
-            <span className="text-xl font-semibold tracking-tighter">AOC</span>
+            <span className="text-xl font-semibold tracking-tighter">Soberanía</span>
             <span className="text-xs text-emerald-400 uppercase tracking-[0.2em]">Assurance</span>
           </div>
         </a>
@@ -474,7 +474,7 @@ function GovSovNav() {
             { label: 'Constitutional Map', href: '/assurance/intelligence-risk#map' },
             { label: 'Index', href: '/assurance/intelligence-risk#index' },
             { label: 'Methodology', href: '/assurance/methodology' },
-            { label: 'AOC Protocol', href: '/' },
+            { label: 'Soberanía Protocol', href: '/' },
           ].map((item) => (
             <a
               key={item.label}
@@ -515,8 +515,8 @@ function GovSovFooter() {
     {
       title: 'Company',
       links: [
-        { label: 'About AOC Assurance', href: '/assurance/about' },
-        { label: 'AOC Protocol', href: '/' },
+        { label: 'About Soberanía Assurance', href: '/assurance/about' },
+        { label: 'Soberanía Protocol', href: '/' },
         { label: 'Privacy Policy', href: '/assurance/privacy' },
         { label: 'Terms of Service', href: '/assurance/terms' },
       ],
@@ -536,10 +536,10 @@ function GovSovFooter() {
     <footer className="assurance-footer px-6" aria-labelledby="gov-sov-footer-title">
       <div className="max-w-7xl mx-auto assurance-footer-inner">
         <div className="assurance-footer-brand">
-          <h2 id="gov-sov-footer-title">AOC Assurance</h2>
-          <p>A constitutional assessment framework developed by AOC Protocol.</p>
+          <h2 id="gov-sov-footer-title">Soberanía Assurance</h2>
+          <p>A constitutional assessment framework developed by Soberanía Protocol.</p>
           <p className="assurance-footer-tagline">Measure Governance.<br />Measure Sovereignty.<br />Understand the Balance.</p>
-          <p className="assurance-footer-institutional">AOC Assurance and AOC Protocol are initiatives of OnchainFest LLC.</p>
+          <p className="assurance-footer-institutional">Soberanía Assurance and Soberanía Protocol are initiatives of OnchainFest LLC.</p>
         </div>
         <nav className="assurance-footer-links" aria-label="Footer navigation">
           {footerGroups.map((group) => (
@@ -563,7 +563,7 @@ function GovSovFooter() {
         </nav>
         <div className="assurance-footer-legal">
           <p>© 2026 OnchainFest LLC. All rights reserved.</p>
-          <p>AOC Assurance does not certify organizations as safe, secure, compliant, trustworthy, or risk-free.</p>
+          <p>Soberanía Assurance does not certify organizations as safe, secure, compliant, trustworthy, or risk-free.</p>
           <p>The Constitutional Index is an evidence-based assessment framework designed to evaluate governance and sovereignty characteristics using publicly observable and/or supplied evidence. Constitutional scores represent analytical assessments and should not be interpreted as guarantees, certifications, or endorsements.</p>
         </div>
       </div>
@@ -592,7 +592,7 @@ export function GovVsSovPage() {
           <li aria-hidden="true">/</li>
           <li itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
             <a href="/assurance/intelligence-risk" className="hover:text-white/60 transition-colors" itemProp="item">
-              <span itemProp="name">AOC Assurance</span>
+              <span itemProp="name">Soberanía Assurance</span>
             </a>
             <meta itemProp="position" content="2" />
           </li>
@@ -606,7 +606,7 @@ export function GovVsSovPage() {
 
       {/* ── Hero ── */}
       <section className="assurance-hero-glow relative pt-20 pb-24 text-center px-6" aria-labelledby="hero-heading">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-6">AOC CONSTITUTIONAL INDEX</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-6">SOBERANÍA CONSTITUTIONAL INDEX</p>
         <h1
           id="hero-heading"
           className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.08] mb-6 max-w-4xl mx-auto"
@@ -621,7 +621,7 @@ export function GovVsSovPage() {
             href="/assurance/intelligence-risk"
             className="inline-flex items-center justify-center px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-semibold rounded-xl transition-colors w-full sm:w-auto"
           >
-            Explore AOC Assurance
+            Explore Soberanía Assurance
           </a>
           <a
             href={FOUNDER_ESSAY_URL}
@@ -711,12 +711,12 @@ export function GovVsSovPage() {
       {/* ── Section 4: Constitutional Matrix ── */}
       <section className="max-w-5xl mx-auto px-6 py-16" aria-labelledby="matrix-heading">
         <header className="text-center mb-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">AOC CONSTITUTIONAL INDEX</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">SOBERANÍA CONSTITUTIONAL INDEX</p>
           <h2 id="matrix-heading" className="text-2xl sm:text-3xl font-bold tracking-tight mb-4">
-            The AOC Constitutional Matrix
+            The Soberanía Constitutional Matrix
           </h2>
           <p className="text-white/55 max-w-2xl mx-auto leading-relaxed">
-            The AOC Constitutional Index evaluates AI systems across two dimensions: Governance and Sovereignty. This creates
+            The Soberanía Constitutional Index evaluates AI systems across two dimensions: Governance and Sovereignty. This creates
             four constitutional positions.
           </p>
         </header>
@@ -752,14 +752,14 @@ export function GovVsSovPage() {
         </div>
       </section>
 
-      {/* ── Section 5: How AOC Assurance measures both ── */}
+      {/* ── Section 5: How Soberanía Assurance measures both ── */}
       <section className="max-w-4xl mx-auto px-6 py-16" aria-labelledby="measures-heading">
         <h2 id="measures-heading" className="text-2xl sm:text-3xl font-bold tracking-tight mb-6">
-          How AOC Assurance measures Governance and Sovereignty
+          How Soberanía Assurance measures Governance and Sovereignty
         </h2>
         <div className="space-y-5 text-base text-white/65 leading-relaxed">
           <p>
-            AOC Assurance evaluates public evidence, documentation, product architecture, policy disclosures, operational
+            Soberanía Assurance evaluates public evidence, documentation, product architecture, policy disclosures, operational
             signals, and technical posture to estimate an organization's Governance Score and Sovereignty Score.
           </p>
           <p>The goal is not only to produce a score.</p>
@@ -797,10 +797,10 @@ export function GovVsSovPage() {
       {/* ── Section 6: Founder Essay ── */}
       <section className="max-w-4xl mx-auto px-6 py-16" aria-labelledby="essay-heading">
         <h2 id="essay-heading" className="text-2xl sm:text-3xl font-bold tracking-tight mb-3">
-          The origin of the AOC Constitutional Index
+          The origin of the Soberanía Constitutional Index
         </h2>
         <p className="text-base text-white/55 leading-relaxed mb-8">
-          The idea behind the AOC Constitutional Index began while building HRKey, where the search for AI sovereignty revealed
+          The idea behind the Soberanía Constitutional Index began while building HRKey, where the search for AI sovereignty revealed
           a deeper governance tension.
         </p>
         <a
@@ -815,7 +815,7 @@ export function GovVsSovPage() {
             I Started Looking for Sovereignty. I Found a Constitutional Problem.
           </h3>
           <p className="text-sm text-white/50 leading-relaxed mb-5">
-            A founder essay by Victor Valverde on the origin of the AOC Constitutional Index and why the AI industry may be
+            A founder essay by Victor Valverde on the origin of the Soberanía Constitutional Index and why the AI industry may be
             measuring only half of the constitutional equation.
           </p>
           <span className="inline-flex items-center gap-2 text-sm font-medium text-emerald-400 group-hover:text-emerald-300 transition-colors">
@@ -839,19 +839,19 @@ export function GovVsSovPage() {
       {/* ── Final CTA ── */}
       <section className="max-w-4xl mx-auto px-6 py-16 text-center" aria-labelledby="cta-heading">
         <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-10 sm:p-14">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">AOC CONSTITUTIONAL INDEX</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-emerald-400 mb-4">SOBERANÍA CONSTITUTIONAL INDEX</p>
           <h2 id="cta-heading" className="text-2xl sm:text-3xl font-bold tracking-tight mb-4">
             Understand your constitutional position.
           </h2>
           <p className="text-white/55 max-w-xl mx-auto leading-relaxed mb-8">
-            AOC Assurance produces a Governance Score, Sovereignty Score, and Constitutional Position for your organization.
+            Soberanía Assurance produces a Governance Score, Sovereignty Score, and Constitutional Position for your organization.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <a
               href="/assurance/intelligence-risk#assessments"
               className="inline-flex items-center justify-center px-7 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-black text-sm font-semibold rounded-xl transition-colors w-full sm:w-auto"
             >
-              Explore AOC Assurance
+              Explore Soberanía Assurance
             </a>
             <a
               href={FOUNDER_ESSAY_URL}

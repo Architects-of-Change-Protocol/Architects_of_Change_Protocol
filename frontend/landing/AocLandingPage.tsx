@@ -82,7 +82,7 @@ export const renderAocLandingPage = () => {
           </h1>
 
           <p className="text-xl md:text-3xl text-gray-400 max-w-4xl mx-auto mb-14 md:mb-20">
-            AOC Enterprise gives organizations programmable control over data, systems,
+            Soberanía Enterprise gives organizations programmable control over data, systems,
             and AI agents using auditable permissions, scoped access, and enterprise-grade
             governance.
           </p>
@@ -230,7 +230,7 @@ export const renderAocLandingPage = () => {
 
       <footer className="border-t border-white/10 py-16">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
-          <div>AOC — Architects of Change Protocol</div>
+          <div>Soberanía Protocol</div>
 
           <div className="flex gap-8 mt-6 md:mt-0">
             <a href="/docs" className="hover:text-gray-300">

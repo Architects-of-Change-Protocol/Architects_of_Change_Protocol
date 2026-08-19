@@ -1,4 +1,4 @@
-# AOC Protocol — Platform Readiness Assessment (2026-05-15)
+# Soberanía Protocol — Platform Readiness Assessment (2026-05-15)
 
 ## Scope & Method
 

@@ -1,8 +1,8 @@
-// Content model for the AOC Protocol landing page (W004).
+// Content model for the Soberanía Protocol landing page (W004).
 //
-// Thesis: AOC Protocol defines what a digital asset can be — identity,
+// Thesis: Soberanía Protocol defines what a digital asset can be — identity,
 // integrity, provenance, capabilities and sovereignty-related properties
-// that compatible systems can interpret. AOC Enterprise operationalizes
+// that compatible systems can interpret. Soberanía Enterprise operationalizes
 // governance on top of it. This file holds the narrative data so the
 // section components stay focused on layout.
 
@@ -61,7 +61,7 @@ export const CAPABILITY_DOCK_PARAGRAPH =
 // only presentation (ids used by the dock's crystal geometry, maturity
 // status, and landing copy). Status is not a claim that a runtime or
 // creation SDK implements a capability end to end.
-// Also the shared source for AOC Assurance's "Capability Domains" (see
+// Also the shared source for Soberanía Assurance's "Capability Domains" (see
 // landing/enterprise/assurance/CapabilityDomains.tsx) — id/name/status/
 // summary is a public shape read by that page too, so keep it stable.
 export const CAPABILITY_FAMILIES: CapabilityFamily[] = [

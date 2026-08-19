@@ -125,7 +125,7 @@ export function EnterpriseConsolePage() {
     <section className="space-y-6">
       <header className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div>
-          <p className="text-xs font-medium uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">AOC Auditability Engine</p>
+          <p className="text-xs font-medium uppercase tracking-[0.16em] text-zinc-500 dark:text-zinc-400">Soberanía Auditability Engine</p>
           <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-white">Operational Trust & Consent Traceability</h1>
         </div>
         <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-medium text-emerald-700 dark:border-emerald-500/40 dark:bg-emerald-500/10 dark:text-emerald-300">

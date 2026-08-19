@@ -3,7 +3,7 @@
 ## 1. Purpose
 
 This document defines the canonical `financial.*` capability namespace for
-financial data access within the Architects of Change Protocol. The namespace
+financial data access within the Soberanía Protocol. The namespace
 is additive and does not modify the existing Consent Object, Capability Token,
 or enforcement architecture.
 

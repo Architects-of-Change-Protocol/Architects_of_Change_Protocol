@@ -50,7 +50,7 @@ this kind of thing need?"* — not to *"what is true about this thing?"*
 - `ProtocolizationCase`, its lifecycle, its persistence and its tenancy — APV-04;
 - evidence intake, storage, verification execution, review workbench,
   attestation workflow, fee assessment — later slices;
-- authority, policy, approvals, grants, enforcement, revocation — AOC Enterprise;
+- authority, policy, approvals, grants, enforcement, revocation — Soberanía Enterprise;
 - token issuance, custody, settlement — the tokenizer, outside Workstream A
   entirely.
 

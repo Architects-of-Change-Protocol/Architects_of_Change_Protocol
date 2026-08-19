@@ -1,28 +1,28 @@
-# W007 — AOC Assurance canonical assessment layer
+# W007 — Soberanía Assurance canonical assessment layer
 
-Status: complete. AOC Assurance now has a canonical landing page built on
+Status: complete. Soberanía Assurance now has a canonical landing page built on
 the W005/W006 commercial design system, replacing the dark/emerald page
 that previously occupied `/?view=assurance`. The prior page's content is
 preserved in full and relocated to `/assurance/intelligence-risk`.
 
 ## Canonical Definition
 
-> AOC Assurance evaluates, validates and continuously monitors every
-> Sovereignty Capability defined by AOC Protocol and every Governance
-> Capability operated by AOC Enterprise.
+> Soberanía Assurance evaluates, validates and continuously monitors every
+> Sovereignty Capability defined by Soberanía Protocol and every Governance
+> Capability operated by Soberanía Enterprise.
 
-AOC Assurance is the assessment and monitoring layer for the complete AOC
+Soberanía Assurance is the assessment and monitoring layer for the complete Soberanía
 ecosystem. It measures capability presence, implementation maturity,
 evidence quality, operational effectiveness, architectural gaps,
 remediation progress, capability drift, and continuous posture.
 
 ## Ecosystem Position
 
-- **AOC Protocol** defines sovereignty capabilities for digital assets.
-- **AOC Enterprise** operationalizes governance capabilities.
+- **Soberanía Protocol** defines sovereignty capabilities for digital assets.
+- **Soberanía Enterprise** operationalizes governance capabilities.
 - **Governed Access** packages one specific Enterprise solution for
   governed access to digital assets.
-- **AOC Assurance** evaluates and continuously monitors the complete
+- **Soberanía Assurance** evaluates and continuously monitors the complete
   capability surface across Protocol and Enterprise.
 
 Protocol &rarr; Enterprise &rarr; Governed Access &rarr; Assurance.
@@ -49,12 +49,12 @@ instead of a new one.
 
 ## Intelligence Risk Position
 
-Intelligence Risk is one specialized assessment module inside AOC
+Intelligence Risk is one specialized assessment module inside Soberanía
 Assurance — not a separate top-level Enterprise offering, not a peer of
 Assurance, and not the definition of Assurance. Conceptual hierarchy:
 
 ```
-AOC Enterprise
+Soberanía Enterprise
 └── Assurance
     └── Intelligence Risk
 ```
@@ -128,7 +128,7 @@ accuracy. The Stripe checkout URLs themselves were not touched.
 | 3 | `assurance/CapabilityDomains.tsx` | Domain A (Protocol Sovereignty, 8 families) and Domain B (Enterprise Governance, 20 capabilities) — both rendered from canonical sources. |
 | 4 | `assurance/Methodology.tsx` | 8-stage methodology (`PipelineRail` + detail cards): Capability Inventory → Evidence Collection → Capability Evaluation → Gap Analysis → Recommendations → Roadmap → Implementation Validation → Continuous Monitoring. |
 | 5 | `assurance/CapabilityMaturity.tsx` | The 5-level Capability Maturity Model. |
-| 6 | `assurance/AssessmentOutputs.tsx` | The 12 outputs a customer receives; references AOC SAF v1.0.0 by its existing, already-approved description. |
+| 6 | `assurance/AssessmentOutputs.tsx` | The 12 outputs a customer receives; references Soberanía SAF v1.0.0 by its existing, already-approved description. |
 | 7 | `assurance/IntelligenceRiskModule.tsx` | Intelligence Risk positioned as one nested module, linking out to the full module. |
 | 8 | `assurance/ContinuousAssurance.tsx` | The evolution toward continuous monitoring, each item explicitly classified (Available Today / Current Service / Reference Model / In Development / Future Direction). |
 | 9 | `assurance/EngagementJourney.tsx` | The commercial journey: Technical Assessment → Findings → Prioritized Roadmap → Implementation → Validation → Continuous Assurance. |

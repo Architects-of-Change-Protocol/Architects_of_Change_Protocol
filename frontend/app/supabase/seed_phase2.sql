@@ -1,5 +1,5 @@
 insert into public.tenants (id, tenant_key, display_name)
-values ('00000000-0000-0000-0000-000000000001', 'aoc-enterprise', 'AOC Enterprise')
+values ('00000000-0000-0000-0000-000000000001', 'aoc-enterprise', 'Soberanía Enterprise')
 on conflict (tenant_key) do nothing;
 
 insert into public.campaigns (id, tenant_id, external_ref, name)

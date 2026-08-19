@@ -1,4 +1,4 @@
-# AOC Protocol — Comprehensive Audit Report
+# Soberanía Protocol — Comprehensive Audit Report
 
 **Date:** 2026-02-13
 **Auditor Role:** Senior Staff Protocol Engineer, Security Auditor, Systems Architect
@@ -9,7 +9,7 @@
 
 ## 1. Executive Summary
 
-The Architects of Change Protocol is an **early-stage protocol** with strong specification work and a partially-implemented TypeScript reference library. The specification layer is mature and internally consistent, following RFC 2119 normative language conventions. The implementation layer covers core data objects well, but has a **critical blocker**: the Vault module (`vault/vault.ts`) contains a **truncated file** — the `requestAccess` function is syntactically incomplete (cuts off at line 160 mid-variable declaration), which breaks compilation of the vault and all modules that depend on it.
+The Soberanía Protocol is an **early-stage protocol** with strong specification work and a partially-implemented TypeScript reference library. The specification layer is mature and internally consistent, following RFC 2119 normative language conventions. The implementation layer covers core data objects well, but has a **critical blocker**: the Vault module (`vault/vault.ts`) contains a **truncated file** — the `requestAccess` function is syntactically incomplete (cuts off at line 160 mid-variable declaration), which breaks compilation of the vault and all modules that depend on it.
 
 **Key findings:**
 
@@ -175,7 +175,7 @@ The Architects of Change Protocol is an **early-stage protocol** with strong spe
 | SDL Resolver | Complete | 90% | Low | — | No |
 | Crypto Engine (AES-256-GCM) | Complete | 80% | Medium | P1 | No |
 | Canonicalization | Complete | 85% | Low | — | No |
-| AOC ID Generation | Complete | 85% | Low | — | No |
+| Soberanía ID Generation | Complete | 85% | Low | — | No |
 | Enforcement SEM | Partial | 50% | High | P0 | Yes |
 | **Vault (vault.ts)** | **BROKEN** | **35%** | **Critical** | **P0** | **Yes** |
 | Vault Types | Complete | 95% | Low | — | No |
@@ -446,7 +446,7 @@ Tests:       262 passed, 262 total
 - storage pointer, local FS adapter, adapter contract (storage)
 - SDL parser, SDL validator, SDL contract (SDL)
 - resolver, resolver contract (resolver)
-- crypto engine, AOC ID (utilities)
+- crypto engine, Soberanía ID (utilities)
 
 ---
 

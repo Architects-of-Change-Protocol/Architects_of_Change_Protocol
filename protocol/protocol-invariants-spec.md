@@ -1,4 +1,4 @@
-# AOC Protocol — Protocol Invariants Specification
+# Soberanía Protocol — Protocol Invariants Specification
 
 **Version:** 0.1  
 **Status:** Draft  
@@ -35,7 +35,7 @@
 
 ## 1. Scope
 
-This specification defines **protocol-wide invariants** that MUST hold across AOC objects, wallet vault behavior, adapters, and market-maker integrations.
+This specification defines **protocol-wide invariants** that MUST hold across Soberanía objects, wallet vault behavior, adapters, and market-maker integrations.
 
 It does **not** replace object-level invariant sections inside individual specifications. Instead, it provides a **single registry and cross-object rules** that bind the protocol together.
 

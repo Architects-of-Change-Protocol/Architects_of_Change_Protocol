@@ -1,4 +1,4 @@
-# AOC Sovereign Wallet — Cryptographic Specification
+# Soberanía Sovereign Wallet — Cryptographic Specification
 
 **Version:** 0.1
 **Status:** Draft
@@ -657,11 +657,11 @@ DomainSeparator := H_keccak(
 )
 ```
 
-**AOC Domain Parameters:**
-- name: "AOC Sovereign Wallet"
+**Soberanía Domain Parameters:**
+- name: "Soberanía Sovereign Wallet"
 - version: "1"
 - chainId: 8453 (Base Mainnet) or 84532 (Base Sepolia)
-- verifyingContract: AOC registry contract address
+- verifyingContract: Soberanía registry contract address
 
 #### 7.2.2 Type Hash
 

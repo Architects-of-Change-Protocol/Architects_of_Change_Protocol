@@ -6,17 +6,17 @@
 | Title | Standing Governance |
 | Status | Draft |
 | Category | Core Protocol Extension |
-| Authors | AOC Protocol Architecture Working Group |
+| Authors | Soberanía Protocol Architecture Working Group |
 | Created | 2026-06-03 |
 | Last Updated | 2026-06-03 |
 | Supersedes | — |
-| Related | RFC-004 Evidence Layer v1.0, RFC-005 AOC Claims Framework, RFC-005-H1 Standing Traceability, RFC-005-H2 Standing Engine, RFC-005-H4 Capability Mapping |
+| Related | RFC-004 Evidence Layer v1.0, RFC-005 Soberanía Claims Framework, RFC-005-H1 Standing Traceability, RFC-005-H2 Standing Engine, RFC-005-H4 Capability Mapping |
 
 ---
 
 ## Abstract
 
-This document defines Standing Governance for the AOC Protocol. Standing Governance establishes the legitimate authority structure responsible for defining, maintaining, reviewing, approving, challenging, and constraining all standing-related protocol rules. It extends RFC-004, RFC-005, RFC-005-H1, RFC-005-H2, and RFC-005-H4 by specifying who governs the rules that govern standing — and under what recognition, scope, policy, and constraint that governance is itself valid.
+This document defines Standing Governance for the Soberanía Protocol. Standing Governance establishes the legitimate authority structure responsible for defining, maintaining, reviewing, approving, challenging, and constraining all standing-related protocol rules. It extends RFC-004, RFC-005, RFC-005-H1, RFC-005-H2, and RFC-005-H4 by specifying who governs the rules that govern standing — and under what recognition, scope, policy, and constraint that governance is itself valid.
 
 Standing Governance does not define a product, database, user interface, runtime, or implementation-specific governance tool. It defines the constitutional authority model that any conformant governance implementation must respect.
 
@@ -55,9 +55,9 @@ Standing Governance does not define a product, database, user interface, runtime
 
 ### What is Standing Governance
 
-Standing Governance is the authority structure responsible for defining and maintaining the trust rules by which standing is produced, evaluated, and consumed across the AOC Protocol.
+Standing Governance is the authority structure responsible for defining and maintaining the trust rules by which standing is produced, evaluated, and consumed across the Soberanía Protocol.
 
-The AOC constitutional chain is:
+The Soberanía constitutional chain is:
 
 ```text
 Evidence
@@ -101,7 +101,7 @@ Standing Governance controls:
 
 The most important concept introduced by this RFC is **Recognized Authority**.
 
-Governance in AOC MUST NOT depend on administrative authority — the power to act because one has system access, organizational seniority, or vendor control. Governance MUST depend on Recognized Authority — the power to act because governance structures have formally recognized that authority as legitimate, scoped, and bounded.
+Governance in Soberanía MUST NOT depend on administrative authority — the power to act because one has system access, organizational seniority, or vendor control. Governance MUST depend on Recognized Authority — the power to act because governance structures have formally recognized that authority as legitimate, scoped, and bounded.
 
 This distinction is fundamental and constitutional. An administrator who edits a standing policy without Recognized Authority is not exercising governance. An actor who invokes governance powers without recognition is not a governance participant. The protocol MUST NOT treat administrative capability as governance legitimacy.
 
@@ -262,7 +262,7 @@ The following authority types are canonical. Implementations MAY extend this lis
 
 A Protocol Authority is recognized to govern protocol-wide standing rules. Protocol Authorities have the broadest scope and the most stringent recognition requirements. A Protocol Authority MAY define canonical standing types, canonical capability types, protocol-level algorithm versioning requirements, and the recognition criteria used to confer other authority types.
 
-A Protocol Authority MUST be recognized by the AOC Protocol Governance Body or its delegated successor. The existence of multiple Protocol Authorities for the same domain MUST be explicitly addressed by protocol governance to prevent conflicting canonical definitions.
+A Protocol Authority MUST be recognized by the Soberanía Protocol Governance Body or its delegated successor. The existence of multiple Protocol Authorities for the same domain MUST be explicitly addressed by protocol governance to prevent conflicting canonical definitions.
 
 #### Domain Authority
 
@@ -278,7 +278,7 @@ An Organizational Authority MAY define standing policies, capability policies, c
 
 #### Regulatory Authority
 
-A Regulatory Authority is recognized to govern standing rules within the scope of a regulatory mandate. Regulatory Authorities derive their governance legitimacy from applicable legal frameworks, regulatory charters, or jurisdictional recognition. Their authority within the AOC Protocol is bounded by the intersection of their regulatory mandate and the scope of AOC governance recognition they hold.
+A Regulatory Authority is recognized to govern standing rules within the scope of a regulatory mandate. Regulatory Authorities derive their governance legitimacy from applicable legal frameworks, regulatory charters, or jurisdictional recognition. Their authority within the Soberanía Protocol is bounded by the intersection of their regulatory mandate and the scope of Soberanía governance recognition they hold.
 
 A Regulatory Authority MAY define eligibility rules, required evidence types, required verification standards, and revocation triggers within its regulatory domain. A Regulatory Authority SHOULD be formally recognized by Protocol Authority or by applicable governance agreements to ensure that its governance rules are incorporated consistently into the protocol.
 
@@ -296,7 +296,7 @@ A Delegated Authority MAY exercise only those governance powers that were explic
 
 Authority does not exist because it is claimed. Authority exists because it is recognized.
 
-This principle distinguishes the AOC Protocol from systems where power is determined by technical access, organizational hierarchy, or market position. In AOC governance, recognition is the source of legitimate authority. An actor that controls a system but has not been recognized as a governance authority does not hold governance authority over the protocol rules that system implements.
+This principle distinguishes the Soberanía Protocol from systems where power is determined by technical access, organizational hierarchy, or market position. In Soberanía governance, recognition is the source of legitimate authority. An actor that controls a system but has not been recognized as a governance authority does not hold governance authority over the protocol rules that system implements.
 
 ### 7.2 Recognition defined
 
@@ -327,7 +327,7 @@ Domain Authority (scope: employment standing algorithms)
 Delegated Authority (scope: employment standing threshold review)
 ```
 
-A recognition chain that cannot be traced to a foundational recognized body is not a valid governance chain. The foundational recognition is the recognition of the Protocol Governance Body itself, which is established by the AOC Protocol charter process.
+A recognition chain that cannot be traced to a foundational recognized body is not a valid governance chain. The foundational recognition is the recognition of the Protocol Governance Body itself, which is established by the Soberanía Protocol charter process.
 
 ### 7.4 Failure to recognize is not neutral
 
@@ -1023,7 +1023,7 @@ This section introduces canonical governance concepts for implementation. This R
 | Concept | Definition |
 |---|---|
 | GovernanceAuthority | A protocol-recognized entity that holds recognized authority to govern standing-related protocol objects within a defined scope. |
-| RecognizedAuthority | The property of holding governance recognition from a valid recognition chain; the central basis of legitimate governance in AOC. |
+| RecognizedAuthority | The property of holding governance recognition from a valid recognition chain; the central basis of legitimate governance in Soberanía. |
 | GovernanceRole | A defined governance function (Policy Author, Algorithm Reviewer, Challenge Reviewer, etc.) conferred by a recognized governance body. |
 | GovernanceAction | Any act of governance — policy approval, algorithm registration, standing type retirement, challenge resolution — that produces a governance record. |
 | GovernanceReview | A formal evaluation of a governance object by a recognized reviewer or governance body, producing a reviewable, challengeable outcome. |
@@ -1115,11 +1115,11 @@ A complete implementation or document alignment for RFC-005-H3 satisfies the fol
 
 ## Conclusion
 
-RFC-005-H3 establishes the constitutional authority structure for governance of the AOC standing, capability, and authority chain. Every layer of that chain — evidence, assertions, claims, attestations, verification, standing, capabilities, authorities, and decisions — operates under rules. This RFC governs who may define those rules, how they acquire legitimacy, how they may be challenged, and how they must be constrained.
+RFC-005-H3 establishes the constitutional authority structure for governance of the Soberanía standing, capability, and authority chain. Every layer of that chain — evidence, assertions, claims, attestations, verification, standing, capabilities, authorities, and decisions — operates under rules. This RFC governs who may define those rules, how they acquire legitimacy, how they may be challenged, and how they must be constrained.
 
 The central contribution of this RFC is the concept of **Recognized Authority**.
 
-Governance in AOC is not the exercise of administrative power. It is not the action of whoever controls a system. It is not the preference of whoever owns a product. Governance is the exercise of authority that has been formally recognized by a governance chain traceable to the AOC Protocol's foundational governance process.
+Governance in Soberanía is not the exercise of administrative power. It is not the action of whoever controls a system. It is not the preference of whoever owns a product. Governance is the exercise of authority that has been formally recognized by a governance chain traceable to the Soberanía Protocol's foundational governance process.
 
 This distinction protects the protocol against administrative capture, opaque rule-making, ungoverned algorithm changes, and authority structures that are legitimate in appearance but arbitrary in fact. When a standing algorithm changes, governance must have authorized that change. When a capability policy expands, governance must have approved that expansion. When an authority is recognized, governance must have conferred that recognition.
 

@@ -6,7 +6,7 @@
 | Title | Decision Framework |
 | Status | Draft |
 | Category | Core Protocol Extension |
-| Authors | AOC Protocol Architecture Working Group |
+| Authors | Soberanía Protocol Architecture Working Group |
 | Created | 2026-06-07 |
 | Last Updated | 2026-06-07 |
 | Supersedes | RFC-005-H9 (prior draft) |
@@ -51,7 +51,7 @@
 
 ### 1.1 Purpose
 
-RFC-005-H9 establishes the Decision Framework as the constitutional layer that defines what a decision is, how it is born, how it is validated, how it is executed, how it is challenged, how it is revoked, how it is superseded, how it is reconstructed, how it is audited, and how it is preserved within the AOC Protocol.
+RFC-005-H9 establishes the Decision Framework as the constitutional layer that defines what a decision is, how it is born, how it is validated, how it is executed, how it is challenged, how it is revoked, how it is superseded, how it is reconstructed, how it is audited, and how it is preserved within the Soberanía Protocol.
 
 A decision is not an action. A decision is not an event. A decision is not an opinion. A decision is not a vote. A decision is not an instruction. A decision is not a recommendation. A decision is not a permission. A decision is not execution.
 
@@ -120,7 +120,7 @@ Decision is the bridge between Authority and Governance. It is the act by which 
 
 ## 2. Constitutional Alignment
 
-Every decision in the AOC Protocol must satisfy twelve constitutional principles. The following matrix defines each principle, the mechanism by which the Decision Framework satisfies it, and the consequence of violation.
+Every decision in the Soberanía Protocol must satisfy twelve constitutional principles. The following matrix defines each principle, the mechanism by which the Decision Framework satisfies it, and the consequence of violation.
 
 ### 2.1 Constitutional Alignment Matrix
 
@@ -2241,7 +2241,7 @@ The following questions are identified as requiring future resolution. They are 
 When two recognized decisions with overlapping scope are produced simultaneously (within the same governance cycle), which takes precedence? The protocol requires a tie-breaking rule. None is defined here.
 
 **OQ-002: Cross-Protocol Decision Recognition**
-When the AOC Protocol interoperates with external systems that produce their own decisions, how does the AOC Protocol evaluate whether to recognize those external decisions? The constitutional criteria for external decision recognition require a future RFC.
+When the Soberanía Protocol interoperates with external systems that produce their own decisions, how does the Soberanía Protocol evaluate whether to recognize those external decisions? The constitutional criteria for external decision recognition require a future RFC.
 
 **OQ-003: Decision Quantification Limits**
 Should there be constitutional limits on the number of decisions a single authority may produce within a time period? High-volume decision production may be a form of authority abuse or governance evasion. This requires further analysis.
@@ -2277,7 +2277,7 @@ When an organizational unit inherits authority from a parent unit, do recognized
 
 ## Conclusion
 
-RFC-005-H9 establishes the Decision Framework as the constitutional bridge between Authority and Governance in the AOC Protocol. It defines, with constitutional precision, what a decision is and what it is not, how it is born, validated, recognized, executed, challenged, revoked, superseded, reconstructed, audited, and preserved.
+RFC-005-H9 establishes the Decision Framework as the constitutional bridge between Authority and Governance in the Soberanía Protocol. It defines, with constitutional precision, what a decision is and what it is not, how it is born, validated, recognized, executed, challenged, revoked, superseded, reconstructed, audited, and preserved.
 
 The central constitutional claim of this RFC:
 

@@ -20,7 +20,7 @@ export function CtaSection() {
         </p>
 
         <a
-          href={mailto('AOC Enterprise — Technical Assessment Request')}
+          href={mailto('Soberanía Enterprise — Technical Assessment Request')}
           className="mt-10 inline-flex items-center gap-2.5 rounded-full bg-indigo-600 px-8 py-4 text-sm font-bold text-white shadow-[0_8px_24px_rgba(15,23,42,0.08)] transition-transform hover:-translate-y-0.5 hover:bg-indigo-500"
         >
           Request a Technical Assessment
@@ -30,11 +30,11 @@ export function CtaSection() {
         </a>
 
         <div className="mt-6 text-sm">
-          <a href={mailto('AOC Enterprise — Live Demo Request')} className="text-indigo-300 hover:text-indigo-200">
+          <a href={mailto('Soberanía Enterprise — Live Demo Request')} className="text-indigo-300 hover:text-indigo-200">
             Request a Live Demo
           </a>
           <span className="mx-4 text-slate-600">·</span>
-          <a href={mailto('AOC Enterprise — Architecture Review Request')} className="text-indigo-300 hover:text-indigo-200">
+          <a href={mailto('Soberanía Enterprise — Architecture Review Request')} className="text-indigo-300 hover:text-indigo-200">
             Request an Architecture Review
           </a>
         </div>

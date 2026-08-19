@@ -3,12 +3,12 @@
 | Field | Value |
 |---|---|
 | Status | Accepted |
-| Decision owner | Founder / AOC Architecture Authority |
-| Scope | AOC Protocol, AOC Enterprise, AOC Assurance and consuming products such as PMFreak |
+| Decision owner | Founder / Soberanía Architecture Authority |
+| Scope | Soberanía Protocol, Soberanía Enterprise, Soberanía Assurance and consuming products such as PMFreak |
 
 ## Context
 
-AOC requires a clear separation between:
+Soberanía requires a clear separation between:
 
 - sovereign identity;
 - authentication;
@@ -33,9 +33,9 @@ The architecture must preserve the ability to:
 
 ## Decision
 
-### 1. AOC Protocol Core is the canonical authority for agent identity
+### 1. Soberanía Protocol Core is the canonical authority for agent identity
 
-AOC Protocol Core owns the canonical semantics and contracts for:
+Soberanía Protocol Core owns the canonical semantics and contracts for:
 
 - Agent ID.
 - Agent identity.
@@ -58,8 +58,8 @@ AOC Protocol Core owns the canonical semantics and contracts for:
 - Evidence records.
 - Verification rules.
 
-AOC Protocol Core must support local, self-hosted and self-sovereign use without requiring a commercial
-AOC subscription.
+Soberanía Protocol Core must support local, self-hosted and self-sovereign use without requiring a commercial
+Soberanía subscription.
 
 ### 2. Agent ID is stable; passports are versioned
 
@@ -107,7 +107,7 @@ A passport does not automatically mean:
 - the agent is incident-free;
 - the agent is permitted to execute material actions.
 
-No interface may use a single ambiguous badge such as `AOC Verified` without indicating what exactly was
+No interface may use a single ambiguous badge such as `Soberanía Verified` without indicating what exactly was
 verified. UI and APIs must distinguish:
 
 - Identity verified.
@@ -121,7 +121,7 @@ verified. UI and APIs must distinguish:
 
 ### 4. Self-issued passports are allowed
 
-AOC Protocol Core may support self-issued passports. Self-issued passports must be clearly identified:
+Soberanía Protocol Core may support self-issued passports. Self-issued passports must be clearly identified:
 
 ```text
 Issuer type: Self
@@ -185,9 +185,9 @@ Passports must be bound, as applicable, to:
 
 A passport must not function as a reusable bearer document.
 
-### 7. AOC Enterprise manages the organizational lifecycle
+### 7. Soberanía Enterprise manages the organizational lifecycle
 
-AOC Enterprise does not create a competing identity system. AOC Enterprise owns:
+Soberanía Enterprise does not create a competing identity system. Soberanía Enterprise owns:
 
 - product consumer registration;
 - enterprise tenant registration;
@@ -210,11 +210,11 @@ AOC Enterprise does not create a competing identity system. AOC Enterprise owns:
 - support operations;
 - credential rotation.
 
-AOC Enterprise stores references to canonical Protocol identities and passports.
+Soberanía Enterprise stores references to canonical Protocol identities and passports.
 
-### 8. AOC Assurance evaluates trust
+### 8. Soberanía Assurance evaluates trust
 
-AOC Assurance owns:
+Soberanía Assurance owns:
 
 - assurance profiles;
 - evidence evaluation;
@@ -282,24 +282,24 @@ Recognition Runtime may be retained only if re-scoped to a distinct PMFreak capa
 - product-specific contribution scoring;
 - historical performance signals.
 
-Any retained recognition score must reference the canonical AOC Agent ID. Recognition must not imply
+Any retained recognition score must reference the canonical Soberanía Agent ID. Recognition must not imply
 verification or assurance.
 
 ### 11. Domain Policy Pack Runtime is not a parallel protocol
 
 Domain Policy Pack Runtime may provide product or domain-specific policy bundles. It must not:
 
-- present itself as AOC Core Protocol;
+- present itself as Soberanía Protocol Core Protocol;
 - create identity;
 - issue passports;
 - own revocation;
 - create a parallel trust authority.
 
-Its policies must be expressed through or adapted to the canonical AOC policy model.
+Its policies must be expressed through or adapted to the canonical Soberanía policy model.
 
 ### 12. Revocation is canonical and fail-closed
 
-AOC Protocol is the canonical authority for passport and identity revocation. For material operations:
+Soberanía Protocol is the canonical authority for passport and identity revocation. For material operations:
 
 - revoked means block;
 - unknown means block;
@@ -334,9 +334,9 @@ The following operations must never be rejected solely because the tenant has in
 Consumption may be recorded and billed later. Security containment has priority over commercial
 enforcement.
 
-### 14. AOC Protocol Core remains open
+### 14. Soberanía Protocol Core remains open
 
-AOC does not charge for the sovereign right to:
+Soberanía does not charge for the sovereign right to:
 
 - implement the standard;
 - generate an identity locally;
@@ -349,7 +349,7 @@ AOC does not charge for the sovereign right to:
 
 ### 15. Managed operations are commercial
 
-AOC may charge for:
+Soberanía may charge for:
 
 - hosted identity registry;
 - managed passport issuance;
@@ -368,17 +368,17 @@ AOC may charge for:
 
 ### 16. Enterprise and Assurance are commercial
 
-AOC Enterprise may charge for organizational management. AOC Assurance may charge for evaluation,
+Soberanía Enterprise may charge for organizational management. Soberanía Assurance may charge for evaluation,
 monitoring, reporting and independent review.
 
-The commercial principle is: **AOC does not charge for sovereignty. AOC charges for operating, governing
+The commercial principle is: **Soberanía does not charge for sovereignty. Soberanía charges for operating, governing
 and assuring sovereignty at scale.**
 
 ## Consequences
 
 ### Positive
 
-- Preserves the philosophical foundation of AOC.
+- Preserves the philosophical foundation of Soberanía.
 - Prevents identity lock-in.
 - Allows self-hosting.
 - Creates a credible commercial managed-service model.
@@ -400,7 +400,7 @@ and assuring sovereignty at scale.**
 
 ### Migration constraints
 
-- Existing AOC primitives must be inventoried before extraction.
+- Existing Soberanía primitives must be inventoried before extraction.
 - Existing Agent ID and passport-like records must not be duplicated.
 - Recognition Runtime cannot be migrated as canonical identity.
 - Legacy IDs require a mapping strategy.

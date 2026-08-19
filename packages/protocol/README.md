@@ -1,13 +1,13 @@
-# AOC Protocol
+# Soberanía Protocol
 
-`@aoc/protocol` is the versioned, public contract layer of the Architects of Change Protocol architecture:
+`@aoc/protocol` is the versioned, public contract layer of the Soberanía Protocol architecture:
 
 ```text
-AOC Protocol        (this package — versioned public contracts)
+Soberanía Protocol    (this package — versioned public contracts)
     ↓
-AOC Enterprise      (proprietary implementation and runtime)
+Soberanía Enterprise  (proprietary implementation and runtime)
     ↓
-PMFreak             (commercial vertical product)
+PMFreak               (commercial vertical product)
 ```
 
 ## What it is
@@ -31,7 +31,7 @@ Everything here is implementation-neutral: shapes, references, and adapter inter
 
 `@aoc/protocol` is **not**:
 
-- AOC Enterprise (the proprietary runtime/persistence/orchestration implementation);
+- Soberanía Enterprise (the proprietary runtime/persistence/orchestration implementation);
 - PMFreak (the commercial vertical product built on top of Enterprise);
 - a hosted service, API, or network client;
 - a persistence layer, database, or storage adapter;
@@ -141,7 +141,7 @@ supported and are verified to fail to resolve (see `scripts/assert-invalid-impor
 
 ## Protocol–Enterprise boundary
 
-AOC Protocol owns semantic shapes, references, and adapter interfaces only. It never imports
+Soberanía Protocol owns semantic shapes, references, and adapter interfaces only. It never imports
 Enterprise, PMFreak, persistence, transport, or observability implementations. See
 [`docs/architecture/protocol-enterprise-separation-report.md`](../../docs/architecture/protocol-enterprise-separation-report.md)
 and [`docs/architecture/protocol-runtime-dependency-report.md`](../../docs/architecture/protocol-runtime-dependency-report.md)

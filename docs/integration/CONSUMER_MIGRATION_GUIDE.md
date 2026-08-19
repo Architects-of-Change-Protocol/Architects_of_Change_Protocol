@@ -1,6 +1,6 @@
 # Consumer Migration Guide: Adopting `@aoc/protocol`
 
-This document explains how AOC Enterprise and PMFreak should eventually consume `@aoc/protocol` as a
+This document explains how Soberanía Enterprise and PMFreak should eventually consume `@aoc/protocol` as a
 versioned package. **No migration is performed by this document or by the sprint that introduced it.**
 Neither `enterprise/` nor any PMFreak repository is modified here.
 
@@ -18,7 +18,7 @@ Neither `enterprise/` nor any PMFreak repository is modified here.
   repo-wide by `scripts/check-version-graph.mjs`, which rejects the `workspace:` protocol for any
   dependency.
 
-## AOC Enterprise
+## Soberanía Enterprise
 
 **From** (target state to migrate away from, once Enterprise starts depending on Protocol at all):
 

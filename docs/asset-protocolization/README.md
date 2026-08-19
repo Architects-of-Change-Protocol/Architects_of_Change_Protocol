@@ -1,17 +1,17 @@
 # Asset Protocolization Vertical (Workstream A)
 
-A vertical built **on** AOC Protocol that turns an asset — a file, a recording, a physical
-work, a plot of land — into a verifiable AOC record backed by declarations, evidence,
+A vertical built **on** Soberanía Protocol that turns an asset — a file, a recording, a physical
+work, a plot of land — into a verifiable Soberanía record backed by declarations, evidence,
 automated checks and, where the asset class requires it, a professional or notarial
 attestation.
 
-> **Asset Protocolization is a vertical built on AOC Protocol. It is not AOC Protocol
-> itself, it is not AOC Enterprise, and it does not tokenize.**
+> **Asset Protocolization is a vertical built on Soberanía Protocol. It is not Soberanía Protocol
+> itself, it is not Soberanía Enterprise, and it does not tokenize.**
 
 ## Layer map
 
 ```text
-AOC PROTOCOL            subject identity, integrity, canonical signed record,
+SOBERANÍA PROTOCOL      subject identity, integrity, canonical signed record,
                         evidence/claim/attestation/verification/standing vocabulary,
                         registry & credential references, canonicalization,
                         capability invocation + evidence, portability, adapter ports
@@ -22,7 +22,7 @@ VERTICAL                declaration capture, verification pipeline, professional
                         attestation workflow, protocolization, fee assessment
                         —— knows what a house and a WAV file are; governs nothing
 
-AOC ENTERPRISE          authority, policy, approvals, decisions, obligations,
+SOBERANÍA ENTERPRISE    authority, policy, approvals, decisions, obligations,
                         grants, enforcement, revocation, usage evidence
                         —— governs actions; registers nothing legally
 
@@ -52,7 +52,7 @@ convention (`docs/architecture/adr-*.md`).
 GATE A0 = RATIFIED
 ```
 
-Ratified by the Founder / AOC Architecture Authority as the precondition for APV-03. The
+Ratified by the Founder / Soberanía Architecture Authority as the precondition for APV-03. The
 boundary frozen by APV-01 and APV-02 is unchanged:
 
 ```text
@@ -115,7 +115,7 @@ events that a separate subsystem can bill from; the architecture must not forecl
 ### `U-6` — Case persistence ownership
 
 **Decision.** Persistence for `ProtocolizationCase` and every other vertical workflow
-aggregate belongs to the vertical. No vertical workflow persistence port is placed in AOC
+aggregate belongs to the vertical. No vertical workflow persistence port is placed in Soberanía
 Protocol. Protocol remains substrate and never learns the case exists.
 
 APV-04 discharges this: `ProtocolizationCaseRepository` is declared in
@@ -149,6 +149,6 @@ store or upload infrastructure. See
 
 ## Workstream B
 
-Tokenization governance (`TOKENIZE` as an AOC Enterprise capability) begins only after
+Tokenization governance (`TOKENIZE` as a Soberanía Enterprise capability) begins only after
 GATE A4. It is deliberately not started, and no tokenization concept appears anywhere in
 this workstream.

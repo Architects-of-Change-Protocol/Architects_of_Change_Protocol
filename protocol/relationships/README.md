@@ -6,7 +6,7 @@ Relationships are durable protocol objects that express *who can interact with w
 
 ## Relationship vs follows/subscriptions
 
-A follow/subscription is a product interaction signal. A relationship in AOC is a governance and authorization primitive:
+A follow/subscription is a product interaction signal. A relationship in Soberanía is a governance and authorization primitive:
 
 - explicit lifecycle state
 - policy binding surface

@@ -1,4 +1,4 @@
-// Top-level "About" page for the AOC ecosystem as a whole — distinct from
+// Top-level "About" page for the Soberanía ecosystem as a whole — distinct from
 // the Assurance-specific About page in AssuranceSupportPages.tsx. Its job
 // is to make the Protocol -> Enterprise -> Solutions/Services hierarchy
 // legible in one page, since that hierarchy is otherwise only implied by
@@ -8,12 +8,12 @@ export const renderAboutPage = () => {
     <main className="min-h-screen bg-[#0a0a0a] text-white font-sans">
       <section className="border-b border-white/10">
         <div className="mx-auto max-w-6xl px-6 py-20 md:py-24">
-          <p className="text-[11px] uppercase tracking-[0.24em] text-cyan-300/70">About AOC</p>
+          <p className="text-[11px] uppercase tracking-[0.24em] text-cyan-300/70">About Soberanía</p>
           <h1 className="mt-4 text-5xl font-semibold tracking-tight md:text-6xl">
             One foundation. One commercial umbrella.
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-white/65">
-            AOC Protocol defines the open foundation. AOC Enterprise commercializes it, offering
+            Soberanía Protocol defines the open foundation. Soberanía Enterprise commercializes it, offering
             Solutions and Services built on top of that foundation.
           </p>
         </div>
@@ -23,26 +23,26 @@ export const renderAboutPage = () => {
         <div className="mx-auto max-w-6xl px-6 py-16">
           <div className="grid gap-5 md:grid-cols-3 items-stretch">
             <article className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-              <p className="text-sm font-semibold text-cyan-200">AOC Protocol</p>
+              <p className="text-sm font-semibold text-cyan-200">Soberanía Protocol</p>
               <p className="mt-3 text-sm leading-7 text-white/65">
                 The open foundation: canonical contracts, interoperability, references, integrity,
                 capabilities, and standards. Protocol is not a commercial product or a single
                 implementation — it is the open architecture everything else is built on.
               </p>
               <a href="/" className="mt-5 inline-block text-sm font-semibold text-cyan-300 hover:text-cyan-200 transition-colors">
-                Explore AOC Protocol &rarr;
+                Explore Soberanía Protocol &rarr;
               </a>
             </article>
 
             <article className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-              <p className="text-sm font-semibold text-cyan-200">AOC Enterprise</p>
+              <p className="text-sm font-semibold text-cyan-200">Soberanía Enterprise</p>
               <p className="mt-3 text-sm leading-7 text-white/65">
-                The commercial implementation of AOC Protocol. Enterprise is the umbrella under
+                The commercial implementation of Soberanía Protocol. Enterprise is the umbrella under
                 which Solutions and Services are offered to organizations composing an
                 architecture on top of the protocol.
               </p>
               <a href="/?view=enterprise" className="mt-5 inline-block text-sm font-semibold text-cyan-300 hover:text-cyan-200 transition-colors">
-                Explore AOC Enterprise &rarr;
+                Explore Soberanía Enterprise &rarr;
               </a>
             </article>
 
@@ -71,10 +71,10 @@ export const renderAboutPage = () => {
           <h2 className="text-3xl font-semibold tracking-tight">How it fits together</h2>
           <div className="mt-8 flex flex-col gap-3 font-mono text-sm">
             <div className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-white/80">
-              AOC Protocol <span className="text-white/35">— open foundation</span>
+              Soberanía Protocol <span className="text-white/35">— open foundation</span>
             </div>
             <div className="ml-6 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-white/80">
-              &darr; AOC Enterprise <span className="text-white/35">— commercial umbrella</span>
+              &darr; Soberanía Enterprise <span className="text-white/35">— commercial umbrella</span>
             </div>
             <div className="ml-12 flex flex-col gap-3 sm:flex-row">
               <div className="flex-1 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-4 text-white/70">

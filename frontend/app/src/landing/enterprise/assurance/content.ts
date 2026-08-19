@@ -1,9 +1,9 @@
-// Content model for the canonical AOC Assurance landing page (W007).
+// Content model for the canonical Soberanía Assurance landing page (W007).
 //
-// Canonical definition: AOC Assurance evaluates, validates and continuously
-// monitors every Sovereignty Capability defined by AOC Protocol and every
-// Governance Capability operated by AOC Enterprise. It is the assessment
-// and monitoring layer for the complete AOC ecosystem — not a peer
+// Canonical definition: Soberanía Assurance evaluates, validates and continuously
+// monitors every Sovereignty Capability defined by Soberanía Protocol and every
+// Governance Capability operated by Soberanía Enterprise. It is the assessment
+// and monitoring layer for the complete Soberanía ecosystem — not a peer
 // platform, and not merely another Enterprise capability.
 //
 // Capability domains below are intentionally NOT hand-duplicated lists —
@@ -80,7 +80,7 @@ export const METHODOLOGY_STAGES: MethodologyStage[] = [
     label: 'Capability Evaluation',
     purpose: 'Determine how well each capability is actually implemented, not merely whether it exists.',
     customerInput: 'Clarification and context where evidence is ambiguous or incomplete.',
-    aocActivity: 'Score each capability against the AOC Capability Maturity Model (see below).',
+    aocActivity: 'Score each capability against the Soberanía Capability Maturity Model (see below).',
     output: 'A maturity rating per capability, grounded in evidence.',
   },
   {

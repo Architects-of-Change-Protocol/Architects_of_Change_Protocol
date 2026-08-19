@@ -5,10 +5,10 @@ either page (see "What remains temporary" below).
 
 ## Why
 
-The AOC Protocol landing page (`src/landing/AocLandingPage.tsx`) carried a
+The Soberanía Protocol landing page (`src/landing/AocLandingPage.tsx`) carried a
 large amount of governance and operational-control commercial messaging
 (access enforcement, consent workflows, permission evaluation, audit) that
-conceptually belongs to AOC Enterprise, the commercial umbrella that
+conceptually belongs to Soberanía Enterprise, the commercial umbrella that
 operationalizes governance on top of the open protocol. This PR corrects
 that ownership before Protocol is rewritten around digital-asset
 sovereignty and Enterprise is rewritten around its final commercial
@@ -28,7 +28,7 @@ From `AocLandingPage.tsx` into `EnterprisePage.tsx`:
 | `#problem` — "The current model is broken" (4 problem cards + animations) | `enterprise/GovernanceGap.tsx` (new), rendered after Hero | Copy and animations reused verbatim; wrapper restyled to Enterprise's `SectionHeader`/`FlowRail` chrome instead of Protocol's large centered headline treatment. |
 | `#solution` — "What if access required permission?" (4 capability cards) | `enterprise/GovernanceEmerges.tsx` (expanded) | Card copy unchanged; card chrome restyled from `rounded-3xl bg-white/[0.03]` to Enterprise's `rounded-2xl bg-white/[0.02]` card idiom. |
 | `#how` — "How it works" (3-step permission/evaluate/grant pipeline) | `enterprise/GovernanceEmerges.tsx` (expanded) | Step copy unchanged. The large `HowItWorksFlow` animated diagram was **not** carried over — it visually duplicated the flow already shown in the infrastructure diagram below, so it was dropped rather than migrated to avoid two near-identical diagrams on one page ("no duplicated visual message", Phase 10). The now-unused `HowItWorksFlow.tsx` component was deleted. |
-| `AocInfrastructureAnimated` (control-plane / decision-flow diagram) | `enterprise/GovernanceEmerges.tsx` (expanded) | Reused as-is except its closing brand card, which read "AOC PROTOCOL" / "governed data access" — corrected to "AOC ENTERPRISE" / "governed access to digital assets" now that it lives on the Enterprise page (see digital-asset terminology below). |
+| `AocInfrastructureAnimated` (control-plane / decision-flow diagram) | `enterprise/GovernanceEmerges.tsx` (expanded) | Reused as-is except its closing brand card, which read "SOBERANÍA PROTOCOL" / "governed data access" — corrected to "SOBERANÍA ENTERPRISE" / "governed access to digital assets" now that it lives on the Enterprise page (see digital-asset terminology below). |
 
 New, small composition-only addition: `enterprise/SolutionsAndServices.tsx`,
 giving Governed Access (Solution) and Assurance (Service) a body-level

@@ -1,4 +1,4 @@
-# AOC Canonical Runtime Contracts (v1)
+# Soberanía Canonical Runtime Contracts (v1)
 
 ## Design principles
 - Implementation-neutral and strongly typed contracts.

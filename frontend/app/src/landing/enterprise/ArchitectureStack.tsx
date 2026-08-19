@@ -36,12 +36,12 @@ export function ArchitectureStack() {
       />
 
       <div className="rounded-xl bg-slate-100 px-6 py-5">
-        <p className="text-sm font-extrabold tracking-[0.05em] text-slate-500">AOC PROTOCOL</p>
+        <p className="text-sm font-extrabold tracking-[0.05em] text-slate-500">SOBERANÍA PROTOCOL</p>
         <p className="mt-2 text-[12.5px] text-slate-500">identity · consent · capability tokens · audit envelopes</p>
       </div>
       <ArrowDown />
       <div className="rounded-xl bg-indigo-600 px-6 py-5 shadow-[0_8px_24px_rgba(15,23,42,0.08)]">
-        <p className="text-sm font-extrabold tracking-[0.05em] text-white">AOC ENTERPRISE</p>
+        <p className="text-sm font-extrabold tracking-[0.05em] text-white">SOBERANÍA ENTERPRISE</p>
         <p className="mt-2 text-[12.5px] text-indigo-200">
           Decision · Obligation · Grant · Revocation · Usage · Evidence — cannot hold a credential or SDK type
         </p>

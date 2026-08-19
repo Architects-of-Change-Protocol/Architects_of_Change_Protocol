@@ -14,16 +14,16 @@ import { EngagementJourney } from './assurance/EngagementJourney';
 import { Cta } from './assurance/Cta';
 import { useAssurancePageMeta } from './assurance/useAssurancePageMeta';
 
-// AOC Assurance is AOC Enterprise's first commercial Service (see
+// Soberanía Assurance is Soberanía Enterprise's first commercial Service (see
 // ./SolutionsAndServices.tsx / ../routes.ts). This is its canonical
 // landing — W007 — built on the same W005/W006 commercial design system as
 // ./EnterprisePage.tsx and ./GovernedAccessPage.tsx (light-primary, dark
 // hero/CTA bookends, indigo accent).
 //
-// Canonical definition: AOC Assurance evaluates, validates and
+// Canonical definition: Soberanía Assurance evaluates, validates and
 // continuously monitors every Sovereignty Capability defined by AOC
-// Protocol and every Governance Capability operated by AOC Enterprise. It
-// is the assessment and monitoring layer for the complete AOC ecosystem —
+// Protocol and every Governance Capability operated by Soberanía Enterprise. It
+// is the assessment and monitoring layer for the complete Soberanía ecosystem —
 // not a peer platform, and not merely another Enterprise capability.
 // Governed Access is one Enterprise Solution Assurance can evaluate;
 // Intelligence Risk (./assurance/IntelligenceRiskModule.tsx) is one

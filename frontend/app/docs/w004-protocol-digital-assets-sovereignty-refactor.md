@@ -1,4 +1,4 @@
-# W004 — AOC Protocol digital-assets & sovereignty refactor
+# W004 — Soberanía Protocol digital-assets & sovereignty refactor
 
 Status: Protocol's landing page (`src/landing/AocLandingPage.tsx`) is rebuilt
 around its own thesis. This is the "Protocol Step 2" rewrite that W003 called
@@ -6,10 +6,10 @@ out as a follow-up.
 
 ## New Protocol thesis
 
-AOC Protocol defines the language and capabilities of sovereign digital
+Soberanía Protocol defines the language and capabilities of sovereign digital
 assets: identity, integrity, provenance, capabilities, and the
 sovereignty-related properties that let an asset's meaning survive outside
-the platform that created it. AOC Enterprise operationalizes governance on
+the platform that created it. Soberanía Enterprise operationalizes governance on
 top of those capabilities — access decisions, obligations, grants,
 revocation, evidence, and Assurance. Protocol describes; Enterprise decides,
 executes, observes, and audits.
@@ -32,7 +32,7 @@ The rebuilt page owns, and only owns:
 
 Nothing governance-heavy was moved back into Protocol. Access enforcement,
 consent workflows, permission evaluation, audit operations, and the
-Governed Access / Assurance commercial offerings remain exclusively on AOC
+Governed Access / Assurance commercial offerings remain exclusively on Soberanía
 Enterprise (`enterprise/GovernanceGap.tsx`, `enterprise/GovernanceEmerges.tsx`,
 `enterprise/SolutionsAndServices.tsx`, `GovernedAccessPage.tsx`,
 `AssurancePage.tsx` — none of these were touched by this change). Protocol's
@@ -103,7 +103,7 @@ independently verifiable).
 ## SEO changes
 
 - `index.html`: title, meta description, keywords, `og:*`, and `twitter:*`
-  tags at the root URL were rewritten from an AOC Assurance framing
+  tags at the root URL were rewritten from a Soberanía Assurance framing
   ("AI Governance and Sovereignty Assessment") to the Protocol thesis. The
   JSON-LD `WebPage` node for `https://www.aocprotocol.org/` (name,
   description, keywords) was updated to match — it previously described
@@ -126,7 +126,7 @@ per section (`Hero`, `FileToAsset`, `CapabilityFamilies`, `Sovereignty`,
 `AssetCreationFlow`, `PhotographExample`, `ProviderNeutral`,
 `ProtocolToEnterprise`, `Developers`). `AocLandingPage.tsx` composes them.
 `ProtocolFooter.tsx` (shared across Protocol and Enterprise pages) had its
-"AOC Protocol" tagline and inert `Protocol` link-column labels updated to
+"Soberanía Protocol" tagline and inert `Protocol` link-column labels updated to
 drop leftover governance framing ("Consent Engine", "Audit Layer",
 "Ship access systems with explicit control semantics") — everything else in
 that shared component, and every Enterprise-owned component, is untouched.

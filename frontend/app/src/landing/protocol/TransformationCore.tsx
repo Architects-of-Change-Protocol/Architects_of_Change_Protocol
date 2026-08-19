@@ -9,7 +9,7 @@ import type { TransformPhase } from './useTransformationPhase';
 // mineral quietly assembles from the file's raw bytes, pulses once (the
 // protocol interpreting it), then emits the structured context — Identity,
 // Integrity, Provenance, etc. — that appears on the asset card. The mineral
-// is the recurring visual identity of AOC Protocol; the asset card, not the
+// is the recurring visual identity of Soberanía Protocol; the asset card, not the
 // mineral, is the payoff the eye should land on. Sequencing lives in
 // ./useTransformationPhase.ts — this file is the visual only.
 //

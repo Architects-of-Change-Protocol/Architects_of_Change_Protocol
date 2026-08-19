@@ -4,7 +4,7 @@ This module introduces semantic building blocks for governance across multiple r
 
 ## Why distributed governance matters
 
-AOC already models identity, policy, capability, and audit semantics. The missing layer was explicit multi-runtime and multi-domain authority boundaries. This module adds those boundaries without introducing network or infrastructure coupling.
+Soberanía already models identity, policy, capability, and audit semantics. The missing layer was explicit multi-runtime and multi-domain authority boundaries. This module adds those boundaries without introducing network or infrastructure coupling.
 
 ## Trust-domain philosophy
 

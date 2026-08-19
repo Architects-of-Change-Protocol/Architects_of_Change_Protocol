@@ -1,4 +1,4 @@
-# Durable Audit Plane (AOC Core)
+# Durable Audit Plane (Soberanía Protocol Core)
 
 This module defines protocol-grade **audit infrastructure** for governance decisions. Audit is not operator logging: it is canonical evidence for why governance allowed, denied, escalated, or revoked an action.
 

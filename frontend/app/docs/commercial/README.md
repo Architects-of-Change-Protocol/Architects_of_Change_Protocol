@@ -1,8 +1,8 @@
-# AOC Enterprise commercial collateral
+# Soberanía Enterprise commercial collateral
 
 ## Purpose
 
-This directory stores the canonical commercial source material for AOC
+This directory stores the canonical commercial source material for Soberanía
 Enterprise. It exists so future implementation tasks (Enterprise landing,
 Governed Access landing, Assurance landing, Pitch Deck maintenance, One
 Pager maintenance, Executive Brief, Technical Assessment collateral,
@@ -14,7 +14,7 @@ outside the repository.
 
 | File | Status |
 |---|---|
-| [`SK005-AOC-ENTERPRISE-PITCH-DECK.html`](./SK005-AOC-ENTERPRISE-PITCH-DECK.html) | Imported. Canonical interactive visual language for AOC Enterprise's commercial narrative. |
+| [`SK005-AOC-ENTERPRISE-PITCH-DECK.html`](./SK005-AOC-ENTERPRISE-PITCH-DECK.html) | Imported. Canonical interactive visual language for Soberanía Enterprise's commercial narrative. |
 | `SK005-AOC-ENTERPRISE-PITCH-DECK.md` | **Not available.** No independently-authored Markdown pitch deck exists — only the HTML deck above was ever produced. See "Missing artifact" below. |
 | [`SK006-AOC-ENTERPRISE-ONE-PAGER.html`](./SK006-AOC-ENTERPRISE-ONE-PAGER.html) | Imported. Canonical concise executive messaging (A4, print-oriented). |
 
@@ -63,7 +63,7 @@ is authored in the future, it belongs in this directory as
   changes Enterprise commercial messaging or visual language should read
   these files first, not assume prior interpretations of them are still
   correct.
-- The official AOC logo remains the immutable brand element regardless of
+- The official Soberanía logo remains the immutable brand element regardless of
   what these files show (neither currently embeds it — see the W005 design
   system doc, `frontend/app/docs/w005-enterprise-pitch-deck-design-system.md`,
   for the recommended follow-up).

@@ -1,4 +1,4 @@
-# AOC Sovereign Wallet — Threat Model
+# Soberanía Sovereign Wallet — Threat Model
 
 **Version:** 0.1
 **Status:** Draft
@@ -831,7 +831,7 @@ Based on formal consent invariants from architecture.md:
 **Corpus:**
 - Valid SDL documents
 - Valid consent tokens
-- Valid AOC URIs
+- Valid Soberanía URIs
 - Edge cases from unit tests
 
 ### 8.4 Adversarial Test Cases

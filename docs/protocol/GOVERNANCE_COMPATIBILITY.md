@@ -6,7 +6,7 @@ and evidence spine is documented in [`SOVEREIGNTY_CAPABILITIES.md`](./SOVEREIGNT
 this page is about the handoff itself.
 
 Governance Compatibility is the eighth and last of the canonical Sovereignty Capabilities, and it is
-the one that says where AOC Protocol ends.
+the one that says where Soberanía Protocol ends.
 
 ## What the handoff is
 
@@ -36,7 +36,7 @@ The Protocol creates that boundary. It must never cross it.
 ## Where it sits
 
 ```
-                    AOC PROTOCOL
+              SOBERANÍA PROTOCOL
 
               Sovereign Subject
                      │
@@ -73,7 +73,7 @@ The Protocol creates that boundary. It must never cross it.
 ```
 
 Everything below the double line — policy, decision, obligations, grants, enforcement — belongs to an
-external governance system: AOC Enterprise, an OPA or Cedar deployment, a cloud IAM, a DAO, or an
+external governance system: Soberanía Enterprise, an OPA or Cedar deployment, a cloud IAM, a DAO, or an
 engine nobody has written yet. None of it exists in the Protocol, and none of it is adapted for here.
 
 ## The contract
@@ -178,7 +178,7 @@ buildSovereignGovernanceResourceRef(subject, { tenantId })
 document, a physical painting, a plot of land, an external token, an autonomous agent, an API resource
 and a subject from a system that does not exist yet all project onto exactly this kind, and differ only
 in their data. Emitting `real-estate`, `music`, `token`, `api` or `agent` as the resource kind would
-push AOC's asset taxonomy across the governance boundary and make every consumer branch on a
+push Soberanía's asset taxonomy across the governance boundary and make every consumer branch on a
 vocabulary the Protocol has no business owning. `subject.externalReference.namespace` is likewise
 opaque: nothing branches on it.
 
@@ -303,7 +303,7 @@ Four separate concerns, in order:
 | Declaration | `AOC.LICENSING_TERMS` | records what an issuer says about a subject |
 | Handoff | `AOC.GOVERNANCE_COMPATIBILITY` | carries that declaration, unchanged, to the boundary |
 | Interpretation | external governance | decides what the declaration means for a request |
-| Enforcement | AOC Enterprise / a provider | acts on that decision |
+| Enforcement | Soberanía Enterprise / a provider | acts on that decision |
 
 SM-10 performs none of the last two. A declared `Permission` does not become a grant or a scope, a
 `Restriction` does not become a deny, and an `Obligation` acquires no
@@ -378,7 +378,7 @@ Conceptually, and **not implemented here**:
 ```
 SovereignGovernanceHandoffV1
         ↓
-   AOC Enterprise
+ Soberanía Enterprise
         ↓
  resource resolution
         ↓
@@ -399,7 +399,7 @@ provider enforcement
     revocation
 ```
 
-None of that exists in the Protocol, and the strongest evidence that the handoff works is *not* "AOC
+None of that exists in the Protocol, and the strongest evidence that the handoff works is *not* "Soberanía
 Enterprise can consume it" — it is that any external package consumer can read this generic public
 contract. There is no `GovernanceAdapter`, `EnterpriseGovernanceAdapter` or `PolicyEngineAdapter` in
 v1: the standardized handoff **is** the integration boundary. Mediated credentials, short-lived signed

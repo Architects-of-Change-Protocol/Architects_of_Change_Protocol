@@ -1,6 +1,6 @@
 # @aoc/consent-engine
 
-Compatibility-oriented package in the AOC ecosystem.
+Compatibility-oriented package in the Soberanía ecosystem.
 
 - Canonical semantic ownership: `@aoc/protocol/contracts`
 - Role: compatibility facade and package-specific adapters/schemas.

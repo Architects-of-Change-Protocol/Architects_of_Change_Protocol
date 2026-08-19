@@ -1,6 +1,6 @@
 # Standalone Runtime Architecture
 
-AOC Runtime is a modular substrate split into typed contracts, provider interfaces, and focused runtimes.
+Soberanía Runtime is a modular substrate split into typed contracts, provider interfaces, and focused runtimes.
 
 ## Layering
 

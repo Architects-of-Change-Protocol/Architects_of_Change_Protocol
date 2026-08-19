@@ -1,4 +1,4 @@
-# AOC Canonical Claims and Trust Contracts
+# Soberanía Canonical Claims and Trust Contracts
 
 This package is the canonical TypeScript contract surface for the RFC-005 trust and authority model.
 
@@ -26,7 +26,7 @@ Decision
 
 ## Why this package exists
 
-RFC-005 makes claims, trust, standing, capability derivation, authority derivation, and decisions constitutional protocol concepts. AOC products and future ecosystem implementations need one stable schema layer that preserves those concepts without importing runtime behavior.
+RFC-005 makes claims, trust, standing, capability derivation, authority derivation, and decisions constitutional protocol concepts. Soberanía products and future ecosystem implementations need one stable schema layer that preserves those concepts without importing runtime behavior.
 
 `packages/protocol/src/claims/` is the canonical location because:
 

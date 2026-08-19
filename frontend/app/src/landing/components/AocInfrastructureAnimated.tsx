@@ -77,7 +77,7 @@ export function AocInfrastructureAnimated() {
           <div className="absolute inset-x-0 top-0 mx-auto h-24 w-[70%] bg-cyan-400/10 blur-3xl" />
 
           <h3 className="text-4xl font-semibold tracking-tight text-[#cbb8ff] md:text-6xl">
-            AOC ENTERPRISE
+            SOBERANÍA ENTERPRISE
           </h3>
           <p className="mt-4 text-sm text-white/70 md:text-base">
             Programmable control layer for governed access to digital assets
