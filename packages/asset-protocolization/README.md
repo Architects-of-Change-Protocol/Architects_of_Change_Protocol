@@ -197,6 +197,96 @@ Anything the pipeline cannot do itself arrives through an injected port
 store, identity provider or crypto primitive is implemented here; digest comparison reuses
 Protocol's `verifyContentIdentity`.
 
+### APV-08 — the professional attestation workflow
+
+A `ProfessionalReviewRequest` asks an appropriately identified reviewer to
+consider **one** attestation requirement of the case's exact pinned profile
+version, bound to **one** case revision. A `ProfessionalReviewPacket` is the
+deterministic projection of that review basis. A `ProfessionalReviewDecision`
+records what the reviewer did — and, only for `Attest` and only where Protocol's
+own record can be built without invention, a `CanonicalAttestation` is produced
+and associated to the case.
+
+```ts
+import {
+  ProfessionalReviewAction,
+  buildProfessionalReviewPacket,
+  createProfessionalReviewRequest,
+  recordProfessionalReviewDecision,
+} from '@aoc/asset-protocolization';
+
+const { request } = createProfessionalReviewRequest(context, protocolizationCase, {
+  reviewRequestId: 'review-request-0001',
+  attestationRequirementId: 'attestation.primary.required', // must be an Attestation requirement
+  requestedAttestationType: 'Human',                        // must be one it accepts
+  requestedScope,                                           // machine-readable; never prose
+});
+
+const packet = buildProfessionalReviewPacket(context, protocolizationCase, request, {
+  evidenceReceipts,     // APV-05 receipts, reused not duplicated
+  declarations,         // APV-06 records, reused not duplicated
+  verificationResults,  // APV-07 results, reused not duplicated
+});
+
+const { decision, attestation, protocolizationCase: updated } =
+  await recordProfessionalReviewDecision(context, protocolizationCase, request, {
+    decisionId: 'review-decision-0001',
+    reviewer,                                   // CanonicalPrincipalRef — Protocol's
+    reviewerCredentialRefs,                     // as presented; never resolved
+    action: ProfessionalReviewAction.Attest,
+    scope: requestedScope,
+    reviewedRefs,                               // what was actually read
+    attestation: { attestationId, claimRef, statement, materialId },
+  });
+```
+
+The action set is exactly four, closed, and never a boolean:
+
+```text
+Attest               willing to make this attestation, within this scope, on this basis
+Reject               declines the requested attestation after review
+RequestMoreEvidence  cannot responsibly attest; names what is needed, machine-readably
+Abstain              declines to reach a substantive decision
+```
+
+**A review decision is not a `CanonicalAttestation`.** A decision is a vertical
+workflow record that exists for all four actions; a `CanonicalAttestation` is a
+Protocol record that only `Attest` may produce. Protocol defines no canonical
+artifact for a refusal, so `Reject`, `RequestMoreEvidence` and `Abstain` produce
+none — the vertical record is sufficient, and it is honest.
+
+An attestation is structurally *about a claim*, so APV-08 builds one only when
+the `claimRef` names a claim the case already holds. Where it does not, the
+`Attest` is still recorded and no attestation is fabricated
+(`REVIEW_ATTESTATION_CANNOT_BE_CONSTRUCTED`). Signing goes through a narrow
+injected `AttestationSigner` port; with no signer configured the attestation
+carries no `proofRefs`, which Protocol allows — no signature is ever synthesized.
+
+Every APV-07 outcome stays visible to the reviewer, unreduced: a `ManualReview`
+never blocks packet construction, an `Unavailable` is never reinterpreted, and a
+`Fail` never forces a rejection. Nothing here branches on an outcome — the
+professional decides, and an `Attest` recorded over a `Fail` leaves that `Fail`
+exactly where it was.
+
+```text
+Professional review        !=  automated verification.
+Review decision            !=  CanonicalAttestation.
+Attest                     !=  universal truth      !=  READY.
+Reject                     !=  case state Rejected.
+RequestMoreEvidence        !=  state transition.
+Abstain                    !=  FAIL.
+Credential ref present     !=  credential valid     !=  authority.
+Attestation material present !=  requirement satisfied.
+```
+
+Review binds to an exact case revision and stays there: a request raised at
+revision 12 never absorbs evidence admitted at 13, and a successful `Attest`
+records `reviewBasisRevision` and `resultingCaseRevision` separately so nobody can
+conclude the attestation covered the material it created. A follow-up review is a
+**new** request bound to the newer revision; nothing is overwritten, and two
+reviewers who disagree both stay on the record with no winner picked.
+
+
 ## What it does not contain
 
 No evidence, claim, attestation, verification, standing, credential, proof,
@@ -204,11 +294,13 @@ provenance-source, subject-identity, principal-reference or integrity type — e
 one of those is Protocol's and is referenced, never redefined, and Protocol's
 `VerificationStatus` is neither widened nor reinterpreted. No identity resolution, no
 authority or delegation resolution, no readiness decision, no case-level verdict, no
-professional review or attestation workflow, no protocolization finalization, no registry
-connector, no fee assessment, no governance, no tokenization, and no database adapter or
-blob store (the case, evidence-intake, declaration and verification-result persistence
-**ports** are here; binding any of them to a store is not). No cryptography of its own: no
-hashing algorithm, signature format, key model or proof format is defined here. No file,
+reviewer assignment, queue, inbox, dashboard or professional workbench, no protocolization
+finalization, no registry connector, no fee assessment, no governance, no tokenization, and no
+database adapter or blob store (the case, evidence-intake, declaration, verification-result and
+professional-review persistence **ports** are here; binding any of them to a store is not). No cryptography of its own: no
+hashing algorithm, signature format, key model or proof format is defined here, and no
+signature is ever synthesized — signing is a narrow injected port with no production
+implementation in this package. No file,
 blob or upload handling: evidence reaches this package as a reference, never as bytes, and
 content bytes for a digest check arrive through an injected resolver. No concrete product
 profile: the fixtures under `tests/fixtures/` are test-only, including every `test.check.*`
@@ -230,6 +322,8 @@ Protocol-declared port, bound in a composition root.
 - `docs/asset-protocolization/APV_06_DECLARATION_CLAIM_PREPARATION.md` — the declaration
   slice.
 - `docs/asset-protocolization/APV_07_VERIFICATION_PIPELINE.md` — the verification slice.
+- `docs/asset-protocolization/APV_08_PROFESSIONAL_ATTESTATION_WORKFLOW.md` — the professional
+  attestation slice.
 - `docs/asset-protocolization/README.md` — the workstream and the Gate A0 record.
 - `docs/architecture/adr-asset-protocolization-vertical-boundary.md` — the frozen
   boundary.

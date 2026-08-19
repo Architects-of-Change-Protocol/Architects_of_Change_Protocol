@@ -50,11 +50,29 @@
  * a `Pass`; a `ManualReview` is never an attestation; an `Unavailable` is never a
  * `Fail`; and every check passing is never a case ready.
  *
+ * APV-08 delivers the sixth: the **professional attestation workflow** — how an
+ * identified reviewer receives a bounded, revision-bound snapshot of one case and
+ * records a scoped professional position on one attestation requirement of the
+ * pinned profile. It declares its own four-member action vocabulary (`Attest`,
+ * `Reject`, `RequestMoreEvidence`, `Abstain`) rather than widening any Protocol
+ * enum, keeps the vertical `ProfessionalReviewDecision` strictly distinct from
+ * Protocol's `CanonicalAttestation`, and constructs the latter only where every
+ * mandatory field — including the `claimRef` of a claim the case already holds —
+ * can be established without invention.
+ *
+ * Professional review is never automated verification; a review decision is never
+ * a `CanonicalAttestation`; an `Attest` is never universal truth and never a case
+ * ready; a `Reject` is never a case rejected; a `RequestMoreEvidence` is never a
+ * state transition; an `Abstain` is never a failure; a credential reference
+ * present is never a credential valid; and a credential valid is never authority
+ * over this subject.
+ *
  * See `docs/asset-protocolization/APV_03_ASSET_PROFILE_FRAMEWORK.md`,
  * `docs/asset-protocolization/APV_04_PROTOCOLIZATION_CASE.md`,
  * `docs/asset-protocolization/APV_05_EVIDENCE_INTAKE.md`,
- * `docs/asset-protocolization/APV_06_DECLARATION_CLAIM_PREPARATION.md` and
- * `docs/asset-protocolization/APV_07_VERIFICATION_PIPELINE.md`.
+ * `docs/asset-protocolization/APV_06_DECLARATION_CLAIM_PREPARATION.md`,
+ * `docs/asset-protocolization/APV_07_VERIFICATION_PIPELINE.md` and
+ * `docs/asset-protocolization/APV_08_PROFESSIONAL_ATTESTATION_WORKFLOW.md`.
  */
 export { ASSET_IDENTIFIER_MAX_LENGTH, assetProfileVersionKey, compareAssetProfileVersions, isValidAssetCategoryId, isValidAssetProfileId, isValidAssetProfileVersion, isValidAssetRequirementConditionId, isValidAssetRequirementId, isValidAssetVerificationCheckId, } from './identifiers';
 export type { AssetCategoryId, AssetProfileId, AssetProfileVersion, AssetRequirementConditionId, AssetRequirementId, AssetVerificationCheckId, } from './identifiers';
@@ -156,4 +174,28 @@ export type { VerificationOutcomeCounts, VerificationResultKey, } from './verifi
 export { BUILT_IN_VERIFICATION_CHECKS, competingDeclarationCheck, contentDigestCheck, declarationClaimTypeCheck, evidenceFreshnessCheck, identityStrategyCheck, minimumMaterialCountCheck, requiredMaterialPresentCheck, } from './verification/verification-builtin-checks';
 export { VERIFICATION_ERROR_CODES, VerificationError } from './verification/verification-errors';
 export type { VerificationErrorCode, VerificationErrorDetails, } from './verification/verification-errors';
+export { PROFESSIONAL_REVIEW_ACTIONS, ProfessionalReviewAction, isProfessionalReviewAction, } from './attestation/review-actions';
+export { isValidProfessionalReviewDecisionId, isValidProfessionalReviewReasonCode, isValidProfessionalReviewRequestId, } from './attestation/review-identifiers';
+export type { ProfessionalReviewDecisionId, ProfessionalReviewReasonCode, ProfessionalReviewRequestId, } from './attestation/review-identifiers';
+export { ProfessionalReviewBasisKind, isProfessionalReviewBasisKind, } from './attestation/review-scope';
+export type { ProfessionalReviewBasisRef, ProfessionalReviewScope } from './attestation/review-scope';
+export { PROFESSIONAL_REVIEW_REQUEST_SCHEMA_VERSION } from './attestation/review-request';
+export type { ProfessionalReviewRequest } from './attestation/review-request';
+export { PROFESSIONAL_REVIEW_PACKET_SCHEMA_VERSION, ProfessionalReviewParticipantRole, } from './attestation/review-packet';
+export type { ProfessionalReviewAttestationRequest, ProfessionalReviewCheckEntry, ProfessionalReviewDeclarationEntry, ProfessionalReviewEvidenceEntry, ProfessionalReviewExceptions, ProfessionalReviewPacket, ProfessionalReviewPacketSubject, ProfessionalReviewParticipant, ProfessionalReviewUnexecutedCheck, } from './attestation/review-packet';
+export { PROFESSIONAL_REVIEW_DECISION_SCHEMA_VERSION } from './attestation/review-decision';
+export type { ProfessionalReviewDecision, ProfessionalReviewMaterialRequest, } from './attestation/review-decision';
+export { PROFESSIONAL_REVIEW_VALIDATION_CODES, isValidProfessionalReviewDecision, isValidProfessionalReviewRequest, isValidProfessionalReviewScope, validateProfessionalReviewDecision, validateProfessionalReviewRequest, validateProfessionalReviewScope, } from './attestation/review-validation';
+export type { ProfessionalReviewValidationCode, ProfessionalReviewValidationResult, } from './attestation/review-validation';
+export { PROFESSIONAL_REVIEW_EVENT_TYPES } from './attestation/review-events';
+export type { ProfessionalAttestationRecordedEvent, ProfessionalReviewDecisionRecordedEvent, ProfessionalReviewEvent, ProfessionalReviewEventType, ProfessionalReviewRequestedEvent, } from './attestation/review-events';
+export { buildProfessionalReviewPacket, createProfessionalReviewRequest, recordProfessionalReviewDecision, reconstituteProfessionalReviewDecision, reconstituteProfessionalReviewRequest, } from './attestation/review-operations';
+export type { CreateProfessionalReviewRequestInput, ProfessionalAttestationInput, ProfessionalReviewContext, ProfessionalReviewDecisionTransition, ProfessionalReviewPacketInputs, ProfessionalReviewRequestTransition, RecordProfessionalReviewDecisionInput, } from './attestation/review-operations';
+export { prepareCanonicalAttestationFromReview } from './attestation/attestation-preparation';
+export type { PrepareCanonicalAttestationInput } from './attestation/attestation-preparation';
+export type { AttestationSigner, AttestationSigningRequest } from './attestation/attestation-signer';
+export { createInMemoryProfessionalReviewDecisionRepository, createInMemoryProfessionalReviewRequestRepository, } from './attestation/review-repository';
+export type { ProfessionalReviewDecisionRepository, ProfessionalReviewRequestRepository, } from './attestation/review-repository';
+export { PROFESSIONAL_REVIEW_ERROR_CODES, ProfessionalReviewError, } from './attestation/review-errors';
+export type { ProfessionalReviewErrorCode, ProfessionalReviewErrorDetails, } from './attestation/review-errors';
 //# sourceMappingURL=index.d.ts.map
