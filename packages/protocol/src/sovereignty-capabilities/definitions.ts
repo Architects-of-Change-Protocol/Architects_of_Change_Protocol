@@ -74,7 +74,7 @@ export const SOVEREIGNTY_CAPABILITIES: readonly SovereigntyCapabilityDefinition[
   define(
     'licensing_terms',
     'Licensing & Terms',
-    'Represent attributable, portable declarations of permissions, restrictions and terms. Protocol declaration is distinct from enforcement, which belongs to AOC Enterprise.',
+    'Represent attributable, portable declarations of permissions, restrictions and terms. Protocol declaration is distinct from enforcement, which belongs to Soberanía Enterprise.',
   ),
   define(
     'governance_compatibility',

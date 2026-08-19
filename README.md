@@ -1,6 +1,6 @@
-# Architects of Change Protocol
+# Soberanía Protocol
 
-AOC Protocol defines the semantic contract layer for programmable authority.
+Soberanía Protocol defines the semantic contract layer for programmable authority.
 
 This repository contains protocol-level concepts such as:
 
@@ -15,11 +15,18 @@ This repository is not the enterprise runtime implementation.
 
 ## Layering
 
-- AOC Protocol: contracts, semantics, interfaces
-- AOC Enterprise: runtime, persistence, APIs, SDK implementation
-- PMFreak: vertical PM product consuming AOC layers
+- Soberanía Protocol: contracts, semantics, interfaces
+- Soberanía Enterprise: runtime, persistence, APIs, SDK implementation
+- PMFreak: vertical PM product consuming Soberanía layers
 
-## AOC Protocol package (`packages/protocol`)
+### Technical namespace
+
+Soberanía Protocol preserves the existing `aoc` technical namespace for compatibility. Package names,
+protocol identifiers, URI schemes, and public API symbols using `aoc` or `AOC` remain unchanged unless
+explicitly versioned otherwise. This is intentional and does not affect the Soberanía Protocol product
+identity.
+
+## Soberanía Protocol package (`packages/protocol`)
 
 The versioned, publishable slice of this layering is the `@aoc/protocol` npm workspace package at
 [`packages/protocol/`](packages/protocol/). (This is distinct from the top-level [`protocol/`](protocol/)
@@ -77,7 +84,7 @@ compatibility details.
 
 ## License
 
-Except where expressly stated otherwise, AOC Protocol is licensed under the
+Except where expressly stated otherwise, Soberanía Protocol is licensed under the
 Apache License, Version 2.0. See [LICENSE](./LICENSE) and [NOTICE](./NOTICE).
 
 The contents of [`enterprise/`](./enterprise/) are proprietary, are expressly

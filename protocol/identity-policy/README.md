@@ -1,4 +1,4 @@
-# Identity-to-PDP Binding (AOC Core)
+# Identity-to-PDP Binding (Soberanía Protocol Core)
 
 This module adds a **pre-PDP identity authority gate** that runs before `protocol/policy/evaluateAccess()`.
 

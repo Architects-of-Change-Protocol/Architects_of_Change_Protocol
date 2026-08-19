@@ -1,5 +1,5 @@
-# Architects of Change Protocol — Charter
-Architects of Change Protocol is an open, neutral and public protocol designed to enable digital sovereignty for individuals and nations.
+# Soberanía Protocol — Charter
+Soberanía Protocol is an open, neutral and public protocol designed to enable digital sovereignty for individuals and nations.
 
 1. Purpose
 Its purpose is to provide a foundational architecture where:

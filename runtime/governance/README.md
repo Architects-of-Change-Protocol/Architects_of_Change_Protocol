@@ -1,6 +1,6 @@
-# AOC Runtime Governance Layer
+# Soberanía Runtime Governance Layer
 
-This module introduces the canonical governance execution runtime for AOC Core.
+This module introduces the canonical governance execution runtime for Soberanía Protocol Core.
 
 ## Why this runtime exists
 

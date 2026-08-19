@@ -9,10 +9,10 @@ import { Developers } from './protocol/Developers';
 import { CtaSection } from './protocol/CtaSection';
 import { usePageMeta } from './protocol/usePageMeta';
 
-// AOC Protocol, rebuilt onto the unified AOC Design Language: the same
+// Soberanía Protocol, rebuilt onto the unified AOC Design Language: the same
 // light-primary layout, typography, spacing, nav/footer shell and component
 // library (Card, SectionHeader, IconCircle, Chip, StatusPill, StepFlow,
-// PipelineRail — all from ../enterprise/primitives) that AOC Enterprise,
+// PipelineRail — all from ../enterprise/primitives) that Soberanía Enterprise,
 // Governed Access and Assurance already share, with two dark #0B1220
 // bookends (Hero, closing CTA) — the same rhythm every other AOC surface
 // follows. The one thing that's still Protocol's own is its Capability

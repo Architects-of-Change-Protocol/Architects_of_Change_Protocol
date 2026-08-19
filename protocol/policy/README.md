@@ -2,7 +2,7 @@
 
 ## Why this module exists
 
-Authorization in AOC is currently distributed across enforcement engines, capability checks, adapter policies, and runtime request guards. This module introduces a **single policy evaluation entry point** so future access decisions can converge into one pathway.
+Authorization in Soberanía is currently distributed across enforcement engines, capability checks, adapter policies, and runtime request guards. This module introduces a **single policy evaluation entry point** so future access decisions can converge into one pathway.
 
 Current objective:
 - centralize decision evaluation contract (`PolicyEvaluationInput`)

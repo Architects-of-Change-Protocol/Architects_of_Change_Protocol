@@ -6,24 +6,24 @@ procedures, stability tiers — see [`docs/guides/CONSUMER_GUIDE.md`](../guides/
 (`docs/protocol/PUBLIC_API.md`) and is exercised verbatim by the consumer fixtures under
 `test-consumers/` on every CI run — nothing here is aspirational.
 
-## 1. What AOC Protocol is
+## 1. What Soberanía Protocol is
 
-`@aoc/protocol` is the versioned, implementation-neutral contract layer of the Architects of Change
+`@aoc/protocol` is the versioned, implementation-neutral contract layer of the Soberanía
 architecture: capability, consent, policy-decision and audit-envelope contracts, the RFC-005
 claims/evidence/attestation family, the public protocol error surface, adapter interfaces, and an
 in-process adapter registry/bootstrap toolkit.
 
 ```text
-AOC Protocol        (this package — versioned public contracts)
+Soberanía Protocol    (this package — versioned public contracts)
     ↓
-AOC Enterprise      (proprietary implementation and runtime)
+Soberanía Enterprise  (proprietary implementation and runtime)
     ↓
-PMFreak             (commercial vertical product)
+PMFreak               (commercial vertical product)
 ```
 
 ## 2. What it is not
 
-It is **not** a runtime, a hosted service, a network client, a persistence layer, or the AOC
+It is **not** a runtime, a hosted service, a network client, a persistence layer, or the Soberanía
 Enterprise product. It ships shapes, references, adapter interfaces, and a small in-process
 registry — implementations live downstream.
 

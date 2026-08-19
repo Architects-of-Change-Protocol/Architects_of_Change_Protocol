@@ -36,6 +36,6 @@ exports.SOVEREIGNTY_CAPABILITIES = Object.freeze([
     define('portability', 'Portability', 'Allow a sovereign representation or state to survive movement across systems or providers without losing what it is.'),
     define('interoperability', 'Interoperability', 'Allow external systems to understand and consume Protocol representations through stable contracts and semantics.'),
     define('verifiability', 'Verifiability', 'Allow independent parties to verify Protocol artifacts, assertions and results without trusting whoever presents them.'),
-    define('licensing_terms', 'Licensing & Terms', 'Represent attributable, portable declarations of permissions, restrictions and terms. Protocol declaration is distinct from enforcement, which belongs to AOC Enterprise.'),
+    define('licensing_terms', 'Licensing & Terms', 'Represent attributable, portable declarations of permissions, restrictions and terms. Protocol declaration is distinct from enforcement, which belongs to Soberanía Enterprise.'),
     define('governance_compatibility', 'Governance Compatibility', 'Provide structured sovereignty information sufficient for an external governance system to govern the subject, without the Protocol itself becoming that governance system.'),
 ]);

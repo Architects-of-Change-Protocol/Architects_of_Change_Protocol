@@ -1,4 +1,4 @@
-# Capability Runtime Layer (AOC Core)
+# Capability Runtime Layer (Soberanía Protocol Core)
 
 The capability runtime converts capability primitives into **executable authority artifacts**. A runtime capability is not just a token-like descriptor; it is a live authority object that participates in governance state, obligation satisfaction, revocation, and audit emission.
 

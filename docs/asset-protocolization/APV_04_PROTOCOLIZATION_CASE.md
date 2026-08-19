@@ -449,7 +449,7 @@ aggregate does not become an event-sourced system merely because it emits events
 ProtocolizationCase persistence owner: the Asset Protocolization Vertical
 ```
 
-Gate A0 / `U-6` settled this: no vertical workflow persistence port goes into AOC
+Gate A0 / `U-6` settled this: no vertical workflow persistence port goes into Soberanía
 Protocol, and Protocol never learns the case exists.
 
 **APV-04 implements the port and one deterministic in-memory implementation. It
@@ -580,7 +580,7 @@ contracts; fees, billing, Stripe, settlement or payments.
 There is also **no waiver, override, exception-approval, force-ready or admin
 bypass** capability. Each of those immediately raises questions of authority,
 delegation, policy and audit that belong to later architecture and potentially
-AOC Enterprise.
+Soberanía Enterprise.
 
 ---
 
@@ -618,7 +618,7 @@ Protocolization          != Tokenization
 ## 19. Architecture after APV-04
 
 ```text
-AOC Protocol
+Soberanía Protocol
 │  generic identity / evidence / claim / attestation / verification primitives
 ▼
 AssetProfile                        (APV-03)  what a category requires
@@ -631,7 +631,7 @@ ProtocolizationCase                 (APV-04)  one tenant, one subject,
 ▼
 Protocolized asset
 ▼
-AOC Enterprise
+Soberanía Enterprise
 ▼
 External capability
 └── optional TOKENIZE ──▶ Tokenizer

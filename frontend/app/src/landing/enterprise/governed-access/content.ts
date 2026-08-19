@@ -1,11 +1,11 @@
 // Content model for the Governed Access product page.
 //
-// Governed Access is AOC Enterprise's first Solution (see
+// Governed Access is Soberanía Enterprise's first Solution (see
 // ../SolutionsAndServices.tsx / ../../routes.ts). Where the Enterprise
 // homepage introduces the concept in three sections (Problem, Missing
 // Layer, Architecture Stack), this page is the dedicated product landing:
 // it sells the capability on its own, in under two minutes, without
-// re-explaining the rest of AOC Enterprise. See docs/w006-governed-access-
+// re-explaining the rest of Soberanía Enterprise. See docs/w006-governed-access-
 // product-landing.md for the full design rationale.
 //
 // Claims here are held to the same honesty bar as ../PlatformStatus.tsx —

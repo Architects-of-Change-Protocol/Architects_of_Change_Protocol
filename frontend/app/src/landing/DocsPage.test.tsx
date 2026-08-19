@@ -20,7 +20,7 @@ describe('public Protocol developer journey', () => {
 
     expect(links.at(-2)).toHaveTextContent('Review Protocol Documentation');
     expect(links.at(-2)).toHaveAttribute('href', '/?view=docs#getting-started');
-    expect(links.at(-1)).toHaveTextContent('Explore AOC Enterprise');
+    expect(links.at(-1)).toHaveTextContent('Explore Soberanía Enterprise');
     expect(links.at(-1)).toHaveAttribute('href', '/?view=enterprise');
   });
 
@@ -28,8 +28,8 @@ describe('public Protocol developer journey', () => {
     const { container } = render(<ProtocolToEnterprise />);
     expect(within(container).getByRole('heading', { name: 'Capabilities shape platforms.' })).toBeInTheDocument();
     expect(within(container).getByText('Centers of gravity')).toBeInTheDocument();
-    expect(within(container).getByText('AOC Enterprise')).toBeInTheDocument();
-    expect(within(container).getByText('AOC Protocol')).toBeInTheDocument();
+    expect(within(container).getByText('Soberanía Enterprise')).toBeInTheDocument();
+    expect(within(container).getByText('Soberanía Protocol')).toBeInTheDocument();
     expect(within(container).getByText('Identity')).toBeInTheDocument();
     expect(within(container).getByText('Governance')).toBeInTheDocument();
     expect(within(container).getByRole('button', { name: /Creator:/ })).toBeInTheDocument();

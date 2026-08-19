@@ -1,4 +1,4 @@
-# Asset Layer Build/Test Activation & Canonical JSON (AOC Protocol Slice 0)
+# Asset Layer Build/Test Activation & Canonical JSON (Soberanía Protocol Slice 0)
 
 Status: implemented. This document records the decisions made while
 closing `SAP-GAP-008` (asset/content modules excluded from the real
@@ -76,7 +76,7 @@ derived from a well-formed payload — see §3.
 
 ## 3. Decision: authoritative canonicalization contract
 
-**Option A was selected**: keep the stronger existing AOC canonicalizer
+**Option A was selected**: keep the stronger existing Soberanía canonicalizer
 (root `canonicalizeJSON`, which fails closed on unsupported input) as the
 one authoritative implementation, rather than adopting an external
 standard (e.g. JCS/RFC 8785) or inventing a new profile from scratch. It

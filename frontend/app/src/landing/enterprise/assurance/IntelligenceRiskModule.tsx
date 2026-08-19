@@ -31,7 +31,7 @@ export function IntelligenceRiskModule() {
         <div className="rounded-2xl border border-slate-200 bg-slate-50 p-6">
           <p className="text-xs font-bold uppercase tracking-[0.14em] text-emerald-600 mb-2">Where it sits</p>
           <p className="text-[13.5px] leading-relaxed text-slate-600">
-            AOC Enterprise
+            Soberanía Enterprise
             <br />
             <span className="pl-4">&rarr; Assurance</span>
             <br />

@@ -6,17 +6,17 @@
 | Title | Standing Traceability |
 | Status | Draft |
 | Category | Core Protocol Extension |
-| Authors | AOC Protocol Architecture Working Group |
+| Authors | Soberanía Protocol Architecture Working Group |
 | Created | 2026-06-03 |
 | Last Updated | 2026-06-03 |
 | Supersedes | — |
-| Related | RFC-004 Evidence Layer v1.0, RFC-005 AOC Claims Framework |
+| Related | RFC-004 Evidence Layer v1.0, RFC-005 Soberanía Claims Framework |
 
 ---
 
 ## Abstract
 
-This document defines Standing Traceability for the AOC Protocol. Standing Traceability specifies how standing is derived, versioned, explained, challenged, invalidated, and reconstructed from canonical evidence, evidence lifecycle state, authority context, policy context, and algorithm version. It extends RFC-004 and RFC-005 by requiring every standing state to preserve complete evidence lineage and deterministic rebuild semantics.
+This document defines Standing Traceability for the Soberanía Protocol. Standing Traceability specifies how standing is derived, versioned, explained, challenged, invalidated, and reconstructed from canonical evidence, evidence lifecycle state, authority context, policy context, and algorithm version. It extends RFC-004 and RFC-005 by requiring every standing state to preserve complete evidence lineage and deterministic rebuild semantics.
 
 Standing Traceability does not define a storage system, user interface, scoring product, reputation market, or implementation-specific standing engine. It defines the protocol requirements that any conformant standing implementation must satisfy.
 
@@ -26,7 +26,7 @@ Standing Traceability does not define a storage system, user interface, scoring 
 
 1. [Executive Summary](#1-executive-summary)
 2. [Problem Statement](#2-problem-statement)
-3. [AOC Principle](#3-aoc-principle)
+3. [Soberanía Principle](#3-soberanía-principle)
 4. [Definition of Standing](#4-definition-of-standing)
 5. [Standing Traceability Requirements](#5-standing-traceability-requirements)
 6. [Standing Evolution Model](#6-standing-evolution-model)
@@ -55,7 +55,7 @@ Standing Traceability defines how an entity's standing evolves over time and how
 
 Standing is never directly modified. Standing is an emergent state derived from evidence.
 
-In the AOC Protocol, standing is not an administrative field that can be edited by an operator. It is not a mutable reputation score, a subjective trust label, or a black-box output detached from provenance. Standing is a deterministic interpretation produced from canonical evidence, the lifecycle state of that evidence, the authority of evidence sources, the applicable policy context, and the algorithm version used to evaluate those inputs.
+In the Soberanía Protocol, standing is not an administrative field that can be edited by an operator. It is not a mutable reputation score, a subjective trust label, or a black-box output detached from provenance. Standing is a deterministic interpretation produced from canonical evidence, the lifecycle state of that evidence, the authority of evidence sources, the applicable policy context, and the algorithm version used to evaluate those inputs.
 
 Standing Traceability therefore requires that every standing output answer the following questions:
 
@@ -68,7 +68,7 @@ Standing Traceability therefore requires that every standing output answer the f
 - What changed from the previous standing state?
 - Can the same standing state be reproduced for any historical timestamp?
 
-A conformant AOC implementation MUST treat standing as derived protocol state. It MUST persist enough lineage, dependency, and explanation data to prove how standing was produced without requiring trust in an administrator, opaque model, vendor database, or mutable score field.
+A conformant Soberanía implementation MUST treat standing as derived protocol state. It MUST persist enough lineage, dependency, and explanation data to prove how standing was produced without requiring trust in an administrator, opaque model, vendor database, or mutable score field.
 
 ---
 
@@ -106,7 +106,7 @@ If an algorithm is changed without version attribution, two identical evidence s
 
 ---
 
-## 3. AOC Principle
+## 3. Soberanía Principle
 
 Standing Traceability is governed by the following principle:
 
@@ -640,7 +640,7 @@ These guarantees are protocol properties, not user interface preferences. A syst
 
 ## 19. Security and Governance Implications
 
-Standing Traceability protects the AOC ecosystem against the following risks.
+Standing Traceability protects the Soberanía ecosystem against the following risks.
 
 ### 19.1 Silent manipulation
 

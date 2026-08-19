@@ -1,4 +1,4 @@
-# AOC Protocol — Core Capability Enforcement Engine
+# Soberanía Protocol — Core Capability Enforcement Engine
 
 **Version:** 0.1  
 **Status:** Draft implementation guide  

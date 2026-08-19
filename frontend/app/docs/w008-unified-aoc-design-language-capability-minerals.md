@@ -1,7 +1,7 @@
-# W008 — Unified AOC Design Language & Capability Minerals
+# W008 — Unified Soberanía Design Language & Capability Minerals
 
-Status: complete. Every AOC surface (Protocol, Enterprise, Governed Access,
-Assurance) now shares one canonical visual system. AOC Protocol's previously
+Status: complete. Every Soberanía surface (Protocol, Enterprise, Governed Access,
+Assurance) now shares one canonical visual system. Soberanía Protocol's previously
 separate dark/cyan visual language is retired; it is rebuilt onto the same
 foundation W005 established for Enterprise. A semantic accent layer —
 **Capability Minerals** — is introduced so each capability family still reads
@@ -9,17 +9,17 @@ as its own domain within that one shared system.
 
 ## Why
 
-W005 made AOC Enterprise the interactive extension of the canonical SK005
+W005 made Soberanía Enterprise the interactive extension of the canonical SK005
 pitch deck: light-primary body, two dark (`#0B1220`) bookend sections (Hero,
 closing CTA), and a shared component library
 (`frontend/app/src/landing/enterprise/primitives.tsx` — `Card`, `IconCircle`,
 `Chip`, `PipelineRail`, `SectionHeader`, `StatusPill`, …). W006 and W007
-extended that same system, unchanged, to Governed Access and Assurance. AOC
+extended that same system, unchanged, to Governed Access and Assurance. Soberanía
 Protocol was the one surface W005 explicitly left alone, keeping its
 original, unrelated dark/cyan visual language (`frontend/app/src/landing/AocLandingPage.tsx`
 and `landing/protocol/*`, with its own `primitives.tsx`).
 
-That left AOC with four commercial-facing surfaces telling one story but
+That left Soberanía with four commercial-facing surfaces telling one story but
 looking like two different products. This change makes the Enterprise
 visual system — layout, typography, spacing, nav/footer shell, and component
 library — the canonical foundation for **all** of them, and gives each
@@ -35,8 +35,8 @@ diagrams, icons, chips, highlights, and section identifiers.
 
 | Mineral | Tailwind family | Capability family | Where it appears |
 |---|---|---|---|
-| **Amethyst** | `violet` | AOC Protocol · Sovereignty | Protocol's hero, section eyebrows, capability cards, step-flow diagrams, footer |
-| **Sapphire** | `indigo` | AOC Enterprise · Governance | Enterprise's hero, nav/footer chrome (unchanged from W005 — this *is* the original deck accent, just named) |
+| **Amethyst** | `violet` | Soberanía Protocol · Sovereignty | Protocol's hero, section eyebrows, capability cards, step-flow diagrams, footer |
+| **Sapphire** | `indigo` | Soberanía Enterprise · Governance | Enterprise's hero, nav/footer chrome (unchanged from W005 — this *is* the original deck accent, just named) |
 | **Turquoise** | `teal` | Governed Access | Governed Access's hero, lifecycle rail, capability icons, provider grid, closing CTA |
 | **Emerald** | `emerald` | Assurance | Assurance's hero, maturity rail, methodology stages, capability-output icons, closing CTA |
 | **Amber** | `amber` | AI Governance (reserved) | Not yet applied anywhere — defined for a future capability family so the token exists before the surface does |
@@ -82,7 +82,7 @@ component library differs by mineral:
 
 ## Per-surface mineral wiring
 
-- **AOC Protocol** (`landing/AocLandingPage.tsx` + `landing/protocol/*`) —
+- **Soberanía Protocol** (`landing/AocLandingPage.tsx` + `landing/protocol/*`) —
   fully rebuilt onto the shared system. `protocol/primitives.tsx` (the old,
   separate dark/cyan component set) is deleted; every section now imports
   from `enterprise/primitives.tsx` with `mineral="amethyst"`. A new
@@ -90,10 +90,10 @@ component library differs by mineral:
   matching the same rhythm as `enterprise/CtaSection.tsx`,
   `governed-access/Assessment.tsx` and `assurance/Cta.tsx`.
   `protocol/ProtocolToEnterprise.tsx` deliberately shows **two** minerals
-  side by side (Amethyst "AOC Protocol defines" / Sapphire "AOC Enterprise
+  side by side (Amethyst "Soberanía Protocol defines" / Sapphire "Soberanía Enterprise
   operationalizes") — the one section where two capability families
   literally hand off to each other.
-- **AOC Enterprise** — no visual change. Sapphire *is* the indigo accent
+- **Soberanía Enterprise** — no visual change. Sapphire *is* the indigo accent
   W005 already established; this change only names it and makes the
   default explicit.
 - **Governed Access** — every `indigo-*` accent in

@@ -2,7 +2,7 @@
 
 ## Propósito
 
-`protocol/enforcement` implementa la capa runtime de enforcement del protocolo AOC.
+`protocol/enforcement` implementa la capa runtime de enforcement del protocolo Soberanía.
 Recibe solicitudes de acceso/acción, valida capability tokens, evalúa su estado y emite una decisión canónica, determinista y fail-closed.
 
 ## Relación con Capability Layer

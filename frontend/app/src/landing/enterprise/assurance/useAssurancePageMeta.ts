@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 
 const PAGE_URL = 'https://www.aocprotocol.org/?view=assurance';
-const TITLE = 'AOC Assurance — Sovereignty and Governance Capability Assessment | AOC Enterprise';
+const TITLE = 'Soberanía Assurance — Sovereignty and Governance Capability Assessment | Soberanía Enterprise';
 const DESCRIPTION =
-  'AOC Assurance evaluates, validates and continuously monitors every sovereignty capability defined by AOC Protocol and every governance capability operated by AOC Enterprise — capability inventory, evidence validation, maturity rating, and a path to continuous assurance.';
+  'Soberanía Assurance evaluates, validates and continuously monitors every sovereignty capability defined by Soberanía Protocol and every governance capability operated by Soberanía Enterprise — capability inventory, evidence validation, maturity rating, and a path to continuous assurance.';
 
 // Per-page metadata injection, mirroring landing/protocol/usePageMeta.ts and
 // landing/useIntelligenceRiskPageMeta.ts. Overrides the root index.html

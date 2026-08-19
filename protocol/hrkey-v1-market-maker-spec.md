@@ -1,7 +1,7 @@
-# HRKey v1 — Market Maker Specification on AOC v0.1
+# HRKey v1 — Market Maker Specification on Soberanía v0.1
 **Version:** 1.0 (implementation target)  
 **Status:** Ready-for-build definition  
-**Protocol dependency:** AOC Protocol v0.1 (unchanged)
+**Protocol dependency:** Soberanía Protocol v0.1 (unchanged)
 
 ---
 
@@ -11,7 +11,7 @@
 HRKey v1 is a production market maker for employment-related trust data. It monetizes high-confidence, consented access to candidate employment verification packs and referee-verified signals for hiring workflows.
 
 ### Non-Goals
-- No changes to AOC core primitives, cryptography, or consent model.
+- No changes to Soberanía core primitives, cryptography, or consent model.
 - No custodial wallet balances or HRKey-held user funds.
 - No speculative token design.
 - No broad “social graph scraping” or unbounded profiling.
@@ -72,7 +72,7 @@ HRKey monetizes **time-scoped access to verification-grade data packs** assemble
    - Operates request orchestration, validation, and billing rails.
    - Never takes custody of candidate assets.
 
-5. **AOC Protocol (Trust and Control Plane)**
+5. **Soberanía Protocol (Trust and Control Plane)**
    - Provides pack structure, consent semantics, capability lifecycle, and auditability.
    - Enforces non-custodial wallet-mediated authorization.
 
@@ -106,7 +106,7 @@ HRKey monetizes **time-scoped access to verification-grade data packs** assemble
 For each paid access transaction amount `P`:
 - **Candidate payout:** `Pc = P * 0.70`
 - **HRKey market maker fee:** `Pm = P * 0.20`
-- **AOC protocol fee:** `Pp = P * 0.10`
+- **Soberanía protocol fee:** `Pp = P * 0.10`
 
 Constraints:
 - Split is computed and displayed before candidate approval.
@@ -128,10 +128,10 @@ Constraints:
 
 ---
 
-## 5) Mapping AOC Primitives to HRKey Actions
+## 5) Mapping Soberanía Primitives to HRKey Actions
 
 ### 5.1 Pack creation
-- **AOC primitive:** Signed response pack generation.
+- **Soberanía primitive:** Signed response pack generation.
 - **HRKey action:** Build EVP/PRP/RCS pack from candidate-approved fields + attestations.
 - **Implementation notes:**
   - Deterministic resolver mapping only.
@@ -139,7 +139,7 @@ Constraints:
   - Store pointer/index metadata in wallet-friendly format.
 
 ### 5.2 Consent grant
-- **AOC primitive:** Consent object.
+- **Soberanía primitive:** Consent object.
 - **HRKey action:** Candidate grants purpose-bound consent for named employer, pack type, and duration.
 - **Required consent fields:**
   - Requester identity
@@ -149,15 +149,15 @@ Constraints:
   - Monetization terms and split preview
 
 ### 5.3 Capability minting
-- **AOC primitive:** Capability token + revocation mechanism.
+- **Soberanía primitive:** Capability token + revocation mechanism.
 - **HRKey action:** Mint least-privilege, time-limited capability after successful payment + consent.
 - **Rules:**
   - One capability per approved request ID.
   - Non-transferable and audience-bound to requester identity.
-  - Revocable by candidate under AOC revocation semantics.
+  - Revocable by candidate under Soberanía revocation semantics.
 
 ### 5.4 Access request
-- **AOC primitive:** Request + policy evaluation against consent and capability.
+- **Soberanía primitive:** Request + policy evaluation against consent and capability.
 - **HRKey action:** Employer requests access using capability token.
 - **Evaluation gates:**
   - Capability validity (signature, expiry, audience)
@@ -220,7 +220,7 @@ Constraints:
 - Consent Orchestration Service (wallet callback + request state machine)
 - Pricing and Settlement Service (non-custodial disbursement routing)
 - Pack Assembler (deterministic resolver + provenance packager)
-- Capability Service (mint/redeem/revoke integration with AOC)
+- Capability Service (mint/redeem/revoke integration with Soberanía)
 - Audit and Evidence Store (event logs + integrity proofs)
 
 ### 8.2 Minimum production controls
@@ -250,4 +250,4 @@ Constraints:
 
 ## v1 Summary
 
-HRKey v1 is a non-custodial employment verification market maker on AOC where employers pay per consented access, candidates receive the majority payout, protocol and market-maker fees are explicit, capabilities are least-privilege and time-bound, and abuse is constrained by making unauthorized or low-trust behavior economically unattractive.
+HRKey v1 is a non-custodial employment verification market maker on Soberanía where employers pay per consented access, candidates receive the majority payout, protocol and market-maker fees are explicit, capabilities are least-privilege and time-bound, and abuse is constrained by making unauthorized or low-trust behavior economically unattractive.

@@ -1,4 +1,4 @@
-# AOC Protocol — Content Object Specification
+# Soberanía Protocol — Content Object Specification
 
 **Version:** 0.1
 **Status:** Draft
@@ -27,7 +27,7 @@
 
 ### 1.1 Overview
 
-A **Content Object** is a cryptographically verifiable, immutable reference to a single unit of user data within the AOC Protocol. The Content Object does not embed the actual data; it serves as a deterministic descriptor that binds metadata to a storage location through content addressing.
+A **Content Object** is a cryptographically verifiable, immutable reference to a single unit of user data within the Soberanía Protocol. The Content Object does not embed the actual data; it serves as a deterministic descriptor that binds metadata to a storage location through content addressing.
 
 **Formal Definition:**
 
@@ -610,7 +610,7 @@ A **Storage Pointer** is a structured reference that binds a Content Object to a
 | `http` | Generic HTTP(S) retrieval |
 | `memory` | Ephemeral in-memory (testing only) |
 
-Additional backend types MAY be registered through the AOC Protocol extension process.
+Additional backend types MAY be registered through the Soberanía Protocol extension process.
 
 #### 7.3.2 uri
 
@@ -619,7 +619,7 @@ Additional backend types MAY be registered through the AOC Protocol extension pr
 | **Name** | `uri` |
 | **Type** | string |
 | **Required** | REQUIRED |
-| **Format** | AOC Storage URI |
+| **Format** | Soberanía Storage URI |
 | **Constraints** | MUST match pattern `^aoc://storage/[a-z][a-z0-9]*(-[a-z0-9]+)*/0x[a-f0-9]{64}$` |
 
 **Description:** The canonical URI representation of the Storage Pointer. This field MUST be derived deterministically from the `backend` and `hash` fields using the formula: `aoc://storage/{backend}/0x{hash}`. See Storage Pointer Specification for complete URI rules.
@@ -725,7 +725,7 @@ The following field names are reserved for future use:
 
 ### 8.4 Extension Registration
 
-Extensions MUST be registered in the AOC Protocol extension registry. Registration includes:
+Extensions MUST be registered in the Soberanía Protocol extension registry. Registration includes:
 
 1. Field name and type
 2. Version introduced

@@ -41,12 +41,12 @@ sha256sum aoc-protocol-<version>.tgz
 # docs/release/evidence/aoc-protocol-0.1.0-release-manifest.json
 ```
 
-Note that the checksum is per-build: the artifact AOC Enterprise pinned hashes
+Note that the checksum is per-build: the artifact Soberanía Enterprise pinned hashes
 `4e5289b7…96b27` (pre-relicense), while the current Apache-2.0 RC build hashes
 `7d0d42a5…d9841` — always compare against the manifest entry for the build you were handed
 (full history in [`docs/release/RELEASE_CANDIDATE_READINESS.md`](../release/RELEASE_CANDIDATE_READINESS.md)).
 
-Vendor the tarball in your repository (as AOC Enterprise does under `vendor/`) so installs are
+Vendor the tarball in your repository (as Soberanía Enterprise does under `vendor/`) so installs are
 reproducible and auditable.
 
 ## Installation in the future: registry
@@ -135,7 +135,7 @@ boundary.
 ## Version pinning
 
 - **Tarball consumers (today):** pin by vendored file **and checksum**, and record the Protocol
-  source commit you built from. AOC Enterprise's `protocol-consumer.lock.json` (commit, expected
+  source commit you built from. Soberanía Enterprise's `protocol-consumer.lock.json` (commit, expected
   version, tarball SHA-256, verified export list) is the reference pattern.
 - **Registry consumers (future):** pin **exact** versions of prereleases (`0.2.0-rc.0`, never
   `^0.2.0-rc.0`). For stable 0.x versions, remember that pre-1.0 minors may add surface: prefer
@@ -183,6 +183,6 @@ Per [`docs/versioning-and-stability.md`](../versioning-and-stability.md):
 | --- | --- | --- |
 | Declared minimum (`engines`) | `>=20` | `packages/protocol/package.json` |
 | Protocol CI | 20 | every workflow (`ci.yml`, `publishability.yml`, `changeset-validation.yml`, `release-validation.yml`, `rc-validation.yml`) pins `node-version: 20` |
-| Additional validation | 22 (v22.22.2) | this sprint's local validation battery, and AOC Enterprise's CI (`node-version: '22'`) and adoption-sprint evidence |
+| Additional validation | 22 (v22.22.2) | this sprint's local validation battery, and Soberanía Enterprise's CI (`node-version: '22'`) and adoption-sprint evidence |
 
 Versions other than 20 and 22 have not been tested and are not claimed.

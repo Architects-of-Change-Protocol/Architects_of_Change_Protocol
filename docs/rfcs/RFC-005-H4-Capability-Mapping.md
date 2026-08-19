@@ -6,17 +6,17 @@
 | Title | Capability Mapping |
 | Status | Draft |
 | Category | Core Protocol Extension |
-| Authors | AOC Protocol Architecture Working Group |
+| Authors | Soberanía Protocol Architecture Working Group |
 | Created | 2026-06-03 |
 | Last Updated | 2026-06-03 |
 | Supersedes | — |
-| Related | RFC-004 Evidence Layer v1.0, RFC-005 AOC Claims Framework, RFC-005-H1 Standing Traceability, RFC-005-H2 Standing Engine, RFC-005-H3 Standing Governance, RFC-005-H5 Delegated Standing, RFC-005-H8 Authority Model, RFC-005-H9 Decision Framework |
+| Related | RFC-004 Evidence Layer v1.0, RFC-005 Soberanía Claims Framework, RFC-005-H1 Standing Traceability, RFC-005-H2 Standing Engine, RFC-005-H3 Standing Governance, RFC-005-H5 Delegated Standing, RFC-005-H8 Authority Model, RFC-005-H9 Decision Framework |
 
 ---
 
 ## Abstract
 
-This document defines Capability Mapping for the AOC Protocol. Capability Mapping specifies how standing and delegation context are consumed by a Capability Engine to produce bounded, policy-governed, traceable, and revocable capability decisions. It extends RFC-004, RFC-005, RFC-005-H1, RFC-005-H2, RFC-005-H3, RFC-005-H5, RFC-005-H8, and RFC-005-H9 by establishing Capability as the bridge between Delegation and Authority in the canonical constitutional chain.
+This document defines Capability Mapping for the Soberanía Protocol. Capability Mapping specifies how standing and delegation context are consumed by a Capability Engine to produce bounded, policy-governed, traceable, and revocable capability decisions. It extends RFC-004, RFC-005, RFC-005-H1, RFC-005-H2, RFC-005-H3, RFC-005-H5, RFC-005-H8, and RFC-005-H9 by establishing Capability as the bridge between Delegation and Authority in the canonical constitutional chain.
 
 Capability Mapping does not define a runtime engine, database schema, API shape, credential format, user interface, or scoring product. It defines the protocol requirements that any conformant capability implementation must satisfy.
 
@@ -54,9 +54,9 @@ Capability Mapping does not define a runtime engine, database schema, API shape,
 
 ## 1. Executive Summary
 
-Capability Mapping defines the Capability Layer that sits between Delegation and Authority in the AOC constitutional chain.
+Capability Mapping defines the Capability Layer that sits between Delegation and Authority in the Soberanía constitutional chain.
 
-The AOC constitutional chain is:
+The Soberanía constitutional chain is:
 
 ```text
 Evidence
@@ -900,7 +900,7 @@ Every layer is required. Omitting or collapsing layers creates protocol vulnerab
 
 ### 18.1 Decision traceability
 
-A decision that cannot be traced back through the capability, standing, and evidence chain is not a conformant AOC decision. Decision traceability is the culmination of Standing Traceability (RFC-005-H1), Standing Engine provenance (RFC-005-H2), and Capability Traceability (this RFC).
+A decision that cannot be traced back through the capability, standing, and evidence chain is not a conformant Soberanía decision. Decision traceability is the culmination of Standing Traceability (RFC-005-H1), Standing Engine provenance (RFC-005-H2), and Capability Traceability (this RFC).
 
 ### 18.2 Capability is not decision
 
@@ -1073,7 +1073,7 @@ A complete implementation or document alignment for RFC-005-H4 satisfies the fol
 
 ## 25. Conclusion
 
-RFC-005-H4 establishes Capability Mapping as a required layer in the AOC constitutional chain. The chain cannot be correctly implemented without it.
+RFC-005-H4 establishes Capability Mapping as a required layer in the Soberanía constitutional chain. The chain cannot be correctly implemented without it.
 
 Evidence records observed facts. Claims formalize assertions. Standing interprets evidence and claims under context and policy. Delegation may extend bounded standing-derived influence or permission context without rewriting standing. Capability translates standing eligibility and applicable delegation basis into bounded, scoped, policy-governed permissions. Authority recognizes actions under those permissions as legitimate bases for decisions.
 

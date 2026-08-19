@@ -127,7 +127,7 @@ function ProfileContent({ organization }: { organization: ConstitutionalIndexOrg
           <p className="assurance-profile-section-label">Complete Assessment</p>
           <h2>Represent this organization?</h2>
           <p>
-            Unlock the complete AOC Constitutional Assessment including findings, evidence review,
+            Unlock the complete Soberanía Constitutional Assessment including findings, evidence review,
             domain analysis, and constitutional recommendations.
           </p>
         </div>
@@ -141,7 +141,7 @@ function ProfileContent({ organization }: { organization: ConstitutionalIndexOrg
             Unlock Full Assessment
           </a>
           <a className="assurance-profile-secondary-cta" href={ENTERPRISE_URL}>
-            Explore AOC Enterprise
+            Explore Soberanía Enterprise
           </a>
         </div>
       </section>
@@ -159,7 +159,7 @@ export function AssuranceProfilePage({ slug }: { slug: string }) {
           <a href="/assurance/intelligence-risk" className="flex items-center gap-3">
             <LogoRotating size={28} inverted />
             <div className="flex items-baseline gap-2">
-              <span className="text-xl font-semibold tracking-tighter">AOC</span>
+              <span className="text-xl font-semibold tracking-tighter">Soberanía</span>
               <span className="text-xs text-emerald-400 uppercase tracking-[0.2em]">Constitutional Index</span>
             </div>
           </a>
@@ -176,7 +176,7 @@ export function AssuranceProfilePage({ slug }: { slug: string }) {
           <section className="assurance-profile-not-found">
             <p className="assurance-profile-eyebrow">Public Constitutional Profile</p>
             <h1>Organization not found</h1>
-            <p>This organization does not have a public AOC Constitutional Index profile.</p>
+            <p>This organization does not have a public Soberanía Constitutional Index profile.</p>
             <a className="assurance-profile-primary-cta" href="/assurance/intelligence-risk#index">
               Return to the Index
             </a>

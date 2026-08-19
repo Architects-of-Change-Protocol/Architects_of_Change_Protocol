@@ -1,10 +1,10 @@
-# Governance Execution Fabric (AOC Core)
+# Governance Execution Fabric (Soberanía Protocol Core)
 
-The Governance Execution Fabric provides semantic execution coordination for AOC Core governance flows across runtimes and trust domains.
+The Governance Execution Fabric provides semantic execution coordination for Soberanía Protocol Core governance flows across runtimes and trust domains.
 
 ## Why this exists
 
-AOC had governance decisioning and distributed governance primitives, but it lacked a resumable execution layer that could:
+Soberanía had governance decisioning and distributed governance primitives, but it lacked a resumable execution layer that could:
 - pause and resume execution,
 - preserve ownership via leases,
 - route work through continuations,

@@ -1,6 +1,6 @@
 # Phase 2.4 Visual Capability Runtime UI
 
-This module provides a reusable, typed runtime UI architecture for the AOC capability delegation domain.
+This module provides a reusable, typed runtime UI architecture for the Soberanía capability delegation domain.
 
 ## Included building blocks
 

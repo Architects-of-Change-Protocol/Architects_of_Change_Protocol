@@ -186,7 +186,7 @@ Four properties matter enormously to this vertical and are already guaranteed:
 - Historical versions are never rewritten; a dispute is recorded as `Contested` standing
   without deleting or mutating the contested claim.
 
-APV-06's required separation — *user says X* vs *AOC has evidence of X* vs *a professional
+APV-06's required separation — *user says X* vs *Soberanía has evidence of X* vs *a professional
 attests X within scope Y* — is therefore **already structurally expressible** in Protocol.
 
 ### 2.4 The trust chain — `@aoc/protocol/claims`
@@ -357,7 +357,7 @@ The scanners walk `packages`, `enterprise/src`, `src`, `runtime`, `crypto`, `exa
 | 4 | Detect a tampered file (APV-12 negative) | `verifyContentIdentity` → `CONTENT_DIGEST_MISMATCH` | REUSE |
 | 5 | Represent one piece of evidence (APV-05) | `CanonicalEvidence` + `EvidenceType` | REUSE |
 | 6 | Represent "the applicant says X" (APV-06) | `CanonicalClaim` (+ `ClaimType.Authorship` / `Origin` / `Custom`) | REUSE |
-| 7 | Represent "AOC checked X" (APV-07) | `CanonicalVerification { status, verifier, findings, confidence? }` | REUSE |
+| 7 | Represent "Soberanía checked X" (APV-07) | `CanonicalVerification { status, verifier, findings, confidence? }` | REUSE |
 | 8 | Represent "a notary attests X in scope Y" (APV-08) | `CanonicalAttestation { attester, claimRef, statement, issuedAt, credentialRefs, proofRefs }` | REUSE |
 | 9 | Prove the attestor is a licensed professional (APV-08/17) | `CanonicalCredential` with `CredentialType.ProfessionalCredential` + `CredentialStatusLookup` | REUSE |
 | 10 | Sign an attestation / manifest | `SovereignProof`, `signSovereignManifest`, `SignedClaim<T>` | REUSE |
@@ -537,7 +537,7 @@ implemented.
 ## 9. Recommended boundary for APV-01 (input only — not a decision)
 
 ```text
-AOC PROTOCOL            subject identity, integrity, canonical record,
+SOBERANÍA PROTOCOL      subject identity, integrity, canonical record,
                         claims/evidence/attestation/verification/standing vocabulary,
                         registry & credential references, proofs, canonicalization,
                         capability invocation + evidence, portability, adapter ports,
@@ -551,7 +551,7 @@ VERTICAL                declaration capture, automated verification pipeline,
                         vertical APIs/adapters/UI
                         —— knows what a house and a WAV file are; governs nothing
 
-AOC ENTERPRISE          authority resolution, policy, approvals, decisions, obligations,
+SOBERANÍA ENTERPRISE    authority resolution, policy, approvals, decisions, obligations,
                         grants, enforcement, revocation, usage evidence
                         —— governs actions on governed resources; registers nothing legally
 
@@ -561,8 +561,8 @@ TOKENIZER               token issuance, contracts, custody, marketplace, settlem
 
 The one sentence APV-01 must make unfalsifiable:
 
-> **Asset Protocolization is a vertical built on AOC Protocol. It is not AOC Protocol
-> itself, it is not AOC Enterprise, and it does not tokenize.**
+> **Asset Protocolization is a vertical built on Soberanía Protocol. It is not Soberanía Protocol
+> itself, it is not Soberanía Enterprise, and it does not tokenize.**
 
 ---
 

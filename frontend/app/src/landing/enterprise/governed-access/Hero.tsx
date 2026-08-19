@@ -5,7 +5,7 @@ const CTA_HREF = `mailto:${EMAIL}?subject=${encodeURIComponent('Governed Access 
 
 // Dark bookend, matching the visual rhythm of ../Hero.tsx (Enterprise) and
 // ../CtaSection.tsx: light-primary page, dark hero + closing CTA. Copy is
-// the product claim itself, not an explanation of AOC Enterprise as a
+// the product claim itself, not an explanation of Soberanía Enterprise as a
 // platform — see docs/w006-governed-access-product-landing.md.
 export function Hero() {
   return (
@@ -14,7 +14,7 @@ export function Hero() {
         <div className="flex items-center gap-2.5">
           <LogoRotating size={18} inverted />
           <p className="text-xs font-bold uppercase tracking-[0.14em] text-teal-300">
-            AOC Enterprise &middot; Governed Access
+            Soberanía Enterprise &middot; Governed Access
           </p>
         </div>
 

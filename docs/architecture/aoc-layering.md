@@ -1,14 +1,14 @@
-# AOC Internal Layering
+# Soberanía Internal Layering
 
 This repository now uses a three-layer internal architecture boundary to prepare for future multi-repo extraction while preserving current runtime behavior.
 
 ## Layers
 
-1. **AOC Protocol** (`src/aoc/protocol`)
+1. **Soberanía Protocol** (`src/aoc/protocol`)
    - Contains semantic contracts, trust/capability/delegation types, and protocol-level interfaces.
    - Must not depend on enterprise runtime or PMFreak product features.
 
-2. **AOC Enterprise** (`src/aoc/enterprise`)
+2. **Soberanía Enterprise** (`src/aoc/enterprise`)
    - Contains runtime implementation for policy/delegation/execution and enterprise trust operations.
    - May depend on protocol contracts.
    - Must not depend on PMFreak features.
@@ -20,7 +20,7 @@ This repository now uses a three-layer internal architecture boundary to prepare
 ## Dependency Direction
 
 Allowed import direction:
-- `PMFreak -> AOC Enterprise -> AOC Protocol`
+- `PMFreak -> Soberanía Enterprise -> Soberanía Protocol`
 - `Enterprise -> Protocol`
 
 Disallowed:
@@ -30,7 +30,7 @@ Disallowed:
 
 ## Transitional Compatibility
 
-To avoid runtime breakage during extraction, legacy paths under `src/lib/security/*` and `src/lib/*` currently expose **re-export shims** to new AOC/PMFreak namespaces.
+To avoid runtime breakage during extraction, legacy paths under `src/lib/security/*` and `src/lib/*` currently expose **re-export shims** to new Soberanía/PMFreak namespaces.
 
 This keeps API v1/SDK behavior stable while allowing phased migration of imports.
 

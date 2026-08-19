@@ -4,7 +4,7 @@
 
 ## Purpose
 
-This procedure governs changes to the AOC Constitution, architectural laws, constitutional policy, ownership domains, authorities, decision authorities, enforcement matrix, and violation catalog.
+This procedure governs changes to the Soberanía Constitution, architectural laws, constitutional policy, ownership domains, authorities, decision authorities, enforcement matrix, and violation catalog.
 
 ## Amendment types
 

@@ -1,26 +1,26 @@
-# RFC-001 — AOC Identity Layer v1.0
+# RFC-001 — Soberanía Identity Layer v1.0
 
 | Campo | Valor |
 |---|---|
 | Número RFC | 001 |
-| Título | AOC Identity Layer v1.0 |
+| Título | Soberanía Identity Layer v1.0 |
 | Estado | Draft |
 | Categoría | Core Protocol / Constitutional |
-| Autores | AOC Protocol Architecture Working Group |
+| Autores | Soberanía Protocol Architecture Working Group |
 | Creado | 2026-06-06 |
 | Última actualización | 2026-06-06 |
 | Sustituye | — |
-| Relacionado | AOC Charter, RFC-004 Evidence Layer v1.0, RFC-005 Claims Framework, Protocol Invariants Specification |
+| Relacionado | Soberanía Charter, RFC-004 Evidence Layer v1.0, RFC-005 Claims Framework, Protocol Invariants Specification |
 
 ---
 
 ## Abstract
 
-Esta RFC define la **Identity Layer** de AOC Protocol: la capa constitucional y tecnológicamente neutral mediante la cual un sujeto puede ser referenciado, reconocido y verificado a través del tiempo sin que su identidad dependa de una plataforma, proveedor, registro, institución o infraestructura únicos.
+Esta RFC define la **Identity Layer** de Soberanía Protocol: la capa constitucional y tecnológicamente neutral mediante la cual un sujeto puede ser referenciado, reconocido y verificado a través del tiempo sin que su identidad dependa de una plataforma, proveedor, registro, institución o infraestructura únicos.
 
 La Identity Layer establece el vocabulario canónico, las invariantes, los estados, los ciclos de vida, las reglas de verificación, delegación, recuperación, impugnación, gobernanza y trazabilidad necesarias para preservar la continuidad de identidades humanas, organizacionales, institucionales, de agentes y de máquinas. No define autenticación, autorización, wallets, interfaces de usuario, bases de datos, blockchains ni proveedores de identidad. Define los contratos semánticos que cualquier implementación conforme debe respetar.
 
-Esta RFC deriva su legitimidad del **AOC Charter**. Hace operativas, en materia de identidad, la soberanía individual e institucional, el consentimiento explícito, la portabilidad, la neutralidad de mercado, la auditabilidad y la resistencia a captura. La Identity Layer está subordinada al Charter: ninguna interpretación de esta RFC puede ampliar poderes, eliminar límites o reducir derechos reconocidos por el Charter.
+Esta RFC deriva su legitimidad del **Soberanía Charter**. Hace operativas, en materia de identidad, la soberanía individual e institucional, el consentimiento explícito, la portabilidad, la neutralidad de mercado, la auditabilidad y la resistencia a captura. La Identity Layer está subordinada al Charter: ninguna interpretación de esta RFC puede ampliar poderes, eliminar límites o reducir derechos reconocidos por el Charter.
 
 La Identity Layer precede lógicamente a RFC-004 y RFC-005. RFC-004 permite preservar evidencia sobre la existencia, control, evolución y uso de una identidad. RFC-005 permite transformar esa evidencia en assertions, claims, attestations y verificaciones capaces de contribuir a standing, capability y authority. **Identity responde quién o qué es referenciado; no responde por sí sola si ese principal es confiable, tiene standing, posee una capability o está autorizado para decidir.**
 
@@ -62,7 +62,7 @@ La Identity Layer precede lógicamente a RFC-004 y RFC-005. RFC-004 permite pres
 
 ### 1.1 Scope
 
-Esta RFC gobierna exclusivamente la semántica protocolaria de identidad en AOC. Define:
+Esta RFC gobierna exclusivamente la semántica protocolaria de identidad en Soberanía. Define:
 
 - cómo se referencia un sujeto sin confundir referencia con control;
 - cómo un principal demuestra continuidad o control operativo;
@@ -97,9 +97,9 @@ Los términos **MUST**, **MUST NOT**, **REQUIRED**, **SHOULD**, **SHOULD NOT** y
 
 En caso de conflicto, se aplica el siguiente orden de precedencia:
 
-1. AOC Charter.
+1. Soberanía Charter.
 2. Invariantes constitucionales de esta RFC.
-3. Especificaciones normativas transversales de AOC.
+3. Especificaciones normativas transversales de Soberanía.
 4. RFCs dependientes, incluidas RFC-004 y RFC-005.
 5. Perfiles de implementación y políticas de dominio.
 6. Decisiones operativas de proveedores o deployers.
@@ -1931,7 +1931,7 @@ Un Subject no debería perder derechos por indisponibilidad temporal de un prove
 
 ## Constitutional Conclusion
 
-Identity es la primera condición de accountability, pero no su conclusión. AOC Protocol reconoce que una persona, organización, institución, máquina o agent debe poder existir protocolariamente, demostrar continuidad, cambiar sus mecanismos operativos y cuestionar decisiones sobre su identidad sin quedar subordinado a una infraestructura única.
+Identity es la primera condición de accountability, pero no su conclusión. Soberanía Protocol reconoce que una persona, organización, institución, máquina o agent debe poder existir protocolariamente, demostrar continuidad, cambiar sus mecanismos operativos y cuestionar decisiones sobre su identidad sin quedar subordinado a una infraestructura única.
 
 Esta RFC establece por ello una arquitectura constitucional de separación:
 
@@ -1948,4 +1948,4 @@ Sobre esta base, RFC-004 puede preservar evidencia y RFC-005 puede construir cla
 
 ---
 
-*Este documento es RFC-001 de la serie de especificaciones de AOC Protocol. Toda enmienda MUST seguir el proceso público, versionado, trazable y anti-captura establecido por el AOC Charter y la governance aplicable. Las versiones históricas MUST permanecer accesibles y verificables.*
+*Este documento es RFC-001 de la serie de especificaciones de Soberanía Protocol. Toda enmienda MUST seguir el proceso público, versionado, trazable y anti-captura establecido por el Soberanía Charter y la governance aplicable. Las versiones históricas MUST permanecer accesibles y verificables.*

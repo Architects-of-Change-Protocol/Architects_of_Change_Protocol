@@ -1,16 +1,16 @@
-# AOC Constitution
+# Soberanía Constitution
 
 **Constitution Version:** v1.0
 
 **Ratification Status:** Ratified
 
-**Sovereign Baseline:** AOC Constitution v1.0
+**Sovereign Baseline:** Soberanía Constitution v1.0
 
-**Supreme authority:** This document is the canonical constitutional authority for the Architects of Change Protocol repository.
+**Supreme authority:** This document is the canonical constitutional authority for the Soberanía Protocol repository.
 
 ## 1. Constitutional authority
 
-The AOC Constitution governs architectural laws, ownership domains, compatibility authorities, transitional authorities, enforcement scanners, CI gates, release gates, and amendment procedure. If another constitutional artifact conflicts with this document, this document controls until a ratified amendment updates it.
+The Soberanía Constitution governs architectural laws, ownership domains, compatibility authorities, transitional authorities, enforcement scanners, CI gates, release gates, and amendment procedure. If another constitutional artifact conflicts with this document, this document controls until a ratified amendment updates it.
 
 ## 2. Referenced constitutional artifacts
 
@@ -269,7 +269,7 @@ The constitutional chain is `Authority → Capability → Policy → Standing �
 
 ## 18. Release governance
 
-`validate:release` must run constitutional amendment and claim governance validation before publishability validation. The aggregate AOC boundary gate must include amendment, version, authority, capability, policy, decision, standing, and all claim authority, evidence, lifecycle, dispute, supersession, withdrawal, and aggregate governance scanners, and all trust authority, evidence, lifecycle, issuance, decay, revocation, and aggregate governance scanners, and all verification authority, evidence, lifecycle, methods, expiration, revocation, and aggregate governance scanners, and all reputation authority, sources, lifecycle, calculation, decay, disputes, corrections, revocation, and aggregate governance scanners, and all attestation authority, scope, eligibility, lifecycle, weight, expiration, revocation, disputes, and aggregate governance scanners, and all consensus authority, models, thresholds, lifecycle, expiration, revocation, disputes, recomputation, and aggregate governance scanners, and all voting authority, eligibility, weight, delegation, motion, lifecycle, expiration, challenge, revocation, and aggregate voting governance scanners, and all runtime authority, execution, capabilities, evidence, integrity, obligations, outcomes, lifecycle, audit, challenges, revocation, and aggregate runtime governance scanners. Capability, policy, standing, claim, trust, verification, reputation, attestation, consensus, governance, voting, and decision governance validation must complete before publishability validation.
+`validate:release` must run constitutional amendment and claim governance validation before publishability validation. The aggregate Soberanía boundary gate must include amendment, version, authority, capability, policy, decision, standing, and all claim authority, evidence, lifecycle, dispute, supersession, withdrawal, and aggregate governance scanners, and all trust authority, evidence, lifecycle, issuance, decay, revocation, and aggregate governance scanners, and all verification authority, evidence, lifecycle, methods, expiration, revocation, and aggregate governance scanners, and all reputation authority, sources, lifecycle, calculation, decay, disputes, corrections, revocation, and aggregate governance scanners, and all attestation authority, scope, eligibility, lifecycle, weight, expiration, revocation, disputes, and aggregate governance scanners, and all consensus authority, models, thresholds, lifecycle, expiration, revocation, disputes, recomputation, and aggregate governance scanners, and all voting authority, eligibility, weight, delegation, motion, lifecycle, expiration, challenge, revocation, and aggregate voting governance scanners, and all runtime authority, execution, capabilities, evidence, integrity, obligations, outcomes, lifecycle, audit, challenges, revocation, and aggregate runtime governance scanners. Capability, policy, standing, claim, trust, verification, reputation, attestation, consensus, governance, voting, and decision governance validation must complete before publishability validation.
 
 ## 19. Consensus authority governance
 
@@ -338,6 +338,6 @@ Ratification governance is governed by:
 - `RATIFICATION-AMENDMENT-LOCK-POLICY.md`
 - `RATIFICATION-VIOLATION-CATALOG.md`
 
-Ratification is the governed constitutional act through which the completed constitutional system is formally adopted as the authoritative foundation for AOC Protocol governance. Ratification ≠ Audit, Ratification ≠ Governance, Ratification ≠ Voting, and Complete ≠ Ratified as constitutional doctrine. v1.0 is the first ratified sovereign baseline. Future constitutional changes require governed amendment.
+Ratification is the governed constitutional act through which the completed constitutional system is formally adopted as the authoritative foundation for Soberanía Protocol governance. Ratification ≠ Audit, Ratification ≠ Governance, Ratification ≠ Voting, and Complete ≠ Ratified as constitutional doctrine. v1.0 is the first ratified sovereign baseline. Future constitutional changes require governed amendment.
 
 Creation Amendment: AOC-AMD-0019

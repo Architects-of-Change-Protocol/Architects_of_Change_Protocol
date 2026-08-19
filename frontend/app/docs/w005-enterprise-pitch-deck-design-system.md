@@ -1,4 +1,4 @@
-# W005 — AOC Enterprise landing reconstruction on the pitch-deck design system
+# W005 — Soberanía Enterprise landing reconstruction on the pitch-deck design system
 
 Status: complete for the Enterprise homepage. Not a redesign of the wider
 site (Protocol, Assurance, Contact, etc. keep their existing look — see
@@ -6,12 +6,12 @@ site (Protocol, Assurance, Contact, etc. keep their existing look — see
 
 ## Why
 
-AOC has canonical commercial collateral for Enterprise: the SK005 HTML
-pitch deck and the AOC Enterprise One Pager. Both were originally supplied
+Soberanía has canonical commercial collateral for Enterprise: the SK005 HTML
+pitch deck and the Soberanía Enterprise One Pager. Both were originally supplied
 as external source material for this task and are now imported verbatim
 into this repository (see "Canonical sources" below) via SK005.1, a
 dedicated documentation-only import PR — this document is where their
-design tokens and narrative are transcribed for engineering use. AOC
+design tokens and narrative are transcribed for engineering use. Soberanía
 Enterprise's homepage previously had its own, unrelated dark/cyan visual
 language and a broader narrative (a multi-vertical "control plane" story)
 that predates the deck. This PR makes Enterprise the interactive web
@@ -23,8 +23,8 @@ offer.
 
 | Artifact | Format | Role | Location |
 |---|---|---|---|
-| SK005 AOC Enterprise Pitch Deck | standalone HTML (12 `<section class="slide">` blocks) | Canonical visual language + primary narrative sequence | [`docs/commercial/SK005-AOC-ENTERPRISE-PITCH-DECK.html`](./commercial/SK005-AOC-ENTERPRISE-PITCH-DECK.html) |
-| AOC Enterprise One Pager | standalone HTML (single A4 page) | Canonical short-form messaging (solution/service/foundation split, "why not build it yourself", audience tags, CTA copy) | [`docs/commercial/SK006-AOC-ENTERPRISE-ONE-PAGER.html`](./commercial/SK006-AOC-ENTERPRISE-ONE-PAGER.html) |
+| SK005 Soberanía Enterprise Pitch Deck | standalone HTML (12 `<section class="slide">` blocks) | Canonical visual language + primary narrative sequence | [`docs/commercial/SK005-AOC-ENTERPRISE-PITCH-DECK.html`](./commercial/SK005-AOC-ENTERPRISE-PITCH-DECK.html) |
+| Soberanía Enterprise One Pager | standalone HTML (single A4 page) | Canonical short-form messaging (solution/service/foundation split, "why not build it yourself", audience tags, CTA copy) | [`docs/commercial/SK006-AOC-ENTERPRISE-ONE-PAGER.html`](./commercial/SK006-AOC-ENTERPRISE-ONE-PAGER.html) |
 
 These are imported byte-for-byte from the original source files (see
 `docs/commercial/README.md` for the import's integrity validation) — not
@@ -107,7 +107,7 @@ than re-implemented per section.
 
 ## Logo consistency
 
-The official AOC logo (`components/logo/LogoRotating.tsx`) is unchanged —
+The official Soberanía logo (`components/logo/LogoRotating.tsx`) is unchanged —
 not redesigned, recolored, or replaced — and now appears consistently
 across the Enterprise experience: the sticky nav (as before), the Hero
 (new), matching how it already anchors the Protocol homepage nav.

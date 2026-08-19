@@ -55,7 +55,7 @@ export function ProtocolFooter({ accent = 'sapphire' }: { accent?: Mineral }) {
         <footer className="footer-fade rounded-3xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.008))] px-4 sm:px-6 py-8 md:px-10 md:py-12">
           <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
             <div className="max-w-sm">
-              <h3 className="text-base font-semibold tracking-tight text-white">AOC Protocol</h3>
+              <h3 className="text-base font-semibold tracking-tight text-white">Soberanía Protocol</h3>
               <div className={`mt-4 h-px w-16 ${tone.divider}`} />
               <p className="mt-4 text-sm leading-6 text-white/62">
                 An open, provider-neutral protocol for digital assets — identity, integrity,
@@ -68,7 +68,7 @@ export function ProtocolFooter({ accent = 'sapphire' }: { accent?: Mineral }) {
           </div>
 
           <div className="mt-10 flex flex-col gap-4 border-t border-white/10 pt-5 text-xs text-white/45 sm:flex-row sm:items-center sm:justify-between">
-            <p>© 2026 AOC Protocol</p>
+            <p>© 2026 Soberanía Protocol</p>
             <div className="flex items-center gap-5">
               <span className="text-white/35">Privacy</span>
               <span className="text-white/35">Terms</span>

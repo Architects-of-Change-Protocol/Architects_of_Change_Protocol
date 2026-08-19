@@ -17,7 +17,7 @@ import { BusinessNeeds } from './enterprise/BusinessNeeds';
 import { ArchitectureExperience } from './enterprise/ArchitectureExperience';
 import { CtaSection } from './enterprise/CtaSection';
 
-// AOC Enterprise is the interactive extension of the canonical SK005 pitch
+// Soberanía Enterprise is the interactive extension of the canonical SK005 pitch
 // deck (maintained outside this repo as commercial collateral — see
 // docs/w005-enterprise-pitch-deck-design-system.md for the full mapping).
 // Section order below follows the deck's own 12-slide sequence exactly:

@@ -41,18 +41,18 @@ function useAssessmentMeta(orgName: string, slug: string) {
       return { el, prevHref, created };
     };
 
-    document.title = `${orgName} Constitutional Assessment | AOC Assurance`;
-    setMeta('description', `Constitutional assessment of ${orgName} — Governance Score, Sovereignty Score, and Constitutional Position. Evaluated by AOC Assurance.`);
+    document.title = `${orgName} Constitutional Assessment | Soberanía Assurance`;
+    setMeta('description', `Constitutional assessment of ${orgName} — Governance Score, Sovereignty Score, and Constitutional Position. Evaluated by Soberanía Assurance.`);
     setMeta('robots', 'index, follow');
 
     const { el: canonicalEl, prevHref: prevCanonical } = setLink('canonical', pageUrl);
 
-    setMeta('og:title', `${orgName} Constitutional Assessment | AOC Assurance`, true);
+    setMeta('og:title', `${orgName} Constitutional Assessment | Soberanía Assurance`, true);
     setMeta('og:description', `Independent constitutional assessment of ${orgName} evaluating AI Governance and Sovereignty dimensions.`, true);
     setMeta('og:url', pageUrl, true);
     setMeta('og:type', 'article', true);
     setMeta('og:image', 'https://www.aocprotocol.org/og-image.png', true);
-    setMeta('og:site_name', 'AOC Assurance', true);
+    setMeta('og:site_name', 'Soberanía Assurance', true);
     setMeta('twitter:card', 'summary_large_image');
 
     const jsonLd = document.createElement('script');
@@ -62,12 +62,12 @@ function useAssessmentMeta(orgName: string, slug: string) {
       {
         '@context': 'https://schema.org',
         '@type': 'WebPage',
-        name: `${orgName} Constitutional Assessment | AOC Assurance`,
+        name: `${orgName} Constitutional Assessment | Soberanía Assurance`,
         url: pageUrl,
         breadcrumb: {
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'AOC Assurance', item: 'https://www.aocprotocol.org' },
+            { '@type': 'ListItem', position: 1, name: 'Soberanía Assurance', item: 'https://www.aocprotocol.org' },
             { '@type': 'ListItem', position: 2, name: 'Research Hub', item: 'https://www.aocprotocol.org/research' },
             { '@type': 'ListItem', position: 3, name: `${orgName} Assessment`, item: pageUrl },
           ],
@@ -101,7 +101,7 @@ export function AssessmentPlaceholderPage({ slug }: { slug: string }) {
       >
         <a href="/research" className="flex items-center gap-2.5" aria-label="Back to Research Hub">
           <LogoRotating size={26} inverted />
-          <span className="text-sm font-semibold text-white/90">AOC Assurance</span>
+          <span className="text-sm font-semibold text-white/90">Soberanía Assurance</span>
         </a>
         <a
           href="/research"
@@ -139,7 +139,7 @@ export function AssessmentPlaceholderPage({ slug }: { slug: string }) {
           </div>
           <p className="text-base font-medium text-white/80">Assessment coming soon.</p>
           <p className="mt-3 text-sm text-white/45 leading-relaxed">
-            The full constitutional assessment for {orgName} is in preparation and will be published to the AOC Research Hub.
+            The full constitutional assessment for {orgName} is in preparation and will be published to the Soberanía Research Hub.
           </p>
           <a
             href="/assurance/intelligence-risk#index"

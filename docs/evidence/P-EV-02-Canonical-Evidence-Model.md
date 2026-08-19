@@ -6,7 +6,7 @@
 | Title | Canonical Evidence Model |
 | Status | Draft |
 | Category | Evidence Layer |
-| Authors | AOC Protocol Architecture Working Group |
+| Authors | Soberanía Protocol Architecture Working Group |
 | Created | 2026-06-03 |
 | Last Updated | 2026-06-03 |
 | Related | RFC-004 Evidence Layer v1.0, RFC-005 Claims Framework, RFC-005-H1 Standing Traceability, P-EV-01.5 Strategic Implications, P-EV-01.6 Evidence and Human Sovereignty |
@@ -15,7 +15,7 @@
 
 ## Abstract
 
-This document defines the Canonical Evidence Model for the AOC Protocol. It establishes Evidence as the foundational protocol primitive from which Claims, Standing, Capabilities, Authority, and Decisions derive their explainable force. It specifies what Evidence is, what makes something Evidence, how Evidence is represented semantically, how Evidence remains traceable and sovereign, and how Evidence is distinguished from downstream interpretations and outcomes.
+This document defines the Canonical Evidence Model for the Soberanía Protocol. It establishes Evidence as the foundational protocol primitive from which Claims, Standing, Capabilities, Authority, and Decisions derive their explainable force. It specifies what Evidence is, what makes something Evidence, how Evidence is represented semantically, how Evidence remains traceable and sovereign, and how Evidence is distinguished from downstream interpretations and outcomes.
 
 ---
 
@@ -55,7 +55,7 @@ This document defines the Canonical Evidence Model for the AOC Protocol. It esta
 
 ## 1. Executive Summary
 
-The Canonical Evidence Model defines the foundational representation of Evidence within AOC.
+The Canonical Evidence Model defines the foundational representation of Evidence within Soberanía.
 
 Evidence is the source of protocol truth. It is the atomic unit of verifiable reality from which all downstream protocol interpretations derive. Evidence represents observed facts, recorded events, verified artifacts, and attested information. Evidence does not represent interpretation, opinion, trust, authority, standing, capability, or decision.
 
@@ -106,7 +106,7 @@ This ambiguity creates predictable failures:
 - Trust becomes opaque because consumers cannot distinguish source reliability, verification status, policy interpretation, and authority.
 - Standing and decisions become difficult to challenge because the Evidence that produced them is not independently traceable.
 
-AOC requires a canonical Evidence model so that every downstream trust, governance, capability, authority, and decision mechanism can rely on a stable foundation. Evidence MUST be represented in a manner that preserves reality before interpretation is applied to it.
+Soberanía requires a canonical Evidence model so that every downstream trust, governance, capability, authority, and decision mechanism can rely on a stable foundation. Evidence MUST be represented in a manner that preserves reality before interpretation is applied to it.
 
 ---
 
@@ -669,7 +669,7 @@ A conformant Canonical Evidence Model specification satisfies the following crit
 
 ## Conclusion
 
-Evidence is the foundational primitive of AOC. It records observed facts, recorded events, verified artifacts, and attested information in a portable, sovereign, traceable, and verifiable form.
+Evidence is the foundational primitive of Soberanía. It records observed facts, recorded events, verified artifacts, and attested information in a portable, sovereign, traceable, and verifiable form.
 
 Everything downstream depends on Evidence:
 

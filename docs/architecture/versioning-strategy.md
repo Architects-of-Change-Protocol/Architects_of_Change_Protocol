@@ -1,4 +1,4 @@
-# AOC Canonical Contract Versioning Strategy
+# Soberanía Canonical Contract Versioning Strategy
 
 ## Semantic versioning model
 Each contract uses `schemaVersion` with `MAJOR.MINOR.PATCH` semantics.

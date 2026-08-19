@@ -1,4 +1,4 @@
-# AOC Protocol — Field Manifest Specification
+# Soberanía Protocol — Field Manifest Specification
 
 **Version:** 0.1
 **Status:** Draft
@@ -27,7 +27,7 @@
 
 ### 1.1 Overview
 
-A **Field Manifest** is a cryptographically verifiable, immutable descriptor that defines the stable identity, meaning, and deterministic addressing of a conceptual field definition within the AOC Protocol. The Field Manifest establishes a canonical reference for field types that can be used by Pack Objects and other protocol constructs to ensure semantic consistency across systems.
+A **Field Manifest** is a cryptographically verifiable, immutable descriptor that defines the stable identity, meaning, and deterministic addressing of a conceptual field definition within the Soberanía Protocol. The Field Manifest establishes a canonical reference for field types that can be used by Pack Objects and other protocol constructs to ensure semantic consistency across systems.
 
 **Formal Definition:**
 

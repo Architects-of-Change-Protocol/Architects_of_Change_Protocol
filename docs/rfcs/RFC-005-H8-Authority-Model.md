@@ -6,17 +6,17 @@
 | Title | Authority Model |
 | Status | Draft |
 | Category | Core Protocol Extension |
-| Authors | AOC Protocol Architecture Working Group |
+| Authors | Soberanía Protocol Architecture Working Group |
 | Created | 2026-06-03 |
 | Last Updated | 2026-06-03 |
 | Supersedes | — |
-| Related | RFC-004 Evidence Layer v1.0, RFC-005 AOC Claims Framework, RFC-005-H1 Standing Traceability, RFC-005-H2 Standing Engine, RFC-005-H3 Standing Governance, RFC-005-H4 Capability Mapping, RFC-005-H5 Delegated Standing, RFC-005-H6 Standing Algorithms, RFC-005-H9 Decision Framework |
+| Related | RFC-004 Evidence Layer v1.0, RFC-005 Soberanía Claims Framework, RFC-005-H1 Standing Traceability, RFC-005-H2 Standing Engine, RFC-005-H3 Standing Governance, RFC-005-H4 Capability Mapping, RFC-005-H5 Delegated Standing, RFC-005-H6 Standing Algorithms, RFC-005-H9 Decision Framework |
 
 ---
 
 ## Abstract
 
-This document defines the Authority Model for the AOC Protocol. Authority is the policy-recognized legitimacy to perform, validate, approve, issue, review, govern, or influence protocol-recognized outcomes. It extends RFC-004, RFC-005, RFC-005-H1, RFC-005-H2, RFC-005-H3, RFC-005-H4, and RFC-005-H5 by establishing Authority as the constitutional layer between Capabilities and Decisions.
+This document defines the Authority Model for the Soberanía Protocol. Authority is the policy-recognized legitimacy to perform, validate, approve, issue, review, govern, or influence protocol-recognized outcomes. It extends RFC-004, RFC-005, RFC-005-H1, RFC-005-H2, RFC-005-H3, RFC-005-H4, and RFC-005-H5 by establishing Authority as the constitutional layer between Capabilities and Decisions.
 
 Authority is not power. Authority is not capability. Authority is not standing. Authority is not ownership. Authority is recognized legitimacy under policy, scope, constraints, governance, and traceability.
 
@@ -57,7 +57,7 @@ This RFC is concept-first and implementation-neutral. It does not define a datab
 
 ## 1. Executive Summary
 
-Authority is the protocol layer that determines whether an action, review, approval, issuance, validation, governance action, or decision is recognized as legitimate by the AOC Protocol.
+Authority is the protocol layer that determines whether an action, review, approval, issuance, validation, governance action, or decision is recognized as legitimate by the Soberanía Protocol.
 
 Authority is not merely the ability to act. A subject may possess the technical ability, operational permission, or practical opportunity to act and still lack protocol authority. If the action is not recognized under applicable policy, governance, scope, and traceability requirements, the action MUST NOT be treated as authoritative.
 
@@ -156,7 +156,7 @@ Without a separate Authority Layer, protocols collapse distinct questions into a
 
 These failures create authority laundering, fake approvals, unreviewable decisions, zombie authority, governance capture, and policy bypass.
 
-AOC therefore requires an Authority Layer. The Authority Layer MUST determine whether a subject's use of capability is recognized as legitimate under policy, governance, scope, constraints, and traceable lineage.
+Soberanía therefore requires an Authority Layer. The Authority Layer MUST determine whether a subject's use of capability is recognized as legitimate under policy, governance, scope, constraints, and traceable lineage.
 
 ---
 
@@ -194,7 +194,7 @@ Authority is its own layer. A conformant implementation MUST NOT collapse Author
 
 ## 4. Authority Principles
 
-Authority in AOC is governed by the following canonical principles.
+Authority in Soberanía is governed by the following canonical principles.
 
 | Principle | Requirement |
 |---|---|
@@ -935,7 +935,7 @@ A conformant Authority Model satisfies the following checklist:
 
 ## Conclusion
 
-Authority is the constitutional legitimacy layer of the AOC Protocol.
+Authority is the constitutional legitimacy layer of the Soberanía Protocol.
 
 It exists because the ability to act is not the same as the legitimacy of action. Capabilities enable action. Authority legitimizes action. Decisions consume authority. Without capability, action cannot occur in a conformant system. Without authority, action is not recognized.
 

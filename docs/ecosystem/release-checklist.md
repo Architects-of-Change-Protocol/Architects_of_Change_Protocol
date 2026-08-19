@@ -1,4 +1,4 @@
-# AOC Release Readiness Checklist
+# Soberanía Release Readiness Checklist
 
 - [ ] Clean install passes (`npm ci`).
 - [ ] `npm run validate:release` passes.

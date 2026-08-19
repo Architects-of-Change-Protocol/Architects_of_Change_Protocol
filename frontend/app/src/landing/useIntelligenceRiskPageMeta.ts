@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 
 const PAGE_URL = 'https://www.aocprotocol.org/assurance/intelligence-risk';
-const TITLE = 'Intelligence Risk — an AOC Assurance Module | AOC Assurance';
+const TITLE = 'Intelligence Risk — a Soberanía Assurance Module | Soberanía Assurance';
 const DESCRIPTION =
-  'Intelligence Risk is the specialized AOC Assurance module that assesses Knowledge Loss, Key Person Dependency, Institutional Memory and Constitutional Index posture. Part of AOC Assurance, the assessment and continuous-monitoring layer for AOC Protocol and AOC Enterprise.';
+  'Intelligence Risk is the specialized Soberanía Assurance module that assesses Knowledge Loss, Key Person Dependency, Institutional Memory and Constitutional Index posture. Part of Soberanía Assurance, the assessment and continuous-monitoring layer for Soberanía Protocol and Soberanía Enterprise.';
 
 // Per-page metadata injection, mirroring landing/protocol/usePageMeta.ts.
 // Intelligence Risk moved from the canonical `/?view=assurance` URL to this

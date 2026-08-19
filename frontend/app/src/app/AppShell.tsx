@@ -11,7 +11,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <header className="border-b border-zinc-200 bg-white/90 backdrop-blur dark:border-white/10 dark:bg-zinc-950/80">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 md:px-6">
           <div>
-            <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">AOC Control Plane</div>
+            <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">Soberanía Control Plane</div>
             <div className="text-lg font-semibold">Consent Infrastructure</div>
           </div>
 

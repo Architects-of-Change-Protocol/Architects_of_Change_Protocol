@@ -1,11 +1,11 @@
-# AOC Protocol Commercial Readiness Audit (HRKey MVP, 30-Day Lens)
+# Soberanía Protocol Commercial Readiness Audit (HRKey MVP, 30-Day Lens)
 
 **Date:** 2026-02-24  
 **Auditor posture:** Commercially ruthless. Shipping > elegance.
 
 ## Executive Verdict
 
-**Can AOC support HRKey MVP production in 30 days?**
+**Can Soberanía support HRKey MVP production in 30 days?**
 
 **Yes, but only as a tightly scoped single-tenant MVP with explicit compromises.**  
 Core authorization primitives are implemented and test-backed, but production-critical gaps remain in auditability, persistence robustness, and chain anchoring.

@@ -1,4 +1,4 @@
-# AOC Sovereign Wallet — Threat Model
+# Soberanía Sovereign Wallet — Threat Model
 
 **Version:** 0.1
 **Status:** Draft

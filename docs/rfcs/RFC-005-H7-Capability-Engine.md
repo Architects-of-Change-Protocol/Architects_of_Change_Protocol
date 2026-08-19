@@ -6,17 +6,17 @@
 | Title | Capability Engine |
 | Status | Draft |
 | Category | Core Protocol Extension |
-| Authors | AOC Protocol Architecture Working Group |
+| Authors | Soberanía Protocol Architecture Working Group |
 | Created | 2026-06-03 |
 | Last Updated | 2026-06-03 |
 | Supersedes | — |
-| Related | RFC-004 Evidence Layer v1.0, RFC-005 AOC Claims Framework, RFC-005-H1 Standing Traceability, RFC-005-H2 Standing Engine, RFC-005-H3 Standing Governance, RFC-005-H4 Capability Mapping, RFC-005-H5 Delegated Standing, RFC-005-H8 Authority Model, RFC-005-H9 Decision Framework |
+| Related | RFC-004 Evidence Layer v1.0, RFC-005 Soberanía Claims Framework, RFC-005-H1 Standing Traceability, RFC-005-H2 Standing Engine, RFC-005-H3 Standing Governance, RFC-005-H4 Capability Mapping, RFC-005-H5 Delegated Standing, RFC-005-H8 Authority Model, RFC-005-H9 Decision Framework |
 
 ---
 
 ## Abstract
 
-This document defines the Capability Engine for the AOC Protocol. The Capability Engine is the deterministic policy-governed evaluation function that consumes Standing, Policy, Delegation, and Context and produces Capability Decisions.
+This document defines the Capability Engine for the Soberanía Protocol. The Capability Engine is the deterministic policy-governed evaluation function that consumes Standing, Policy, Delegation, and Context and produces Capability Decisions.
 
 The Capability Engine answers the core protocol question: **How does a protocol determine whether a capability should exist?**
 

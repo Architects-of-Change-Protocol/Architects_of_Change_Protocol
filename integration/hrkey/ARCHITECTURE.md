@@ -1,4 +1,4 @@
-# HRKey ↔ AOC Vault Integration Architecture
+# HRKey ↔ Soberanía Vault Integration Architecture
 
 ## System Diagram
 
@@ -26,16 +26,16 @@
 │  ┌──────────────────────────────────────────────────────────────┐   │
 │  │              AocVaultAdapter (implementation)                │   │
 │  │                                                              │   │
-│  │  Translates HRKey domain calls → AOC Vault operations.       │   │
+│  │  Translates HRKey domain calls → Soberanía Vault operations. │   │
 │  │  Holds Vault reference. No business logic.                   │   │
 │  └──────────────────────────┬───────────────────────────────────┘   │
 │                             │                                       │
 ├─────────────────────────────┼───────────────────────────────────────┤
-│  AOC PROTOCOL (black box)   │  DO NOT MODIFY                       │
+│  SOBERANÍA PROTOCOL         │  DO NOT MODIFY (black box)            │
 ├─────────────────────────────┼───────────────────────────────────────┤
 │                             ▼                                       │
 │  ┌──────────────────────────────────────────────────────────────┐   │
-│  │                    AOC Vault (in-memory)                     │   │
+│  │                    Soberanía Vault (in-memory)               │   │
 │  │                                                              │   │
 │  │  storePack()        storeConsent()      mintCapability()     │   │
 │  │  requestAccess()    registerSdlMapping() revokeCapability()  │   │
@@ -48,7 +48,7 @@
 
 ## Integration Contract Summary
 
-| Adapter Method      | AOC Vault Method(s) Called          | HRKey Provides               | AOC Enforces                              |
+| Adapter Method      | Soberanía Vault Method(s) Called          | HRKey Provides               | Soberanía Enforces                              |
 |---------------------|-------------------------------------|------------------------------|-------------------------------------------|
 | `registerPack`      | `storePack` + `registerSdlMapping`  | PackManifest, SDL mappings   | Hash integrity, SDL path format           |
 | `grantConsent`      | `buildConsentObject` + `storeConsent`| DIDs, scope, perms, expiry  | DID format, scope/perm validation, hashing|
@@ -61,7 +61,7 @@
 ### HRKey is responsible for:
 
 - **User identity**: managing candidate and employer DIDs
-- **Pack construction**: building PackManifestV1 objects from candidate data (using AOC builders)
+- **Pack construction**: building PackManifestV1 objects from candidate data (using Soberanía builders)
 - **SDL domain modeling**: deciding which SDL paths map to which field_ids
 - **Business logic**: scoring, ranking, matching, pricing — all outside this adapter
 - **Action model boundary**: this adapter currently exercises the legacy read-only `requestAccess()` flow. Broader canonical actions (`store`, `share`, `derive`, `aggregate`) exist at the protocol consent/capability layer but are not exposed as generalized HRKey adapter operations yet.
@@ -69,7 +69,7 @@
 - **Temporal decisions**: choosing when consents/capabilities expire
 - **Scope decisions**: choosing which fields to include in consents and capabilities
 
-### AOC Vault enforces (adapter must NOT re-implement):
+### Soberanía Vault enforces (adapter must NOT re-implement):
 
 - **Hash integrity**: canonical JSON → SHA-256 on all objects
 - **Consent validation**: DID format, scope bounds, permission format, timestamps
@@ -86,7 +86,7 @@
 - Tokenomics, payments, credits, billing
 - Persistent storage (database, filesystem) — Vault is in-memory
 - Network transport, API endpoints, HTTP handlers
-- Authentication/authorization beyond AOC capability tokens
+- Authentication/authorization beyond Soberanía capability tokens
 - Key management, signing, encryption
 - Multi-tenancy, rate limiting, quotas
 
@@ -95,7 +95,7 @@
 ```
 Timeline →
 
-Candidate                    HRKey Adapter                    AOC Vault
+Candidate                    HRKey Adapter                    Soberanía Vault
     │                             │                               │
     │  1. Upload references       │                               │
     │──────────────────────────►  │                               │
@@ -110,7 +110,7 @@ Candidate                    HRKey Adapter                    AOC Vault
     │                             │  ◄── consent_hash ───────────│
     │                             │                               │
 
-Employer                     HRKey Adapter                    AOC Vault
+Employer                     HRKey Adapter                    Soberanía Vault
     │                             │                               │
     │  3. Request candidate data  │                               │
     │──────────────────────────►  │                               │
@@ -155,8 +155,8 @@ const hrkey   = createHRKeyAdapter(sharedVault);
 const otherMM = createHRKeyAdapter(sharedVault);
 ```
 
-AOC enforces authorization at the consent/capability level, not at the
+Soberanía enforces authorization at the consent/capability level, not at the
 adapter level. Two market makers cannot escalate each other's tokens
 because derivation invariants bind tokens to specific consent chains.
 
-No changes to AOC are required to support this.
+No changes to Soberanía are required to support this.

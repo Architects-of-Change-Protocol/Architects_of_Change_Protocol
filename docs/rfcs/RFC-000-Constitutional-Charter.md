@@ -1,6 +1,6 @@
 # RFC-000 — Constitutional Charter v2.0
 
-> **The Supreme Constitutional Instrument of AOC Protocol**
+> **The Supreme Constitutional Instrument of Soberanía Protocol**
 
 ---
 
@@ -12,11 +12,11 @@
 | Title                  | Constitutional Charter v2.0                                           |
 | Status                 | Draft                                                                 |
 | Category               | Supreme Constitutional Instrument                                     |
-| Supersedes             | `protocol/charter/README.md` (AOC Charter v1)                        |
-| Governs                | All AOC RFCs, runtimes, governance rules and implementations          |
+| Supersedes             | `protocol/charter/README.md` (Soberanía Charter v1)                        |
+| Governs                | All Soberanía RFCs, runtimes, governance rules and implementations          |
 | Created                | 2026-06-07                                                            |
 | Last Revised           | 2026-06-09                                                            |
-| Authors                | AOC Protocol Architecture Working Group                               |
+| Authors                | Soberanía Protocol Architecture Working Group                               |
 | Constitutional Rank    | Supreme                                                               |
 | Ratification Status    | Draft — pending ratification                                          |
 | Normative Keywords     | MUST, MUST NOT, SHOULD, SHOULD NOT, MAY per RFC 2119                  |
@@ -25,7 +25,7 @@
 
 ## Preamble
 
-We, the participants in the construction of the Architects of Change Protocol, recognizing that the digital age has produced unprecedented concentrations of power over individual identity, data, standing and voice, and that such concentration constitutes a structural threat to human agency and democratic governance, establish this Constitutional Charter as the supreme normative instrument of AOC Protocol.
+We, the participants in the construction of the Soberanía Protocol, recognizing that the digital age has produced unprecedented concentrations of power over individual identity, data, standing and voice, and that such concentration constitutes a structural threat to human agency and democratic governance, establish this Constitutional Charter as the supreme normative instrument of Soberanía Protocol.
 
 We hold that every individual is the primary architect of their own digital existence. No platform, institution, runtime, governance body, cryptographic proof or market adoption may override that primacy. The individual is not a resource to be optimized. The individual is a sovereign subject whose participation in any digital system must remain consensual, bounded, auditable and revocable.
 
@@ -41,7 +41,7 @@ We hold that constitutional continuity matters not only in ordinary times but pr
 
 This Charter does not belong to its authors. It does not belong to any company, government, protocol implementer, cryptographic proof system or governance body. It belongs, in the only meaningful sense available to a protocol, to the principles it enshrines — and to every individual whose sovereignty it is designed to protect.
 
-Let this be the foundation on which all of AOC is built, and the limit beyond which no part of AOC may reach.
+Let this be the foundation on which all of Soberanía is built, and the limit beyond which no part of Soberanía may reach.
 
 ---
 
@@ -137,15 +137,15 @@ Let this be the foundation on which all of AOC is built, and the limit beyond wh
 
 ### Article 1 — Purpose of the Protocol
 
-**1.1 Nature of AOC Protocol**
+**1.1 Nature of Soberanía Protocol**
 
-AOC Protocol is not merely a software framework. It is not an identity system, a governance tool, a blockchain protocol, a credential exchange format or an access-control specification. Each of those descriptions captures a derivative function, not the constitutional purpose.
+Soberanía Protocol is not merely a software framework. It is not an identity system, a governance tool, a blockchain protocol, a credential exchange format or an access-control specification. Each of those descriptions captures a derivative function, not the constitutional purpose.
 
-AOC Protocol is a **constitutional protocol for legitimacy** — a formal system for ensuring that digital authority is born from traceable identity, supported by verifiable evidence, scoped by recognized standing, limited by explicit governance, and always remainss subject to challenge, audit and revocation.
+Soberanía Protocol is a **constitutional protocol for legitimacy** — a formal system for ensuring that digital authority is born from traceable identity, supported by verifiable evidence, scoped by recognized standing, limited by explicit governance, and always remainss subject to challenge, audit and revocation.
 
 **1.2 Primary Purposes**
 
-The purposes of AOC Protocol, listed in order of constitutional priority, are:
+The purposes of Soberanía Protocol, listed in order of constitutional priority, are:
 
 1. **Preservation of Individual Sovereignty.** Every individual is the primary architect of their own digital existence. The protocol exists, first and foremost, to protect that primacy against erosion by institutional capture, technical convenience or market power.
 
@@ -165,9 +165,9 @@ The purposes of AOC Protocol, listed in order of constitutional priority, are:
 
 9. **Anti-Capture.** No single actor — whether individual, institution, governance body, runtime operator, protocol maintainer, AI agent or external adopter — may accumulate exclusive control over identity, standing, authority, decisions, governance or audit.
 
-**1.3 What AOC Is Not**
+**1.3 What Soberanía Is Not**
 
-AOC Protocol MUST NOT be construed as:
+Soberanía Protocol MUST NOT be construed as:
 
 - a product or commercial offering;
 - a national jurisdiction or sovereign state;
@@ -180,7 +180,7 @@ AOC Protocol MUST NOT be construed as:
 
 ### Article 2 — Protected Constitutional Interests
 
-The following interests are constitutionally protected by AOC Protocol. No RFC, governance rule, runtime implementation or decision may diminish these interests except through the formal amendment process defined in Part X, subject to the unamendable core defined in Article 56.
+The following interests are constitutionally protected by Soberanía Protocol. No RFC, governance rule, runtime implementation or decision may diminish these interests except through the formal amendment process defined in Part X, subject to the unamendable core defined in Article 56.
 
 **2.1 Individual Sovereignty**
 
@@ -238,7 +238,7 @@ Every consequential adverse act — revocation of recognized standing, invalidat
 
 **3.1 Hierarchy of Normative Instruments**
 
-The following hierarchy governs all normative instruments within AOC Protocol. Each layer is subordinate to all layers above it.
+The following hierarchy governs all normative instruments within Soberanía Protocol. Each layer is subordinate to all layers above it.
 
 | Rank | Layer                            | Examples                                                    |
 |------|----------------------------------|-------------------------------------------------------------|
@@ -278,7 +278,7 @@ The following subjects are not above RFC-000:
 - No market adoption, however broad.
 - No declared emergency.
 
-This list is not exhaustive. The principle is absolute: nothing within AOC Protocol supersedes RFC-000 except a ratified constitutional amendment adopted through the process defined in Part X.
+This list is not exhaustive. The principle is absolute: nothing within Soberanía Protocol supersedes RFC-000 except a ratified constitutional amendment adopted through the process defined in Part X.
 
 ---
 
@@ -373,7 +373,7 @@ An actor who stands to benefit from a particular constitutional interpretation M
 
 ## Part II — The Twelve Constitutional Principles
 
-The following twelve principles are the structural pillars of AOC Protocol's constitutional order. Each principle is inalienable, mutually reinforcing and, taken together, constitute the complete normative architecture of the protocol.
+The following twelve principles are the structural pillars of Soberanía Protocol's constitutional order. Each principle is inalienable, mutually reinforcing and, taken together, constitute the complete normative architecture of the protocol.
 
 ---
 
@@ -381,7 +381,7 @@ The following twelve principles are the structural pillars of AOC Protocol's con
 
 **6.1 Definition**
 
-The constitutional supremacy principle holds that RFC-000 is the highest normative source within AOC Protocol and that all other instruments, rules, implementations and decisions derive their legitimacy from conformity with it.
+The constitutional supremacy principle holds that RFC-000 is the highest normative source within Soberanía Protocol and that all other instruments, rules, implementations and decisions derive their legitimacy from conformity with it.
 
 **6.2 Constitutional Function**
 
@@ -397,7 +397,7 @@ Supremacy protects every other constitutional principle from erosion by subordin
 
 - **Implementation supremacy:** A runtime or software deployment MUST NOT claim authority that contradicts RFC-000.
 - **Founder supremacy:** Original authors or maintainers MUST NOT retain constitutional authority beyond the Genesis Period defined in Part VI.
-- **Runtime supremacy:** No deployed instance of AOC may override constitutional rules on the grounds of technical necessity.
+- **Runtime supremacy:** No deployed instance of Soberanía may override constitutional rules on the grounds of technical necessity.
 - **Governance supremacy:** No Governance Authority may declare itself above review by the Constitutional Review Council or above RFC-000.
 - **Market supremacy:** Widespread adoption does not confer constitutional supremacy on any actor, runtime or interpretation.
 - **Emergency supremacy:** A declared constitutional emergency does not suspend RFC-000. Emergency powers are bounded by Part XI.
@@ -416,7 +416,7 @@ Every RFC is subordinate to RFC-000. An RFC that contradicts a principle establi
 
 **7.1 Definition**
 
-Legitimacy is the constitutional property of an act, authority, standing recognition, governance rule or decision that renders it normatively binding within AOC Protocol. Legitimacy is not a binary quality — it is a traceable chain from constitutional primitives to a claimed constitutional effect.
+Legitimacy is the constitutional property of an act, authority, standing recognition, governance rule or decision that renders it normatively binding within Soberanía Protocol. Legitimacy is not a binary quality — it is a traceable chain from constitutional primitives to a claimed constitutional effect.
 
 **7.2 Constitutional Function**
 
@@ -536,7 +536,7 @@ RFC-005-H5 (Delegated Standing) operationalizes this principle and is subordinat
 
 **10.1 Definition**
 
-The limitation principle holds that all authority, power and standing recognized within AOC Protocol is bounded, and that unlimited authority is constitutionally prohibited.
+The limitation principle holds that all authority, power and standing recognized within Soberanía Protocol is bounded, and that unlimited authority is constitutionally prohibited.
 
 **10.2 Constitutional Function**
 
@@ -575,7 +575,7 @@ Any act performed under purported unlimited authority is constitutionally void. 
 
 **11.1 Definition**
 
-Revocability is the constitutional principle that every recognition, standing, authority, delegation, consent and governance status within AOC Protocol must be capable of being ended through a defined constitutional process.
+Revocability is the constitutional principle that every recognition, standing, authority, delegation, consent and governance status within Soberanía Protocol must be capable of being ended through a defined constitutional process.
 
 **11.2 Constitutional Function**
 
@@ -647,7 +647,7 @@ Processes conducted without independent oversight are constitutionally non-compl
 
 **13.1 Definition**
 
-Accountability is the constitutional principle that every consequential act within AOC Protocol is attributable to an identified actor operating under identified authority on an identified constitutional basis.
+Accountability is the constitutional principle that every consequential act within Soberanía Protocol is attributable to an identified actor operating under identified authority on an identified constitutional basis.
 
 **13.2 Constitutional Function**
 
@@ -681,7 +681,7 @@ An act that lacks required attribution elements is constitutionally non-complian
 
 **14.1 Definition**
 
-Transparency is the constitutional principle that the rules, procedures and outcomes governing constitutional subjects within AOC Protocol are publicly accessible, inspectable and explainable.
+Transparency is the constitutional principle that the rules, procedures and outcomes governing constitutional subjects within Soberanía Protocol are publicly accessible, inspectable and explainable.
 
 **14.2 Constitutional Function**
 
@@ -800,7 +800,7 @@ Capture is the condition in which a single actor, coalition or class of actors a
 
 **17.2 Constitutional Function**
 
-The anti-capture principle is the constitutional immune system of AOC Protocol. It ensures that the concentration of power — whether through technical control, governance accumulation, market dominance or institutional merger — cannot nullify the constitutional order.
+The anti-capture principle is the constitutional immune system of Soberanía Protocol. It ensures that the concentration of power — whether through technical control, governance accumulation, market dominance or institutional merger — cannot nullify the constitutional order.
 
 **17.3 Prohibited Captures**
 
@@ -840,13 +840,13 @@ A condition of capture voids the legitimacy of every constitutional act produced
 
 ## Part III — Constitutional Rights
 
-The following rights are constitutional guarantees held by subjects of AOC Protocol. Rights are not granted by governance authorities; they are recognized by this Charter. No governance rule, RFC, runtime or decision may eliminate these rights. They may be clarified and operationalized by subordinate instruments but never narrowed below the floor established here.
+The following rights are constitutional guarantees held by subjects of Soberanía Protocol. Rights are not granted by governance authorities; they are recognized by this Charter. No governance rule, RFC, runtime or decision may eliminate these rights. They may be clarified and operationalized by subordinate instruments but never narrowed below the floor established here.
 
 ---
 
 ### Article 18 — Right to Identity
 
-**18.1 Holder:** Every subject participating in or affected by AOC Protocol.
+**18.1 Holder:** Every subject participating in or affected by Soberanía Protocol.
 
 **18.2 Scope:** Every subject has the right to identity representation that is:
 - portable across implementations and registries;
@@ -864,7 +864,7 @@ The following rights are constitutional guarantees held by subjects of AOC Proto
 
 ### Article 19 — Right to Consent
 
-**19.1 Holder:** Every subject participating in or affected by AOC Protocol.
+**19.1 Holder:** Every subject participating in or affected by Soberanía Protocol.
 
 **19.2 Scope:** Every subject has the right not to have data, standing, authority or decisions imposed on them beyond valid consent or constitutionally mandated process.
 
@@ -980,7 +980,7 @@ The following rights are constitutional guarantees held by subjects of AOC Proto
 
 ### Article 27 — Right to Exit and Portability
 
-**27.1 Holder:** Every subject participating in AOC Protocol.
+**27.1 Holder:** Every subject participating in Soberanía Protocol.
 
 **27.2 Scope:** No subject may be structurally trapped within a specific provider, registry implementation, governance domain or runtime deployment when a constitutionally equivalent exit is possible. This includes:
 - portability of identity records;
@@ -997,13 +997,13 @@ The following rights are constitutional guarantees held by subjects of AOC Proto
 
 ## Part IV — Constitutional Duties
 
-Constitutional rights are matched by constitutional duties. The following duties apply to each class of participant in AOC Protocol.
+Constitutional rights are matched by constitutional duties. The following duties apply to each class of participant in Soberanía Protocol.
 
 ---
 
 ### Article 28 — Duties of Individuals
 
-Individuals participating in AOC Protocol MUST:
+Individuals participating in Soberanía Protocol MUST:
 
 - Act within the scope of their valid, recognized authority.
 - Respect the sovereignty of other individuals, not using the protocol as a means to dominate, capture or impersonate others.
@@ -1016,7 +1016,7 @@ Individuals participating in AOC Protocol MUST:
 
 ### Article 29 — Duties of Institutions
 
-Institutions operating within AOC Protocol MUST:
+Institutions operating within Soberanía Protocol MUST:
 
 - Not capture individual sovereignty. An institution MUST NOT architect its governance so that individual subjects cannot exit, challenge, revoke or exercise their constitutional rights.
 - Govern only within the scope of their legitimately recognized jurisdiction.
@@ -1030,7 +1030,7 @@ Institutions operating within AOC Protocol MUST:
 
 ### Article 30 — Duties of Governance Authorities
 
-Governance Authorities within AOC Protocol MUST:
+Governance Authorities within Soberanía Protocol MUST:
 
 - Remain at all times subordinate to RFC-000.
 - Act only within the scope of their recognized authority.
@@ -1045,7 +1045,7 @@ Governance Authorities within AOC Protocol MUST:
 
 ### Article 31 — Duties of Auditors
 
-Auditors within AOC Protocol MUST:
+Auditors within Soberanía Protocol MUST:
 
 - Maintain independence from the actors, processes and systems they audit.
 - Preserve the integrity of evidence relied upon in audit.
@@ -1072,7 +1072,7 @@ Protocol maintainers — those who maintain the canonical specification, reposit
 
 ### Article 33 — Duties of Runtime Operators
 
-Those who deploy and operate implementations of AOC Protocol MUST:
+Those who deploy and operate implementations of Soberanía Protocol MUST:
 
 - Implement constitutional requirements faithfully and completely.
 - Not override, disable or circumvent constitutional safeguards in the interest of performance, operational convenience or cost reduction.
@@ -1088,7 +1088,7 @@ Those who deploy and operate implementations of AOC Protocol MUST:
 
 ### Article 34 — The Canonical Chain
 
-The following chain defines the canonical sequence of constitutional primitives through which legitimate authority is produced within AOC Protocol. Each layer depends on the layer above it. No layer may be bypassed.
+The following chain defines the canonical sequence of constitutional primitives through which legitimate authority is produced within Soberanía Protocol. Each layer depends on the layer above it. No layer may be bypassed.
 
 ```
 Identity
@@ -1205,7 +1205,7 @@ This creates a circularity: governance legitimacy requires a legitimate process;
 
 **37.2 Prohibited Solutions**
 
-AOC Protocol MUST NOT resolve the bootstrap problem through:
+Soberanía Protocol MUST NOT resolve the bootstrap problem through:
 
 - **Founder absolutism:** Permanent constitutional supremacy granted to original authors.
 - **Self-recognition:** An authority declaring its own legitimacy without independent ratification.
@@ -1282,13 +1282,13 @@ Three models were evaluated in the development of this Charter.
 - Risk of governance vacuum during the initial period.
 - Vulnerable to capture during the unstructured initial phase.
 
-*Alignment with AOC:* Highest alignment with AOC's core constitutional principles. The bootstrapping cost is worth the legitimacy gain.
+*Alignment with Soberanía:* Highest alignment with Soberanía's core constitutional principles. The bootstrapping cost is worth the legitimacy gain.
 
 ---
 
 ### Article 39 — Adopted Bootstrap Doctrine
 
-AOC Protocol adopts a **Sovereignty-First Ratification Model** that combines elements of Models B and C with additional safeguards.
+Soberanía Protocol adopts a **Sovereignty-First Ratification Model** that combines elements of Models B and C with additional safeguards.
 
 **39.1 Principles of the Adopted Doctrine**
 
@@ -1375,7 +1375,7 @@ Any participant in the Genesis Period MAY file a formal constitutional challenge
 
 **41.1 Constitutional Legitimacy Requirement**
 
-The first Governance Authority of AOC Protocol becomes legitimate only through a ratification process that satisfies the following criteria:
+The first Governance Authority of Soberanía Protocol becomes legitimate only through a ratification process that satisfies the following criteria:
 
 **41.2 Identity of Provisional Recognizers**
 
@@ -1436,7 +1436,7 @@ The first Governance Authority MUST NOT be constitutionally capable of perpetuat
 
 **42.1 Establishment**
 
-AOC Protocol establishes a **Constitutional Review Council** (the "Council") as the supreme body for constitutional interpretation, conflict resolution and review of constitutional compliance within the protocol.
+Soberanía Protocol establishes a **Constitutional Review Council** (the "Council") as the supreme body for constitutional interpretation, conflict resolution and review of constitutional compliance within the protocol.
 
 **42.2 Nature**
 
@@ -1451,7 +1451,7 @@ The Council exists to:
 - Review RFCs, governance rules, runtime implementations and decisions for constitutional compliance;
 - Invalidate unconstitutional acts;
 - Preserve constitutional continuity across governance and technical transitions;
-- Serve as the final arbiter of constitutional interpretation within AOC Protocol.
+- Serve as the final arbiter of constitutional interpretation within Soberanía Protocol.
 
 ---
 
@@ -1539,7 +1539,7 @@ Removal must be documented and archived.
 
 ### Article 46 — Review of RFCs
 
-**46.1** Every RFC within AOC Protocol is subject to constitutional review against RFC-000 at any time upon a valid challenge or referral.
+**46.1** Every RFC within Soberanía Protocol is subject to constitutional review against RFC-000 at any time upon a valid challenge or referral.
 
 **46.2** Review of an RFC must determine:
 
@@ -1555,7 +1555,7 @@ Removal must be documented and archived.
 
 ### Article 47 — Review of Runtime
 
-**47.1** Every runtime implementation of AOC Protocol is subject to constitutional review.
+**47.1** Every runtime implementation of Soberanía Protocol is subject to constitutional review.
 
 **47.2** A runtime is unconstitutional if it:
 
@@ -1609,7 +1609,7 @@ Removal must be documented and archived.
 
 ### Article 50 — Conflict Types
 
-The following conflict types are recognized within AOC Protocol and are subject to formal constitutional resolution:
+The following conflict types are recognized within Soberanía Protocol and are subject to formal constitutional resolution:
 
 | Conflict Type | Description |
 |---------------|-------------|
@@ -1867,7 +1867,7 @@ The following invariants are unconditional constitutional requirements. Each inv
 
 | ID | Invariant |
 |----|-----------|
-| RFC000-INV-A01 | No system within AOC may assert ownership of an individual subject. |
+| RFC000-INV-A01 | No system within Soberanía may assert ownership of an individual subject. |
 | RFC000-INV-A02 | No institution may absorb individual sovereignty through governance participation. |
 | RFC000-INV-A03 | Institutional sovereignty must not erase individual sovereignty. |
 | RFC000-INV-A04 | Exit must remain structurally possible where a constitutionally equivalent alternative exists. |
@@ -2137,7 +2137,7 @@ Certification attests to compliance with the constitutional requirements applica
 
 ## Part XIV — Constitutional Maturity Model
 
-The Constitutional Maturity Model defines the stages through which AOC Protocol may progress toward a fully sovereign constitutional order. An honest assessment of current maturity is a constitutional obligation; overclaiming maturity is a compliance failure.
+The Constitutional Maturity Model defines the stages through which Soberanía Protocol may progress toward a fully sovereign constitutional order. An honest assessment of current maturity is a constitutional obligation; overclaiming maturity is a compliance failure.
 
 ---
 
@@ -2451,27 +2451,27 @@ The following questions are identified as constitutionally significant but are n
 
 3. **Cryptographic proof requirements:** To what extent must constitutional acts be supported by cryptographic proofs? Under what conditions may non-cryptographic evidence satisfy constitutional requirements?
 
-4. **Cross-jurisdictional recognition:** How does AOC Protocol handle the recognition of identity, standing and authority across legal jurisdictions with conflicting requirements?
+4. **Cross-jurisdictional recognition:** How does Soberanía Protocol handle the recognition of identity, standing and authority across legal jurisdictions with conflicting requirements?
 
-5. **AI agent constitutional personhood limits:** To what extent, if any, may AI agents hold recognized standing, capability or authority within AOC Protocol? What constitutional limits apply to AI agent participation in governance?
+5. **AI agent constitutional personhood limits:** To what extent, if any, may AI agents hold recognized standing, capability or authority within Soberanía Protocol? What constitutional limits apply to AI agent participation in governance?
 
-6. **External legal enforceability:** Under what conditions, if any, may constitutional acts within AOC Protocol produce effects enforceable in external legal systems? How does RFC-000 relate to national law and international law?
+6. **External legal enforceability:** Under what conditions, if any, may constitutional acts within Soberanía Protocol produce effects enforceable in external legal systems? How does RFC-000 relate to national law and international law?
 
 7. **Interaction with national law:** When national law requires disclosure, access, or modification of data in ways that conflict with constitutional protections, how should a runtime operator respond? Does compliance with national law override constitutional obligations?
 
 8. **Emergency governance triggers:** What quantitative or qualitative thresholds trigger a constitutional emergency? Who has standing to evaluate whether a threshold has been met?
 
-9. **Constitutional fork handling:** If AOC Protocol forks into two or more incompatible implementations, which fork, if any, retains constitutional legitimacy? How is constitutional continuity preserved across a fork?
+9. **Constitutional fork handling:** If Soberanía Protocol forks into two or more incompatible implementations, which fork, if any, retains constitutional legitimacy? How is constitutional continuity preserved across a fork?
 
 10. **Long-term archival requirements:** What are the technical and institutional requirements for preserving constitutional records indefinitely? Who bears responsibility for archival infrastructure?
 
 11. **Governance succession:** What is the constitutional process for successor governance authorities when a recognized Governance Authority expires, fails or is dissolved?
 
-12. **External institutional recognition:** Under what conditions may external institutions — national governments, international bodies, standards organizations — be recognized as having standing within AOC Protocol governance? What constitutional safeguards apply to such recognition?
+12. **External institutional recognition:** Under what conditions may external institutions — national governments, international bodies, standards organizations — be recognized as having standing within Soberanía Protocol governance? What constitutional safeguards apply to such recognition?
 
 13. **Minimum standing thresholds for constitutional review requests:** What standing is sufficient to file a constitutional challenge or seek review by the Constitutional Review Council?
 
-14. **Constitutional status of protocol forks maintained by third parties:** What constitutional obligations, if any, apply to implementations that derive from AOC Protocol but are not maintained by the primary governance authority?
+14. **Constitutional status of protocol forks maintained by third parties:** What constitutional obligations, if any, apply to implementations that derive from Soberanía Protocol but are not maintained by the primary governance authority?
 
 ---
 
@@ -2554,9 +2554,9 @@ A conformance claim is a formal assertion that a specified artifact satisfies th
 
 ## Closing Statement
 
-This Charter is a living instrument, subject to amendment through the process defined in Part X and subject to interpretation through the Constitutional Review Council established in Part VII. It is not a product specification, a technical architecture or a governance manual. It is the foundational law of AOC Protocol.
+This Charter is a living instrument, subject to amendment through the process defined in Part X and subject to interpretation through the Constitutional Review Council established in Part VII. It is not a product specification, a technical architecture or a governance manual. It is the foundational law of Soberanía Protocol.
 
-Every RFC, governance rule, runtime, decision and governance act produced under AOC Protocol derives its constitutional legitimacy from conformity with this Charter. Nothing within AOC Protocol is above it.
+Every RFC, governance rule, runtime, decision and governance act produced under Soberanía Protocol derives its constitutional legitimacy from conformity with this Charter. Nothing within Soberanía Protocol is above it.
 
 The principles it enshrines — individual sovereignty, institutional legitimacy, bounded authority, traceable legitimacy, challengeable power, auditable history and permanent anti-capture — are not features to be implemented and then optimized away. They are the constitutional commitments that give the protocol its reason for existing.
 
@@ -2565,6 +2565,6 @@ The principles it enshrines — individual sovereignty, institutional legitimacy
 ---
 
 *RFC-000 Constitutional Charter v2.0*
-*AOC Protocol Architecture Working Group*
+*Soberanía Protocol Architecture Working Group*
 *Draft — Pending Ratification*
 *2026-06-07*

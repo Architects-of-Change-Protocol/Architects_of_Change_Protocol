@@ -6,7 +6,7 @@
 | Title | Evidence Lifecycle & Provenance |
 | Status | Draft |
 | Category | Evidence Layer |
-| Authors | AOC Protocol Architecture Working Group |
+| Authors | Soberanía Protocol Architecture Working Group |
 | Created | 2026-06-03 |
 | Last Updated | 2026-06-03 |
 | Related | RFC-004 Evidence Layer v1.0, P-EV-02 Canonical Evidence Model, P-EV-03 Evidence Registry, RFC-005 Claims Framework, RFC-005-H1 Standing Traceability |
@@ -15,7 +15,7 @@
 
 ## Abstract
 
-This document defines the complete lifecycle of Evidence in the AOC Protocol. It specifies canonical lifecycle states, lifecycle transition rules, provenance requirements, lineage reconstruction, invalidation, supersession, challenge history, verification history, temporal truth, and downstream dependency impact.
+This document defines the complete lifecycle of Evidence in the Soberanía Protocol. It specifies canonical lifecycle states, lifecycle transition rules, provenance requirements, lineage reconstruction, invalidation, supersession, challenge history, verification history, temporal truth, and downstream dependency impact.
 
 Evidence is the root layer of protocol truth. Its history MUST be preserved without being overwritten by Claims, Standing, Capabilities, Authority, Decisions, registries, platforms, or operational convenience. Evidence MAY evolve in interpretation, verification status, challenge state, downstream use, or relationship context, but the historical record of what was known, asserted, verified, challenged, invalidated, superseded, confirmed, or archived MUST remain reconstructable.
 
@@ -98,7 +98,7 @@ Contemporary systems often store records without preserving the full history of 
 - downstream Claims may continue relying on Evidence that is invalid, superseded, expired, disputed, or outside policy context; and
 - human subjects may lose the ability to contest Evidence because challenge history and provenance are incomplete.
 
-The AOC Protocol requires Evidence to remain inspectable across time. The protocol MUST distinguish between:
+The Soberanía Protocol requires Evidence to remain inspectable across time. The protocol MUST distinguish between:
 
 - Evidence content and Evidence interpretation;
 - registration and verification;

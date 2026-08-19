@@ -41,7 +41,7 @@ export function AssuranceSection() {
       <StatRow stats={STATS} />
 
       <p className="mt-7 text-center text-[13px] italic text-slate-500">
-        AOC SAF v1.0.0 — implemented, API-backed, evidence-driven. Not a certification authority.
+        Soberanía SAF v1.0.0 — implemented, API-backed, evidence-driven. Not a certification authority.
       </p>
 
       <div className="mt-8 text-center">

@@ -1,4 +1,4 @@
-# AOC Protocol — Storage Pointer Specification
+# Soberanía Protocol — Storage Pointer Specification
 
 **Version:** 0.1
 **Status:** Draft
@@ -27,7 +27,7 @@
 
 ### 1.1 Overview
 
-A **Storage Pointer** is an immutable, backend-agnostic reference to stored bytes within the AOC Protocol. The Storage Pointer binds a storage backend identifier to a content hash, providing a deterministic and verifiable way to locate and validate data across heterogeneous storage systems.
+A **Storage Pointer** is an immutable, backend-agnostic reference to stored bytes within the Soberanía Protocol. The Storage Pointer binds a storage backend identifier to a content hash, providing a deterministic and verifiable way to locate and validate data across heterogeneous storage systems.
 
 **Formal Definition:**
 
@@ -158,7 +158,7 @@ Storage Pointers are used by Content Objects and Pack Manifests to reference sto
 | **Name** | `uri` |
 | **Type** | string |
 | **Required** | REQUIRED |
-| **Format** | AOC Storage URI (see [Section 6](#6-uri-form)) |
+| **Format** | Soberanía Storage URI (see [Section 6](#6-uri-form)) |
 | **Constraints** | MUST match pattern `^aoc://storage/[a-z][a-z0-9]*(-[a-z0-9]+)*/0x[a-f0-9]{64}$` |
 | **Min Length** | 83 characters (minimum valid URI) |
 | **Max Length** | 148 characters (maximum with 64-char backend) |
@@ -464,7 +464,7 @@ The Backend Registry is a normative list of recognized storage backend identifie
 
 ### 7.2 Reserved Backends
 
-The following backends are reserved by the AOC Protocol specification:
+The following backends are reserved by the Soberanía Protocol specification:
 
 | Backend | Description | Typical URI Scheme |
 |---------|-------------|-------------------|
@@ -498,7 +498,7 @@ The following backends are reserved by the AOC Protocol specification:
 
 **Characteristics:**
 - Content-addressed by design
-- Hash may correspond to IPFS CID (implementation maps AOC hash to CID)
+- Hash may correspond to IPFS CID (implementation maps Soberanía hash to CID)
 - Distributed retrieval via IPFS network
 
 #### 7.2.4 arweave
@@ -554,7 +554,7 @@ Examples:
 
 ### 7.4 Backend Registration Process
 
-New backends MAY be added to the registered category through the AOC Protocol extension process:
+New backends MAY be added to the registered category through the Soberanía Protocol extension process:
 
 1. **Proposal**: Submit backend specification with rationale
 2. **Review**: Technical review by protocol maintainers

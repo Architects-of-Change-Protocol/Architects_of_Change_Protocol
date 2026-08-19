@@ -1,4 +1,4 @@
-# Sovereign Asset Core (AOC Protocol Slice 1)
+# Sovereign Asset Core (Soberanía Protocol Slice 1)
 
 ## Public package consumption
 
@@ -15,7 +15,7 @@ the presented or independently resolved key. It does not adjudicate copyright,
 legal ownership, or the truth of a claim.
 
 Status: implemented. This document records the design of the first real
-Sovereign Asset core in AOC Protocol, closing the primary gaps from the
+Sovereign Asset core in Soberanía Protocol, closing the primary gaps from the
 Sovereign Digital Asset Readiness Audit that are in scope for this slice:
 `SAP-GAP-001`, `SAP-GAP-002`, `SAP-GAP-003`, `SAP-GAP-004`, `SAP-GAP-006`,
 and `SAP-GAP-009`. `SAP-GAP-005` (lineage) was explicitly **not** addressed
@@ -429,7 +429,7 @@ by this slice's own tests,
 explicitly test-only — no persistence, no concurrency control, no
 replication — and is not part of the `@aoc/protocol` publishable surface.
 A production implementation must supply its own durable registry behind
-the same interface (this is exactly the shape AOC Enterprise's Slice 2
+the same interface (this is exactly the shape Soberanía Enterprise's Slice 2
 `ProtectedResource` construction is expected to consume — see the final
 report's "Enterprise integration readiness" section).
 
@@ -464,7 +464,7 @@ document does not claim:
   model — see §15.
 
 None of these are implied by anything in this document. In particular:
-**AOC does not prevent copying**, and **registration does not establish
+**Soberanía does not prevent copying**, and **registration does not establish
 legal ownership merely because someone registered first** — both are
 explicitly false statements this slice's design was required to avoid
 making true by accident.
@@ -484,7 +484,7 @@ SM-02 removes that requirement without weakening integrity anywhere.
 ### 15.1 Three concepts that must never collapse
 
 ```text
-SovereignAssetId    what the thing is in AOC sovereignty space
+SovereignAssetId    what the thing is in Soberanía sovereignty space
 ExternalReference   how another namespace names/points at it
 ContentIdentity     whether one representation matches an integrity commitment
 ```
@@ -664,9 +664,9 @@ subpath).
 
 ### 15.10 What SM-02 does not claim
 
-The correct claim after SM-02 is: *the canonical AOC Protocol sovereign
+The correct claim after SM-02 is: *the canonical Soberanía Protocol sovereign
 subject model can represent arbitrary external things without requiring
-content integrity.* It is **not** "every AOC runtime path now supports
+content integrity.* It is **not** "every Soberanía runtime path now supports
 arbitrary subjects". The legacy access-governance runtime is untouched and
 still cannot consume arbitrary subjects:
 
@@ -901,8 +901,8 @@ See `docs/protocol/LICENSING_TERMS.md` for the terms model itself.
 
 SM-09 gave a sovereign subject a way to say, machine-readably, what its issuer
 declares about it. SM-10 answers the question that follows: how does a system
-that is *not* AOC take custody of that sovereign state and govern it — and where
-does AOC Protocol stop?
+that is *not* Soberanía take custody of that sovereign state and govern it — and where
+does Soberanía Protocol stop?
 
 The answer is one new document, `SovereignGovernanceHandoffV1`, published as
 `@aoc/protocol/governance-compatibility` and produced by the eighth and last
@@ -926,7 +926,7 @@ boundary; it changes none of the decisions frozen above.
           SovereignGovernanceHandoffV1
                      │
 ═════════════════════╪══════════════════════
-                     │ AOC Protocol ends
+                     │ Soberanía Protocol ends
                      ▼
              External Governance
                      │

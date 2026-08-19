@@ -1,4 +1,4 @@
-# AOC Protocol — Roadmap
+# Soberanía Protocol — Roadmap
 **Version:** 0.1  
 **Status:** Draft  
 **Focus:** Sovereign Wallet Vault (mobile-first) as the primary interface for schema resolution, consent, and economic flows.

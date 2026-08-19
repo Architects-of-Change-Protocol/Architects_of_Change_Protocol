@@ -1,8 +1,8 @@
-# AOC Protocol Capability Lifecycle (Core)
+# Soberanía Protocol Capability Lifecycle (Core)
 
 `protocol/capability` implementa el lifecycle protocolar de Capability Tokens como una derivación estricta de consentimiento (`protocol/consent`).
 
-## Qué es un Capability Token en AOC
+## Qué es un Capability Token en Soberanía
 
 Un capability token es un objeto verificable y determinístico que representa permisos ejecutables **derivados** de un consentimiento válido.
 

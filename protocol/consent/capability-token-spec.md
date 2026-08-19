@@ -1,4 +1,4 @@
-# AOC Protocol — Capability Token Specification
+# Soberanía Protocol — Capability Token Specification
 
 **Version:** 0.1
 **Status:** Draft
@@ -254,7 +254,7 @@ CapabilityToken := {
 | **Format** | Array of Scope Entry objects |
 | **Constraints** | MUST NOT be empty; minimum 1 entry; maximum 10000 entries |
 
-**Description:** The set of AOC protocol objects to which this Capability Token grants access. Each scope entry follows the Scope Entry structure defined in the Consent Object Specification (Section 4).
+**Description:** The set of Soberanía protocol objects to which this Capability Token grants access. Each scope entry follows the Scope Entry structure defined in the Consent Object Specification (Section 4).
 
 **Semantic Rules:**
 

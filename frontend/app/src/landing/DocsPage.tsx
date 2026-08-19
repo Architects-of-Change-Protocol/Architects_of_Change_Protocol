@@ -43,12 +43,12 @@ export const renderDocsPage = () => {
 
       <section className="border-b border-white/10">
         <div className="mx-auto max-w-6xl px-6 py-20 md:py-24">
-          <p className="text-[11px] uppercase tracking-[0.24em] text-cyan-300/70">AOC Protocol Documentation</p>
+          <p className="text-[11px] uppercase tracking-[0.24em] text-cyan-300/70">Soberanía Protocol Documentation</p>
           <h1 className="mt-4 max-w-4xl text-5xl font-semibold tracking-tight md:text-6xl">
             Build with sovereign digital assets.
           </h1>
           <p className="mt-6 max-w-3xl text-lg leading-8 text-white/65">
-            AOC Protocol is the public, implementation-neutral contract layer for digital assets whose identity,
+            Soberanía Protocol is the public, implementation-neutral contract layer for digital assets whose identity,
             integrity and interpretable claims can remain meaningful beyond one application or storage provider.
             Inspect what exists today, integrate through supported exports and help improve the open protocol.
           </p>
@@ -161,11 +161,11 @@ export const renderDocsPage = () => {
           <h2 className="mt-3 text-3xl font-semibold tracking-tight">Protocol describes; products implement</h2>
           <div className="mt-8 grid gap-5 md:grid-cols-2">
             <article className="rounded-2xl border border-cyan-300/25 bg-cyan-300/[0.04] p-6">
-              <h3 className="font-semibold text-cyan-100">AOC Protocol · public and open</h3>
+              <h3 className="font-semibold text-cyan-100">Soberanía Protocol · public and open</h3>
               <p className="mt-3 text-sm leading-7 text-white/65">Owns provider-independent asset semantics, public contract shapes, references and adapter interfaces.</p>
             </article>
             <article className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-              <h3 className="font-semibold text-white">AOC Enterprise · organizational governance</h3>
+              <h3 className="font-semibold text-white">Soberanía Enterprise · organizational governance</h3>
               <p className="mt-3 text-sm leading-7 text-white/65">May use Protocol-compatible assets in proprietary governance and enforcement workflows. Enterprise implementation internals are intentionally not documented on this public surface.</p>
             </article>
           </div>

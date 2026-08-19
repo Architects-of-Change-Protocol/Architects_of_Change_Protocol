@@ -1,22 +1,22 @@
-# RFC-005 — AOC Claims Framework: Canonical Trust and Authority Model
+# RFC-005 — Soberanía Claims Framework: Canonical Trust and Authority Model
 
 | Field | Value |
 |---|---|
 | RFC Number | 005 |
-| Title | AOC Claims Framework: Canonical Trust and Authority Model |
+| Title | Soberanía Claims Framework: Canonical Trust and Authority Model |
 | Status | Draft |
 | Category | Core Protocol / Constitutional Specification |
-| Authors | AOC Protocol Architecture Working Group |
+| Authors | Soberanía Protocol Architecture Working Group |
 | Created | 2026-06-02 |
 | Last Updated | 2026-06-02 |
 | Supersedes | — |
-| Related | AOC Charter, RFC-004 Evidence Layer v1.0, Governance Compliance Specification, Protocol Invariants Specification |
+| Related | Soberanía Charter, RFC-004 Evidence Layer v1.0, Governance Compliance Specification, Protocol Invariants Specification |
 
 ---
 
 ## Abstract
 
-This RFC defines the canonical trust and authority model for the Architects of Change Protocol ecosystem. It introduces a constitutional chain connecting evidence, assertions, claims, attestations, verification, standing, capabilities, authority, and decisions.
+This RFC defines the canonical trust and authority model for the Soberanía Protocol ecosystem. It introduces a constitutional chain connecting evidence, assertions, claims, attestations, verification, standing, capabilities, authority, and decisions.
 
 The canonical chain is:
 
@@ -40,7 +40,7 @@ Authority
 Decision
 ```
 
-This RFC is concept-first and implementation-neutral. It does not define a database schema, API, runtime engine, storage model, credential format, or product implementation. It defines the protocol concepts that all future AOC implementations must preserve.
+This RFC is concept-first and implementation-neutral. It does not define a database schema, API, runtime engine, storage model, credential format, or product implementation. It defines the protocol concepts that all future Soberanía implementations must preserve.
 
 ---
 
@@ -70,15 +70,15 @@ This RFC is concept-first and implementation-neutral. It does not define a datab
 
 ## 1. Introduction
 
-Trust in AOC is not an assumption. Trust is a protocol state that must be created, supported, evaluated, maintained, and explained.
+Trust in Soberanía is not an assumption. Trust is a protocol state that must be created, supported, evaluated, maintained, and explained.
 
 A system that merely stores identities, roles, credentials, or permissions does not by itself create trustworthy authority. A person may have an identity but no current authority. A credential may have been valid yesterday but revoked today. A document may exist but not support the interpretation made from it. A decision may be permitted by a user interface but still lack constitutional authority under the protocol.
 
-RFC-005 exists to prevent these failures by requiring every consequential decision in the AOC ecosystem to be explainable through a complete trust and authority chain.
+RFC-005 exists to prevent these failures by requiring every consequential decision in the Soberanía ecosystem to be explainable through a complete trust and authority chain.
 
 ### 1.1 Why trust must be modeled explicitly
 
-Trust must be modeled explicitly because AOC is intended to operate across organizations, jurisdictions, runtimes, products, market makers, autonomous agents, and human governance bodies. In such an ecosystem, there is no single default institution that can be trusted to decide what is true or who is authorized.
+Trust must be modeled explicitly because Soberanía is intended to operate across organizations, jurisdictions, runtimes, products, market makers, autonomous agents, and human governance bodies. In such an ecosystem, there is no single default institution that can be trusted to decide what is true or who is authorized.
 
 Explicit trust modeling ensures that:
 
@@ -97,13 +97,13 @@ For example, a principal may be the Chief Financial Officer of an organization a
 
 ### 1.3 Why decisions require justification
 
-A decision is a consequential action taken under authority. AOC decisions may approve budgets, deploy systems, grant access, issue credentials, perform AI actions, validate relationships, or execute market-maker operations. Such decisions affect rights, resources, obligations, and trust relationships.
+A decision is a consequential action taken under authority. Soberanía decisions may approve budgets, deploy systems, grant access, issue credentials, perform AI actions, validate relationships, or execute market-maker operations. Such decisions affect rights, resources, obligations, and trust relationships.
 
 Therefore, a decision must be justified by an authority chain, and that authority chain must be supported by a trust chain.
 
 ### 1.4 Why explainability is constitutional
 
-Explainability is a constitutional requirement because AOC is a sovereignty-oriented protocol. Participants must be able to inspect why an action was allowed, denied, escalated, suspended, or revoked. Auditors must be able to reconstruct authority. Governance officers must be able to identify policy failures. Engineers must be able to implement fail-closed systems. Enterprise architects must be able to prove control boundaries.
+Explainability is a constitutional requirement because Soberanía is a sovereignty-oriented protocol. Participants must be able to inspect why an action was allowed, denied, escalated, suspended, or revoked. Auditors must be able to reconstruct authority. Governance officers must be able to identify policy failures. Engineers must be able to implement fail-closed systems. Enterprise architects must be able to prove control boundaries.
 
 A decision that cannot be explained is not constitutionally complete under RFC-005.
 
@@ -430,7 +430,7 @@ This RFC does not mandate a storage schema for assertions.
 Claim = a formal statement asserted about a subject.
 ```
 
-A claim is the canonical unit of formal trust expression in AOC.
+A claim is the canonical unit of formal trust expression in Soberanía.
 
 ### 6.2 Claim examples
 
@@ -449,7 +449,7 @@ Examples include:
 
 A claim is not truth. A claim is a formal assertion that must be supported, attested, verified, and evaluated for standing before it can participate in authority.
 
-AOC implementations MUST NOT treat claim presence alone as sufficient authority.
+Soberanía implementations MUST NOT treat claim presence alone as sufficient authority.
 
 ### 6.4 Claim subjects and issuers
 
@@ -964,7 +964,7 @@ Evidence:
 
 ## 15. Constitutional Principles
 
-RFC-005 aligns with existing AOC constitutional and protocol principles.
+RFC-005 aligns with existing Soberanía constitutional and protocol principles.
 
 ### 15.1 Alignment with GA-01
 
@@ -979,9 +979,9 @@ RFC-005 supports GA-01 by requiring:
 - non-retroactive interpretation of standing where future policy changes occur;
 - auditable justification for allow, deny, escalation, suspension, or revocation.
 
-### 15.2 Alignment with the AOC Charter
+### 15.2 Alignment with the Soberanía Charter
 
-RFC-005 supports the AOC Charter by reinforcing:
+RFC-005 supports the Soberanía Charter by reinforcing:
 
 - **Self-Sovereignty** — identity, claims, credentials, and evidence cannot be captured by opaque institutional trust.
 - **Consent-First Architecture** — authority over data access must be derived from explicit, standing consent and policy.
@@ -1093,7 +1093,7 @@ A future implementation conforms to RFC-005 when it preserves the following rule
 
 ## 19. Conclusion
 
-RFC-005 establishes the constitutional foundation for identity, trust, authority, governance, runtime authorization, enterprise governance, and future AOC ecosystem products.
+RFC-005 establishes the constitutional foundation for identity, trust, authority, governance, runtime authorization, enterprise governance, and future Soberanía ecosystem products.
 
 The canonical model is:
 
@@ -1101,6 +1101,6 @@ The canonical model is:
 Evidence → Assertion → Claim → Attestation → Verification → Standing → Capability → Authority → Decision
 ```
 
-All future AOC protocol specifications, runtime implementations, enterprise products, market-maker integrations, AI governance systems, credential frameworks, and trust registries should conform to this model.
+All future Soberanía protocol specifications, runtime implementations, enterprise products, market-maker integrations, AI governance systems, credential frameworks, and trust registries should conform to this model.
 
-RFC-005 establishes the canonical trust and authority model for the AOC ecosystem.
+RFC-005 establishes the canonical trust and authority model for the Soberanía ecosystem.

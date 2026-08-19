@@ -6,7 +6,7 @@ const CHECK_ICON =
 
 // Section 6 — what a customer receives from an assessment. The SAF
 // reference below repeats the exact, already-approved claim from
-// ../AssuranceSection.tsx ("AOC SAF v1.0.0 — implemented, API-backed,
+// ../AssuranceSection.tsx ("Soberanía SAF v1.0.0 — implemented, API-backed,
 // evidence-driven. Not a certification authority.") rather than inventing
 // new domain/control counts — see docs/audits/SAF-002-Assessment-
 // Methodology-v1.0.md for the underlying methodology.
@@ -31,7 +31,7 @@ export function AssessmentOutputs() {
       </div>
 
       <p className="mt-8 text-center text-[13px] italic text-slate-500">
-        Informed by the AOC Sovereignty Assurance Framework — AOC SAF v1.0.0 — implemented, API-backed,
+        Informed by the Soberanía Sovereignty Assurance Framework — Soberanía SAF v1.0.0 — implemented, API-backed,
         evidence-driven. Not a certification authority.
       </p>
     </section>

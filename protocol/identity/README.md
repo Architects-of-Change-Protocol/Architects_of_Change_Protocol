@@ -1,10 +1,10 @@
-# AOC Core Identity Kernel
+# Soberanía Protocol Core Identity Kernel
 
 ## Why identity is infrastructure
-Identity in AOC Core is protocol infrastructure, not application UX. The kernel defines *who can hold authority* and *how that authority is delegated and bounded* across policy decisions.
+Identity in Soberanía Protocol Core is protocol infrastructure, not application UX. The kernel defines *who can hold authority* and *how that authority is delegated and bounded* across policy decisions.
 
 ## Actors are not users
-AOC actor identity models multiple authority-bearing entities:
+Soberanía actor identity models multiple authority-bearing entities:
 - humans
 - organizations
 - brands

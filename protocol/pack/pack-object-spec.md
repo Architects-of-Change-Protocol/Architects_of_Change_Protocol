@@ -1,4 +1,4 @@
-# AOC Protocol — Pack Object Specification
+# Soberanía Protocol — Pack Object Specification
 
 **Version:** 0.1
 **Status:** Draft
@@ -27,7 +27,7 @@
 
 ### 1.1 Overview
 
-A **Pack Object** is a cryptographically verifiable, immutable manifest that binds multiple Content Object references into a single deterministic unit within the AOC Protocol. The Pack Object does not embed actual data; it serves as a content-addressed descriptor that aggregates field references for granting consent and transporting data bundles across wallets and systems.
+A **Pack Object** is a cryptographically verifiable, immutable manifest that binds multiple Content Object references into a single deterministic unit within the Soberanía Protocol. The Pack Object does not embed actual data; it serves as a content-addressed descriptor that aggregates field references for granting consent and transporting data bundles across wallets and systems.
 
 **Formal Definition:**
 

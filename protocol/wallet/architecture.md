@@ -1,4 +1,4 @@
-# AOC Sovereign Wallet — System Architecture
+# Soberanía Sovereign Wallet — System Architecture
 
 **Version:** 0.1
 **Status:** Draft
@@ -12,7 +12,7 @@
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                            CLIENT ENVIRONMENT                                    │
 │  ┌────────────────────────────────────────────────────────────────────────────┐ │
-│  │                         AOC SOVEREIGN WALLET                                │ │
+│  │                        SOBERANÍA SOVEREIGN WALLET                           │ │
 │  │                                                                             │ │
 │  │  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────────────┐ │ │
 │  │  │   KEY MANAGER   │    │  IDENTITY CORE  │    │    CONSENT ENGINE       │ │ │
@@ -936,7 +936,7 @@ interface ITransportAdapter {
 
 ## 6. Explicit Non-Goals
 
-The AOC Sovereign Wallet **does NOT**:
+The Soberanía Sovereign Wallet **does NOT**:
 
 | Non-Goal | Rationale |
 |----------|-----------|
@@ -985,7 +985,7 @@ The AOC Sovereign Wallet **does NOT**:
 
 ### Principle 4: Protocol Over Product
 
-> The wallet implements AOC protocol primitives. Applications consume the wallet; the wallet does not embed applications.
+> The wallet implements Soberanía protocol primitives. Applications consume the wallet; the wallet does not embed applications.
 
 **Implication:** HRKey, HealthKey, FinanceKey are consumers. The wallet is agnostic to their existence.
 
@@ -1217,14 +1217,15 @@ Phase 3: Decentralized Storage
 |------|------------|
 | **AES-256-GCM** | Symmetric encryption algorithm used for field-level encryption; provides confidentiality and authenticity |
 | **Anchor** | Cryptographic commitment (hash) published on-chain for non-repudiation and timestamping |
-| **AOC** | Architects of Change Protocol; the overarching protocol for sovereign data management |
-| **AOC URI** | Uniform Resource Identifier for AOC objects; format: `aoc://<type>/<identifier>` |
+| **Soberanía** | Soberanía Protocol; the overarching protocol for sovereign data management |
+| **AOC** | Legacy technical namespace of Soberanía Protocol, retained in package scopes, URI schemes and identifiers |
+| **AOC URI** | Uniform Resource Identifier for Soberanía Protocol objects; format: `aoc://<type>/<identifier>` |
 
 ### B
 
 | Term | Definition |
 |------|------------|
-| **Base L2** | Layer 2 blockchain built on Ethereum; initial target chain for AOC wallet |
+| **Base L2** | Layer 2 blockchain built on Ethereum; initial target chain for Soberanía wallet |
 | **BIP-32** | Bitcoin Improvement Proposal for hierarchical deterministic key derivation |
 | **BIP-39** | Bitcoin Improvement Proposal for mnemonic seed phrase generation |
 | **BIP-44** | Bitcoin Improvement Proposal for multi-account key derivation paths |
@@ -1330,7 +1331,7 @@ Phase 3: Decentralized Storage
 | Term | Definition |
 |------|------------|
 | **Timestamp Quantization** | Rounding timestamps to reduce precision and prevent timing analysis |
-| **Token** | In AOC context: Consent Token (not cryptocurrency); signed authorization object |
+| **Token** | In Soberanía context: Consent Token (not cryptocurrency); signed authorization object |
 | **Transport Adapter** | Module abstracting communication protocols (HTTP, WebSocket, P2P) |
 | **Trust Boundary** | Logical separation between trusted (client) and untrusted (server, chain) environments |
 | **User Operation** | ERC-4337 transaction structure for account abstraction |

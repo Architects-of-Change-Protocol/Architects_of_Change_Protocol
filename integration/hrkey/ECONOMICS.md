@@ -1,10 +1,10 @@
-# HRKey ↔ AOC Protocol — Economic & Trust Model
+# HRKey ↔ Soberanía Protocol — Economic & Trust Model
 
 **Version:** 0.1
 **Status:** Normative Draft
-**Scope:** Defines the economic flows, trust guarantees, and responsibility boundaries for the integration of HRKey (a commercial market maker in the employment vertical) with the AOC Protocol sovereign vault.
+**Scope:** Defines the economic flows, trust guarantees, and responsibility boundaries for the integration of HRKey (a commercial market maker in the employment vertical) with the Soberanía Protocol sovereign vault.
 
-**Governing principle:** AOC Protocol is neutral, sovereign, and non-custodial. HRKey is a commercial entity consuming AOC Vault capabilities via the adapter. Authorization flows entirely through AOC consent + capability tokens. No changes to AOC core modules are required or permitted.
+**Governing principle:** Soberanía Protocol is neutral, sovereign, and non-custodial. HRKey is a commercial entity consuming Soberanía Vault capabilities via the adapter. Authorization flows entirely through Soberanía consent + capability tokens. No changes to Soberanía core modules are required or permitted.
 
 ---
 
@@ -77,7 +77,7 @@ Candidate (data owner)
     │
     │  grants consent (free — consent is a sovereign act, never a paid service)
     ▼
-AOC Vault (enforcement)
+Soberanía Vault (enforcement)
     │
     │  mints capability token (protocol operation — no fee)
     ▼
@@ -111,7 +111,7 @@ Revenue Split
 
 ### 2.3 Pricing Model
 
-HRKey sets commercial pricing. AOC Protocol does not dictate prices — it enforces that the candidate's share is delivered non-custodially.
+HRKey sets commercial pricing. Soberanía Protocol does not dictate prices — it enforces that the candidate's share is delivered non-custodially.
 
 #### Example Pricing Tiers
 
@@ -171,7 +171,7 @@ Employer ──[pays]──► HRKey (commercial transaction, any payment rail)
 
 ## 3. Trust Guarantees
 
-### 3.1 What AOC Guarantees to Each Actor
+### 3.1 What Soberanía Guarantees to Each Actor
 
 #### To the Candidate
 
@@ -224,7 +224,7 @@ The following conditions, if violated, cause a complete loss of protocol guarant
 | Vault core module is modified | All derivation invariants, replay protection, and scope containment are void |
 | Consent object is forged (bypasses `buildConsentObject`) | Hash integrity fails; vault rejects all derived capabilities |
 | Capability token `token_id` is reused | Vault returns `DENY(REPLAY)` — no data is exposed |
-| HRKey caches data beyond token expiry and serves it | Protocol guarantee is violated at the application layer; AOC cannot enforce deletion on HRKey's infrastructure |
+| HRKey caches data beyond token expiry and serves it | Protocol guarantee is violated at the application layer; Soberanía cannot enforce deletion on HRKey's infrastructure |
 | Candidate DID is impersonated | Out-of-scope for vault (identity layer responsibility); vault enforces authorization, not authentication |
 
 ---
@@ -235,7 +235,7 @@ The following conditions, if violated, cause a complete loss of protocol guarant
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        AOC PROTOCOL ENFORCES                        │
+│                     SOBERANÍA PROTOCOL ENFORCES                     │
 │                                                                     │
 │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────────┐ │
 │  │ Scope            │  │ Temporal         │  │ Cryptographic       │ │
@@ -299,13 +299,13 @@ The following conditions, if violated, cause a complete loss of protocol guarant
 
 ### 4.2 Boundary Rules
 
-1. **AOC never prices.** The protocol has no concept of tiers, fees, or commercial transactions. Pricing exists entirely in HRKey's domain.
+1. **Soberanía never prices.** The protocol has no concept of tiers, fees, or commercial transactions. Pricing exists entirely in HRKey's domain.
 
-2. **AOC never stores identity.** DIDs are opaque strings to the vault. The vault validates DID format but does not resolve, authenticate, or manage identity.
+2. **Soberanía never stores identity.** DIDs are opaque strings to the vault. The vault validates DID format but does not resolve, authenticate, or manage identity.
 
 3. **HRKey never enforces consent.** Consent validation, scope containment, replay protection, and revocation are vault responsibilities. HRKey must not re-implement these checks.
 
-4. **HRKey never modifies AOC core.** The adapter is a translation layer. If HRKey needs functionality the vault does not provide, the correct path is a protocol proposal — never a local patch.
+4. **HRKey never modifies Soberanía core.** The adapter is a translation layer. If HRKey needs functionality the vault does not provide, the correct path is a protocol proposal — never a local patch.
 
 5. **Storage is invisible to economics.** Storage providers do not participate in the fee model. They are infrastructure, not economic actors.
 
@@ -322,7 +322,7 @@ The following conditions, if violated, cause a complete loss of protocol guarant
 The candidate's wallet constructs a pack manifest and registers it through the adapter.
 
 ```
-Candidate wallet → HRKey Adapter → AOC Vault
+Candidate wallet → HRKey Adapter → Soberanía Vault
                    registerPack()    storePack() + registerSdlMapping()
 ```
 
@@ -364,7 +364,7 @@ Candidate wallet → HRKey Adapter → AOC Vault
 The candidate reviews HRKey's schematic and grants consent for a specific employer to access their references.
 
 ```
-Candidate (via HRKey UI) → HRKey Adapter → AOC Vault
+Candidate (via HRKey UI) → HRKey Adapter → Soberanía Vault
                             grantConsent()   buildConsentObject() + storeConsent()
 ```
 
@@ -431,7 +431,7 @@ Employer ──[pays $5.00]──► HRKey (commercial transaction)
 After payment clears, HRKey mints an attenuated capability token and executes the access request.
 
 ```
-HRKey Adapter → AOC Vault
+HRKey Adapter → Soberanía Vault
 mintCapability()  (validates derivation invariants)
 requestAccess()   (validates capability, resolves fields)
 ```
@@ -571,7 +571,7 @@ Per-access settlement under subscription:
 
 **Fee:** None. No data was delivered. The employer is not charged. No settlement occurs.
 
-If the employer had already been charged (e.g., pre-paid), HRKey must issue a credit or retry with a valid token. This is HRKey's commercial obligation, not an AOC concern.
+If the employer had already been charged (e.g., pre-paid), HRKey must issue a credit or retry with a valid token. This is HRKey's commercial obligation, not a Soberanía concern.
 
 ### 5.4 Flow D — Candidate Revokes Mid-Session
 

@@ -34,7 +34,7 @@ export function Hero() {
             href="/?view=enterprise"
             className="inline-flex items-center justify-center rounded-full border border-white/15 hover:border-white/30 px-7 py-3.5 text-sm font-semibold text-white transition-colors"
           >
-            See AOC Enterprise
+            See Soberanía Enterprise
           </a>
         </div>
       </div>

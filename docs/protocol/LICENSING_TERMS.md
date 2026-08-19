@@ -28,9 +28,9 @@ parent terms           ≠ child terms
 Contested              ≠ invalid signature
 ```
 
-AOC Protocol records what someone declares. It does not decide whether an action is allowed, grant
+Soberanía Protocol records what someone declares. It does not decide whether an action is allowed, grant
 access, enforce a restriction, determine legal ownership, calculate royalties or resolve conflicting
-declarations. AOC Enterprise or another external governance system may later *consume* these terms and
+declarations. Soberanía Enterprise or another external governance system may later *consume* these terms and
 reach its own decisions; that consumption is outside Protocol.
 
 ## The claim

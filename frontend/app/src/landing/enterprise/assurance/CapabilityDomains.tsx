@@ -16,7 +16,7 @@ export function CapabilityDomains() {
       <SectionHeader
         eyebrow="What Assurance Evaluates"
         title="Two canonical domains, not a curated marketing subset."
-        description="Assurance evaluates the full capability surface AOC Protocol defines and AOC Enterprise operationalizes — not a hand-picked selection of it."
+        description="Assurance evaluates the full capability surface Soberanía Protocol defines and Soberanía Enterprise operationalizes — not a hand-picked selection of it."
       />
 
       <div className="mb-14">

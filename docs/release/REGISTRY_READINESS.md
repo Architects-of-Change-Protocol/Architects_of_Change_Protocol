@@ -12,7 +12,7 @@ records the readiness state and the verified facts as of 2026-07-15.
 | **npm public registry** | Best: `npm install @aoc/protocol`, version ranges, `npm audit`, lockfile integrity | Public to the world | npm org/scope control, publish token or trusted-publisher OIDC, 2FA | **Blocked** — scope control unverified (see below); founder decision required |
 | **GitHub Packages** | Requires consumer `.npmrc` scoped-registry config before install works | GitHub org-level; can stay private to the org | GH Packages write token in CI (outside repo), consumer-side registry config | **Blocked** — founder decision required; no credentials exist (correctly) |
 | **GitHub release tarball** | `npm install <url>` or download+install; no range resolution, no registry audit story | Repo visibility | A release process (tag + attached artifact) — prohibited this sprint | **Not started by design** — creating releases/tags is out of scope until authorized |
-| **Internal pinned tarball** (current) | Manual hand-off; vendored file + checksum + lock record | Whoever holds the file | None — fully working today | **Ready and in use** — AOC Enterprise consumes it in blocking CI (see [`REFERENCE_CONSUMER_EVIDENCE.md`](REFERENCE_CONSUMER_EVIDENCE.md)) |
+| **Internal pinned tarball** (current) | Manual hand-off; vendored file + checksum + lock record | Whoever holds the file | None — fully working today | **Ready and in use** — Soberanía Enterprise consumes it in blocking CI (see [`REFERENCE_CONSUMER_EVIDENCE.md`](REFERENCE_CONSUMER_EVIDENCE.md)) |
 
 ## Verified registry facts (2026-07-15) — and their limits
 

@@ -6,10 +6,10 @@ intentionally did not touch" in `w005-enterprise-pitch-deck-design-system.md`).
 
 ## Why
 
-AOC Enterprise's homepage (W005) introduces Governed Access as a concept
+Soberanía Enterprise's homepage (W005) introduces Governed Access as a concept
 across three of its own sections (`Problem`, `MissingLayer`,
-`ArchitectureStack`) on the way to explaining AOC Enterprise as a whole.
-Governed Access is also AOC Enterprise's first commercial Solution — it
+`ArchitectureStack`) on the way to explaining Soberanía Enterprise as a whole.
+Governed Access is also Soberanía Enterprise's first commercial Solution — it
 needs a page that sells the capability on its own terms, in under two
 minutes, without re-explaining the platform around it. That page did not
 exist; `GovernedAccessPage.tsx` was a placeholder noting the real page was
@@ -19,7 +19,7 @@ Positioning guardrail carried through every section: Governed Access is
 **operational governance for access to digital assets** — not identity,
 authentication, authorization, storage, IAM, OAuth, or Zero Trust. Sections
 are written to explain what the product *does*, not to re-litigate what
-AOC Enterprise *is*.
+Soberanía Enterprise *is*.
 
 ## Design system — reused, not reinvented
 

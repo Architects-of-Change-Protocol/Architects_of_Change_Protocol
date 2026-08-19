@@ -47,7 +47,7 @@ From `docs/release/evidence/aoc-protocol-0.1.0-release-manifest.json` (generated
 >
 > | SHA-256 | Status | What it was |
 > | --- | --- | --- |
-> | `4e5289b7…96b27` | Historical | Pre-relicense (MIT) artifact — the one AOC Enterprise validated, vendored, and pinned in its compatibility lock |
+> | `4e5289b7…96b27` | Historical | Pre-relicense (MIT) artifact — the one Soberanía Enterprise validated, vendored, and pinned in its compatibility lock |
 > | `d4a8b67d…c7704` | Historical (transitional) | After PR #319 appended `"license": "Apache-2.0"` to the packaged `package.json` (forensic diff vs. the Enterprise artifact: that one file, that one line) — but while the file still carried a duplicate `license` key (`"MIT"` was never removed) and the packaged `LICENSE` still contained MIT text |
 > | **`7d0d42a58ebe59a02c7255b1c13029bd343e74278946d7cba9f27482a2ed9841`** | **Current — the Apache-2.0 RC identity** | After completing the relicense inside the package: exactly one `"license": "Apache-2.0"` key, packaged `LICENSE` replaced with the official Apache License 2.0 text, and the applicable `NOTICE` attribution now shipped (Apache-2.0 §4(d)). Forensic diff vs. `d4a8b67d…`: exactly `package.json`, `LICENSE`, and the added `NOTICE` — nothing else |
 >
@@ -75,7 +75,7 @@ From `docs/release/evidence/aoc-protocol-0.1.0-release-manifest.json` (generated
   external-consumer fixture, invalid-import and declaration-leak checks, and all three
   `test-consumers/` fixtures (TypeScript/CJS, JavaScript/CJS, TypeScript/ESM) install the real
   tarball, compile, and execute green.
-- **AOC Enterprise adoption (reference consumer, read-only evidence):** Enterprise PR
+- **Soberanía Enterprise adoption (reference consumer, read-only evidence):** Enterprise PR
   [#75](https://github.com/Architects-of-Change-Protocol/AOC-Enterprise/pull/75) is merged (merge
   commit `454d7cc5623ecf431c0386de055f3eb3458746f7`). Enterprise consumes
   `"@aoc/protocol": "file:./vendor/aoc-protocol-0.1.0.tgz"` with a `>=0.1.0` peer declaration —
@@ -131,7 +131,7 @@ resolved by the founder / release authority, in writing:
    reused, consumer rollback is pin-based.
 
 Until this gate is passed, the supported distribution mechanism remains the checksummed internal
-tarball (`npm run protocol:pack`), exactly as consumed by AOC Enterprise today.
+tarball (`npm run protocol:pack`), exactly as consumed by Soberanía Enterprise today.
 
 ## 6. Completion addenda (same sprint, second pass)
 

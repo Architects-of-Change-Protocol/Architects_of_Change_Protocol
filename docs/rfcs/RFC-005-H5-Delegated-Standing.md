@@ -6,17 +6,17 @@
 | Title | Delegated Standing |
 | Status | Draft |
 | Category | Core Protocol Extension |
-| Authors | AOC Protocol Architecture Working Group |
+| Authors | Soberanía Protocol Architecture Working Group |
 | Created | 2026-06-03 |
 | Last Updated | 2026-06-03 |
 | Supersedes | — |
-| Related | RFC-004 Evidence Layer v1.0, RFC-005 AOC Claims Framework, RFC-005-H1 Standing Traceability, RFC-005-H2 Standing Engine, RFC-005-H3 Standing Governance, RFC-005-H4 Capability Mapping |
+| Related | RFC-004 Evidence Layer v1.0, RFC-005 Soberanía Claims Framework, RFC-005-H1 Standing Traceability, RFC-005-H2 Standing Engine, RFC-005-H3 Standing Governance, RFC-005-H4 Capability Mapping |
 
 ---
 
 ## Abstract
 
-This document defines Delegated Standing for the AOC Protocol. Delegated Standing specifies how one subject may extend limited standing-derived influence, capability eligibility, or policy-permitted authority to another subject without transferring ownership of standing, rewriting evidence, obscuring accountability, or bypassing governance.
+This document defines Delegated Standing for the Soberanía Protocol. Delegated Standing specifies how one subject may extend limited standing-derived influence, capability eligibility, or policy-permitted authority to another subject without transferring ownership of standing, rewriting evidence, obscuring accountability, or bypassing governance.
 
 Delegation is a bounded authorization relationship. It is not an ownership transfer, reputation transfer, evidence rewrite, hidden privilege grant, or unrestricted authority inheritance. A conformant delegation MUST preserve traceability, accountability, revocability, governance, scope, policy conformance, and explainability.
 
@@ -125,7 +125,7 @@ Without delegation, systems become impractical. Work queues block on unavailable
 
 Without controls, systems become dangerous. Delegation can be abused to launder authority, bypass standing requirements, escalate privilege, hide accountability, preserve expired access, or obscure who was responsible for a consequential decision.
 
-The protocol problem is therefore not whether delegation should exist. Delegation exists because complex systems require it. The protocol problem is how delegation can exist without breaking the AOC trust and authority chain.
+The protocol problem is therefore not whether delegation should exist. Delegation exists because complex systems require it. The protocol problem is how delegation can exist without breaking the Soberanía trust and authority chain.
 
 Delegated Standing solves this problem by requiring delegation to be explicit, bounded, traceable, accountable, revocable, policy-conformant, and governance-aware.
 
@@ -772,7 +772,7 @@ A complete implementation or document alignment for RFC-005-H5 satisfies the fol
 
 ## Conclusion
 
-Delegation is necessary, but it is constitutionally dangerous unless constrained. The AOC Protocol permits delegation only as a bounded, traceable, accountable, revocable, explainable, and governance-aware relationship.
+Delegation is necessary, but it is constitutionally dangerous unless constrained. The Soberanía Protocol permits delegation only as a bounded, traceable, accountable, revocable, explainable, and governance-aware relationship.
 
 Standing is usually earned. Standing is not automatically transferable. Delegation is not ownership transfer. Delegation is a bounded authorization relationship.
 

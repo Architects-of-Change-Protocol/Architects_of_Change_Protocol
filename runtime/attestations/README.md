@@ -1,6 +1,6 @@
-# Governance Attestation Layer (AOC Core)
+# Governance Attestation Layer (Soberanía Protocol Core)
 
-This module defines **canonical governance attestations** for AOC Core runtimes.
+This module defines **canonical governance attestations** for Soberanía Protocol Core runtimes.
 
 ## Why attestations exist
 

@@ -15,7 +15,7 @@ export function CtaSection() {
           Ownership should survive the platform.
         </h2>
         <p className="mt-4 max-w-xl text-base md:text-lg text-slate-400">
-          AOC Protocol makes identity, capabilities and governance portable by design.
+          Soberanía Protocol makes identity, capabilities and governance portable by design.
         </p>
 
         <a

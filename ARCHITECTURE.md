@@ -1,4 +1,4 @@
-# AOC Protocol Package Architecture
+# Soberanía Protocol Package Architecture
 
 ## What belongs in this repository
 

@@ -8,8 +8,8 @@
 // own domain within one coherent platform — never a full re-skin, never a
 // different layout, never a different component.
 //
-//   Amethyst   (violet)  -> AOC Protocol / Sovereignty
-//   Sapphire   (indigo)  -> AOC Enterprise / Governance (the original W005
+//   Amethyst   (violet)  -> Soberanía Protocol / Sovereignty
+//   Sapphire   (indigo)  -> Soberanía Enterprise / Governance (the original W005
 //                           deck accent — unchanged, just named)
 //   Turquoise  (teal)    -> Governed Access
 //   Emerald    (emerald) -> Assurance
@@ -45,7 +45,7 @@ export type MineralTokens = {
 export const MINERALS: Record<Mineral, MineralTokens> = {
   amethyst: {
     label: 'Amethyst',
-    domain: 'AOC Protocol · Sovereignty',
+    domain: 'Soberanía Protocol · Sovereignty',
     text: 'text-violet-600',
     textHover: 'hover:text-violet-500',
     textDeep: 'text-violet-800',
@@ -59,7 +59,7 @@ export const MINERALS: Record<Mineral, MineralTokens> = {
   },
   sapphire: {
     label: 'Sapphire',
-    domain: 'AOC Enterprise · Governance',
+    domain: 'Soberanía Enterprise · Governance',
     text: 'text-indigo-600',
     textHover: 'hover:text-indigo-500',
     textDeep: 'text-indigo-800',

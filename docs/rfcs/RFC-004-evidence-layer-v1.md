@@ -1,12 +1,12 @@
-# RFC-004 — AOC Evidence Layer v1.0
+# RFC-004 — Soberanía Evidence Layer v1.0
 
 | Field | Value |
 |---|---|
 | RFC Number | 004 |
-| Title | AOC Evidence Layer v1.0 |
+| Title | Soberanía Evidence Layer v1.0 |
 | Status | Draft |
 | Category | Core Protocol |
-| Authors | AOC Protocol Architecture Working Group |
+| Authors | Soberanía Protocol Architecture Working Group |
 | Created | 2026-06-02 |
 | Last Updated | 2026-06-02 |
 | Supersedes | — |
@@ -16,7 +16,7 @@
 
 ## Abstract
 
-This document defines the Evidence Layer, the fourth foundational pillar of the AOC Protocol. The Evidence Layer establishes a technology-neutral model for generating, registering, transferring, and verifying digital evidence in a portable, sovereign, and interoperable manner. It provides a formal conceptual and normative framework enabling individuals, organizations, governments, and AI systems to produce and consume evidence that is tamper-detectable, auditable, and independent of any single infrastructure provider.
+This document defines the Evidence Layer, the fourth foundational pillar of the Soberanía Protocol. The Evidence Layer establishes a technology-neutral model for generating, registering, transferring, and verifying digital evidence in a portable, sovereign, and interoperable manner. It provides a formal conceptual and normative framework enabling individuals, organizations, governments, and AI systems to produce and consume evidence that is tamper-detectable, auditable, and independent of any single infrastructure provider.
 
 ---
 
@@ -43,9 +43,9 @@ This document defines the Evidence Layer, the fourth foundational pillar of the 
 
 ### What is the Evidence Layer
 
-The Evidence Layer is the normative framework within the AOC Protocol that governs how digital artifacts acquire, maintain, and transfer evidentiary value. It defines the rules under which a digital object — a contract, a decision record, a certification, a credential, or any formally produced document — can be asserted to be genuine, unmodified, and attributable to its origin.
+The Evidence Layer is the normative framework within the Soberanía Protocol that governs how digital artifacts acquire, maintain, and transfer evidentiary value. It defines the rules under which a digital object — a contract, a decision record, a certification, a credential, or any formally produced document — can be asserted to be genuine, unmodified, and attributable to its origin.
 
-While the existing AOC layers address *who* is acting (Identity), *under what authority* (Governance), and *with what knowledge* (Knowledge), the Evidence Layer addresses a distinct question: **how can the consequences of those actions be permanently and verifiably recorded?**
+While the existing Soberanía layers address *who* is acting (Identity), *under what authority* (Governance), and *with what knowledge* (Knowledge), the Evidence Layer addresses a distinct question: **how can the consequences of those actions be permanently and verifiably recorded?**
 
 The Evidence Layer is not a storage system, a blockchain, or a document management platform. It is a protocol-level model that abstracts over all such infrastructure. Any conformant system — whether backed by a distributed ledger, a traditional database, a content-addressed file system, or a hybrid — can participate in the Evidence Layer as long as it respects the normative model defined herein.
 
@@ -53,7 +53,7 @@ The Evidence Layer is not a storage system, a blockchain, or a document manageme
 
 Digital organizations operate under the persistent assumption that the documents they produce carry weight — that a contract signed today will be recognizable as authentic in five years, that an approval recorded this quarter can be audited next year, that a decision made by an AI agent can be examined by a regulator tomorrow. This assumption is, in most contemporary systems, fragile. Documents are stored in vendor-controlled repositories, signed with vendor-managed keys, and interpreted through vendor-specific tooling. The moment a vendor is acquired, discontinued, or breached, the evidentiary chain collapses.
 
-The Evidence Layer exists to make that assumption robust. By defining a vendor-neutral, protocol-level model for evidence, AOC Protocol enables any actor to produce evidence that survives infrastructure changes, outlasts individual platforms, and can be verified by parties who were never party to the original transaction.
+The Evidence Layer exists to make that assumption robust. By defining a vendor-neutral, protocol-level model for evidence, Soberanía Protocol enables any actor to produce evidence that survives infrastructure changes, outlasts individual platforms, and can be verified by parties who were never party to the original transaction.
 
 ### What problem it solves
 
@@ -271,7 +271,7 @@ The distinction is foundational and must be clearly understood:
 | Lifecycle-tracked | Not necessarily | Required |
 | Infrastructure-independent | Not necessarily | Required |
 
-An Artifact becomes Evidence when it satisfies all of the structural requirements defined in this specification. The same physical document may serve as both an Artifact within a document management system and as Evidence within the AOC Evidence Layer — but its evidentiary properties derive from its conformance to this protocol, not from its storage location.
+An Artifact becomes Evidence when it satisfies all of the structural requirements defined in this specification. The same physical document may serve as both an Artifact within a document management system and as Evidence within the Soberanía Evidence Layer — but its evidentiary properties derive from its conformance to this protocol, not from its storage location.
 
 ### 6.3 Evidence ID
 
@@ -785,11 +785,11 @@ This extension is particularly relevant for evidence involving sensitive persona
 
 ### 13.2 Decentralized Identity Integration
 
-A future extension will define how Evidence Producers, Consumers, and Verifiers can be identified using Decentralized Identifiers (DIDs) conformant with the W3C DID Core specification, and how the Identity Layer of the AOC Protocol maps onto evidence production metadata. This extension will enable evidence provenance chains in which every actor at every stage is identified using portable, self-sovereign identifiers rather than platform-specific credentials.
+A future extension will define how Evidence Producers, Consumers, and Verifiers can be identified using Decentralized Identifiers (DIDs) conformant with the W3C DID Core specification, and how the Identity Layer of the Soberanía Protocol maps onto evidence production metadata. This extension will enable evidence provenance chains in which every actor at every stage is identified using portable, self-sovereign identifiers rather than platform-specific credentials.
 
 ### 13.3 Verifiable Credentials Alignment
 
-A future extension will align the Evidence Layer's credential-type artifacts with the W3C Verifiable Credentials Data Model, enabling evidence produced under this protocol to be presented and verified within VC-compatible ecosystems. This extension will define the mapping between AOC Evidence IDs and VC identifiers, and how VC verification flows interact with the Evidence Layer's verification rules.
+A future extension will align the Evidence Layer's credential-type artifacts with the W3C Verifiable Credentials Data Model, enabling evidence produced under this protocol to be presented and verified within VC-compatible ecosystems. This extension will define the mapping between Soberanía Evidence IDs and VC identifiers, and how VC verification flows interact with the Evidence Layer's verification rules.
 
 ### 13.4 Multi-Chain Registration
 
@@ -809,7 +809,7 @@ A future extension will define how an Evidence Producer can delegate evidence pr
 
 ## 14. Conclusion
 
-The Evidence Layer is not an incremental addition to the AOC Protocol. It is the capstone that transforms the protocol from a model for governing action into a model for governing action with consequence — with the ability to prove, to any party, at any future time, that specific actions occurred, were authorized, and have not been misrepresented.
+The Evidence Layer is not an incremental addition to the Soberanía Protocol. It is the capstone that transforms the protocol from a model for governing action into a model for governing action with consequence — with the ability to prove, to any party, at any future time, that specific actions occurred, were authorized, and have not been misrepresented.
 
 The Identity Layer tells us who is acting. The Governance Layer tells us under what authority. The Knowledge Layer tells us from what informational foundation. The Evidence Layer answers the fourth and final foundational question: **how do we know it happened the way we claim it happened?**
 
@@ -819,7 +819,7 @@ This has implications that extend beyond enterprise compliance. As AI systems be
 
 As organizations grapple with an environment in which digital documents are easy to produce, easy to alter, and easy to deny, the Evidence Layer provides a structural response: evidence whose integrity does not depend on trusting its custodian, whose verifiability does not depend on the cooperation of its producer, and whose persistence does not depend on the continued existence of the platform that created it.
 
-The Evidence Layer is a prerequisite for the kind of digital governance that the modern world requires. Its adoption as a core pillar of the AOC Protocol reflects the conviction that trust — whether between humans, between organizations, or between humans and AI systems — cannot be built on evidence that is only as reliable as the goodwill of the party holding it.
+The Evidence Layer is a prerequisite for the kind of digital governance that the modern world requires. Its adoption as a core pillar of the Soberanía Protocol reflects the conviction that trust — whether between humans, between organizations, or between humans and AI systems — cannot be built on evidence that is only as reliable as the goodwill of the party holding it.
 
 ---
 
@@ -828,7 +828,7 @@ The Evidence Layer is a prerequisite for the kind of digital governance that the
 | Term | Definition |
 |---|---|
 | Artifact | A discrete digital object produced as a record of a consequential event, prior to the application of evidentiary properties |
-| Evidence | An Artifact to which evidentiary properties have been formally applied under the AOC Evidence Layer protocol |
+| Evidence | An Artifact to which evidentiary properties have been formally applied under the Soberanía Evidence Layer protocol |
 | Evidence ID | A globally unique, deterministically derivable identifier canonically bound to a specific Evidence artifact |
 | Evidence Producer | An actor that performs the Evidence Production Act on an Artifact |
 | Evidence Consumer | An actor that receives, references, or relies upon evidence |
@@ -846,11 +846,11 @@ The Evidence Layer is a prerequisite for the kind of digital governance that the
 
 ---
 
-## Appendix B: Relationship to Other AOC Protocol Layers
+## Appendix B: Relationship to Other Soberanía Protocol Layers
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                     AOC Protocol                         │
+│                     Soberanía Protocol                   │
 │                                                          │
 │  ┌────────────┐  ┌─────────────┐  ┌──────────────────┐  │
 │  │  Identity  │  │ Governance  │  │    Knowledge     │  │
@@ -877,4 +877,4 @@ The Evidence Layer is downstream of the other three layers in the sense that it 
 
 ---
 
-*This document is RFC-004 of the AOC Protocol specification series. It represents the first formal version (v1.0) of the Evidence Layer specification. Feedback, errata, and proposed amendments should be directed to the AOC Protocol Governance Authority through the established contribution process.*
+*This document is RFC-004 of the Soberanía Protocol specification series. It represents the first formal version (v1.0) of the Evidence Layer specification. Feedback, errata, and proposed amendments should be directed to the Soberanía Protocol Governance Authority through the established contribution process.*

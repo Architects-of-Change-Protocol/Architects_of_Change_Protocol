@@ -16,7 +16,7 @@ export function Developers() {
         <div className="developers-copy">
           <SectionHeader
             eyebrow="Developers and Builders"
-            title="Who builds with AOC Protocol."
+            title="Who builds with Soberanía Protocol."
             description="@aoc/protocol publishes the versioned public contract layer — capability, proof, credential-manifest and claim shapes — as an open-source package under Apache-2.0. It's not yet published to a registry; build it from source in the repository."
             mineral="amethyst"
           />

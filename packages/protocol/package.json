@@ -2,7 +2,7 @@
   "name": "@aoc/protocol",
   "version": "0.1.0",
   "private": true,
-  "description": "Public contracts, semantics, schemas, and compatibility definitions for AOC Protocol.",
+  "description": "Public contracts, semantics, schemas, and compatibility definitions for Soberanía Protocol.",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",

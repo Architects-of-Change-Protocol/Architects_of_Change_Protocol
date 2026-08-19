@@ -1,4 +1,4 @@
-# AOC Protocol — Error & Decision Object Specification
+# Soberanía Protocol — Error & Decision Object Specification
 
 **Version:** 0.1
 **Status:** Draft
@@ -22,7 +22,7 @@
 
 ### 1.1 Purpose
 
-This document defines the **normative shape, semantics, and constraints** for the three error/decision objects produced by the AOC Protocol pipeline:
+This document defines the **normative shape, semantics, and constraints** for the three error/decision objects produced by the Soberanía Protocol pipeline:
 
 | Object | Producer | Consumer |
 |--------|----------|----------|
@@ -69,7 +69,7 @@ The key words **MUST**, **MUST NOT**, **REQUIRED**, **SHALL**, **SHALL NOT**, **
 
 ### 2.3 Determinism Guarantee
 
-All objects defined in this specification MUST be **deterministic**: given identical inputs, any conforming implementation MUST produce a byte-identical JSON representation when serialised using the canonical encoding rules defined in the AOC Protocol (RFC 8785 — JSON Canonicalization Scheme).
+All objects defined in this specification MUST be **deterministic**: given identical inputs, any conforming implementation MUST produce a byte-identical JSON representation when serialised using the canonical encoding rules defined in the Soberanía Protocol (RFC 8785 — JSON Canonicalization Scheme).
 
 ---
 

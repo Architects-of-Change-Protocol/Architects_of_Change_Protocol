@@ -6,7 +6,7 @@
 | Title | Evidence Registry |
 | Status | Draft |
 | Category | Evidence Layer |
-| Authors | AOC Protocol Architecture Working Group |
+| Authors | Soberanía Protocol Architecture Working Group |
 | Created | 2026-06-03 |
 | Last Updated | 2026-06-03 |
 | Related | RFC-004 Evidence Layer v1.0, RFC-005 Claims Framework, RFC-005-H1 Standing Traceability, P-EV-02 Canonical Evidence Model |
@@ -15,7 +15,7 @@
 
 ## Abstract
 
-This document defines the Evidence Registry for the AOC Protocol. An Evidence Registry is a protocol-recognized mechanism for locating, referencing, preserving, and tracing canonical Evidence without becoming the source of truth, owner of Evidence, or authority over downstream Claims, Standing, Capabilities, Authority, or Decisions.
+This document defines the Evidence Registry for the Soberanía Protocol. An Evidence Registry is a protocol-recognized mechanism for locating, referencing, preserving, and tracing canonical Evidence without becoming the source of truth, owner of Evidence, or authority over downstream Claims, Standing, Capabilities, Authority, or Decisions.
 
 Evidence exists independently of any registry. Registration creates protocol visibility. The registry preserves discoverability, lineage, relationships, lifecycle visibility, traceability, and auditability for Evidence while respecting Evidence sovereignty and portability.
 
@@ -55,7 +55,7 @@ Evidence exists independently of any registry. Registration creates protocol vis
 
 ## 1. Executive Summary
 
-The Evidence Registry is the canonical mechanism through which Evidence is referenced, located, linked, traced, and audited in the AOC Protocol.
+The Evidence Registry is the canonical mechanism through which Evidence is referenced, located, linked, traced, and audited in the Soberanía Protocol.
 
 Evidence MAY exist before registration. Evidence MAY be produced, verified, challenged, transported, or preserved outside a registry when the canonical Evidence semantics defined by P-EV-02 are preserved. Registration does not create Evidence truth. Registration creates protocol visibility: it makes canonical Evidence locatable, referenceable, traceable, and discoverable by conformant consumers, verifiers, auditors, standing engines, governance processes, and decision processes.
 
@@ -111,7 +111,7 @@ The absence of a registry creates predictable protocol failures:
 - Challenge and appeal rights become weak because subjects and reviewers cannot identify which Evidence affected downstream standing, authority, eligibility, or decisions.
 - Audits become dependent on operational logs rather than canonical protocol relationships.
 
-AOC therefore requires a canonical registry model. The registry does not replace Evidence. It preserves the ability to discover, resolve, audit, and trace Evidence across systems, organizations, domains, and time.
+Soberanía therefore requires a canonical registry model. The registry does not replace Evidence. It preserves the ability to discover, resolve, audit, and trace Evidence across systems, organizations, domains, and time.
 
 ---
 
@@ -889,7 +889,7 @@ A conformant Evidence Registry specification satisfies the following criteria:
 
 ## Conclusion
 
-The Evidence Registry is the AOC Protocol mechanism for making canonical Evidence locatable, referenceable, traceable, auditable, portable, and discoverable.
+The Evidence Registry is the Soberanía Protocol mechanism for making canonical Evidence locatable, referenceable, traceable, auditable, portable, and discoverable.
 
 It is not the source of truth. It is not Evidence ownership. It is not authority. It is not standing. It is not a decision process.
 

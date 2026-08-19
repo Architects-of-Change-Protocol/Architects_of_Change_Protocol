@@ -6,17 +6,17 @@
 | Title | Standing Algorithms |
 | Status | Draft |
 | Category | Core Protocol Extension |
-| Authors | AOC Protocol Architecture Working Group |
+| Authors | Soberanía Protocol Architecture Working Group |
 | Created | 2026-06-03 |
 | Last Updated | 2026-06-03 |
 | Supersedes | — |
-| Related | RFC-004 Evidence Layer v1.0, RFC-005 AOC Claims Framework, RFC-005-H1 Standing Traceability, RFC-005-H2 Standing Engine, RFC-005-H3 Standing Governance, RFC-005-H4 Capability Mapping, RFC-005-H5 Delegated Standing, RFC-005-H8 Authority Model, RFC-005-H9 Decision Framework |
+| Related | RFC-004 Evidence Layer v1.0, RFC-005 Soberanía Claims Framework, RFC-005-H1 Standing Traceability, RFC-005-H2 Standing Engine, RFC-005-H3 Standing Governance, RFC-005-H4 Capability Mapping, RFC-005-H5 Delegated Standing, RFC-005-H8 Authority Model, RFC-005-H9 Decision Framework |
 
 ---
 
 ## Abstract
 
-This document defines Standing Algorithms for the AOC Protocol. A Standing Algorithm is a deterministic evaluation model that transforms evidence and claims into standing states under explicit context, policy, and version governance. Standing Algorithms define how evidence and claims are evaluated, how weights are applied, how confidence is produced, how standing decays, how standing evolves, and how standing remains explainable, auditable, and reproducible.
+This document defines Standing Algorithms for the Soberanía Protocol. A Standing Algorithm is a deterministic evaluation model that transforms evidence and claims into standing states under explicit context, policy, and version governance. Standing Algorithms define how evidence and claims are evaluated, how weights are applied, how confidence is produced, how standing decays, how standing evolves, and how standing remains explainable, auditable, and reproducible.
 
 Standing Algorithms govern evaluation. They do not govern truth. Evidence remains the source of truth. Algorithms are the governed mechanism by which that truth is transformed into standing state under policy.
 
@@ -61,9 +61,9 @@ The protocol MUST reject black-box reputation systems. Every Standing Algorithm 
 
 Standing Algorithms define how evidence and claims are transformed into standing states.
 
-The AOC Protocol requires that standing be derived — never manually assigned, never manually edited. Standing emerges from evidence and claims evaluated under policy. But evidence and claims do not speak standing directly. A governed, versioned, deterministic evaluation model is required to perform that transformation. That model is a Standing Algorithm.
+The Soberanía Protocol requires that standing be derived — never manually assigned, never manually edited. Standing emerges from evidence and claims evaluated under policy. But evidence and claims do not speak standing directly. A governed, versioned, deterministic evaluation model is required to perform that transformation. That model is a Standing Algorithm.
 
-The Standing Algorithm occupies a specific architectural position in the AOC constitutional chain:
+The Standing Algorithm occupies a specific architectural position in the Soberanía constitutional chain:
 
 ```text
 Evidence
@@ -125,7 +125,7 @@ Standing that participates in authority must be explainable. A subject whose cap
 
 ### 2.6 The Need for Deterministic Standing Computation
 
-The AOC Protocol requires:
+The Soberanía Protocol requires:
 
 ```text
 Standing = f(Evidence, Claims, Context, Policy, AlgorithmVersion)
@@ -177,7 +177,7 @@ The relationship between evidence, claims, and the Standing Algorithm input laye
 
 #### 3.3.1 The Canonical Model
 
-In the AOC constitutional chain:
+In the Soberanía constitutional chain:
 
 ```text
 Evidence
@@ -228,7 +228,7 @@ Advantages:
 Disadvantages:
 - Risk of duplicating evaluation logic that belongs in the attestation and verification layers.
 - Increases algorithm complexity, making explainability and governance harder.
-- Conflates distinct constitutional layers, potentially undermining the separation of concerns that the AOC chain is designed to preserve.
+- Conflates distinct constitutional layers, potentially undermining the separation of concerns that the Soberanía chain is designed to preserve.
 
 **Protocol Position:**
 
@@ -1069,7 +1069,7 @@ The following guarantees are normative for any Standing Algorithm conformant wit
 
 ### No Black-Box Standing
 
-Every standing output MUST be fully explainable. An algorithm that conceals its evaluation logic, weights, or decision rules is not conformant. Black-box reputation systems are incompatible with the AOC Protocol.
+Every standing output MUST be fully explainable. An algorithm that conceals its evaluation logic, weights, or decision rules is not conformant. Black-box reputation systems are incompatible with the Soberanía Protocol.
 
 ### No Standing Without Evidence
 
@@ -1143,7 +1143,7 @@ Decay abuse is the attempt to artificially reset or slow decay — for example, 
 
 ### 23.1 The Distinction Is Constitutional
 
-Standing is not reputation. This is a constitutional distinction in the AOC Protocol.
+Standing is not reputation. This is a constitutional distinction in the Soberanía Protocol.
 
 **Reputation** is a market signal, social perception, aggregated opinion, or platform-computed value that reflects how a subject is perceived. Reputation is often opaque, influenced by popularity, social network effects, platform-specific signals, and editorial judgment. Reputation systems are frequently not explainable, not reproducible, and not challengeable in a meaningful way.
 
@@ -1161,7 +1161,7 @@ A reputation system cannot meaningfully be challenged because the evaluation log
 
 RFC-005-H2 defines Reputation Standing as a valid StandingType, but with the requirement that it MUST NOT collapse into an opaque or mutable reputation score. Reputation Standing, when computed under this protocol, must satisfy all requirements of this RFC: determinism, explainability, reproducibility, challengeability, governance, and versioning.
 
-If a system calls its output "reputation" but satisfies all of the above requirements, it is a conformant Standing output using the Reputation Standing type. If it does not, it is a non-conformant reputation system that MUST NOT participate in the AOC authority chain.
+If a system calls its output "reputation" but satisfies all of the above requirements, it is a conformant Standing output using the Reputation Standing type. If it does not, it is a non-conformant reputation system that MUST NOT participate in the Soberanía authority chain.
 
 ---
 
@@ -1359,10 +1359,10 @@ A complete implementation or document alignment for RFC-005-H6 satisfies the fol
 
 ## Conclusion
 
-RFC-005-H6 establishes Standing Algorithms as a first-class, governance-governed, constitutional component of the AOC Protocol. Standing Algorithms are not implementation details. They are the formalized mechanism by which the protocol transforms evidence and claims into standing states.
+RFC-005-H6 establishes Standing Algorithms as a first-class, governance-governed, constitutional component of the Soberanía Protocol. Standing Algorithms are not implementation details. They are the formalized mechanism by which the protocol transforms evidence and claims into standing states.
 
 The protocol MUST reject black-box reputation systems. It MUST require that every standing output be deterministic, explainable, auditable, reproducible, challengeable, and policy-governed. RFC-005-H6 is the specification that makes those requirements operational.
 
-The concepts introduced as first-class protocol concepts — StandingProfile, StandingDimension, Composite Standing, and AlgorithmVersion — elevate the sophistication of standing computation beyond simple threshold evaluation. They enable multi-dimensional, context-sensitive, governance-governed standing that can support the authority chains, capability decisions, and consequential decisions that the AOC Protocol demands.
+The concepts introduced as first-class protocol concepts — StandingProfile, StandingDimension, Composite Standing, and AlgorithmVersion — elevate the sophistication of standing computation beyond simple threshold evaluation. They enable multi-dimensional, context-sensitive, governance-governed standing that can support the authority chains, capability decisions, and consequential decisions that the Soberanía Protocol demands.
 
 Standing Algorithm = Deterministic(Evidence, Claims, Context, Policy, Version).

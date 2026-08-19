@@ -1,7 +1,7 @@
 import { LogoRotating } from '../../../components/logo/LogoRotating';
 
 const EMAIL = 'hello@aocprotocol.xyz';
-const CTA_HREF = `mailto:${EMAIL}?subject=${encodeURIComponent('AOC Assurance — Technical Assessment Request')}`;
+const CTA_HREF = `mailto:${EMAIL}?subject=${encodeURIComponent('Soberanía Assurance — Technical Assessment Request')}`;
 
 // Dark bookend, matching the visual rhythm of governed-access/Hero.tsx and
 // ../CtaSection.tsx: light-primary page, dark hero + closing CTA. One H1,
@@ -15,7 +15,7 @@ export function Hero() {
         <div className="flex items-center gap-2.5">
           <LogoRotating size={18} inverted />
           <p className="text-xs font-bold uppercase tracking-[0.14em] text-emerald-300">
-            AOC Enterprise &middot; Assurance
+            Soberanía Enterprise &middot; Assurance
           </p>
         </div>
 
@@ -24,8 +24,8 @@ export function Hero() {
         </h1>
 
         <p className="mt-6 max-w-2xl text-lg md:text-xl text-slate-400">
-          AOC Assurance evaluates every sovereignty capability defined by AOC Protocol and every
-          governance capability operated by AOC Enterprise.
+          Soberanía Assurance evaluates every sovereignty capability defined by Soberanía Protocol and every
+          governance capability operated by Soberanía Enterprise.
         </p>
 
         <a

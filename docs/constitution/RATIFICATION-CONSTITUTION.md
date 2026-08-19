@@ -4,7 +4,7 @@
 
 ## Preamble
 
-Ratification is a governed constitutional act through which the completed constitutional system is formally adopted as the authoritative foundation for AOC Protocol governance.
+Ratification is a governed constitutional act through which the completed constitutional system is formally adopted as the authoritative foundation for Soberanía Protocol governance.
 
 Ratification is NOT audit, governance, voting, runtime execution, product launch, or package publication.
 

@@ -186,7 +186,7 @@ export function EnterpriseNav() {
         <div className="flex h-16 items-center gap-3">
           <a href="/" className="flex items-center gap-3 shrink-0">
             <LogoRotating size={26} inverted />
-            <span className="font-semibold tracking-tight text-white">AOC Enterprise</span>
+            <span className="font-semibold tracking-tight text-white">Soberanía Enterprise</span>
           </a>
 
           <div className="hidden lg:flex flex-1 min-w-0 items-center gap-0.5 text-[13px] overflow-x-auto no-scrollbar">
@@ -201,7 +201,7 @@ export function EnterpriseNav() {
 
           <div className="flex items-center gap-3 ml-auto lg:ml-0 shrink-0">
             <a
-              href="mailto:hello@aocprotocol.xyz?subject=AOC%20Enterprise%20%E2%80%94%20Technical%20Assessment%20Request"
+              href="mailto:hello@aocprotocol.xyz?subject=Soberan%C3%ADa%20Enterprise%20%E2%80%94%20Technical%20Assessment%20Request"
               className="hidden md:inline-flex items-center rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500 transition-colors whitespace-nowrap"
             >
               Request Technical Assessment
@@ -228,7 +228,7 @@ export function EnterpriseNav() {
                 <MobileNavEntry key={entry.label} entry={entry} onNavigate={() => setOpen(false)} />
               ))}
               <a
-                href="mailto:hello@aocprotocol.xyz?subject=AOC%20Enterprise%20%E2%80%94%20Technical%20Assessment%20Request"
+                href="mailto:hello@aocprotocol.xyz?subject=Soberan%C3%ADa%20Enterprise%20%E2%80%94%20Technical%20Assessment%20Request"
                 className="mt-2 inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white"
               >
                 Request Technical Assessment
