@@ -25,9 +25,20 @@
  * associated is never a requirement satisfied; evidence complete is never a case
  * ready.
  *
+ * APV-06 delivers the fourth: the **declaration / claim preparation layer** —
+ * how a participant asserts something into a case. It records that a named
+ * declarant asserted a proposition, carried by a Protocol `CanonicalClaim` the
+ * caller names or supplies, correlated to declaration requirements of the
+ * pinned profile, optionally pointing at evidence APV-05 already admitted. It
+ * constructs no claim substrate of its own and prepares no `CanonicalClaim`.
+ * A declaration recorded is never a declaration true; a claim named is never a
+ * claim verified; evidence linked is never a claim proven; a declarant is never
+ * an authority; and all declarations present is never a case ready.
+ *
  * See `docs/asset-protocolization/APV_03_ASSET_PROFILE_FRAMEWORK.md`,
- * `docs/asset-protocolization/APV_04_PROTOCOLIZATION_CASE.md` and
- * `docs/asset-protocolization/APV_05_EVIDENCE_INTAKE.md`.
+ * `docs/asset-protocolization/APV_04_PROTOCOLIZATION_CASE.md`,
+ * `docs/asset-protocolization/APV_05_EVIDENCE_INTAKE.md` and
+ * `docs/asset-protocolization/APV_06_DECLARATION_CLAIM_PREPARATION.md`.
  */
 
 export {
@@ -279,3 +290,51 @@ export type { EvidenceIntakeRepository } from './evidence/evidence-intake-reposi
 
 export { EVIDENCE_INTAKE_ERROR_CODES, EvidenceIntakeError } from './evidence/evidence-intake-errors';
 export type { EvidenceIntakeErrorCode, EvidenceIntakeErrorDetails } from './evidence/evidence-intake-errors';
+
+// ---------------------------------------------------------------------------
+// APV-06 — Declaration / claim preparation
+// ---------------------------------------------------------------------------
+
+export { isValidDeclarationId } from './declarations/declaration-identifiers';
+export type { DeclarationId } from './declarations/declaration-identifiers';
+
+export { DeclarationPathway, isDeclarationPathway } from './declarations/declaration-submission';
+export type {
+  CanonicalClaimDeclarationSubmission,
+  ProtocolizationDeclarationSubmission,
+  ReferencedDeclarationSubmission,
+} from './declarations/declaration-submission';
+
+export { PROTOCOLIZATION_DECLARATION_RECORD_SCHEMA_VERSION } from './declarations/declaration-record';
+export type { ProtocolizationDeclarationRecord } from './declarations/declaration-record';
+
+export {
+  DECLARATION_VALIDATION_CODES,
+  isAdmissibleProtocolizationDeclarationSubmission,
+  isValidProtocolizationDeclarationRecord,
+  validateProtocolizationDeclarationRecord,
+  validateProtocolizationDeclarationSubmission,
+} from './declarations/declaration-validation';
+export type {
+  DeclarationValidationCode,
+  DeclarationValidationResult,
+} from './declarations/declaration-validation';
+
+export { PROTOCOLIZATION_DECLARATION_EVENT_TYPES } from './declarations/declaration-events';
+export type {
+  ProtocolizationDeclarationEvent,
+  ProtocolizationDeclarationEventType,
+  ProtocolizationDeclarationRecordedEvent,
+} from './declarations/declaration-events';
+
+export {
+  recordProtocolizationDeclaration,
+  reconstituteProtocolizationDeclarationRecord,
+} from './declarations/declaration-operations';
+export type { ProtocolizationDeclarationTransition } from './declarations/declaration-operations';
+
+export { createInMemoryDeclarationRepository } from './declarations/declaration-repository';
+export type { DeclarationRepository } from './declarations/declaration-repository';
+
+export { DECLARATION_ERROR_CODES, DeclarationError } from './declarations/declaration-errors';
+export type { DeclarationErrorCode, DeclarationErrorDetails } from './declarations/declaration-errors';

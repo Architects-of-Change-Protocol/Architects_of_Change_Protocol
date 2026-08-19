@@ -20,6 +20,11 @@ import type {
 } from '@aoc/asset-protocolization';
 
 import { TEST_CONTENT_SHAPE_V1, TEST_EXTERNAL_SHAPE_V1, TEST_PROFILE_V1 } from './test-profiles';
+import {
+  TEST_DECLARATION_ONLY_SHAPE_V1,
+  TEST_DECLARATION_SHAPE_V1,
+  TEST_DECLARATION_SHAPE_V1_AT_2_0_0,
+} from './test-declarations';
 
 /**
  * Test-only fixtures for the `ProtocolizationCase` slice.
@@ -165,6 +170,9 @@ export function createTestCatalog(): AssetProfileCatalog {
     TEST_PROFILE_V1,
     TEST_PROFILE_V1_AT_2_0_0,
     TEST_CONDITIONAL_SHAPE_V1,
+    TEST_DECLARATION_SHAPE_V1,
+    TEST_DECLARATION_SHAPE_V1_AT_2_0_0,
+    TEST_DECLARATION_ONLY_SHAPE_V1,
   ]);
 }
 
