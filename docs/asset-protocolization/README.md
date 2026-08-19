@@ -42,7 +42,8 @@ TOKENIZER               issuance, contracts, custody, marketplace, settlement
 | APV-04 | [`APV_04_PROTOCOLIZATION_CASE.md`](./APV_04_PROTOCOLIZATION_CASE.md) | `VERIFIED` — `ProtocolizationCase` in `@aoc/asset-protocolization` |
 | APV-05 | [`APV_05_EVIDENCE_INTAKE.md`](./APV_05_EVIDENCE_INTAKE.md) | `VERIFIED` — evidence intake layer in `@aoc/asset-protocolization` |
 | APV-06 | [`APV_06_DECLARATION_CLAIM_PREPARATION.md`](./APV_06_DECLARATION_CLAIM_PREPARATION.md) | `VERIFIED` — declaration / claim preparation layer in `@aoc/asset-protocolization` |
-| APV-07…APV-20 | not started | — |
+| APV-07 | [`APV_07_VERIFICATION_PIPELINE.md`](./APV_07_VERIFICATION_PIPELINE.md) | `VERIFIED` — verification pipeline in `@aoc/asset-protocolization` |
+| APV-08…APV-20 | not started | — |
 
 The ADR lives under `docs/architecture/` to follow this repository's existing ADR naming
 convention (`docs/architecture/adr-*.md`).
@@ -78,6 +79,13 @@ composes the existing lower-level Protocol primitives it needs (`verifySovereign
 If implementation surfaces a genuinely generic missing capability — one that at least
 three unrelated verticals would need — it is documented as a *possible future Protocol
 proposal* with its own gate (ADR §7). It is not added to Protocol inside this workstream.
+
+APV-07 discharges this for the verification pipeline and surfaced no such gap. It reuses
+`verifyContentIdentity` and `ContentDigestAlgorithm` for digest comparison, declares its own
+vertically-scoped outcome vocabulary rather than widening Protocol's `VerificationStatus`
+(which is a different concept, not a narrower one), and puts everything it cannot do itself
+behind injected ports. No generic `AOC.VERIFIABILITY` capsule was invented, and Protocol was
+not modified.
 
 ### `U-2` — External registries
 
@@ -115,6 +123,14 @@ one the caller already holds) and the vertical records its own `ProtocolizationD
 alongside it. `U-3` remains undischarged, which is the honest state to leave it in. See
 [`APV_06_DECLARATION_CLAIM_PREPARATION.md`](./APV_06_DECLARATION_CLAIM_PREPARATION.md#4-relationship-to-canonicalclaim--the-substrate-decision).
 
+APV-07 mints none either, and for the same structural reason applied to the verification
+substrate: a `CanonicalVerification` requires a minted canonical id, a `claimRef`, a verifier
+and a Protocol `VerificationStatus`, and most profile-declared checks legitimately have none
+of them. APV-07 records its own `ProtocolizationVerificationResult` and carries an *optional*
+reference to a `CanonicalVerification` only where an executor genuinely observed one. `U-3`
+therefore still stands undischarged. See
+[`APV_07_VERIFICATION_PIPELINE.md`](./APV_07_VERIFICATION_PIPELINE.md#9-canonicalverification--the-substrate-decision).
+
 ### `U-4` — Fee model ownership
 
 **Decision.** The vertical owns its own fee **assessment** model. APV-03, APV-04 and later
@@ -147,6 +163,13 @@ update, no delete and no retraction, because a declaration log whose entries can
 withdrawn is worth nothing to the slices that read it. See
 [`APV_06_DECLARATION_CLAIM_PREPARATION.md`](./APV_06_DECLARATION_CLAIM_PREPARATION.md#18-persistence).
 
+APV-07 extends it once more: `VerificationResultRepository` is declared in
+`packages/asset-protocolization/src/verification/verification-repository.ts` with one in-memory
+implementation, stores *execution results* rather than verifications, and is append-only for
+the same reason — a check history whose entries can be rewritten cannot show that a case once
+passed, or once failed. No database adapter, migration or schema was added. See
+[`APV_07_VERIFICATION_PIPELINE.md`](./APV_07_VERIFICATION_PIPELINE.md#19-persistence).
+
 ## Reading order for an implementer
 
 1. `docs/architecture/sovereign-asset-core.md` — the frozen substrate and its invariants.
@@ -165,7 +188,10 @@ withdrawn is worth nothing to the slices that read it. See
 9. `APV_06_DECLARATION_CLAIM_PREPARATION.md` — how a participant asserts something into a
    case, why the vertical never fabricates a `CanonicalClaim`, and why *recorded* is never
    *true*.
-10. `docs/constitution/ARCHITECTURAL-LAWS.md` — which mistakes fail the build.
+10. `APV_07_VERIFICATION_PIPELINE.md` — how the checks a pinned profile declares are actually
+    executed, why an APV check outcome is not Protocol's `VerificationStatus`, and why every
+    check passing is still never *ready*.
+11. `docs/constitution/ARCHITECTURAL-LAWS.md` — which mistakes fail the build.
 
 ## Workstream B
 

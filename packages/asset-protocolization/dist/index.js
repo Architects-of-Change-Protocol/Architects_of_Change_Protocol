@@ -36,15 +36,31 @@
  * claim verified; evidence linked is never a claim proven; a declarant is never
  * an authority; and all declarations present is never a case ready.
  *
+ * APV-07 delivers the fifth: the **verification pipeline** — how the automated
+ * checks a pinned `AssetProfile` version declares are actually executed. It
+ * resolves an `AssetVerificationCheckId` to a registered implementation, hands
+ * it a bounded read-only view of one case, and records an immutable result
+ * carrying an explicit outcome, a machine-readable reason, the references it
+ * evaluated, the exact profile pin and the case revision it evaluated. It
+ * mutates no case, so recording a finding can never become the input to the next
+ * one, and it declares its own outcome vocabulary rather than widening
+ * Protocol's `VerificationStatus`, which is a different concept.
+ *
+ * An APV check outcome is never Protocol's `VerificationStatus`; a `Pass` is
+ * never universal truth; a `Fail` is never a case rejection; a `Warning` is never
+ * a `Pass`; a `ManualReview` is never an attestation; an `Unavailable` is never a
+ * `Fail`; and every check passing is never a case ready.
+ *
  * See `docs/asset-protocolization/APV_03_ASSET_PROFILE_FRAMEWORK.md`,
  * `docs/asset-protocolization/APV_04_PROTOCOLIZATION_CASE.md`,
- * `docs/asset-protocolization/APV_05_EVIDENCE_INTAKE.md` and
- * `docs/asset-protocolization/APV_06_DECLARATION_CLAIM_PREPARATION.md`.
+ * `docs/asset-protocolization/APV_05_EVIDENCE_INTAKE.md`,
+ * `docs/asset-protocolization/APV_06_DECLARATION_CLAIM_PREPARATION.md` and
+ * `docs/asset-protocolization/APV_07_VERIFICATION_PIPELINE.md`.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProtocolizationRequirementConditionStatus = exports.ProtocolizationCaseState = exports.INITIAL_PROTOCOLIZATION_CASE_STATE = exports.protocolizationMaterialPayloadKey = exports.isValidProtocolizationCaseMaterial = exports.isProtocolizationMaterialKind = exports.ProtocolizationMaterialKind = exports.isValidProtocolizationCaseSubject = exports.protocolizationProfileRefsEqual = exports.isValidProtocolizationTenantId = exports.isValidProtocolizationProfileRef = exports.isValidProtocolizationMaterialId = exports.isValidProtocolizationCaseId = exports.PROTOCOLIZATION_IDENTIFIER_MAX_LENGTH = exports.AssetProfileError = exports.ASSET_PROFILE_ERROR_CODES = exports.createAssetProfileCatalog = exports.listAssetProfileRequirements = exports.listAssetProfileReadinessRequirements = exports.hasAssetProfileRequirement = exports.getAssetProfileRequirement = exports.validateAssetProfile = exports.isValidAssetProfile = exports.isAssetRequirementOfKind = exports.ASSET_PROFILE_VALIDATION_CODES = exports.AssetProfileScope = exports.ASSET_PROFILE_SCHEMA_VERSION = exports.AssetRequirementSatisfaction = exports.AssetRequirementObligation = exports.AssetRequirementKind = exports.AssetIdentityStrategy = exports.isValidAssetRegistryConstraint = exports.isValidAssetCredentialConstraint = exports.isValidAssetAttesterConstraint = exports.isValidUtcDateTime = exports.isValidAssetFreshnessConstraint = exports.isValidAssetProfileMetadata = exports.jurisdictionRefsEqual = exports.isValidJurisdictionRef = exports.isValidJurisdictionCode = exports.GLOBAL_JURISDICTION_CODE = exports.isValidAssetVerificationCheckId = exports.isValidAssetRequirementId = exports.isValidAssetRequirementConditionId = exports.isValidAssetProfileVersion = exports.isValidAssetProfileId = exports.isValidAssetCategoryId = exports.compareAssetProfileVersions = exports.assetProfileVersionKey = exports.ASSET_IDENTIFIER_MAX_LENGTH = void 0;
 exports.createInMemoryDeclarationRepository = exports.reconstituteProtocolizationDeclarationRecord = exports.recordProtocolizationDeclaration = exports.PROTOCOLIZATION_DECLARATION_EVENT_TYPES = exports.validateProtocolizationDeclarationSubmission = exports.validateProtocolizationDeclarationRecord = exports.isValidProtocolizationDeclarationRecord = exports.isAdmissibleProtocolizationDeclarationSubmission = exports.DECLARATION_VALIDATION_CODES = exports.PROTOCOLIZATION_DECLARATION_RECORD_SCHEMA_VERSION = exports.isDeclarationPathway = exports.DeclarationPathway = exports.isValidDeclarationId = exports.EvidenceIntakeError = exports.EVIDENCE_INTAKE_ERROR_CODES = exports.createInMemoryEvidenceIntakeRepository = exports.reconstituteEvidenceIntakeReceipt = exports.intakeProtocolizationEvidence = exports.PROTOCOLIZATION_EVIDENCE_EVENT_TYPES = exports.validateProtocolizationEvidenceSubmission = exports.validateEvidenceIntakeReceipt = exports.isValidEvidenceIntakeReceipt = exports.isAdmissibleProtocolizationEvidenceSubmission = exports.EVIDENCE_INTAKE_VALIDATION_CODES = exports.EVIDENCE_INTAKE_RECEIPT_SCHEMA_VERSION = exports.isEvidenceIntakePathway = exports.EvidenceIntakePathway = exports.isValidEvidenceIntakeId = exports.isValidEvidenceIntakeCategoryId = exports.ProtocolizationCaseError = exports.PROTOCOLIZATION_CASE_ERROR_CODES = exports.createInMemoryProtocolizationCaseRepository = exports.listProtocolizationCaseRequirementProgress = exports.listProtocolizationCasePendingMaterialRequirements = exports.getProtocolizationCaseRequirementProgress = exports.reconstituteProtocolizationCase = exports.createProtocolizationCase = exports.cancelProtocolizationCase = exports.associateProtocolizationCaseMaterial = exports.addProtocolizationCaseMaterial = exports.activateProtocolizationCase = exports.PROTOCOLIZATION_CASE_EVENT_TYPES = exports.validateProtocolizationCase = exports.isValidProtocolizationCase = exports.PROTOCOLIZATION_CASE_VALIDATION_CODES = exports.PROTOCOLIZATION_CASE_SCHEMA_VERSION = exports.isProtocolizationCaseState = exports.isAllowedProtocolizationCaseTransition = exports.acceptsProtocolizationMaterial = exports.ProtocolizationRequirementMaterialStatus = void 0;
-exports.DeclarationError = exports.DECLARATION_ERROR_CODES = void 0;
+exports.VerificationError = exports.VERIFICATION_ERROR_CODES = exports.requiredMaterialPresentCheck = exports.minimumMaterialCountCheck = exports.identityStrategyCheck = exports.evidenceFreshnessCheck = exports.declarationClaimTypeCheck = exports.contentDigestCheck = exports.competingDeclarationCheck = exports.BUILT_IN_VERIFICATION_CHECKS = exports.listVerificationResultsForRevision = exports.listLatestVerificationResults = exports.isVerificationResultCurrentForRevision = exports.countVerificationOutcomes = exports.createInMemoryVerificationResultRepository = exports.runProtocolizationVerification = exports.reconstituteProtocolizationVerificationResult = exports.listProtocolizationVerificationPlan = exports.executeProtocolizationVerificationCheck = exports.PROTOCOLIZATION_VERIFICATION_EVENT_TYPES = exports.validateVerificationCheckExecution = exports.validateProtocolizationVerificationResult = exports.isValidProtocolizationVerificationResult = exports.isAdmissibleVerificationCheckExecution = exports.VERIFICATION_VALIDATION_CODES = exports.isVerificationInputKind = exports.VerificationInputKind = exports.PROTOCOLIZATION_VERIFICATION_RESULT_SCHEMA_VERSION = exports.createVerificationCheckRegistry = exports.VerificationResolutionStatus = exports.isValidVerificationReasonCode = exports.isValidVerificationExecutionId = exports.isVerificationCheckOutcome = exports.VerificationCheckOutcome = exports.VERIFICATION_CHECK_OUTCOMES = exports.DeclarationError = exports.DECLARATION_ERROR_CODES = void 0;
 var identifiers_1 = require("./identifiers");
 Object.defineProperty(exports, "ASSET_IDENTIFIER_MAX_LENGTH", { enumerable: true, get: function () { return identifiers_1.ASSET_IDENTIFIER_MAX_LENGTH; } });
 Object.defineProperty(exports, "assetProfileVersionKey", { enumerable: true, get: function () { return identifiers_1.assetProfileVersionKey; } });
@@ -194,3 +210,53 @@ Object.defineProperty(exports, "createInMemoryDeclarationRepository", { enumerab
 var declaration_errors_1 = require("./declarations/declaration-errors");
 Object.defineProperty(exports, "DECLARATION_ERROR_CODES", { enumerable: true, get: function () { return declaration_errors_1.DECLARATION_ERROR_CODES; } });
 Object.defineProperty(exports, "DeclarationError", { enumerable: true, get: function () { return declaration_errors_1.DeclarationError; } });
+// ---------------------------------------------------------------------------
+// APV-07 — Verification pipeline
+// ---------------------------------------------------------------------------
+var verification_outcome_1 = require("./verification/verification-outcome");
+Object.defineProperty(exports, "VERIFICATION_CHECK_OUTCOMES", { enumerable: true, get: function () { return verification_outcome_1.VERIFICATION_CHECK_OUTCOMES; } });
+Object.defineProperty(exports, "VerificationCheckOutcome", { enumerable: true, get: function () { return verification_outcome_1.VerificationCheckOutcome; } });
+Object.defineProperty(exports, "isVerificationCheckOutcome", { enumerable: true, get: function () { return verification_outcome_1.isVerificationCheckOutcome; } });
+var verification_identifiers_1 = require("./verification/verification-identifiers");
+Object.defineProperty(exports, "isValidVerificationExecutionId", { enumerable: true, get: function () { return verification_identifiers_1.isValidVerificationExecutionId; } });
+Object.defineProperty(exports, "isValidVerificationReasonCode", { enumerable: true, get: function () { return verification_identifiers_1.isValidVerificationReasonCode; } });
+var verification_ports_1 = require("./verification/verification-ports");
+Object.defineProperty(exports, "VerificationResolutionStatus", { enumerable: true, get: function () { return verification_ports_1.VerificationResolutionStatus; } });
+var verification_check_registry_1 = require("./verification/verification-check-registry");
+Object.defineProperty(exports, "createVerificationCheckRegistry", { enumerable: true, get: function () { return verification_check_registry_1.createVerificationCheckRegistry; } });
+var verification_result_1 = require("./verification/verification-result");
+Object.defineProperty(exports, "PROTOCOLIZATION_VERIFICATION_RESULT_SCHEMA_VERSION", { enumerable: true, get: function () { return verification_result_1.PROTOCOLIZATION_VERIFICATION_RESULT_SCHEMA_VERSION; } });
+Object.defineProperty(exports, "VerificationInputKind", { enumerable: true, get: function () { return verification_result_1.VerificationInputKind; } });
+Object.defineProperty(exports, "isVerificationInputKind", { enumerable: true, get: function () { return verification_result_1.isVerificationInputKind; } });
+var verification_validation_1 = require("./verification/verification-validation");
+Object.defineProperty(exports, "VERIFICATION_VALIDATION_CODES", { enumerable: true, get: function () { return verification_validation_1.VERIFICATION_VALIDATION_CODES; } });
+Object.defineProperty(exports, "isAdmissibleVerificationCheckExecution", { enumerable: true, get: function () { return verification_validation_1.isAdmissibleVerificationCheckExecution; } });
+Object.defineProperty(exports, "isValidProtocolizationVerificationResult", { enumerable: true, get: function () { return verification_validation_1.isValidProtocolizationVerificationResult; } });
+Object.defineProperty(exports, "validateProtocolizationVerificationResult", { enumerable: true, get: function () { return verification_validation_1.validateProtocolizationVerificationResult; } });
+Object.defineProperty(exports, "validateVerificationCheckExecution", { enumerable: true, get: function () { return verification_validation_1.validateVerificationCheckExecution; } });
+var verification_events_1 = require("./verification/verification-events");
+Object.defineProperty(exports, "PROTOCOLIZATION_VERIFICATION_EVENT_TYPES", { enumerable: true, get: function () { return verification_events_1.PROTOCOLIZATION_VERIFICATION_EVENT_TYPES; } });
+var verification_operations_1 = require("./verification/verification-operations");
+Object.defineProperty(exports, "executeProtocolizationVerificationCheck", { enumerable: true, get: function () { return verification_operations_1.executeProtocolizationVerificationCheck; } });
+Object.defineProperty(exports, "listProtocolizationVerificationPlan", { enumerable: true, get: function () { return verification_operations_1.listProtocolizationVerificationPlan; } });
+Object.defineProperty(exports, "reconstituteProtocolizationVerificationResult", { enumerable: true, get: function () { return verification_operations_1.reconstituteProtocolizationVerificationResult; } });
+Object.defineProperty(exports, "runProtocolizationVerification", { enumerable: true, get: function () { return verification_operations_1.runProtocolizationVerification; } });
+var verification_repository_1 = require("./verification/verification-repository");
+Object.defineProperty(exports, "createInMemoryVerificationResultRepository", { enumerable: true, get: function () { return verification_repository_1.createInMemoryVerificationResultRepository; } });
+var verification_projections_1 = require("./verification/verification-projections");
+Object.defineProperty(exports, "countVerificationOutcomes", { enumerable: true, get: function () { return verification_projections_1.countVerificationOutcomes; } });
+Object.defineProperty(exports, "isVerificationResultCurrentForRevision", { enumerable: true, get: function () { return verification_projections_1.isVerificationResultCurrentForRevision; } });
+Object.defineProperty(exports, "listLatestVerificationResults", { enumerable: true, get: function () { return verification_projections_1.listLatestVerificationResults; } });
+Object.defineProperty(exports, "listVerificationResultsForRevision", { enumerable: true, get: function () { return verification_projections_1.listVerificationResultsForRevision; } });
+var verification_builtin_checks_1 = require("./verification/verification-builtin-checks");
+Object.defineProperty(exports, "BUILT_IN_VERIFICATION_CHECKS", { enumerable: true, get: function () { return verification_builtin_checks_1.BUILT_IN_VERIFICATION_CHECKS; } });
+Object.defineProperty(exports, "competingDeclarationCheck", { enumerable: true, get: function () { return verification_builtin_checks_1.competingDeclarationCheck; } });
+Object.defineProperty(exports, "contentDigestCheck", { enumerable: true, get: function () { return verification_builtin_checks_1.contentDigestCheck; } });
+Object.defineProperty(exports, "declarationClaimTypeCheck", { enumerable: true, get: function () { return verification_builtin_checks_1.declarationClaimTypeCheck; } });
+Object.defineProperty(exports, "evidenceFreshnessCheck", { enumerable: true, get: function () { return verification_builtin_checks_1.evidenceFreshnessCheck; } });
+Object.defineProperty(exports, "identityStrategyCheck", { enumerable: true, get: function () { return verification_builtin_checks_1.identityStrategyCheck; } });
+Object.defineProperty(exports, "minimumMaterialCountCheck", { enumerable: true, get: function () { return verification_builtin_checks_1.minimumMaterialCountCheck; } });
+Object.defineProperty(exports, "requiredMaterialPresentCheck", { enumerable: true, get: function () { return verification_builtin_checks_1.requiredMaterialPresentCheck; } });
+var verification_errors_1 = require("./verification/verification-errors");
+Object.defineProperty(exports, "VERIFICATION_ERROR_CODES", { enumerable: true, get: function () { return verification_errors_1.VERIFICATION_ERROR_CODES; } });
+Object.defineProperty(exports, "VerificationError", { enumerable: true, get: function () { return verification_errors_1.VerificationError; } });
