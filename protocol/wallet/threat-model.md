@@ -831,7 +831,7 @@ Based on formal consent invariants from architecture.md:
 **Corpus:**
 - Valid SDL documents
 - Valid consent tokens
-- Valid Soberanía URIs
+- Valid AOC URIs
 - Edge cases from unit tests
 
 ### 8.4 Adversarial Test Cases

@@ -658,7 +658,7 @@ DomainSeparator := H_keccak(
 ```
 
 **Soberanía Domain Parameters:**
-- name: "Soberanía Sovereign Wallet"
+- name: "AOC Sovereign Wallet"
 - version: "1"
 - chainId: 8453 (Base Mainnet) or 84532 (Base Sepolia)
 - verifyingContract: Soberanía registry contract address

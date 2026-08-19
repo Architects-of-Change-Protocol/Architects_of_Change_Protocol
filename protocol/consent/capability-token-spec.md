@@ -693,7 +693,7 @@ The `capability_hash` serves as the canonical identifier for a Capability Token.
 
 ### 9.2 URI Form
 
-Capability Tokens MAY be referenced using the Soberanía URI scheme:
+Capability Tokens MAY be referenced using the AOC URI scheme:
 
 ```
 aoc://capability/v{major}/{minor}/0x{capability_hash}

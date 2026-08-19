@@ -692,7 +692,7 @@ The `consent_hash` serves as the canonical identifier for a Consent Object.
 
 ### 8.2 URI Form
 
-Consent Objects MAY be referenced using the Soberanía URI scheme:
+Consent Objects MAY be referenced using the AOC URI scheme:
 
 ```
 aoc://consent/v{major}/{minor}/0x{consent_hash}

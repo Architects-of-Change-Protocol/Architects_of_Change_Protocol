@@ -589,7 +589,7 @@ The `field_hash` serves as a content address, enabling:
 
 ### 7.1 Definition
 
-A **Field Identifier** is the canonical Soberanía URI form for referencing a Field Manifest. The identifier provides a stable, unique, and verifiable reference to a specific field definition.
+A **Field Identifier** is the canonical AOC URI form for referencing a Field Manifest. The identifier provides a stable, unique, and verifiable reference to a specific field definition.
 
 ### 7.2 URI Specification
 

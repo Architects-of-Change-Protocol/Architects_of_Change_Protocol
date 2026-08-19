@@ -87,7 +87,7 @@
 | Consent Engine | Core | Consent policy enforcement |
 | Vault Controller | Core | Encrypted data management |
 | SDL Engine | Protocol | Field parsing and validation |
-| Object Resolver | Protocol | Soberanía URI resolution and pack assembly |
+| Object Resolver | Protocol | AOC URI resolution and pack assembly |
 | Connection Manager | Protocol | External entity relationships |
 | Storage Adapter | Adapter | Pluggable persistence backends |
 | Chain Adapter | Adapter | Blockchain interactions |

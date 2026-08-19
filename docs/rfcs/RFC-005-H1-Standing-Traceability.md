@@ -26,7 +26,7 @@ Standing Traceability does not define a storage system, user interface, scoring 
 
 1. [Executive Summary](#1-executive-summary)
 2. [Problem Statement](#2-problem-statement)
-3. [Soberanía Principle](#3-aoc-principle)
+3. [Soberanía Principle](#3-soberanía-principle)
 4. [Definition of Standing](#4-definition-of-standing)
 5. [Standing Traceability Requirements](#5-standing-traceability-requirements)
 6. [Standing Evolution Model](#6-standing-evolution-model)

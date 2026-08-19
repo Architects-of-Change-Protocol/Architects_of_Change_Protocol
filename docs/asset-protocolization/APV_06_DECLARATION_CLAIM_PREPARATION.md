@@ -200,7 +200,7 @@ evaluator believes.
 So a new *category* of declaration — "I created this work", "I am authorized to act for this
 entity", "this external entry corresponds to this subject" — is a **profile** that names
 `ClaimType.Custom` with a new `claimSubtype` token. It is a configuration change, not a change
-to this package, not a change to APV-04, and emphatically not a change to AOC Protocol: no
+to this package, not a change to APV-04, and emphatically not a change to Soberanía Protocol: no
 member is ever added to `ClaimType` for an asset category. The test fixtures demonstrate a
 whole proposition family (`test.declaration.subject-correspondence`) that no production code
 has ever heard of.
@@ -607,7 +607,7 @@ the claims themselves and an evaluator that does not exist in this slice.
 
 `DeclarationRepository` is a **port**, declared in the vertical, with one deterministic
 in-memory implementation. This is Gate A0 `U-6` applied to a third aggregate: no vertical
-workflow persistence port goes into AOC Protocol, and Protocol never learns that declarations
+workflow persistence port goes into Soberanía Protocol, and Protocol never learns that declarations
 exist.
 
 No database adapter, migration, schema or blob store was added. Binding the port to a store is
@@ -719,7 +719,7 @@ readiness, expanded state machine         APV-09
 protocolization execution, final record   APV-10
 concrete asset profiles                   APV-11+
 identity resolution, authority resolution, delegation validation
-policy, approvals, grants, obligations, revocation             AOC Enterprise
+policy, approvals, grants, obligations, revocation             Soberanía Enterprise
 token issuance, contracts, custody, settlement                 Tokenizer / Workstream B
 fee assessment, billing, payments
 registry connectors, network I/O of any kind
@@ -742,7 +742,7 @@ no clock of its own — Date.now() and new Date() appear nowhere
 no I/O, no adapter, no provider, no client construction
 no truth, verification, authority or legal identifier anywhere in the source
 no concrete product profile id and no closed declaration vocabulary
-no change to AOC Protocol
+no change to Soberanía Protocol
 ```
 
 ```text
@@ -756,7 +756,7 @@ Protocolization          != Tokenization
 ## 23. Architecture after APV-06
 
 ```text
-AOC Protocol
+Soberanía Protocol
 │  generic identity / evidence / claim / attestation / verification primitives
 │  CanonicalClaim, CanonicalClaimId, ClaimType, CanonicalPrincipalRef, PrincipalKind,
 │  CanonicalEvidenceId, CanonicalReferenceSource
@@ -784,7 +784,7 @@ timestamp · record
            ▼
       Protocolized asset
            ▼
-      AOC Enterprise
+      Soberanía Enterprise
            ▼
       External capability
       └── optional TOKENIZE ──▶ Tokenizer

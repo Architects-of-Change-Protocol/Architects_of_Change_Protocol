@@ -3,9 +3,9 @@
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
   "name": "@aoc/protocol@0.1.0",
-  "documentNamespace": "http://spdx.org/spdxdocs/@aoc%2fprotocol-0.1.0-07b75651-3ddc-41df-af72-662999fc9b5c",
+  "documentNamespace": "http://spdx.org/spdxdocs/@aoc%2fprotocol-0.1.0-d2923f1e-5bcb-41dc-a76b-1a4e721a914f",
   "creationInfo": {
-    "created": "2026-08-18T20:53:50.428Z",
+    "created": "2026-08-19T03:57:47.704Z",
     "creators": [
       "Tool: npm/cli-10.9.7"
     ]
@@ -19,7 +19,7 @@
       "SPDXID": "SPDXRef-Package-aoc.protocol-0.1.0",
       "versionInfo": "0.1.0",
       "packageFileName": "",
-      "description": "Public contracts, semantics, schemas, and compatibility definitions for AOC Protocol.",
+      "description": "Public contracts, semantics, schemas, and compatibility definitions for Soberanía Protocol.",
       "primaryPackagePurpose": "LIBRARY",
       "downloadLocation": "NOASSERTION",
       "filesAnalyzed": false,
