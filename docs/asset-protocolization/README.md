@@ -41,7 +41,8 @@ TOKENIZER               issuance, contracts, custody, marketplace, settlement
 | APV-03 | [`APV_03_ASSET_PROFILE_FRAMEWORK.md`](./APV_03_ASSET_PROFILE_FRAMEWORK.md) | Implemented — `@aoc/asset-protocolization` |
 | APV-04 | [`APV_04_PROTOCOLIZATION_CASE.md`](./APV_04_PROTOCOLIZATION_CASE.md) | `VERIFIED` — `ProtocolizationCase` in `@aoc/asset-protocolization` |
 | APV-05 | [`APV_05_EVIDENCE_INTAKE.md`](./APV_05_EVIDENCE_INTAKE.md) | `VERIFIED` — evidence intake layer in `@aoc/asset-protocolization` |
-| APV-06…APV-20 | not started | — |
+| APV-06 | [`APV_06_DECLARATION_CLAIM_PREPARATION.md`](./APV_06_DECLARATION_CLAIM_PREPARATION.md) | `VERIFIED` — declaration / claim preparation layer in `@aoc/asset-protocolization` |
+| APV-07…APV-20 | not started | — |
 
 The ADR lives under `docs/architecture/` to follow this repository's existing ADR naming
 convention (`docs/architecture/adr-*.md`).
@@ -105,6 +106,15 @@ it creates none. APV-05 mints none either, and deliberately constructs no
 `CanonicalEvidence`: intake receives an evidence *reference*, or a record the caller
 legitimately already holds, and never fabricates a canonical record identifier of its own.
 
+APV-06 is the first slice that could plausibly have needed one, and it does not. A
+`CanonicalAssertion` is reachable only through `CanonicalClaim.assertionRef`, and APV-06
+constructs no `CanonicalClaim` — for the same reason APV-05 constructs no `CanonicalEvidence`,
+and additionally because doing so would require minting an assertion identifier for a record
+the vertical neither builds nor stores. A declaration therefore *names* a claim (or receives
+one the caller already holds) and the vertical records its own `ProtocolizationDeclarationRecord`
+alongside it. `U-3` remains undischarged, which is the honest state to leave it in. See
+[`APV_06_DECLARATION_CLAIM_PREPARATION.md`](./APV_06_DECLARATION_CLAIM_PREPARATION.md#4-relationship-to-canonicalclaim--the-substrate-decision).
+
 ### `U-4` — Fee model ownership
 
 **Decision.** The vertical owns its own fee **assessment** model. APV-03, APV-04 and later
@@ -130,6 +140,13 @@ in-memory implementation, stores *receipts* rather than evidence, and adds no da
 store or upload infrastructure. See
 [`APV_05_EVIDENCE_INTAKE.md`](./APV_05_EVIDENCE_INTAKE.md#13-persistence).
 
+APV-06 extends it again: `DeclarationRepository` is declared in
+`packages/asset-protocolization/src/declarations/declaration-repository.ts` with one in-memory
+implementation, stores *declaration records* rather than claims, and is append-only — no
+update, no delete and no retraction, because a declaration log whose entries can be quietly
+withdrawn is worth nothing to the slices that read it. See
+[`APV_06_DECLARATION_CLAIM_PREPARATION.md`](./APV_06_DECLARATION_CLAIM_PREPARATION.md#18-persistence).
+
 ## Reading order for an implementer
 
 1. `docs/architecture/sovereign-asset-core.md` — the frozen substrate and its invariants.
@@ -145,7 +162,10 @@ store or upload infrastructure. See
 8. `APV_05_EVIDENCE_INTAKE.md` — how evidence is received, structurally admitted,
    referenced, correlated and recorded over the life of a case, and why *received* is never
    *verified*.
-9. `docs/constitution/ARCHITECTURAL-LAWS.md` — which mistakes fail the build.
+9. `APV_06_DECLARATION_CLAIM_PREPARATION.md` — how a participant asserts something into a
+   case, why the vertical never fabricates a `CanonicalClaim`, and why *recorded* is never
+   *true*.
+10. `docs/constitution/ARCHITECTURAL-LAWS.md` — which mistakes fail the build.
 
 ## Workstream B
 
