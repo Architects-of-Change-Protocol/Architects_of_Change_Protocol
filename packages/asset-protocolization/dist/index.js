@@ -51,16 +51,35 @@
  * a `Pass`; a `ManualReview` is never an attestation; an `Unavailable` is never a
  * `Fail`; and every check passing is never a case ready.
  *
+ * APV-08 delivers the sixth: the **professional attestation workflow** — how an
+ * identified reviewer receives a bounded, revision-bound snapshot of one case and
+ * records a scoped professional position on one attestation requirement of the
+ * pinned profile. It declares its own four-member action vocabulary (`Attest`,
+ * `Reject`, `RequestMoreEvidence`, `Abstain`) rather than widening any Protocol
+ * enum, keeps the vertical `ProfessionalReviewDecision` strictly distinct from
+ * Protocol's `CanonicalAttestation`, and constructs the latter only where every
+ * mandatory field — including the `claimRef` of a claim the case already holds —
+ * can be established without invention.
+ *
+ * Professional review is never automated verification; a review decision is never
+ * a `CanonicalAttestation`; an `Attest` is never universal truth and never a case
+ * ready; a `Reject` is never a case rejected; a `RequestMoreEvidence` is never a
+ * state transition; an `Abstain` is never a failure; a credential reference
+ * present is never a credential valid; and a credential valid is never authority
+ * over this subject.
+ *
  * See `docs/asset-protocolization/APV_03_ASSET_PROFILE_FRAMEWORK.md`,
  * `docs/asset-protocolization/APV_04_PROTOCOLIZATION_CASE.md`,
  * `docs/asset-protocolization/APV_05_EVIDENCE_INTAKE.md`,
- * `docs/asset-protocolization/APV_06_DECLARATION_CLAIM_PREPARATION.md` and
- * `docs/asset-protocolization/APV_07_VERIFICATION_PIPELINE.md`.
+ * `docs/asset-protocolization/APV_06_DECLARATION_CLAIM_PREPARATION.md`,
+ * `docs/asset-protocolization/APV_07_VERIFICATION_PIPELINE.md` and
+ * `docs/asset-protocolization/APV_08_PROFESSIONAL_ATTESTATION_WORKFLOW.md`.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProtocolizationRequirementConditionStatus = exports.ProtocolizationCaseState = exports.INITIAL_PROTOCOLIZATION_CASE_STATE = exports.protocolizationMaterialPayloadKey = exports.isValidProtocolizationCaseMaterial = exports.isProtocolizationMaterialKind = exports.ProtocolizationMaterialKind = exports.isValidProtocolizationCaseSubject = exports.protocolizationProfileRefsEqual = exports.isValidProtocolizationTenantId = exports.isValidProtocolizationProfileRef = exports.isValidProtocolizationMaterialId = exports.isValidProtocolizationCaseId = exports.PROTOCOLIZATION_IDENTIFIER_MAX_LENGTH = exports.AssetProfileError = exports.ASSET_PROFILE_ERROR_CODES = exports.createAssetProfileCatalog = exports.listAssetProfileRequirements = exports.listAssetProfileReadinessRequirements = exports.hasAssetProfileRequirement = exports.getAssetProfileRequirement = exports.validateAssetProfile = exports.isValidAssetProfile = exports.isAssetRequirementOfKind = exports.ASSET_PROFILE_VALIDATION_CODES = exports.AssetProfileScope = exports.ASSET_PROFILE_SCHEMA_VERSION = exports.AssetRequirementSatisfaction = exports.AssetRequirementObligation = exports.AssetRequirementKind = exports.AssetIdentityStrategy = exports.isValidAssetRegistryConstraint = exports.isValidAssetCredentialConstraint = exports.isValidAssetAttesterConstraint = exports.isValidUtcDateTime = exports.isValidAssetFreshnessConstraint = exports.isValidAssetProfileMetadata = exports.jurisdictionRefsEqual = exports.isValidJurisdictionRef = exports.isValidJurisdictionCode = exports.GLOBAL_JURISDICTION_CODE = exports.isValidAssetVerificationCheckId = exports.isValidAssetRequirementId = exports.isValidAssetRequirementConditionId = exports.isValidAssetProfileVersion = exports.isValidAssetProfileId = exports.isValidAssetCategoryId = exports.compareAssetProfileVersions = exports.assetProfileVersionKey = exports.ASSET_IDENTIFIER_MAX_LENGTH = void 0;
 exports.createInMemoryDeclarationRepository = exports.reconstituteProtocolizationDeclarationRecord = exports.recordProtocolizationDeclaration = exports.PROTOCOLIZATION_DECLARATION_EVENT_TYPES = exports.validateProtocolizationDeclarationSubmission = exports.validateProtocolizationDeclarationRecord = exports.isValidProtocolizationDeclarationRecord = exports.isAdmissibleProtocolizationDeclarationSubmission = exports.DECLARATION_VALIDATION_CODES = exports.PROTOCOLIZATION_DECLARATION_RECORD_SCHEMA_VERSION = exports.isDeclarationPathway = exports.DeclarationPathway = exports.isValidDeclarationId = exports.EvidenceIntakeError = exports.EVIDENCE_INTAKE_ERROR_CODES = exports.createInMemoryEvidenceIntakeRepository = exports.reconstituteEvidenceIntakeReceipt = exports.intakeProtocolizationEvidence = exports.PROTOCOLIZATION_EVIDENCE_EVENT_TYPES = exports.validateProtocolizationEvidenceSubmission = exports.validateEvidenceIntakeReceipt = exports.isValidEvidenceIntakeReceipt = exports.isAdmissibleProtocolizationEvidenceSubmission = exports.EVIDENCE_INTAKE_VALIDATION_CODES = exports.EVIDENCE_INTAKE_RECEIPT_SCHEMA_VERSION = exports.isEvidenceIntakePathway = exports.EvidenceIntakePathway = exports.isValidEvidenceIntakeId = exports.isValidEvidenceIntakeCategoryId = exports.ProtocolizationCaseError = exports.PROTOCOLIZATION_CASE_ERROR_CODES = exports.createInMemoryProtocolizationCaseRepository = exports.listProtocolizationCaseRequirementProgress = exports.listProtocolizationCasePendingMaterialRequirements = exports.getProtocolizationCaseRequirementProgress = exports.reconstituteProtocolizationCase = exports.createProtocolizationCase = exports.cancelProtocolizationCase = exports.associateProtocolizationCaseMaterial = exports.addProtocolizationCaseMaterial = exports.activateProtocolizationCase = exports.PROTOCOLIZATION_CASE_EVENT_TYPES = exports.validateProtocolizationCase = exports.isValidProtocolizationCase = exports.PROTOCOLIZATION_CASE_VALIDATION_CODES = exports.PROTOCOLIZATION_CASE_SCHEMA_VERSION = exports.isProtocolizationCaseState = exports.isAllowedProtocolizationCaseTransition = exports.acceptsProtocolizationMaterial = exports.ProtocolizationRequirementMaterialStatus = void 0;
-exports.VerificationError = exports.VERIFICATION_ERROR_CODES = exports.requiredMaterialPresentCheck = exports.minimumMaterialCountCheck = exports.identityStrategyCheck = exports.evidenceFreshnessCheck = exports.declarationClaimTypeCheck = exports.contentDigestCheck = exports.competingDeclarationCheck = exports.BUILT_IN_VERIFICATION_CHECKS = exports.listVerificationResultsForRevision = exports.listLatestVerificationResults = exports.isVerificationResultCurrentForRevision = exports.countVerificationOutcomes = exports.createInMemoryVerificationResultRepository = exports.runProtocolizationVerification = exports.reconstituteProtocolizationVerificationResult = exports.listProtocolizationVerificationPlan = exports.executeProtocolizationVerificationCheck = exports.PROTOCOLIZATION_VERIFICATION_EVENT_TYPES = exports.validateVerificationCheckExecution = exports.validateProtocolizationVerificationResult = exports.isValidProtocolizationVerificationResult = exports.isAdmissibleVerificationCheckExecution = exports.VERIFICATION_VALIDATION_CODES = exports.isVerificationInputKind = exports.VerificationInputKind = exports.PROTOCOLIZATION_VERIFICATION_RESULT_SCHEMA_VERSION = exports.createVerificationCheckRegistry = exports.VerificationResolutionStatus = exports.isValidVerificationReasonCode = exports.isValidVerificationExecutionId = exports.isVerificationCheckOutcome = exports.VerificationCheckOutcome = exports.VERIFICATION_CHECK_OUTCOMES = exports.DeclarationError = exports.DECLARATION_ERROR_CODES = void 0;
+exports.PROFESSIONAL_REVIEW_VALIDATION_CODES = exports.PROFESSIONAL_REVIEW_DECISION_SCHEMA_VERSION = exports.ProfessionalReviewParticipantRole = exports.PROFESSIONAL_REVIEW_PACKET_SCHEMA_VERSION = exports.PROFESSIONAL_REVIEW_REQUEST_SCHEMA_VERSION = exports.isProfessionalReviewBasisKind = exports.ProfessionalReviewBasisKind = exports.isValidProfessionalReviewRequestId = exports.isValidProfessionalReviewReasonCode = exports.isValidProfessionalReviewDecisionId = exports.isProfessionalReviewAction = exports.ProfessionalReviewAction = exports.PROFESSIONAL_REVIEW_ACTIONS = exports.VerificationError = exports.VERIFICATION_ERROR_CODES = exports.requiredMaterialPresentCheck = exports.minimumMaterialCountCheck = exports.identityStrategyCheck = exports.evidenceFreshnessCheck = exports.declarationClaimTypeCheck = exports.contentDigestCheck = exports.competingDeclarationCheck = exports.BUILT_IN_VERIFICATION_CHECKS = exports.listVerificationResultsForRevision = exports.listLatestVerificationResults = exports.isVerificationResultCurrentForRevision = exports.countVerificationOutcomes = exports.createInMemoryVerificationResultRepository = exports.runProtocolizationVerification = exports.reconstituteProtocolizationVerificationResult = exports.listProtocolizationVerificationPlan = exports.executeProtocolizationVerificationCheck = exports.PROTOCOLIZATION_VERIFICATION_EVENT_TYPES = exports.validateVerificationCheckExecution = exports.validateProtocolizationVerificationResult = exports.isValidProtocolizationVerificationResult = exports.isAdmissibleVerificationCheckExecution = exports.VERIFICATION_VALIDATION_CODES = exports.isVerificationInputKind = exports.VerificationInputKind = exports.PROTOCOLIZATION_VERIFICATION_RESULT_SCHEMA_VERSION = exports.createVerificationCheckRegistry = exports.VerificationResolutionStatus = exports.isValidVerificationReasonCode = exports.isValidVerificationExecutionId = exports.isVerificationCheckOutcome = exports.VerificationCheckOutcome = exports.VERIFICATION_CHECK_OUTCOMES = exports.DeclarationError = exports.DECLARATION_ERROR_CODES = void 0;
+exports.ProfessionalReviewError = exports.PROFESSIONAL_REVIEW_ERROR_CODES = exports.createInMemoryProfessionalReviewRequestRepository = exports.createInMemoryProfessionalReviewDecisionRepository = exports.prepareCanonicalAttestationFromReview = exports.reconstituteProfessionalReviewRequest = exports.reconstituteProfessionalReviewDecision = exports.recordProfessionalReviewDecision = exports.createProfessionalReviewRequest = exports.buildProfessionalReviewPacket = exports.PROFESSIONAL_REVIEW_EVENT_TYPES = exports.validateProfessionalReviewScope = exports.validateProfessionalReviewRequest = exports.validateProfessionalReviewDecision = exports.isValidProfessionalReviewScope = exports.isValidProfessionalReviewRequest = exports.isValidProfessionalReviewDecision = void 0;
 var identifiers_1 = require("./identifiers");
 Object.defineProperty(exports, "ASSET_IDENTIFIER_MAX_LENGTH", { enumerable: true, get: function () { return identifiers_1.ASSET_IDENTIFIER_MAX_LENGTH; } });
 Object.defineProperty(exports, "assetProfileVersionKey", { enumerable: true, get: function () { return identifiers_1.assetProfileVersionKey; } });
@@ -260,3 +279,48 @@ Object.defineProperty(exports, "requiredMaterialPresentCheck", { enumerable: tru
 var verification_errors_1 = require("./verification/verification-errors");
 Object.defineProperty(exports, "VERIFICATION_ERROR_CODES", { enumerable: true, get: function () { return verification_errors_1.VERIFICATION_ERROR_CODES; } });
 Object.defineProperty(exports, "VerificationError", { enumerable: true, get: function () { return verification_errors_1.VerificationError; } });
+// ---------------------------------------------------------------------------
+// APV-08 — Professional attestation workflow
+// ---------------------------------------------------------------------------
+var review_actions_1 = require("./attestation/review-actions");
+Object.defineProperty(exports, "PROFESSIONAL_REVIEW_ACTIONS", { enumerable: true, get: function () { return review_actions_1.PROFESSIONAL_REVIEW_ACTIONS; } });
+Object.defineProperty(exports, "ProfessionalReviewAction", { enumerable: true, get: function () { return review_actions_1.ProfessionalReviewAction; } });
+Object.defineProperty(exports, "isProfessionalReviewAction", { enumerable: true, get: function () { return review_actions_1.isProfessionalReviewAction; } });
+var review_identifiers_1 = require("./attestation/review-identifiers");
+Object.defineProperty(exports, "isValidProfessionalReviewDecisionId", { enumerable: true, get: function () { return review_identifiers_1.isValidProfessionalReviewDecisionId; } });
+Object.defineProperty(exports, "isValidProfessionalReviewReasonCode", { enumerable: true, get: function () { return review_identifiers_1.isValidProfessionalReviewReasonCode; } });
+Object.defineProperty(exports, "isValidProfessionalReviewRequestId", { enumerable: true, get: function () { return review_identifiers_1.isValidProfessionalReviewRequestId; } });
+var review_scope_1 = require("./attestation/review-scope");
+Object.defineProperty(exports, "ProfessionalReviewBasisKind", { enumerable: true, get: function () { return review_scope_1.ProfessionalReviewBasisKind; } });
+Object.defineProperty(exports, "isProfessionalReviewBasisKind", { enumerable: true, get: function () { return review_scope_1.isProfessionalReviewBasisKind; } });
+var review_request_1 = require("./attestation/review-request");
+Object.defineProperty(exports, "PROFESSIONAL_REVIEW_REQUEST_SCHEMA_VERSION", { enumerable: true, get: function () { return review_request_1.PROFESSIONAL_REVIEW_REQUEST_SCHEMA_VERSION; } });
+var review_packet_1 = require("./attestation/review-packet");
+Object.defineProperty(exports, "PROFESSIONAL_REVIEW_PACKET_SCHEMA_VERSION", { enumerable: true, get: function () { return review_packet_1.PROFESSIONAL_REVIEW_PACKET_SCHEMA_VERSION; } });
+Object.defineProperty(exports, "ProfessionalReviewParticipantRole", { enumerable: true, get: function () { return review_packet_1.ProfessionalReviewParticipantRole; } });
+var review_decision_1 = require("./attestation/review-decision");
+Object.defineProperty(exports, "PROFESSIONAL_REVIEW_DECISION_SCHEMA_VERSION", { enumerable: true, get: function () { return review_decision_1.PROFESSIONAL_REVIEW_DECISION_SCHEMA_VERSION; } });
+var review_validation_1 = require("./attestation/review-validation");
+Object.defineProperty(exports, "PROFESSIONAL_REVIEW_VALIDATION_CODES", { enumerable: true, get: function () { return review_validation_1.PROFESSIONAL_REVIEW_VALIDATION_CODES; } });
+Object.defineProperty(exports, "isValidProfessionalReviewDecision", { enumerable: true, get: function () { return review_validation_1.isValidProfessionalReviewDecision; } });
+Object.defineProperty(exports, "isValidProfessionalReviewRequest", { enumerable: true, get: function () { return review_validation_1.isValidProfessionalReviewRequest; } });
+Object.defineProperty(exports, "isValidProfessionalReviewScope", { enumerable: true, get: function () { return review_validation_1.isValidProfessionalReviewScope; } });
+Object.defineProperty(exports, "validateProfessionalReviewDecision", { enumerable: true, get: function () { return review_validation_1.validateProfessionalReviewDecision; } });
+Object.defineProperty(exports, "validateProfessionalReviewRequest", { enumerable: true, get: function () { return review_validation_1.validateProfessionalReviewRequest; } });
+Object.defineProperty(exports, "validateProfessionalReviewScope", { enumerable: true, get: function () { return review_validation_1.validateProfessionalReviewScope; } });
+var review_events_1 = require("./attestation/review-events");
+Object.defineProperty(exports, "PROFESSIONAL_REVIEW_EVENT_TYPES", { enumerable: true, get: function () { return review_events_1.PROFESSIONAL_REVIEW_EVENT_TYPES; } });
+var review_operations_1 = require("./attestation/review-operations");
+Object.defineProperty(exports, "buildProfessionalReviewPacket", { enumerable: true, get: function () { return review_operations_1.buildProfessionalReviewPacket; } });
+Object.defineProperty(exports, "createProfessionalReviewRequest", { enumerable: true, get: function () { return review_operations_1.createProfessionalReviewRequest; } });
+Object.defineProperty(exports, "recordProfessionalReviewDecision", { enumerable: true, get: function () { return review_operations_1.recordProfessionalReviewDecision; } });
+Object.defineProperty(exports, "reconstituteProfessionalReviewDecision", { enumerable: true, get: function () { return review_operations_1.reconstituteProfessionalReviewDecision; } });
+Object.defineProperty(exports, "reconstituteProfessionalReviewRequest", { enumerable: true, get: function () { return review_operations_1.reconstituteProfessionalReviewRequest; } });
+var attestation_preparation_1 = require("./attestation/attestation-preparation");
+Object.defineProperty(exports, "prepareCanonicalAttestationFromReview", { enumerable: true, get: function () { return attestation_preparation_1.prepareCanonicalAttestationFromReview; } });
+var review_repository_1 = require("./attestation/review-repository");
+Object.defineProperty(exports, "createInMemoryProfessionalReviewDecisionRepository", { enumerable: true, get: function () { return review_repository_1.createInMemoryProfessionalReviewDecisionRepository; } });
+Object.defineProperty(exports, "createInMemoryProfessionalReviewRequestRepository", { enumerable: true, get: function () { return review_repository_1.createInMemoryProfessionalReviewRequestRepository; } });
+var review_errors_1 = require("./attestation/review-errors");
+Object.defineProperty(exports, "PROFESSIONAL_REVIEW_ERROR_CODES", { enumerable: true, get: function () { return review_errors_1.PROFESSIONAL_REVIEW_ERROR_CODES; } });
+Object.defineProperty(exports, "ProfessionalReviewError", { enumerable: true, get: function () { return review_errors_1.ProfessionalReviewError; } });

@@ -43,7 +43,8 @@ TOKENIZER               issuance, contracts, custody, marketplace, settlement
 | APV-05 | [`APV_05_EVIDENCE_INTAKE.md`](./APV_05_EVIDENCE_INTAKE.md) | `VERIFIED` — evidence intake layer in `@aoc/asset-protocolization` |
 | APV-06 | [`APV_06_DECLARATION_CLAIM_PREPARATION.md`](./APV_06_DECLARATION_CLAIM_PREPARATION.md) | `VERIFIED` — declaration / claim preparation layer in `@aoc/asset-protocolization` |
 | APV-07 | [`APV_07_VERIFICATION_PIPELINE.md`](./APV_07_VERIFICATION_PIPELINE.md) | `VERIFIED` — verification pipeline in `@aoc/asset-protocolization` |
-| APV-08…APV-20 | not started | — |
+| APV-08 | [`APV_08_PROFESSIONAL_ATTESTATION_WORKFLOW.md`](./APV_08_PROFESSIONAL_ATTESTATION_WORKFLOW.md) | `VERIFIED` — professional attestation workflow in `@aoc/asset-protocolization` |
+| APV-09…APV-20 | not started | — |
 
 The ADR lives under `docs/architecture/` to follow this repository's existing ADR naming
 convention (`docs/architecture/adr-*.md`).
@@ -86,6 +87,12 @@ vertically-scoped outcome vocabulary rather than widening Protocol's `Verificati
 (which is a different concept, not a narrower one), and puts everything it cannot do itself
 behind injected ports. No generic `AOC.VERIFIABILITY` capsule was invented, and Protocol was
 not modified.
+
+APV-08 discharges it again for professional attestation and likewise surfaced no gap. It reuses
+`CanonicalAttestation`, `AttestationType`, `CanonicalCredentialRef`, `CanonicalPrincipalRef` and
+`CanonicalProofRef` as they stand, declares its own four-member review-action vocabulary rather
+than widening a Protocol enum, and puts signing behind a narrow injected `AttestationSigner`
+port with no production implementation. Protocol was not modified.
 
 ### `U-2` — External registries
 
@@ -131,6 +138,15 @@ reference to a `CanonicalVerification` only where an executor genuinely observed
 therefore still stands undischarged. See
 [`APV_07_VERIFICATION_PIPELINE.md`](./APV_07_VERIFICATION_PIPELINE.md#9-canonicalverification--the-substrate-decision).
 
+APV-08 is the first slice that legitimately constructs a Protocol record — a
+`CanonicalAttestation` — and it still needs no assertion identifier. A `CanonicalAttestation`
+requires a `claimRef`, not an `assertionRef`; a `CanonicalAssertion` is reachable only through
+`CanonicalClaim.assertionRef`; and APV-08 constructs no `CanonicalClaim`. The attestation is
+therefore always *about a claim the case already holds*, and where the case holds none, no
+attestation is constructed at all rather than one being fabricated. `U-3` remains undischarged.
+See
+[`APV_08_PROFESSIONAL_ATTESTATION_WORKFLOW.md`](./APV_08_PROFESSIONAL_ATTESTATION_WORKFLOW.md#10-canonicalattestation--the-substrate-decision-option-c).
+
 ### `U-4` — Fee model ownership
 
 **Decision.** The vertical owns its own fee **assessment** model. APV-03, APV-04 and later
@@ -170,6 +186,17 @@ the same reason — a check history whose entries can be rewritten cannot show t
 passed, or once failed. No database adapter, migration or schema was added. See
 [`APV_07_VERIFICATION_PIPELINE.md`](./APV_07_VERIFICATION_PIPELINE.md#19-persistence).
 
+APV-08 extends it a fourth time: `ProfessionalReviewRequestRepository` and
+`ProfessionalReviewDecisionRepository` are declared in
+`packages/asset-protocolization/src/attestation/review-repository.ts` with one in-memory
+implementation each, store *review requests* and *review decisions* rather than attestations,
+and are append-only — a review log whose entries can be rewritten cannot show that a case was
+once rejected, or once attested. There is deliberately no packet repository (a packet is a
+deterministic projection) and no attestation repository (a `CanonicalAttestation` is Protocol's
+record, not the vertical's to take custody of). No database adapter, migration or schema was
+added. See
+[`APV_08_PROFESSIONAL_ATTESTATION_WORKFLOW.md`](./APV_08_PROFESSIONAL_ATTESTATION_WORKFLOW.md#20-persistence).
+
 ## Reading order for an implementer
 
 1. `docs/architecture/sovereign-asset-core.md` — the frozen substrate and its invariants.
@@ -191,7 +218,10 @@ passed, or once failed. No database adapter, migration or schema was added. See
 10. `APV_07_VERIFICATION_PIPELINE.md` — how the checks a pinned profile declares are actually
     executed, why an APV check outcome is not Protocol's `VerificationStatus`, and why every
     check passing is still never *ready*.
-11. `docs/constitution/ARCHITECTURAL-LAWS.md` — which mistakes fail the build.
+11. `APV_08_PROFESSIONAL_ATTESTATION_WORKFLOW.md` — how a professional reviews a bounded,
+    revision-bound snapshot of a case, why a review decision is not a `CanonicalAttestation`,
+    and why *attested* is still never *ready*.
+12. `docs/constitution/ARCHITECTURAL-LAWS.md` — which mistakes fail the build.
 
 ## Workstream B
 
