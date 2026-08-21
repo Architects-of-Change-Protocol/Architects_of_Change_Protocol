@@ -50,12 +50,23 @@ Attest                     !=   protocolized
 Reject                     !=   case state Rejected
 RequestMoreEvidence        !=   case state MoreEvidenceRequired
 Abstain                    !=   Fail
-Credential reference present  != credential valid
-Credential valid           !=   authority over this subject
+Credential ref present     !=   the credential exists
+Credential type matches    !=   the credential is valid
+Declared status Active     !=   the credential is currently active
+Credential compatibility   !=   legal authority over this subject
 Reviewer identity          !=   legal authority
 Attestation within scope Y !=   truth outside scope Y
 Attestation material present != requirement satisfied
+Proof reference present    !=   proof resolved, or signature verified
 ```
+
+APV-08 checks what is *structurally comparable* on a
+`CanonicalCredentialRef` — its type, and the status somebody declared on it. It
+resolves no credential, contacts no registry and adjudicates no professional
+licensing, so it never establishes that a reviewer holds a valid, active
+professional credential. What it establishes is narrower and worth stating
+plainly: the reference the reviewer presented is *compatible* with what the
+pinned profile asked for.
 
 APV-08 introduces professional review. It does not introduce universal truth,
 final case readiness or legal authority; it does not replace an official
@@ -332,10 +343,40 @@ A `CanonicalAttestation` is structurally an attestation *about a claim*. So the
 claim must be one the case already holds — an APV-06 declaration's
 `CanonicalClaimId`, associated as `Declaration` material at or before the review
 basis. Where the case holds no such claim, no attestation is constructed and the
-operation fails deterministically with
-`REVIEW_ATTESTATION_CANNOT_BE_CONSTRUCTED`. The reviewer's `Attest` is still
-recorded in full: **a professional position without a Protocol artifact is an
-honest outcome, and a fabricated artifact is not.**
+**whole operation fails** deterministically with
+`REVIEW_ATTESTATION_CANNOT_BE_CONSTRUCTED` — no decision is returned either.
+
+### An invalid artifact request fails atomically
+
+This corrects earlier wording in this document, which said the reviewer's
+`Attest` was "still recorded in full" when construction failed. It is not, and
+the implementation never did that: `recordProfessionalReviewDecision` throws
+before it builds a `ProfessionalReviewDecision`. Code and documentation now agree
+on the deliberate invariant:
+
+```text
+Attest, `attestation` input omitted     -> a complete vertical decision, with no
+                                           canonicalAttestationRef, no
+                                           Attestation material and no
+                                           resultingCaseRevision
+
+Attest, `attestation` input supplied,
+  and the artifact is legitimate        -> decision + CanonicalAttestation +
+                                           material association, together
+
+Attest, `attestation` input supplied,
+  and the artifact is not legitimate    -> the operation fails; nothing is
+                                           produced and nothing is mutated
+```
+
+Silently downgrading the third row into the first was rejected. It would answer a
+request nobody made, and it would hide behind a *success* the fact that the
+Protocol artifact the caller is about to go looking for does not exist. A
+professional who wants their position on record without an artifact expresses
+that by omitting the input — the first row, supported since this slice shipped.
+
+**A professional position without a Protocol artifact is an honest outcome; a
+fabricated or unauditable artifact is not.**
 
 Construction is centralized in `prepareCanonicalAttestationFromReview`, which
 either builds a structurally legitimate record or fails. There is no partial
@@ -373,9 +414,42 @@ interface AttestationSigner {
 production signer implemented:  NO
 port declared:                  YES
 test adapter:                   YES — in tests/, never in src/
-no signer configured:           attestation carries no proofRefs (Protocol allows it)
-signer fails:                   REVIEW_SIGNATURE_UNAVAILABLE; no attestation is produced
 ```
+
+### A professional attestation carries a proof reference
+
+Protocol makes `CanonicalAttestation.proofRefs` optional, and for attestations in
+general that is right. It is not right for the artifact *this* vertical produces
+and associates to a case as `ProtocolizationMaterialKind.Attestation`: that
+artifact exists to be relied on and audited later, and one referencing no proof
+at all cannot be. So APV-08 narrows what it constructs — and narrows only that,
+never Protocol's type:
+
+```text
+Protocol permits:  a CanonicalAttestation with no proofRefs
+APV-08 produces:   never one. At least one CanonicalProofRef, always.
+```
+
+Two legitimate sources, and no third:
+
+```text
+caller-supplied CanonicalProofRef(s)  -> used as supplied, never rewritten
+configured AttestationSigner          -> its reference is appended
+both                                  -> both
+neither                               -> REVIEW_SIGNATURE_UNAVAILABLE
+signer throws / rejects               -> REVIEW_SIGNATURE_UNAVAILABLE
+signer returns a non-reference        -> REVIEW_SIGNATURE_UNAVAILABLE
+```
+
+Every one of those refusals is atomic: no decision, no attestation, no event, no
+`Attestation` material and no case revision increment. Recording the
+professional's position without a Protocol artifact needs no signer and no proof
+at all — that is the `Attest` with the attestation input omitted, described in
+§10.
+
+`REVIEW_SIGNATURE_UNAVAILABLE` is reused rather than joined by a new code,
+because all three conditions are one fact: *no proof reference is available for
+this professional attestation.*
 
 Never done, and mechanically asserted against: base64 of a reviewer id called a
 signature, a hash of the object called signed, generated keys, test keys in
@@ -384,9 +458,15 @@ algorithm identifier or proof format. No KMS, HSM, wallet, browser signer or
 blockchain binding exists in this package.
 
 ```text
+proof reference required !=  proof reference resolved
 proof reference present  !=  signature verified
 signature verified       !=  legally sufficient
 ```
+
+Requiring a proof reference to be present is a **completeness rule about the
+artifact APV-08 constructs**. It is emphatically not verification: APV-08
+resolves no proof artifact, checks no signature and performs no cryptography, and
+this change did not add any.
 
 ---
 
@@ -420,8 +500,16 @@ principal kind matches  != this reviewer is who they say they are
 credential ref present  != the credential exists
 credential type matches != the credential is valid
 declared status Active  != the credential is currently active
+credential compatibility != legal authority
 all constraints match   != this reviewer may lawfully issue this attestation
 ```
+
+Every check above is **structural**: a comparison against properties and a status
+*declared on* a `CanonicalCredentialRef`. Nothing here resolves the credential
+behind the reference. So no wording in this document, this package or its
+release notes may claim APV-08 establishes that a reviewer holds a valid, active
+professional credential — it establishes that the reference presented is
+compatible with what the pinned profile asked for, and stops there.
 
 Credential references are stored **as presented at decision time**. If a
 credential is suspended or expires later, the historical record does not change.

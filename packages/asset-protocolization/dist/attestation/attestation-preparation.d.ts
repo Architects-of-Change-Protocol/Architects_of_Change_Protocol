@@ -25,8 +25,15 @@ export interface PrepareCanonicalAttestationInput {
     readonly issuedAt: UtcDateTime;
     /** The credential references the reviewer presented, as presented. */
     readonly credentialRefs?: readonly CanonicalCredentialRef[];
-    /** Proof references an injected signer produced. Never synthesized here. */
-    readonly proofRefs?: readonly CanonicalProofRef[];
+    /**
+     * At least one proof reference. **Mandatory**, unlike Protocol's own optional
+     * field: a professional attestation this vertical produces is auditable or it
+     * is not produced.
+     *
+     * Held by the caller or obtained from an injected `AttestationSigner`. Never
+     * synthesized here, and never verified here.
+     */
+    readonly proofRefs: readonly CanonicalProofRef[];
 }
 /**
  * Builds a structurally legitimate `CanonicalAttestation`, or fails.
@@ -37,8 +44,10 @@ export interface PrepareCanonicalAttestationInput {
  * elsewhere.
  *
  * Optional fields are omitted rather than set to `undefined`, because
- * `{ proofRefs: undefined }` and `{}` serialize differently and a store that
- * round-tripped one into the other would change what the record says.
+ * `{ credentialRefs: undefined }` and `{}` serialize differently and a store
+ * that round-tripped one into the other would change what the record says.
+ * `proofRefs` is never among them: it is always present, because an attestation
+ * without one is never returned.
  */
 export declare function prepareCanonicalAttestationFromReview(input: PrepareCanonicalAttestationInput): CanonicalAttestation;
 //# sourceMappingURL=attestation-preparation.d.ts.map

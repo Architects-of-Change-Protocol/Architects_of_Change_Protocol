@@ -115,14 +115,42 @@ export declare const PROFESSIONAL_REVIEW_ERROR_CODES: Readonly<{
     readonly unexpectedActionField: "REVIEW_ACTION_FIELD_UNEXPECTED";
     /**
      * A `CanonicalAttestation` was asked for and cannot be constructed without
-     * inventing something Protocol requires.
+     * inventing something Protocol — or this vertical's own professional
+     * attestation contract — requires.
      *
-     * The record is refused rather than repaired. A partial or fabricated
-     * attestation is worse than none: none is an honest absence, and a fabricated
-     * one is a counterfeit Protocol record every later reader inherits.
+     * The record is refused rather than repaired, and the whole operation fails
+     * with it: a caller who asked for a Protocol artifact and cannot legitimately
+     * have one gets no decision either, rather than a half-outcome they never
+     * requested. Recording the professional's position without an artifact is a
+     * different call — the same `Attest` with the attestation input omitted.
+     *
+     * A partial or fabricated attestation is worse than none: none is an honest
+     * absence, and a fabricated one is a counterfeit Protocol record every later
+     * reader inherits.
      */
     readonly attestationCannotBeConstructed: "REVIEW_ATTESTATION_CANNOT_BE_CONSTRUCTED";
-    /** A configured signer could not produce a proof reference. */
+    /**
+     * A requested `CanonicalAttestation` could not obtain a usable
+     * `CanonicalProofRef`.
+     *
+     * Three conditions, one meaning — *no proof reference is available for this
+     * professional attestation*:
+     *
+     * ```text
+     * no signer configured and the caller supplied none
+     * the configured signer threw or rejected
+     * the configured signer returned something that is not a usable reference
+     * ```
+     *
+     * Protocol permits a `CanonicalAttestation` with no `proofRefs`; APV-08 does
+     * not produce one. An artifact this vertical associates to a case as
+     * `ProtocolizationMaterialKind.Attestation` is a professional attestation that
+     * something downstream will be asked to rely on, and one referencing no proof
+     * at all cannot be audited by whoever inherits it.
+     *
+     * This code says a reference is missing. It never means a proof was checked
+     * and failed: nothing in this package resolves or verifies one.
+     */
     readonly signatureUnavailable: "REVIEW_SIGNATURE_UNAVAILABLE";
     /** A request document failed `validateProfessionalReviewRequest`. Carries `reasonCodes`. */
     readonly invalidRequestRecord: "REVIEW_REQUEST_RECORD_INVALID";

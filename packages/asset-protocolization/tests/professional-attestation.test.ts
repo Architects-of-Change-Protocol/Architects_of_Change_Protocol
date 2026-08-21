@@ -22,6 +22,7 @@ import type {
 import { TEST_CLAIM_ID, TEST_SECOND_CLAIM_ID } from './fixtures/test-declarations';
 import {
   TEST_ATTESTATION_ID,
+  TEST_CALLER_PROOF_REF,
   TEST_PRIMARY_ATTESTATION_REQUIREMENT,
   TEST_PROFESSIONAL_CREDENTIAL,
   TEST_REVIEWER_HUMAN,
@@ -29,6 +30,7 @@ import {
   createFailingAttestationSigner,
   createReviewContext,
   createTestAttestationSigner,
+  createUnusableProofAttestationSigner,
   primaryScope,
   reviewedRefs,
 } from './fixtures/test-attestation';
@@ -173,8 +175,10 @@ describe('canonical attestation from professional review', () => {
     ).toBe(false);
   });
 
+  // (a) The already-supported workflow, and it needs no signer and no proof:
+  // nothing is being produced that anyone could later be asked to audit.
   it('records an Attest without a Protocol artifact when none was asked for', async () => {
-    const context = createReviewContext();
+    const context = createReviewContext({ withoutSigner: true });
     const { basis, request } = await openRequest(context);
 
     context.clock.advance(60);
@@ -194,6 +198,13 @@ describe('canonical attestation from professional review', () => {
     expect(transition.attestation).toBeUndefined();
     expect(transition.protocolizationCase).toBeUndefined();
     expect(transition.attestationEvent).toBeUndefined();
+
+    // (f) No proof was involved anywhere, so no Attestation material exists.
+    expect(
+      basis.protocolizationCase.materials.some(
+        (material) => material.kind === ProtocolizationMaterialKind.Attestation,
+      ),
+    ).toBe(false);
   });
 
   it('never produces an attestation for Reject, RequestMoreEvidence or Abstain', async () => {
@@ -248,6 +259,7 @@ describe('canonical attestation from professional review', () => {
     ).toBe(false);
   });
 
+  // (d) The first legitimate source: a configured signer's own reference.
   it('attaches a signer’s proof reference and invents none of its own', async () => {
     const signer = createTestAttestationSigner();
     const context = createReviewContext({ signer });
@@ -268,26 +280,129 @@ describe('canonical attestation from professional review', () => {
     expect(attestation!.proofRefs![0]!.type).toBe(ProofType.SignatureProof);
   });
 
-  it('produces an unsigned attestation when no signer is configured', async () => {
-    const context = createReviewContext();
-    const { basis, request } = await openRequest(context, 'review-request-unsigned');
+  /**
+   * (b) The case this hardening exists for.
+   *
+   * Protocol permits a `CanonicalAttestation` with no `proofRefs`. APV-08 does
+   * not produce one: a professional attestation associated to a case as
+   * `ProtocolizationMaterialKind.Attestation` is auditable, or it is not
+   * produced. With no signer configured and no caller-held reference, there is
+   * nothing legitimate to attach, so the operation refuses.
+   */
+  it('refuses a requested CanonicalAttestation with neither a signer nor a proof reference', async () => {
+    const context = createReviewContext({ withoutSigner: true });
+    const { basis, request } = await openRequest(context, 'review-request-no-proof');
+    const revisionBefore = basis.protocolizationCase.revision;
 
     context.clock.advance(60);
-    const { attestation } = await recordProfessionalReviewDecision(
+    await expect(
+      recordProfessionalReviewDecision(
+        context,
+        basis.protocolizationCase,
+        request,
+        attestWith(basis),
+      ),
+    ).rejects.toMatchObject({
+      code: PROFESSIONAL_REVIEW_ERROR_CODES.signatureUnavailable,
+      details: { reasonCodes: [PROFESSIONAL_REVIEW_ERROR_CODES.signatureUnavailable] },
+    });
+
+    // (8) Atomic: no case mutation, no revision increment, no material.
+    expect(basis.protocolizationCase.revision).toBe(revisionBefore);
+    expect(
+      basis.protocolizationCase.materials.some(
+        (material) => material.kind === ProtocolizationMaterialKind.Attestation,
+      ),
+    ).toBe(false);
+  });
+
+  // An empty array is the same absence, spelled differently.
+  it('treats an empty proofRefs array as no proof reference at all', async () => {
+    const context = createReviewContext({ withoutSigner: true });
+    const { basis, request } = await openRequest(context, 'review-request-empty-proofs');
+
+    context.clock.advance(60);
+    await expect(
+      recordProfessionalReviewDecision(
+        context,
+        basis.protocolizationCase,
+        request,
+        attestWith(basis, { proofRefs: [] }),
+      ),
+    ).rejects.toMatchObject({ code: PROFESSIONAL_REVIEW_ERROR_CODES.signatureUnavailable });
+  });
+
+  /**
+   * (c) The second legitimate source.
+   *
+   * A caller who already holds a reference needs no signer. What travels onto
+   * the attestation is exactly what they supplied — this package resolves it,
+   * verifies it and rewrites it precisely never.
+   */
+  it('accepts a caller-supplied proof reference with no signer configured', async () => {
+    const context = createReviewContext({ withoutSigner: true });
+    const { basis, request } = await openRequest(context, 'review-request-caller-proof');
+
+    context.clock.advance(60);
+    const { attestation, protocolizationCase } = await recordProfessionalReviewDecision(
+      context,
+      basis.protocolizationCase,
+      request,
+      attestWith(basis, { proofRefs: [TEST_CALLER_PROOF_REF] }),
+    );
+
+    expect(attestation!.proofRefs).toEqual([TEST_CALLER_PROOF_REF]);
+    expect(
+      protocolizationCase!.materials.some(
+        (material) => material.kind === ProtocolizationMaterialKind.Attestation,
+      ),
+    ).toBe(true);
+  });
+
+  /**
+   * (e) A signer that cannot sign produces nothing whatsoever.
+   *
+   * Not a decision, not an artifact, not an event, and not a case mutation: the
+   * caller asked for an artifact they cannot legitimately have, and gets an
+   * error rather than a silently downgraded success.
+   */
+  it('fails the whole decision when a configured signer cannot sign', async () => {
+    const context = createReviewContext({ signer: createFailingAttestationSigner() });
+    const { basis, request } = await openRequest(context, 'review-request-signer-down');
+    const revisionBefore = basis.protocolizationCase.revision;
+    const caseBefore = JSON.stringify(basis.protocolizationCase);
+
+    context.clock.advance(60);
+    const outcome = await recordProfessionalReviewDecision(
       context,
       basis.protocolizationCase,
       request,
       attestWith(basis),
+    ).then(
+      (transition) => ({ threw: false, transition }) as const,
+      (error: unknown) => ({ threw: true, error }) as const,
     );
 
-    // Protocol makes `proofRefs` optional. An honestly unsigned attestation is
-    // worth more than a fabricated signature.
-    expect(attestation!.proofRefs).toBeUndefined();
+    expect(outcome.threw).toBe(true);
+    expect(outcome).toMatchObject({
+      error: { code: PROFESSIONAL_REVIEW_ERROR_CODES.signatureUnavailable },
+    });
+    // No decision came back at all — there is no partial result to inspect.
+    expect(outcome).not.toHaveProperty('transition');
+
+    expect(basis.protocolizationCase.revision).toBe(revisionBefore);
+    expect(JSON.stringify(basis.protocolizationCase)).toBe(caseBefore);
+    expect(
+      basis.protocolizationCase.materials.some(
+        (material) => material.kind === ProtocolizationMaterialKind.Attestation,
+      ),
+    ).toBe(false);
   });
 
-  it('fails the whole decision when a configured signer cannot sign', async () => {
-    const context = createReviewContext({ signer: createFailingAttestationSigner() });
-    const { basis, request } = await openRequest(context, 'review-request-signer-down');
+  // A misbehaving port is refused, not attached and called signed.
+  it('refuses what a signer returns when it is not a usable proof reference', async () => {
+    const context = createReviewContext({ signer: createUnusableProofAttestationSigner() });
+    const { basis, request } = await openRequest(context, 'review-request-bad-proof');
 
     context.clock.advance(60);
     await expect(
@@ -306,6 +421,59 @@ describe('canonical attestation from professional review', () => {
     ).toBe(false);
   });
 
+  /**
+   * (f) and (8), swept over every way a proof can be missing.
+   *
+   * One assertion matters above the rest: no path here leaves an
+   * `Attestation` material on the case. A refused artifact must not show up
+   * later as evidence that a professional attested to anything.
+   */
+  it('creates no Attestation material, and mutates nothing, on any proof-absent path', async () => {
+    const cases = [
+      { id: 'sweep-none', options: { withoutSigner: true } as const, proofRefs: undefined },
+      { id: 'sweep-empty', options: { withoutSigner: true } as const, proofRefs: [] },
+      {
+        id: 'sweep-signer-down',
+        options: { signer: createFailingAttestationSigner() } as const,
+        proofRefs: undefined,
+      },
+      {
+        id: 'sweep-signer-unusable',
+        options: { signer: createUnusableProofAttestationSigner() } as const,
+        proofRefs: undefined,
+      },
+    ];
+
+    for (const [index, entry] of cases.entries()) {
+      const context = createReviewContext(entry.options);
+      const { basis, request } = await openRequest(context, `review-request-${entry.id}`);
+      const before = JSON.stringify(basis.protocolizationCase);
+      const revisionBefore = basis.protocolizationCase.revision;
+
+      context.clock.advance(60);
+      await expect(
+        recordProfessionalReviewDecision(
+          context,
+          basis.protocolizationCase,
+          request,
+          attestWith(
+            basis,
+            entry.proofRefs === undefined ? {} : { proofRefs: entry.proofRefs },
+            { decisionId: `review-decision-${index}` },
+          ),
+        ),
+      ).rejects.toMatchObject({ code: PROFESSIONAL_REVIEW_ERROR_CODES.signatureUnavailable });
+
+      expect(
+        basis.protocolizationCase.materials.some(
+          (material) => material.kind === ProtocolizationMaterialKind.Attestation,
+        ),
+      ).toBe(false);
+      expect(basis.protocolizationCase.revision).toBe(revisionBefore);
+      expect(JSON.stringify(basis.protocolizationCase)).toBe(before);
+    }
+  });
+
   it('constructs or fails: prepareCanonicalAttestationFromReview never repairs', () => {
     const good = {
       attestationId: TEST_ATTESTATION_ID,
@@ -314,6 +482,7 @@ describe('canonical attestation from professional review', () => {
       claimRef: TEST_CLAIM_ID,
       statement: 'Test-only statement.',
       issuedAt: '2026-01-01T00:00:00.000Z',
+      proofRefs: [TEST_CALLER_PROOF_REF],
     };
     expect(prepareCanonicalAttestationFromReview(good).id).toBe(TEST_ATTESTATION_ID);
 
@@ -332,6 +501,37 @@ describe('canonical attestation from professional review', () => {
     }
   });
 
+  /**
+   * (b), at the construction layer.
+   *
+   * The rule is not enforced only in the operation: the exported constructor
+   * itself will not hand anyone a professional attestation carrying no proof
+   * reference, so there is no second door into an unauditable artifact.
+   */
+  it('refuses to construct a professional attestation carrying no proof reference', () => {
+    const base = {
+      attestationId: TEST_ATTESTATION_ID,
+      attestationType: AttestationType.Human,
+      attester: TEST_REVIEWER_HUMAN,
+      claimRef: TEST_CLAIM_ID,
+      statement: 'Test-only statement.',
+      issuedAt: '2026-01-01T00:00:00.000Z',
+    };
+
+    for (const proofRefs of [undefined, [], 'not-an-array']) {
+      expect(() =>
+        prepareCanonicalAttestationFromReview({ ...base, proofRefs } as never),
+      ).toThrow(
+        expect.objectContaining({
+          code: PROFESSIONAL_REVIEW_ERROR_CODES.attestationCannotBeConstructed,
+          details: expect.objectContaining({
+            reasonCodes: expect.arrayContaining(['ATTESTATION_PROOF_REFS_REQUIRED']),
+          }),
+        }),
+      );
+    }
+  });
+
   it('omits optional Protocol fields rather than setting them to undefined', () => {
     const attestation = prepareCanonicalAttestationFromReview({
       attestationId: TEST_ATTESTATION_ID,
@@ -340,13 +540,17 @@ describe('canonical attestation from professional review', () => {
       claimRef: TEST_CLAIM_ID,
       statement: 'Test-only statement.',
       issuedAt: '2026-01-01T00:00:00.000Z',
+      proofRefs: [TEST_CALLER_PROOF_REF],
     });
 
+    // `credentialRefs` is absent rather than undefined; `proofRefs` is present,
+    // because this vertical produces no attestation without one.
     expect(Object.keys(attestation).sort()).toEqual([
       'attester',
       'claimRef',
       'id',
       'issuedAt',
+      'proofRefs',
       'statement',
       'type',
     ]);

@@ -413,23 +413,66 @@ export function createFailingAttestationSigner(): AttestationSigner {
   };
 }
 
+/**
+ * A signer that returns something that is not a proof reference.
+ *
+ * A misbehaving port, not a failing one. Proves the workflow refuses what it
+ * will not carry instead of attaching it and calling the attestation signed.
+ */
+export function createUnusableProofAttestationSigner(): AttestationSigner {
+  return {
+    sign(): CanonicalProofRef {
+      return { id: '   ', type: 'NotAProofType', source: '' } as never;
+    },
+  };
+}
+
+/**
+ * A proof reference a caller already holds.
+ *
+ * The second legitimate source of the reference APV-08 requires — the other
+ * being a configured signer. Test-only, and no cryptography was performed to
+ * produce it: `CanonicalProofRef` is a reference, and this package resolves and
+ * verifies none.
+ */
+export const TEST_CALLER_PROOF_REF: CanonicalProofRef = {
+  id: 'aoc:proof:caller-held-0001',
+  type: ProofType.SignatureProof,
+  source: { kind: ReferenceSourceKind.InternalId, value: 'test-caller:proof-0001' },
+  description: 'Test-only caller-held proof reference. Never resolved, never verified.',
+};
+
 export interface ReviewTestContext extends ProfessionalReviewContext {
   readonly clock: TestClock;
 }
 
+/**
+ * A review context, with a signer configured by default.
+ *
+ * The default is deliberate. APV-08 produces a `CanonicalAttestation` only where
+ * at least one `CanonicalProofRef` can be obtained, so a context with no signer
+ * and a caller holding no reference of their own is the *refusal* case, not the
+ * ordinary one. Tests that want it ask for it explicitly with `withoutSigner`,
+ * which reads as what it is rather than as an omission.
+ */
 export function createReviewContext(
   options: {
     readonly tenantId?: string;
     readonly catalog?: AssetProfileCatalog;
     readonly clock?: TestClock;
     readonly signer?: AttestationSigner;
+    /** Configure no signer at all. The caller's own proof refs, or nothing. */
+    readonly withoutSigner?: boolean;
   } = {},
 ): ReviewTestContext {
+  const signer = options.withoutSigner === true
+    ? undefined
+    : options.signer ?? createTestAttestationSigner();
   return {
     catalog: options.catalog ?? createAttestationCatalog(),
     clock: options.clock ?? createTestClock(),
     tenantId: options.tenantId ?? TENANT_A,
-    ...(options.signer === undefined ? {} : { signer: options.signer }),
+    ...(signer === undefined ? {} : { signer }),
   };
 }
 

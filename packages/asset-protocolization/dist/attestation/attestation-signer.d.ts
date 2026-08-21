@@ -36,21 +36,41 @@ import type { ProfessionalReviewDecisionId, ProfessionalReviewRequestId } from '
  * There is deliberately no KMS binding, no HSM binding, no wallet, no browser
  * signer and no blockchain anything in this package — those are infrastructure
  * decisions with their own owners and their own review, exactly like a database
- * adapter. The port is optional: where no signer is configured, an attestation
- * is produced without `proofRefs`, which is a shape Protocol's own
- * `CanonicalAttestation` explicitly allows. An unsigned attestation is an honest
- * unsigned attestation; a fake proof would not be.
+ * adapter.
+ *
+ * ### The port is optional; a proof reference is not
+ *
+ * Protocol's own `CanonicalAttestation` allows `proofRefs` to be absent, and for
+ * attestations in general that is right. It is not right for the *professional*
+ * attestation this vertical produces and associates to a case as
+ * `ProtocolizationMaterialKind.Attestation`: that artifact exists to be audited
+ * later, and one carrying no reference to any proof cannot be.
+ *
+ * So a configured signer is one of two ways to obtain the reference APV-08
+ * requires — the other is a caller who already holds one. Where a
+ * `CanonicalAttestation` is requested and neither produces a usable
+ * `CanonicalProofRef`, the operation fails with
+ * `REVIEW_SIGNATURE_UNAVAILABLE`; no artifact is produced, no case is mutated,
+ * and nothing is fabricated to fill the gap.
+ *
+ * Recording the professional's position without a Protocol artifact stays
+ * available and needs no signer at all: an `Attest` with the attestation input
+ * omitted is a complete vertical decision. A position without an artifact is an
+ * honest outcome; an unauditable artifact is not.
  *
  * ### Signed is not legally valid
  *
  * ```text
+ * proof reference required !=  proof reference resolved
  * proof reference present  !=  signature verified
  * signature verified       !=  attestation legally sufficient
  * legally sufficient       !=  authority over this subject
  * ```
  *
- * Nothing in this package verifies a proof, and nothing anywhere in this
- * vertical draws a legal conclusion from one.
+ * Requiring a proof reference to be *present* is a completeness rule about the
+ * artifact APV-08 will produce, and emphatically not a verification step.
+ * Nothing in this package resolves a proof, verifies a proof, or draws a legal
+ * conclusion from one.
  */
 /**
  * Exactly what a signer is told, and nothing else.
