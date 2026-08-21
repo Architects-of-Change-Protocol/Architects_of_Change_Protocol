@@ -37,7 +37,7 @@ import type { ProtocolizationDeclarationRecord } from '../declarations/declarati
 import { VerificationCheckOutcome } from '../verification/verification-outcome';
 import { isVerificationResultCurrentForRevision } from '../verification/verification-projections';
 import type { ProtocolizationVerificationResult } from '../verification/verification-result';
-import { prepareCanonicalAttestationFromReview } from './attestation-preparation';
+import { isUsableProofRef, prepareCanonicalAttestationFromReview } from './attestation-preparation';
 import type { AttestationSigner } from './attestation-signer';
 import { ProfessionalReviewAction, isProfessionalReviewAction } from './review-actions';
 import type { ProfessionalReviewDecision, ProfessionalReviewMaterialRequest } from './review-decision';
@@ -153,8 +153,12 @@ export interface ProfessionalReviewContext extends ProtocolizationCaseContext {
   /**
    * The signer, when one is configured.
    *
-   * Optional. Where it is absent an attestation is produced without proof
-   * references — a shape Protocol allows — rather than with a fabricated one.
+   * Optional, and its absence is not a way to get an unsigned artifact. Where no
+   * signer is configured, a requested `CanonicalAttestation` is constructed only
+   * if the caller supplied at least one usable `CanonicalProofRef` of their own;
+   * where they did not, the operation fails with
+   * `REVIEW_SIGNATURE_UNAVAILABLE` rather than producing an unauditable
+   * professional attestation. Nothing is ever fabricated to fill the gap.
    */
   readonly signer?: AttestationSigner;
 }
@@ -208,8 +212,16 @@ export interface ProfessionalAttestationInput {
   /**
    * Proof references the caller already holds.
    *
-   * Where a signer is configured, its proof is appended to these. Where neither
-   * is present the attestation carries none, which is honest.
+   * Where a signer is configured, its proof is appended to these. At least one
+   * proof reference must come from one source or the other: a professional
+   * attestation associated to a case as `ProtocolizationMaterialKind.Attestation`
+   * is auditable or it is not produced. Supplying none here with no signer
+   * configured fails the operation with `REVIEW_SIGNATURE_UNAVAILABLE`; it does
+   * not quietly yield an unsigned artifact.
+   *
+   * Presence is not verification. This package resolves no proof and validates
+   * no signature — Protocol defines `CanonicalProofRef` as a reference and
+   * nothing more.
    */
   readonly proofRefs?: readonly CanonicalProofRef[];
 }
@@ -1370,9 +1382,33 @@ function assertActionShape(
  * request ownership, then basis revision, then input admission, then lifecycle,
  * then the pinned profile, then requirement kind, then the action's own shape,
  * then the reviewer against the profile's attester constraints, then the scope,
- * then — only for an `Attest` that asked for one — the claim, the signer and the
- * attestation. A failure at any step throws and produces nothing: no decision,
- * no attestation, no event, and no case mutation.
+ * then — only for an `Attest` that asked for one — the claim, the proof
+ * references and the attestation. A failure at any step throws and produces
+ * nothing: no decision, no attestation, no event, and no case mutation.
+ *
+ * ### Asking for an artifact is atomic; not asking for one is a workflow
+ *
+ * These are two different calls, and the distinction is the whole reason a
+ * refusal here can be absolute:
+ *
+ * ```text
+ * Attest, `attestation` omitted     -> a complete vertical decision, with no
+ *                                      canonicalAttestationRef, no Attestation
+ *                                      material and no resultingCaseRevision
+ *
+ * Attest, `attestation` supplied    -> the decision and the CanonicalAttestation
+ *                                      and the material association, together,
+ *                                      or nothing at all
+ * ```
+ *
+ * So a caller who asked APV to produce a Protocol artifact and cannot
+ * legitimately have one — the claim is not the case's, no proof reference can be
+ * obtained, the record would not satisfy Protocol's shape — receives an error,
+ * not a silently downgraded decision. Downgrading would answer a request nobody
+ * made and would hide, behind a success, that the artifact the caller is about
+ * to look for does not exist. A professional who wants the position on record
+ * without the artifact expresses that by omitting the input, which is a
+ * supported outcome and always was.
  *
  * ### None of the four actions is an error
  *
@@ -1484,7 +1520,7 @@ export async function recordProfessionalReviewDecision(
       ...(input.reviewerCredentialRefs === undefined
         ? {}
         : { credentialRefs: input.reviewerCredentialRefs }),
-      ...(proofRefs === undefined ? {} : { proofRefs }),
+      proofRefs,
     });
 
     // Everything the case owns — lifecycle, pinned-version requirement
@@ -1612,15 +1648,33 @@ export async function recordProfessionalReviewDecision(
 }
 
 /**
- * Asks the configured signer for a proof, or returns what the caller already
- * had.
+ * Obtains the proof references a requested attestation will carry, or fails.
  *
- * A signer that throws, rejects, or returns something this package will not
- * carry fails the whole decision (`REVIEW_SIGNATURE_UNAVAILABLE`) rather than
- * producing an attestation with a placeholder proof. Where no signer is
- * configured, the caller's own references are used, and where there are none the
- * attestation simply carries no proof — Protocol's own shape allows that, and an
- * honestly unsigned attestation is worth more than a fabricated signature.
+ * Two legitimate sources, in this order: references the caller already held, and
+ * a reference an injected `AttestationSigner` produced. At least one usable
+ * reference must come back from one of them, because a professional attestation
+ * this vertical produces is auditable or it is not produced.
+ *
+ * ```text
+ * caller refs, no signer          -> the caller's refs
+ * caller refs + signer            -> the caller's refs, plus the signer's
+ * no caller refs, signer signs    -> the signer's ref
+ * no caller refs, no signer       -> REVIEW_SIGNATURE_UNAVAILABLE
+ * signer throws or rejects        -> REVIEW_SIGNATURE_UNAVAILABLE
+ * signer returns an unusable ref  -> REVIEW_SIGNATURE_UNAVAILABLE
+ * ```
+ *
+ * Every failure path refuses the whole decision rather than producing an
+ * attestation with a placeholder proof or none at all. The signer's own return
+ * value is checked for structural usability *here*, because a signer returning a
+ * non-reference is the port misbehaving; caller-supplied references are checked
+ * once, in `prepareCanonicalAttestationFromReview`, where malformed caller input
+ * belongs (`REVIEW_ATTESTATION_CANNOT_BE_CONSTRUCTED`). One condition, one code,
+ * either way.
+ *
+ * None of this verifies a proof. `CanonicalProofRef` is a reference to an
+ * artifact this package never resolves, and requiring the reference to be
+ * present says nothing about whether the artifact behind it holds.
  */
 async function collectProofRefs(
   context: ProfessionalReviewContext,
@@ -1629,10 +1683,24 @@ async function collectProofRefs(
   input: RecordProfessionalReviewDecisionInput,
   wanted: ProfessionalAttestationInput,
   issuedAt: UtcDateTime,
-): Promise<readonly CanonicalProofRef[] | undefined> {
+): Promise<readonly CanonicalProofRef[]> {
   const supplied = wanted.proofRefs === undefined ? [] : [...wanted.proofRefs];
   if (context.signer === undefined) {
-    return supplied.length === 0 ? undefined : supplied;
+    if (supplied.length === 0) {
+      failReview(
+        PROFESSIONAL_REVIEW_ERROR_CODES.signatureUnavailable,
+        'A CanonicalAttestation was requested with no proof reference and no configured AttestationSigner; a professional attestation is not produced without one',
+        {
+          reasonCodes: [PROFESSIONAL_REVIEW_ERROR_CODES.signatureUnavailable],
+          reviewRequestId: request.reviewRequestId,
+          decisionId: input.decisionId,
+          caseId: protocolizationCase.caseId,
+          tenantId: protocolizationCase.tenantId,
+          requirementIds: [request.attestationRequirementId],
+        },
+      );
+    }
+    return supplied;
   }
 
   let signed: CanonicalProofRef;
@@ -1653,6 +1721,20 @@ async function collectProofRefs(
     failReview(
       PROFESSIONAL_REVIEW_ERROR_CODES.signatureUnavailable,
       `The configured AttestationSigner could not produce a proof: ${String(cause)}`,
+      {
+        reasonCodes: [PROFESSIONAL_REVIEW_ERROR_CODES.signatureUnavailable],
+        reviewRequestId: request.reviewRequestId,
+        decisionId: input.decisionId,
+        caseId: protocolizationCase.caseId,
+        tenantId: protocolizationCase.tenantId,
+      },
+    );
+  }
+
+  if (!isUsableProofRef(signed)) {
+    failReview(
+      PROFESSIONAL_REVIEW_ERROR_CODES.signatureUnavailable,
+      'The configured AttestationSigner returned something this package will not carry as a CanonicalProofRef',
       {
         reasonCodes: [PROFESSIONAL_REVIEW_ERROR_CODES.signatureUnavailable],
         reviewRequestId: request.reviewRequestId,

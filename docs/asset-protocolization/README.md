@@ -94,6 +94,13 @@ APV-08 discharges it again for professional attestation and likewise surfaced no
 than widening a Protocol enum, and puts signing behind a narrow injected `AttestationSigner`
 port with no production implementation. Protocol was not modified.
 
+Where APV-08 is *stricter* than Protocol, it narrows only what it constructs. Protocol permits a
+`CanonicalAttestation` with no `proofRefs`; APV-08 produces none, because the artifact it
+associates to a case as `ProtocolizationMaterialKind.Attestation` is a professional attestation
+something downstream will be asked to rely on. Requiring the reference is not verifying it —
+APV-08 resolves no proof artifact and checks no signature — and Protocol's own type is
+unchanged.
+
 ### `U-2` — External registries
 
 **Decision.** Use the existing generic model:

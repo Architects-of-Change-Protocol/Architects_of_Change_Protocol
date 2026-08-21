@@ -86,8 +86,12 @@ export interface ProfessionalReviewContext extends ProtocolizationCaseContext {
     /**
      * The signer, when one is configured.
      *
-     * Optional. Where it is absent an attestation is produced without proof
-     * references — a shape Protocol allows — rather than with a fabricated one.
+     * Optional, and its absence is not a way to get an unsigned artifact. Where no
+     * signer is configured, a requested `CanonicalAttestation` is constructed only
+     * if the caller supplied at least one usable `CanonicalProofRef` of their own;
+     * where they did not, the operation fails with
+     * `REVIEW_SIGNATURE_UNAVAILABLE` rather than producing an unauditable
+     * professional attestation. Nothing is ever fabricated to fill the gap.
      */
     readonly signer?: AttestationSigner;
 }
@@ -137,8 +141,16 @@ export interface ProfessionalAttestationInput {
     /**
      * Proof references the caller already holds.
      *
-     * Where a signer is configured, its proof is appended to these. Where neither
-     * is present the attestation carries none, which is honest.
+     * Where a signer is configured, its proof is appended to these. At least one
+     * proof reference must come from one source or the other: a professional
+     * attestation associated to a case as `ProtocolizationMaterialKind.Attestation`
+     * is auditable or it is not produced. Supplying none here with no signer
+     * configured fails the operation with `REVIEW_SIGNATURE_UNAVAILABLE`; it does
+     * not quietly yield an unsigned artifact.
+     *
+     * Presence is not verification. This package resolves no proof and validates
+     * no signature — Protocol defines `CanonicalProofRef` as a reference and
+     * nothing more.
      */
     readonly proofRefs?: readonly CanonicalProofRef[];
 }
@@ -227,9 +239,33 @@ export declare function buildProfessionalReviewPacket(context: ProfessionalRevie
  * request ownership, then basis revision, then input admission, then lifecycle,
  * then the pinned profile, then requirement kind, then the action's own shape,
  * then the reviewer against the profile's attester constraints, then the scope,
- * then — only for an `Attest` that asked for one — the claim, the signer and the
- * attestation. A failure at any step throws and produces nothing: no decision,
- * no attestation, no event, and no case mutation.
+ * then — only for an `Attest` that asked for one — the claim, the proof
+ * references and the attestation. A failure at any step throws and produces
+ * nothing: no decision, no attestation, no event, and no case mutation.
+ *
+ * ### Asking for an artifact is atomic; not asking for one is a workflow
+ *
+ * These are two different calls, and the distinction is the whole reason a
+ * refusal here can be absolute:
+ *
+ * ```text
+ * Attest, `attestation` omitted     -> a complete vertical decision, with no
+ *                                      canonicalAttestationRef, no Attestation
+ *                                      material and no resultingCaseRevision
+ *
+ * Attest, `attestation` supplied    -> the decision and the CanonicalAttestation
+ *                                      and the material association, together,
+ *                                      or nothing at all
+ * ```
+ *
+ * So a caller who asked APV to produce a Protocol artifact and cannot
+ * legitimately have one — the claim is not the case's, no proof reference can be
+ * obtained, the record would not satisfy Protocol's shape — receives an error,
+ * not a silently downgraded decision. Downgrading would answer a request nobody
+ * made and would hide, behind a success, that the artifact the caller is about
+ * to look for does not exist. A professional who wants the position on record
+ * without the artifact expresses that by omitting the input, which is a
+ * supported outcome and always was.
  *
  * ### None of the four actions is an error
  *

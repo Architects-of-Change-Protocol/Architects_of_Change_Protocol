@@ -236,7 +236,7 @@ const { decision, attestation, protocolizationCase: updated } =
     action: ProfessionalReviewAction.Attest,
     scope: requestedScope,
     reviewedRefs,                               // what was actually read
-    attestation: { attestationId, claimRef, statement, materialId },
+    attestation: { attestationId, claimRef, statement, materialId, proofRefs },
   });
 ```
 
@@ -256,11 +256,23 @@ artifact for a refusal, so `Reject`, `RequestMoreEvidence` and `Abstain` produce
 none — the vertical record is sufficient, and it is honest.
 
 An attestation is structurally *about a claim*, so APV-08 builds one only when
-the `claimRef` names a claim the case already holds. Where it does not, the
-`Attest` is still recorded and no attestation is fabricated
-(`REVIEW_ATTESTATION_CANNOT_BE_CONSTRUCTED`). Signing goes through a narrow
-injected `AttestationSigner` port; with no signer configured the attestation
-carries no `proofRefs`, which Protocol allows — no signature is ever synthesized.
+the `claimRef` names a claim the case already holds. It also carries at least one
+`CanonicalProofRef`, always: Protocol makes `proofRefs` optional, but a
+*professional* attestation associated to a case as
+`ProtocolizationMaterialKind.Attestation` is auditable or it is not produced. The
+reference comes from the caller or from a narrow injected `AttestationSigner`
+port; where neither yields one, the operation fails
+(`REVIEW_SIGNATURE_UNAVAILABLE`) and no signature is ever synthesized. Requiring
+the reference is not verifying it — nothing here resolves a proof.
+
+Asking for an artifact you cannot legitimately have fails **atomically**: no
+decision, no attestation, no event, no `Attestation` material and no revision
+increment (`REVIEW_ATTESTATION_CANNOT_BE_CONSTRUCTED`,
+`REVIEW_SIGNATURE_UNAVAILABLE`). Recording the professional's position *without*
+a Protocol artifact remains fully supported and needs no signer and no proof —
+that is the same `Attest` with the `attestation` input omitted, which returns a
+decision carrying no `canonicalAttestationRef`, no attestation material and no
+`resultingCaseRevision`.
 
 Every APV-07 outcome stays visible to the reviewer, unreduced: a `ManualReview`
 never blocks packet construction, an `Unavailable` is never reinterpreted, and a
@@ -275,7 +287,11 @@ Attest                     !=  universal truth      !=  READY.
 Reject                     !=  case state Rejected.
 RequestMoreEvidence        !=  state transition.
 Abstain                    !=  FAIL.
-Credential ref present     !=  credential valid     !=  authority.
+Credential ref present     !=  the credential exists.
+Credential type matches    !=  the credential is valid.
+Declared status Active     !=  currently active.
+Credential compatibility   !=  legal authority.
+Proof reference present    !=  proof resolved       !=  signature verified.
 Attestation material present !=  requirement satisfied.
 ```
 

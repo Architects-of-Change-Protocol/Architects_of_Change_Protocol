@@ -56,11 +56,36 @@ const review_errors_1 = require("./review-errors");
  * So the claim must be one this case already holds — an APV-06 declaration's
  * `CanonicalClaimId`, associated to the case as `Declaration` material at or
  * before the review basis revision. Where the case holds no such claim, no
- * attestation is constructed and the operation fails deterministically with
- * `REVIEW_ATTESTATION_CANNOT_BE_CONSTRUCTED`. The reviewer's `Attest` is still
- * recorded, in full, as a vertical decision — a professional position without a
- * Protocol artifact, which is an honest outcome and is emphatically better than
- * a fabricated artifact.
+ * attestation is constructed and the whole operation fails deterministically
+ * with `REVIEW_ATTESTATION_CANNOT_BE_CONSTRUCTED`: **no decision is returned
+ * either.** A caller that asked for a Protocol artifact and cannot legitimately
+ * have one gets nothing, not a half-outcome it never requested. Recording the
+ * professional position without the artifact stays available and is a different
+ * call — the same `Attest`, with the `attestation` input omitted, which returns
+ * a vertical decision carrying no `canonicalAttestationRef`, no attestation
+ * material and no `resultingCaseRevision`.
+ *
+ * ### A professional attestation carries a proof reference
+ *
+ * Protocol makes `CanonicalAttestation.proofRefs` optional, and it is right to:
+ * Protocol describes attestations in general. APV-08 does not. The artifact this
+ * vertical produces is a *professional* attestation that Asset Protocolization
+ * will later carry as `ProtocolizationMaterialKind.Attestation` evidence of a
+ * reviewed position, and an unauditable one of those is not a weaker artifact —
+ * it is an artifact nobody downstream can hold anyone to.
+ *
+ * ```text
+ * Protocol permits        proofRefs absent
+ * APV-08 requires         at least one CanonicalProofRef, always
+ * ```
+ *
+ * So `proofRefs` is mandatory *here*: at least one, at most
+ * `PROOF_REFS_MAX_COUNT`, each structurally usable. The reference may be one the
+ * caller already held or one an injected `AttestationSigner` produced; where
+ * neither exists, `recordProfessionalReviewDecision` refuses before reaching
+ * this function. Requiring a proof to be *present* is emphatically not verifying
+ * it — see `isUsableProofRef` — and this narrowing binds only what this vertical
+ * constructs, never Protocol's own type.
  *
  * ### It constructs or it fails
  *
@@ -120,8 +145,10 @@ function refuse(message, reasonCodes) {
  * elsewhere.
  *
  * Optional fields are omitted rather than set to `undefined`, because
- * `{ proofRefs: undefined }` and `{}` serialize differently and a store that
- * round-tripped one into the other would change what the record says.
+ * `{ credentialRefs: undefined }` and `{}` serialize differently and a store
+ * that round-tripped one into the other would change what the record says.
+ * `proofRefs` is never among them: it is always present, because an attestation
+ * without one is never returned.
  */
 function prepareCanonicalAttestationFromReview(input) {
     const reasons = [];
@@ -139,11 +166,13 @@ function prepareCanonicalAttestationFromReview(input) {
     if (!(0, freshness_1.isValidUtcDateTime)(input.issuedAt)) {
         reasons.push('ATTESTATION_ISSUED_AT_INVALID');
     }
-    if (input.proofRefs !== undefined &&
-        (!Array.isArray(input.proofRefs) ||
-            input.proofRefs.length === 0 ||
-            input.proofRefs.length > PROOF_REFS_MAX_COUNT ||
-            !input.proofRefs.every((entry) => isUsableProofRef(entry)))) {
+    if (!Array.isArray(input.proofRefs) || input.proofRefs.length === 0) {
+        // Split from the malformed case on purpose: "you gave me none" and "the one
+        // you gave me is not a proof reference" are different things to fix.
+        reasons.push('ATTESTATION_PROOF_REFS_REQUIRED');
+    }
+    else if (input.proofRefs.length > PROOF_REFS_MAX_COUNT ||
+        !input.proofRefs.every((entry) => isUsableProofRef(entry))) {
         reasons.push('ATTESTATION_PROOF_REFS_INVALID');
     }
     if (reasons.length > 0) {
@@ -157,6 +186,6 @@ function prepareCanonicalAttestationFromReview(input) {
         statement: input.statement,
         issuedAt: input.issuedAt,
         ...(input.credentialRefs === undefined ? {} : { credentialRefs: [...input.credentialRefs] }),
-        ...(input.proofRefs === undefined ? {} : { proofRefs: [...input.proofRefs] }),
+        proofRefs: [...input.proofRefs],
     };
 }
